@@ -98,7 +98,21 @@ The provider's original countdown was incorrect in Asia/Kolkata: a five-minute c
 
 The email-verification serial gate passed **184 examples, zero failures**, including **33 real-Brave browser cases**. New checks cover allowed/unsupported methods, copy-recipient restrictions, approval invalidation, private reviewer disclosure, exact provider authentication, malformed authentication readback and desktop/mobile persistence without console errors. Required normal/test Vite builds, changed Ruby/JS lint and Reek passed. Send controls and completed-artifact handling remain unfinished.
 
-The delivery controls then passed **189 examples, zero failures**, including **38 real-Brave cases**. Five new journeys cover company-key setup/rotation, approved-send confirmation, cancellation locking, recipient status/reminder cooldown, unknown-create reconciliation and queue failure without fabricated success. These browser cases use controlled provider responses/jobs. A separate owned Miru workspace on port 3801 has now uploaded two PDFs, saved six signatures across three pages and approved four recipients through the UI, using the ordinary provider API key and CSRF protection. Its actual send/cancel job check is still in progress. Completed-artifact integration and production deployment remain unfinished.
+The final delivery gate passed **190 examples, zero failures**, including **39 real-Brave cases**. It covers company-key setup/rotation, approved-send confirmation, cancellation locking, recipient status/reminder cooldown, unknown-create reconciliation and queue failure without fabricated success. QA also reproduced an uncaught PDF-render cancellation while text extraction was pending. The renderer now observes both promises together; a controlled real-Brave regression proves the repair. Browser helpers check uncaught exceptions as well as console errors. Reviewer labels and operation feedback follow the current authoritative state.
+
+A separate owned Miru workspace on port3801 exercised the [current real UI/job flow](miru-delivery-ui-results.json) against the source-built provider: upload two PDFs, place six signatures across three pages, approve four recipients, confirm sending, remind and cancel. Each native job ran twice, producing exactly **one create, one distribution, one reminder for three actionable recipients and one cancellation**. Final status was CANCELLED; editing stayed locked until confirmation. Local Mailpit observed receipts for all three actionable test addresses and no unexpected destination. Copy-email receipt at this stage was not observed or claimed. The ordinary UI-created provider key remained in Miru's encrypted connection, and CSRF protection was enabled.
+
+Settled active-page desktop/mobile checks recorded zero new browser exceptions, console errors or failed HTTP responses; the editor occupied343px at375px without overflow. Earlier faded/background-tab captures were excluded. The original exploratory run and its inconclusive verdict are retained separately; a fresh current-input contract replay passed. This is local delivery evidence, not completed-artifact or production release verification.
+
+![Exact approved package and recipients before sending](miru-send-confirmation.png)
+
+![Live pending recipient states and reminder controls](miru-delivery-pending.png)
+
+![Cancellation requires explicit confirmation](miru-cancel-confirmation.png)
+
+![Authoritative cancellation and delivery history, desktop](miru-delivery-cancelled-desktop.png)
+
+![Authoritative cancellation and delivery history, mobile](miru-delivery-cancelled-mobile.png)
 
 ## Environment and isolation
 
@@ -156,6 +170,6 @@ The [embedded editor is paid](https://docs.documenso.com/docs/developers/embeddi
 
 ## Coverage limits
 
-The original feasibility probe preceded the Miru implementation checks described above. Its observations were collected before a formal gstack wrapper was opened; no retrospective charter or clean QA gate is claimed. Production/staging, provider concurrency, stronger recipient authentication, webhook retries/reordering, backup restore, DOCX conversion, screen-reader operation and large-document/load performance remain unverified. The original probe defaulted to UTC; the new envelope explicitly records and verifies the intended timezone. Reminder acceptance and expiry metadata have been checked, but timed reminder/expiry execution has not. A single two-file create took 0.179s; that is not a UI, load or production benchmark.
+The original feasibility probe preceded the Miru implementation checks described above. Its observations were collected before a formal gstack wrapper was opened; no retrospective charter or clean QA gate is claimed. Production/staging, provider concurrency, account/authenticator/passkey authentication, webhook retries/reordering, backup restore, DOCX conversion, screen-reader operation and large-document/load performance remain unverified. Email-code completion is covered separately above. The original probe defaulted to UTC; the new envelope explicitly records and verifies the intended timezone. Reminder acceptance and expiry metadata have been checked, but timed reminder/expiry execution has not. A single two-file create took 0.179s; that is not a UI, load or production benchmark.
 
 Next: bound page rendering, connect approved packages to durable send/cancel/reminder/reconciliation jobs and verify the entire Miru-to-signed-archive flow. Keep #2462 and the production hold open until that workflow and the release gates pass.

@@ -72,9 +72,9 @@
 **Files:** company-scoped encrypted signing connection/configuration; `app/services/signatures/documenso_client.rb`, send/cancel/reminder jobs; admin API/UI; service/job/request specs.
 **Interfaces:** trusted server-configured provider origin; per-company credentials. Create one DOCUMENT envelope with the approved PDFs/recipient/field snapshot, persist the returned ID before distribution and bind a stable external operation ID. The API has no exact external-ID filter: ambiguous create outcomes must remain explicit and require authoritative reconciliation, never blind resending.
 
-- [ ] Write RED for the real multipart contract, bounded/sanitized HTTP responses, denied arbitrary origins, missing credentials, stale approval, revoked membership, crash/timeout recovery, duplicate jobs and cancel/send races.
-- [ ] Implement durable states and reconciliation; verify the provider original bytes/configuration before distributing. API callbacks/browser events cannot manufacture completion. Add visible sending/pending/uncertain/error and per-recipient states.
-- [ ] Run GREEN plus a local live provider send/cancel case using only fictional recipients/local SMTP, then commit.
+- [x] Write RED for the real multipart contract, bounded/sanitized HTTP responses, denied arbitrary origins, missing credentials, stale approval, revoked membership, crash/timeout recovery, duplicate jobs and cancel/send races.
+- [x] Implement durable states and reconciliation; verify the provider original bytes/configuration before distributing. API callbacks/browser events cannot manufacture completion. Add visible sending/pending/uncertain/error and per-recipient states.
+- [x] Run GREEN plus a local live provider send/cancel case using only fictional recipients/local SMTP, then commit.
 
 ### Task 6: Reconcile completion and publish immutable artifacts
 
