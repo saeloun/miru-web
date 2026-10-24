@@ -81,7 +81,7 @@ module Reports
                   [Date.new(finish.year - 1, end_month, -1) + 1, finish]
                 else [parse_date(@filters["from"]), parse_date(@filters["to"])]
         end
-        unless range.first <= range.last && range.last - range.first <= 366 && range.all? { |date| (1900..2099).cover?(date.year) }
+        unless range.first <= range.last && range.last - range.first < 366 && range.all? { |date| (1900..2099).cover?(date.year) }
           raise InvalidFilters, "Choose an ordered reporting range of at most one year"
         end
         range
@@ -118,14 +118,23 @@ module Reports
         rows = @employments.filter_map do |employment|
           person_result(employment, from, to) if reportable_employment?(employment, from, to)
         end
-        rows = one_row_per_person(rows).select { |row| matches_filters?(row) }
+        people = one_row_per_person(rows)
+        rows = people.select { |row| matches_filters?(row) }
         {
           from: from.iso8601, to: to.iso8601, people: rows,
           summary: summarize(rows),
+          data_quality: data_quality(rows),
+          available_people: people.map { |row| { id: row[:person_id], name: row[:person] } },
           incomplete: rows.any? { |row| row[:flags].any? },
           provisional: to > Date.current,
           available_departments: @employments.filter_map { |e| e.profitability_profile&.department.presence }.uniq.sort
         }
+      end
+
+      def data_quality(rows)
+        flags = rows.flat_map { |row| row[:flags].uniq }.tally.sort_by { |flag, count| [-count, flag] }.to_h
+        complete = rows.count { |row| row[:flags].empty? }
+        { people: rows.size, complete_people: complete, flagged_people: rows.size - complete, flags: }
       end
 
       def reportable_employment?(employment, from, to)

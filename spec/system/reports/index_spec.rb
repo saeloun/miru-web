@@ -41,6 +41,14 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_current_path("/reports/compensation-profitability", wait: 10)
         expect(page).to have_content("Organization owners and admins only")
         expect(page).to have_content(company.name)
+        within("section[aria-label='Data readiness']") do
+          expect(page).to have_content("Complete data: 0 of 1 person")
+          expect(page).to have_content("Payroll proration: Not configured")
+          expect(page).to have_content("Missing compensation: 1 person")
+        end
+        click_link "Review reporting setup"
+        expect(page).to have_css("details.panel[open]")
+        expect(page).to have_button("Save payroll policy")
         click_link "← Reports"
         expect(page).to have_current_path("/reports", wait: 10)
         expect_reports_shell

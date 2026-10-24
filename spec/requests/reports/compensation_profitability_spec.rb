@@ -54,6 +54,66 @@ RSpec.describe "Organization compensation profitability", type: :request do
     expect(run.audits.last.action).to eq("export")
   end
 
+  it "shows readiness counts and preserves the generated counts in the CSV after source changes" do
+    payload = generate
+    expect(payload.fetch("data_quality")).to include("people" => 1, "complete_people" => 0, "flagged_people" => 1)
+    employment.profitability_profile.destroy!
+    get payload.fetch("export_url")
+    rows = CSV.parse(response.body)
+    expect(rows).to include(["Data readiness", "2026-07-01", "2026-07-31", "People", "1", "Complete people", "0", "Flagged people", "1"])
+    expect(rows).to include(["Missing timesheets", "1"])
+    expect(rows).not_to include(["Missing working schedule", "1"])
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    expect(response.body).to include("Data readiness", "0 of 1 person", "Missing working schedule", "Review reporting setup")
+  end
+
+  it "deduplicates person options and keeps the selector available when no rows match" do
+    create(:employment, company:, user: person, joined_at: "2026-01-01", resigned_at: nil)
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id, department: "Absent" }
+    expect(response).to have_http_status(:ok)
+    document = Nokogiri::HTML(response.body)
+    expect(document.css("select#person_id option[value='#{person.id}']").size).to eq(1)
+    expect(document.css("section[aria-label='Data readiness']").text).to include("No people match")
+  end
+
+  it "downloads pre-upgrade snapshots that do not have readiness metadata" do
+    payload = generate
+    run = CompensationReportRun.last
+    old_payload = run.payload.deep_dup
+    old_payload.delete("data_quality")
+    old_payload.fetch("comparison").delete("data_quality")
+    run.update!(payload: old_payload)
+    get payload.fetch("export_url")
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include(person.full_name, "Compensation Cost")
+    expect(response.body).not_to include("Data readiness")
+  end
+
+  it "rejects copied export links even for another authorized owner in the same organization" do
+    admin_payload = generate
+    person.add_role(:owner, company)
+    sign_in person
+    get admin_payload.fetch("export_url")
+    expect(response).to have_http_status(:not_found)
+    own_payload = generate
+    get own_payload.fetch("export_url")
+    expect(response).to have_http_status(:ok)
+    sign_in admin
+    get own_payload.fetch("export_url")
+    expect(response).to have_http_status(:not_found)
+  end
+
+  %w[calendar_days working_days].each do |proration|
+    it "identifies #{proration} in the screen and matching CSV" do
+      company.update!(compensation_proration: proration)
+      get path
+      expect(response.body).to include("Payroll proration:", proration.humanize)
+      payload = generate
+      get payload.fetch("export_url")
+      expect(CSV.parse(response.body)).to include(["Payroll proration", proration])
+    end
+  end
+
   %w[owner admin].each do |role|
     it "allows an active organization #{role} without platform Super Admin access" do
       person.add_role(role.to_sym, company)

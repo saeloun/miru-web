@@ -44,7 +44,7 @@
           <label>Custom from <%= form.date_field :from, value: params[:from] %></label>
           <label>Custom to <%= form.date_field :to, value: params[:to] %></label>
           <label>Currency <%= form.select :currency, %w[INR USD], selected: @report[:currency] %></label>
-          <label>Person <%= form.select :person_id, @employments.map { |e| [e.user.full_name, e.user_id] }, selected: params[:person_id], include_blank: "All people" %></label>
+          <label>Person <%= form.select :person_id, @report[:available_people].map { |person| [person[:name], person[:id]] }, selected: params[:person_id], include_blank: "All people" %></label>
           <label>Primary project <%= form.select :primary_project_id, @projects.map { |p| [p.name, p.id] }, selected: params[:primary_project_id], include_blank: "All projects" %></label>
           <label>Client <%= form.select :client_id, @clients.map { |c| [c.name, c.id] }, selected: params[:client_id], include_blank: "All clients" %></label>
           <label>Department <%= form.select :department, @report[:available_departments], selected: params[:department], include_blank: "All departments" %></label>
@@ -55,6 +55,21 @@
       <p><strong><%= @report[:from] %> – <%= @report[:to] %></strong> · Generated <%= @report[:generated_at] %> · <%= @report[:currency] %></p>
       <% if @report[:provisional] %><span class="flag">Provisional — period includes future dates</span><% end %>
       <% if @report[:incomplete] %><span class="flag">Incomplete — review data quality flags</span><% end %>
+      <section class="panel" aria-label="Data readiness">
+        <h2>Data readiness</h2>
+        <p>Payroll proration: <strong><%= @report[:proration]&.humanize || "Not configured" %></strong></p>
+        <% quality = @report[:data_quality] %>
+        <% if quality[:people].zero? %>
+          <p>No people match this period and filters.</p>
+        <% else %>
+          <p><strong>Complete data: <%= quality[:complete_people] %> of <%= pluralize(quality[:people], "person", "people") %>.</strong> These counts reflect the selected period and filters.</p>
+          <% if quality[:flags].any? %>
+            <p>Totals remain N/A when required values are unavailable for an included person. Review the issues below before using the totals. A person can have more than one issue.</p>
+            <ul><% quality[:flags].each do |flag, count| %><li><%= flag.to_s.humanize %>: <strong><%= pluralize(count, "person", "people") %></strong></li><% end %></ul>
+            <p><a href="#report-configuration">Review reporting setup</a> for the payroll policy, dated compensation, billing terms and working schedules. Verify joining and exit dates in Team. Only approved time contributes to finalized hours and revenue.</p>
+          <% end %>
+        <% end %>
+      </section>
       <div class="panel summary">
         <% { gross_compensation_burn: "Gross Compensation Burn", revenue: "Revenue", net_compensation_burn: "Net Compensation Burn", overall_margin: "Overall Margin" }.each do |key, title| %>
           <div class="metric"><%= title %><strong><%= profitability_number(@report[:summary][key], currency: @report[:currency]) %></strong></div>
@@ -113,7 +128,7 @@
       <p>Days to Yearly Salary is a revenue-equivalence estimate based on the latest annual compensation and scheduled hours per billable day. It does not represent collected cash or account for other company expenses.</p>
       <details class="panel"><summary>Configure missing reporting data</summary>
         <p>These settings affect confidential reporting. Record known effective dates; historical rates are never inferred from a person's current project rate. Compensation history is encrypted. Changes retain an audit record.</p>
-        <fieldset><legend>Workspace payroll policy</legend>
+        <fieldset id="report-configuration"><legend>Workspace payroll policy</legend>
           <%= form_with url: compensation_profitability_configure_path do |form| %>
             <%= form.hidden_field :configuration, value: "policy" %>
             <%= form.hidden_field :company_id, value: current_company.id %>
