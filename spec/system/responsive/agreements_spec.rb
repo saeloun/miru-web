@@ -290,4 +290,71 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(draft.field_values["company_signature"]).to be_nil
     expect(@console_errors).to be_empty
   end
+
+  it "edits fields in a long contract on mobile and measures its real draft download" do
+    preview = File.open(Rails.root.join("spec/fixtures/agreements/synthetic-long.docx"), "rb") do |file|
+      upload = ActionDispatch::Http::UploadedFile.new(tempfile: file, filename: "synthetic-long.docx",
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+      Agreements::DocxImport.new(upload).process
+    end
+    template = AgreementTemplate.create!(company:, created_by: admin, title: "Synthetic long measurement", kind: "client",
+      document: preview[:document], fields: preview[:fields])
+    client = create(:client, company:, name: "Synthetic measurement client")
+    open_agreements("/agreements/templates/#{template.id}")
+    expect(page).to have_css("[data-merge-field]", count: 60)
+    page.current_window.resize_to(375, 1000)
+    expect(page.evaluate_script("window.innerWidth")).to eq(375)
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    click_button "Fields (60)"
+    within('[role="dialog"]') { expect(page).to have_button("Edit Field 0") }
+    opened_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    click_button "Edit Field 0"
+    within('[role="dialog"]', text: "Edit field") do
+      expect(page).to have_field("Field label", with: "Field 0")
+      settings_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000
+      fill_in "Field label", with: "Legal entity"
+      select "Counterparty", from: "Assigned to"
+      check "Read-only for recipient"
+      page.save_screenshot(Rails.root.join("tmp/capybara/agreement-long-mobile-field-settings.png"), full: false)
+      click_button "Save field"
+      @settings_ms = settings_ms
+    end
+    expect(page).not_to have_field("Field label")
+    within('[role="dialog"]') { click_button "Close" }
+    expect_saved
+    click_link "All agreements"
+    within("article", text: template.title) { click_button "Generate draft" }
+    within('[role="dialog"]') do
+      fill_in "Find counterparty", with: client.name
+      choose client.name
+      click_button "Generate draft"
+    end
+    click_button "Fields (60)"
+    fill_in "Value: Legal entity", with: "आनंद & Núñez Private Limited"
+    within('[role="dialog"]') { click_button "Close" }
+    expect_saved
+    draft = Agreement.find_by!(agreement_template: template)
+    expect(draft.reload.field_values).to include("field_0" => "आनंद & Núñez Private Limited")
+    expect(page.evaluate_script("document.getElementById('document-title').getBoundingClientRect().width")).to be >= 250
+    expect(page).to have_css("[data-merge-field]", count: 60)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    page.save_screenshot(Rails.root.join("tmp/capybara/agreement-long-mobile-draft.png"), full: false)
+    allow(Ferrum::Browser).to receive(:new).and_call_original
+    started = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Dir.mktmpdir("long-agreement-download") do |directory|
+      page.driver.browser.downloads.set_behavior(save_path: directory)
+      expect(page.driver.browser.downloads.wait(15) { click_button "Download draft PDF" }).to be(true)
+      pdf = File.binread(File.join(directory, "agreement-#{draft.id}-draft.pdf"))
+      expect(pdf).to start_with("%PDF-")
+      expect(pdf).to include("%%EOF")
+      File.binwrite(Rails.root.join("tmp/capybara/agreement-long-ui-draft.pdf"), pdf)
+    end
+    download_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000
+    File.write(Rails.root.join("tmp/capybara/agreement-long-ui-metrics.json"), {
+      environment: "headless Brave/Cuprite, arm64 macOS, Ruby4.0.9, isolated Rails test server",
+      width: 375, fields: 60, field_dialog_ms: opened_ms, field_settings_ms: @settings_ms, pdf_download_ms: download_ms
+    }.to_json)
+    expect(@console_errors).to be_empty
+  end
 end

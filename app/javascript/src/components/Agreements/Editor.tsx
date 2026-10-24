@@ -340,7 +340,7 @@ const LoadedEditor = ({
         All agreements
       </Link>
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0 flex-1 space-y-2">
+        <div className="w-full min-w-0 space-y-2 sm:flex-1">
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             {isDraft ? "Draft agreement" : "Agreement template"} · {record.kind}
           </p>
@@ -355,7 +355,7 @@ const LoadedEditor = ({
             }}
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto">
           <Button
             variant="outline"
             disabled={busy || conflict || !dirty}

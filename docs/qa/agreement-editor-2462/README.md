@@ -42,7 +42,9 @@ Headed Brave on local arm64 macOS/Ruby4.0.9, one Falcon worker, isolated synthet
 | 1440px | 62 | 4.2 | 7.8 | 8.5 | 1292 |
 | 375px | 61 | 3.8 | 8.1 | 9.2 | 1293 |
 
-Typing measures beforeinput-to-next-animation-frame, not full paint latency; save includes the800ms debounce. All60 fields survive each long-document load; neither viewport has horizontal overflow. Screenshots were captured in the real running app through Playwright and visually inspected. Actual device software-keyboard behavior, field-dialog/export timings, Linux fonts, full CI, independent review and deployment still require verification. [Raw measurements](editor-performance.json) retain the unrounded values. The initial attached preview servers stopped after a few minutes; failed connection/expired-session attempts were excluded, and the reported measurements completed against the single-worker server after normal UI sign-in.
+Typing measures beforeinput-to-next-animation-frame, not full paint latency; save includes the800ms debounce. All60 fields survive each long-document load; neither viewport has horizontal overflow. The four initial master screenshots were captured through Playwright and visually inspected. The later mobile draft screenshot shows the corrected full-width title and separate action row. Actual device software-keyboard behavior, Linux fonts, full CI, independent review and deployment still require verification. [Raw measurements](editor-performance.json) retain the unrounded values. The initial preview servers stopped after a few minutes; failed connection/expired-session attempts were excluded, and the reported measurements completed against the single-worker server after normal UI sign-in.
+
+A further real headless-Brave/Cuprite workflow edits a field in the60-field contract at375px, generates a client draft, saves `आनंद & Núñez Private Limited` and downloads the actual PDF. Field-dialog opening took190ms, field-settings opening203ms and PDF download608ms, including browser-driver interaction. The PDF has25 tagged A4 pages, no PDF JavaScript, and all first/last clauses and unresolved-field labels; its first/last pages were rendered and visually inspected. Values wrap without overflow. [Raw dialog/download timings](editor-long-ui-performance.json) describe that separate environment. This case also exposed a mobile title squeezed by action buttons: its width assertion failed before the layout fix and passes afterward. A test viewport reset during sign-in was corrected by resizing and asserting375px after authentication.
 
 ## DOCX import evidence
 
@@ -70,5 +72,10 @@ Same local environment and single-run limits as above. Import accepts up to5MiB 
 - [Short mobile editor](editor-short-375.png)
 - [Long desktop editor](editor-long-1440.png)
 - [Long mobile editor](editor-long-375.png)
+- [Latest mobile field settings](editor-mobile-field-settings.png)
+- [Latest mobile draft and readable title](editor-mobile-draft.png)
+- [PDF downloaded through the UI](agreement-long-ui-draft.pdf)
+- [Downloaded PDF first page](ui-pdf-first.png)
+- [Downloaded PDF last page](ui-pdf-last.png)
 
 This feature uses additive tables with restricted references. Application rollback must preserve populated tables and encryption keys. Draft content remains editable and has no approval/signature authority; immutable sent/signed versions are a later required unit. Do not close #2462 from this checkpoint.
