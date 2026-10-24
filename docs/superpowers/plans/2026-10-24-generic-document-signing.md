@@ -63,9 +63,9 @@
 **Files:** revision-bound review invitations/comments and migration; `Signatures` review APIs/policies; invitation mailer; frontend review/approval controls; request/mailer/browser specs.
 **Interfaces:** reviewer invitations carry expiring, revocable capabilities only for one revision and email. Keep link credentials out of server paths/logs. Comments are encrypted and version-bound. Admin approval records actor/time and the exact file/recipient/field digest; a later edit cannot reuse it.
 
-- [ ] Write RED for scoped reviewer access/comments, expiry/revocation, changes requested, compensation/privacy, stale approval and replaced-source invalidation.
-- [ ] Implement the reviewer page and manual approval record without substituting a signature; render and check local-only mail previews.
-- [ ] Run focused GREEN/browser/build checks and commit.
+- [x] Write RED for scoped reviewer access/comments, expiry/revocation, changes requested, compensation/privacy, stale approval and replaced-source invalidation.
+- [x] Implement the reviewer page and manual approval record without substituting a signature; render and check local-only mail previews.
+- [x] Run focused GREEN/browser/build checks and commit.
 
 ### Task 5: Send, cancel and track with Documenso
 
