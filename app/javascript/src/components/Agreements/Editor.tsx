@@ -336,7 +336,10 @@ const LoadedEditor = ({
 
   return (
     <div className="agreement-controls mx-auto max-w-7xl space-y-5 p-4 md:p-6">
-      <Link to="/agreements" className="text-sm text-primary underline">
+      <Link
+        to="/agreements/authoring"
+        className="text-sm text-primary underline"
+      >
         All agreements
       </Link>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -651,7 +654,7 @@ const Editor = ({
       <div role="alert" className="agreement-controls space-y-3 p-6">
         <p>{error}</p>
         <Button onClick={() => setRefresh(value => value + 1)}>Retry</Button>
-        <Link to="/agreements">All agreements</Link>
+        <Link to="/agreements/authoring">All agreements</Link>
       </div>
     );
   }

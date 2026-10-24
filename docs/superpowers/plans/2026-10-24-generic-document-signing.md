@@ -54,9 +54,9 @@
 **Files:** `app/javascript/src/components/DocumentSignatures/{index,Editor,PdfPages,api,types}.tsx/ts`, scoped styles; router/navigation/locale; focused browser specs.
 **Interfaces:** authenticated Task 2 API; lazily render original PDF pages with PDF.js. Store field rectangles as percentages against the displayed page; fields select explicit recipient IDs. Drag/resize has labelled keyboard-editable page/position/size controls. Retain existing draft authoring as secondary navigation.
 
-- [ ] Write browser failures for upload without a template/party, repeated signature blocks, recipients and typed fields, zoom/mobile placement, upload/configuration failures, stale-save recovery, replacement remapping and keyboard access.
-- [ ] Run RED; implement using existing ui primitives and pointer capture, with no drag library. Cancel PDF renders and pending reads on document/workspace changes; preserve unsaved work on errors.
-- [ ] Run GREEN, `rtk mise exec -- timeout 30 bin/vite build`, focused JS lint and real Brave/console checks; capture synthetic evidence; commit.
+- [x] Write browser failures for upload without a template/party, repeated signature blocks, recipients and typed fields, zoom/mobile placement, upload/configuration failures, stale-save recovery, replacement remapping and keyboard access.
+- [x] Run RED; implement using existing ui primitives and pointer capture, with no drag library. Cancel PDF renders and pending reads on document/workspace changes; preserve unsaved work on errors.
+- [x] Run GREEN, `rtk mise exec -- timeout 30 bin/vite build`, focused JS lint and real Brave/console checks; capture synthetic evidence; commit.
 
 ### Task 4: Review and approve a specific version
 

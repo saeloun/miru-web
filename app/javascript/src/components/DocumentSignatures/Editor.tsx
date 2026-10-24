@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useBeforeUnload, useBlocker } from "react-router-dom";
-import Api from "apis/api";
+import Api, { BEFORE_WORKSPACE_CHANGE } from "apis/api";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -53,6 +53,20 @@ export default function Editor({
   const mounted = useRef(true);
   const dirty = Boolean(record) && JSON.stringify(draft) !== saved;
   const blocker = useBlocker(dirty || busy);
+  useEffect(() => {
+    const guard = event => {
+      if (dirty || busy) {
+        event.preventDefault();
+        setError(
+          "Save your edits or leave the editor before changing workspaces."
+        );
+      }
+    };
+    window.addEventListener(BEFORE_WORKSPACE_CHANGE, guard);
+
+    return () => window.removeEventListener(BEFORE_WORKSPACE_CHANGE, guard);
+  }, [dirty, busy]);
+
   useBeforeUnload(
     useCallback(
       event => {

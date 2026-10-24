@@ -65,6 +65,19 @@ RSpec.describe "Signing PDF source checks" do
     expect { Signatures::PdfInfo.new(encrypted.to_s).process }.to raise_error(Signatures::PdfInfo::InvalidDocument)
   end
 
+  it "rejects a highly compressed image above the preview decoder's pixel limit" do
+    source = Rails.root.join("spec/fixtures/files/signature-large-image.pdf").to_s
+    expect(File.size(source)).to be < 5.megabytes
+    expect { Signatures::PdfInfo.new(source).process }
+      .to raise_error(Signatures::PdfInfo::InvalidDocument, /16 megapixels/)
+  end
+
+  it "applies the same pixel limit to inline images inside content streams" do
+    source = Rails.root.join("spec/fixtures/files/signature-inline-large-image.pdf").to_s
+    expect { Signatures::PdfInfo.new(source).process }
+      .to raise_error(Signatures::PdfInfo::InvalidDocument, /16 megapixels/)
+  end
+
   it "distinguishes a missing PDF processor from an invalid customer document" do
     allow(Open3).to receive(:popen2e).and_raise(Errno::ENOENT, "internal path and credentials")
     expect { Signatures::PdfInfo.new(path).process }

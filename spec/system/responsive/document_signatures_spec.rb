@@ -33,11 +33,11 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     expect(page).to have_css('[data-pdf-ready="true"]')
   end
 
-  def add_signer
+  def add_signer(index: 1, name: "Synthetic Consultant", email: "consultant@example.test")
     click_button "Add recipient"
-    within('fieldset[aria-label="Recipient 1"]') do
-      fill_in "Name", with: "Synthetic Consultant"
-      fill_in "Email", with: "consultant@example.test"
+    within("fieldset[aria-label='Recipient #{index}']") do
+      fill_in "Name", with: name
+      fill_in "Email", with: email
     end
   end
 
@@ -76,6 +76,9 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     record = SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
     record.with_lock { record.revise!(actor: admin, attributes: { title: "Newer server draft" }) }
     fill_in "Document title", with: "Unsaved local negotiations"
+    click_link "All documents"
+    within('[role="dialog"]') { click_button "Keep editing" }
+    expect(page).to have_field("Document title", with: "Unsaved local negotiations")
     click_button "Save changes"
     expect(page).to have_content("Reload it before saving")
     expect(page).to have_field("Document title", with: "Unsaved local negotiations")
@@ -165,5 +168,73 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     expect(page).to have_css('canvas[aria-label="PDF page 2"]')
     expect(page).to have_css('[data-pdf-ready="true"]')
     expect(@console_errors).to be_empty
+  end
+
+  it "drags and resizes fields assigned to different signers and persists their exact positions" do
+    open_documents
+    add_signer
+    add_signer(index: 2, name: "Synthetic Company Signer", email: "company@example.test")
+    click_button "Add field"
+    fill_in "Field label", with: "Consultant signature"
+    click_button "Add field"
+    fill_in "Field label", with: "Company signature"
+    select "Synthetic Company Signer — company@example.test", from: "Assigned recipient"
+    fill_in "Left (%)", with: "20"
+    fill_in "Top (%)", with: "30"
+    find('button[aria-label="Move Company signature"]').native.drag_by(40, 30, steps: 5, scroll: false)
+    left = find_field("Left (%)").value.to_f
+    expect(left).to be > 20
+    find('button[aria-label="Resize Company signature"]').native.drag_by(40, 20, steps: 5, scroll: false)
+    expect(page).not_to have_field("Width (%)", with: "30")
+    width = find_field("Width (%)").value.to_f
+    expect(width).to be > 30
+    expect(find_field("Height (%)").value.to_f).to be > 8
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    revision = SignatureRequest.find_by!(title: "Synthetic uploaded agreement").current_revision
+    company_signer = revision.recipients.find { |recipient| recipient.fetch("email") == "company@example.test" }
+    expect(revision.fields.find { |field| field.fetch("label") == "Company signature" })
+      .to include("recipient_id" => company_signer.fetch("id"), "x" => left, "width" => width)
+    page.execute_script("window.scrollTo(0,0)")
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-desktop.png"), full: true)
+    page.current_window.resize_to(375, 900)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    page.execute_script("window.scrollTo(0,0)")
+    page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-mobile.png"), full: false)
+    expect(@console_errors).to be_empty
+  end
+
+  it "retains the upload form after a malformed PDF and recovers with an actual document" do
+    sign_in(admin)
+    visit "/agreements"
+    click_button "Upload documents"
+    fill_in "Document title", with: "Retained upload title"
+    Tempfile.create(["invalid-signing", ".pdf"]) do |file|
+      file.write("Synthetic invalid PDF"); file.flush
+      attach_file "PDF documents", file.path
+      click_button "Create signing draft"
+      expect(page).to have_content("flat, unlocked PDF")
+      expect(page).to have_field("Document title", with: "Retained upload title")
+      expect(SignatureRequest.count).to eq(0)
+      page.save_screenshot(Rails.root.join("tmp/capybara/signature-upload-recovery.png"), full: true)
+      attach_file "PDF documents", main_pdf
+      click_button "Create signing draft"
+      expect(page).to have_current_path(%r{/agreements/documents/\d+})
+      expect(page).to have_css('[data-pdf-ready="true"]')
+    end
+  end
+
+  it "blocks workspace changes without losing an uploaded draft's unsaved edits" do
+    other = create(:company, name: "Other signing workspace")
+    create(:employment, company: other, user: admin, resigned_at: nil)
+    admin.add_role(:admin, other)
+    open_documents
+    fill_in "Document title", with: "Unsaved private negotiations"
+    click_button admin.full_name
+    click_button "Other signing workspace"
+    expect(page).to have_content("Save your edits or leave the editor before changing workspaces.")
+    expect(admin.reload.current_workspace_id).to eq(company.id)
+    expect(page).to have_field("Document title", with: "Unsaved private negotiations")
+    expect(SignatureRequest.last.title).to eq("Synthetic uploaded agreement")
   end
 end

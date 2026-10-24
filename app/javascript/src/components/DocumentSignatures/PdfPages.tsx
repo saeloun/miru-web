@@ -96,7 +96,7 @@ export default function PdfPages({
           useSystemFonts: false,
           useWorkerFetch: false,
           BinaryDataFactory: PdfResources,
-          maxImageSize: 16777216,
+          maxImageSize: 16000000,
           canvasMaxAreaInBytes: 64 * 1024 * 1024,
         });
 

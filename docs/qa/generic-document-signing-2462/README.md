@@ -1,6 +1,20 @@
 # Documenso local validation, 2026-10-24
 
-**DONE_WITH_CONCERNS: provider feasibility only. Miru's upload/field/signing integration is not implemented or deployed. PR #2475 stays a draft.** The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional. Existing authoring-unit CI/test counts do not verify this workflow.
+**DONE_WITH_CONCERNS: the provider feasibility test below is complete. Miru's private upload/revision and field-placement implementation is in progress; review, sending and completed-artifact integration are not released. PR #2475 stays a draft.** The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional. Existing authoring-unit CI/test counts do not verify this workflow.
+
+## Miru upload and placement checks
+
+The current branch makes uploaded documents primary and keeps template authoring under the secondary archive. Local checks cover private original bytes, encrypted version snapshots, stale/workspace guards, exact-digest downloads, source-replacement remapping, recipient assignments, typed fields, keyboard/pointer movement and resizing, zoom, cropped/rotated pages and locally bundled JPEG2000 decoding. Sources use the documented file/page limits and a 16-megapixel image cap.
+
+Verification on 2026-10-24: **44 focused backend examples, nine new real-Brave journeys and 14 existing authoring checks passed**; Ruby/JS lint, Reek, required Vite builds and the Ruby4/Linux parser probe passed. The new journeys include two-signer pointer placement and resize, upload recovery and prevention of unsaved-edit loss during workspace switching. These checks cover preparation, not review approval, Documenso sending, verified completion or production deployment.
+
+A separate manual Brave/CUA QA invocation stopped at local sign-in because its known-value readback guard could not verify the synthetic fields. That invocation is incomplete, has no health score and supplies no passing release gate. The screenshots below come from the repeatable real-Brave system tests using only fictional recipients/documents; they are actual Miru UI, unlike the provider PDF renders elsewhere in this report.
+
+![Synthetic Miru upload and recipient field placement, desktop](miru-upload-desktop.png)
+
+![Synthetic Miru field placement on mobile](miru-upload-mobile.png)
+
+![Synthetic malformed-upload recovery with retained title](miru-upload-recovery.png)
 
 ## Environment and isolation
 

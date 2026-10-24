@@ -12,6 +12,7 @@ module Signatures
 
     MAX_BYTES = 5 * 1024 * 1024
     MAX_PAGES = 100
+    MAX_IMAGE_PIXELS = 16_000_000
     MAX_OUTPUT_BYTES = 65_536
     MAX_STRUCTURE_BYTES = 1024 * 1024
     TIMEOUT_SECONDS = 5
@@ -28,6 +29,7 @@ module Signatures
       pages = parse(capture("pdfinfo", "-box", "-f", "1", "-l", MAX_PAGES.to_s, @path))
       reject_active_content(capture("qpdf", "--json", "--json-key=qpdf", "--json-stream-data=none", @path,
         output_limit: MAX_STRUCTURE_BYTES))
+      check_images(capture("pdfimages", "-list", @path))
       { "sha256" => Digest::SHA256.file(@path).hexdigest, "pages" => pages }
     rescue Timeout::Error, IOError, Errno::EACCES, Errno::ENOENT, Errno::EISDIR, JSON::ParserError, JSON::NestingError
       invalid!
@@ -94,6 +96,20 @@ module Signatures
         invalid! unless count.between?(1, MAX_PAGES)
         invalid! unless output.match?(/^Encrypted:[ \t]+no[ \t]*$/)
         page_geometry(output, count)
+      end
+
+      def check_images(output)
+        header, separator, *rows = output.lines.map(&:strip)
+        invalid! unless header&.match?(/\Apage\s+num\s+type\s+width\s+height\b/) && separator&.match?(/\A-+\z/)
+        rows.each do |row|
+          dimensions = row.match(/\A\d+\s+\d+\s+\S+\s+(\d+)\s+(\d+)\s+/)
+          invalid! unless dimensions
+          width, height = dimensions.captures.map(&:to_i)
+          invalid! unless width.positive? && height.positive?
+          if width * height > MAX_IMAGE_PIXELS
+            raise InvalidDocument, "PDF images must be 16 megapixels or smaller. Export a lower-resolution PDF and retry.", cause: nil
+          end
+        end
       end
 
       def page_geometry(output, count)

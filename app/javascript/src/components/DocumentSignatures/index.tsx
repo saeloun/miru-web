@@ -314,7 +314,8 @@ function Workspace({ companyId }: { companyId: number | string }) {
             <DialogTitle>Upload documents</DialogTitle>
             <DialogDescription>
               Upload flat, unlocked PDFs: up to 10 files, 5 MiB each, 25 MiB and
-              100 pages combined. For Google Docs or Word, export to PDF first.
+              100 pages combined. Images must be 16 megapixels or smaller. For
+              Google Docs or Word, export to PDF first.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={create} className="space-y-4">
