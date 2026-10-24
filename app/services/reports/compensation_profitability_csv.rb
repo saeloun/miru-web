@@ -20,6 +20,7 @@ module Reports
         write_header(csv, report)
         write_people(csv, report)
         write_summaries(csv, report)
+        write_data_quality(csv, report)
         write_exchange_rates(csv, report)
         write_projects(csv, report)
         write_compensation_changes(csv, report)
@@ -60,6 +61,19 @@ module Reports
       csv << ["FX from", "FX to", "Rate", "Rate date", "Source", "Inverse"]
       report[:exchange_rates].each do |rate|
         csv << [rate[:from], rate[:to], rate[:rate], rate[:date], safe(rate[:source]), rate[:inverse]]
+      end
+    end
+
+    def self.write_data_quality(csv, report)
+      [report, report[:comparison]].each do |period|
+        quality = period[:data_quality]
+        next unless quality
+
+        csv << []
+        csv << ["Data readiness", period[:from], period[:to], "People", quality[:people],
+          "Complete people", quality[:complete_people], "Flagged people", quality[:flagged_people]]
+        csv << ["Data quality issue", "People affected"]
+        quality[:flags].each { |flag, count| csv << [safe(flag.to_s.humanize), count] }
       end
     end
 

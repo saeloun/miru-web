@@ -31,6 +31,9 @@ Only `approved` timesheets contribute hours and revenue. `not_required`, pending
 Revenue includes every applicable project; client and primary-project filters select people, keeping their whole-person costs and revenue.
 People with compensation and no hours remain visible. Fixed-fee revenue is unavailable until an allocation method exists.
 Missing inputs produce flags and N/A for dependent metrics; incomplete individual values also make aggregate totals unavailable.
+The Data readiness section counts affected people for each issue after applying filters; a person can have several issues.
+These counts are included in the JSON and encrypted CSV snapshot for both periods. The person selector lists unique
+reportable people in the selected period and remains available when another filter produces no results.
 Repeated employment records are flagged for reconciliation and are never added together as separate people.
 
 National and selected holidays reduce available hours. Miru's timeoff records do not contain approval status;
