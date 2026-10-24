@@ -106,7 +106,7 @@ module SessionHelpers
       user.update!(current_workspace_id: current_company.id)
     end
 
-    unless user.has_any_role?(:admin, :owner, :employee, :book_keeper, :client)
+    unless user.roles.exists?(resource: current_company)
       user.add_role(:employee, current_company)
     end
 

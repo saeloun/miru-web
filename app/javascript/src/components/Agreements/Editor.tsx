@@ -69,6 +69,10 @@ const LoadedEditor = ({
   const dirty = status !== "All changes saved";
   const blocker = useBlocker(dirty || busy);
 
+  useEffect(() => {
+    if (blocker.state === "blocked" && !dirty && !busy) blocker.proceed();
+  }, [blocker, dirty, busy]);
+
   useBeforeUnload(
     useCallback(event => {
       if (revision.current !== savedRevision.current || saving.current) {

@@ -354,6 +354,28 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "finishes navigation once an in-flight autosave has safely completed" do
+    open_agreements("/agreements/templates/#{master.id}")
+    expect(page).to have_content("Original clause")
+    started = Queue.new
+    release = Queue.new
+    allow_any_instance_of(AgreementTemplate).to receive(:update!).and_wrap_original do |method, *arguments|
+      started << true
+      release.pop
+      method.call(*arguments)
+    end
+    fill_in "Document title", with: "Safely saved before leaving"
+    Timeout.timeout(10) { started.pop }
+    click_link "All agreements"
+    expect(page).to have_css('[role="dialog"]', text: "Unsaved changes")
+    release << true
+    expect(page).to have_current_path("/agreements/authoring")
+    expect(master.reload.title).to eq("Safely saved before leaving")
+    expect(page).to have_content("Safely saved before leaving")
+  ensure
+    release << true if release
+  end
+
   it "keeps newer edits dirty when a previous save is in flight and recovers from a failed request" do
     open_agreements("/agreements/templates/#{master.id}")
     expect(page).to have_content("Original clause")
