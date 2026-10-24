@@ -26,6 +26,7 @@ const SalarySlips = lazy(() => import("components/SalarySlips"));
 const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
 const Agreements = lazy(() => import("components/Agreements"));
 const DocumentSignatures = lazy(() => import("components/DocumentSignatures"));
+const SignedDocuments = lazy(() => import("components/SignedDocuments"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
 const PayrollReview = lazy(() => import("components/Payroll/Review"));
@@ -275,6 +276,18 @@ export const ROUTES = [
     path: "/salary-slips",
     subRoutes: [{ path: "", Component: SalarySlips }],
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/signed-documents",
+    subRoutes: [{ path: "", Component: SignedDocuments }],
+    authorisedRoles: [
+      ADMIN,
+      OWNER,
+      BOOK_KEEPER,
+      EMPLOYEE,
+      CLIENT,
+      Roles.MANAGER,
+    ],
   },
   {
     path: "/agreements",

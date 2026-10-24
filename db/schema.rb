@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_200100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1187,6 +1187,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_200100) do
     t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
   end
 
+  create_table "signature_callbacks", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.string "digest", limit: 64, null: false
+    t.string "event", limit: 40, null: false
+    t.datetime "enqueued_at"
+    t.datetime "processed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["revision_id", "digest"], name: "index_signature_callbacks_on_revision_id_and_digest", unique: true
+    t.index ["revision_id"], name: "index_signature_callbacks_on_revision_id"
+  end
+
   create_table "signature_connections", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "created_by_id", null: false
@@ -1253,6 +1265,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_200100) do
     t.datetime "last_reminder_at"
     t.datetime "next_reminder_at"
     t.integer "automatic_reminders_count", default: 0, null: false
+    t.text "artifact_manifest"
+    t.datetime "archived_at"
+    t.string "archive_error"
     t.index ["approved_by_id"], name: "index_signature_request_revisions_on_approved_by_id"
     t.index ["created_by_id"], name: "index_signature_request_revisions_on_created_by_id"
     t.index ["next_reminder_at"], name: "index_signature_request_revisions_on_next_reminder_at", where: "(next_reminder_at IS NOT NULL)"
@@ -1765,6 +1780,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_200100) do
   add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
   add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
   add_foreign_key "second_factor_challenges", "users"
+  add_foreign_key "signature_callbacks", "signature_request_revisions", column: "revision_id"
   add_foreign_key "signature_connections", "companies"
   add_foreign_key "signature_connections", "users", column: "created_by_id"
   add_foreign_key "signature_operations", "signature_request_revisions", column: "revision_id"

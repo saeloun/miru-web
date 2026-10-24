@@ -94,6 +94,7 @@ Rails.application.routes.draw do
   get "payments/settings", to: "payment_settings#index"
 
   namespace :webhooks do
+    post "documenso/:connection_id", to: "documenso#events", constraints: { connection_id: /[1-9]\d{0,17}/ }
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
     post "razorpay/payouts", to: "razorpay#payouts"

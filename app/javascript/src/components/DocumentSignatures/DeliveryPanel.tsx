@@ -12,6 +12,7 @@ import {
 } from "../ui/dialog";
 import { endpoint, failureMessage, quiet } from "./api";
 import { authenticationLabels, type SigningRequest } from "./types";
+import ArtifactFiles from "../SignedDocuments/Files";
 
 type Connection = {
   id: number | null;
@@ -331,7 +332,7 @@ export default function DeliveryPanel({
               >
                 Check signing status
               </Button>
-              {active && (
+              {active && delivery.provider_status !== "COMPLETED" && (
                 <Button
                   type="button"
                   variant="outline"
@@ -377,9 +378,28 @@ export default function DeliveryPanel({
                 yet available in Miru.
               </p>
             )}
-          {delivery.cancel_requested_at && revision.status !== "cancelled" && (
-            <p>Sending remains locked until cancellation is confirmed.</p>
+          {delivery.archive.status === "failed" && (
+            <p role="alert" className="text-destructive">
+              {delivery.archive.error_message}
+            </p>
           )}
+          {delivery.archive.status === "complete" &&
+            record.company_id === Number(companyId) && (
+              <section className="space-y-3" aria-label="Signed files">
+                <h3 className="font-semibold">Signed files saved in Miru</h3>
+                <ArtifactFiles
+                  key={`${companyId}:${revision.id}`}
+                  companyId={companyId}
+                  revisionId={revision.id}
+                  files={delivery.archive.files}
+                />
+              </section>
+            )}
+          {delivery.cancel_requested_at &&
+            revision.status !== "cancelled" &&
+            delivery.provider_status !== "COMPLETED" && (
+              <p>Sending remains locked until cancellation is confirmed.</p>
+            )}
           {active &&
             !delivery.provider_envelope_id &&
             delivery.operations.some(
@@ -517,7 +537,8 @@ export default function DeliveryPanel({
               <ul>
                 {revision.documents.map(document => (
                   <li key={document.key} className="break-words">
-                    {document.filename} · {document.pages.length} pages
+                    {document.filename} · {document.pages.length}{" "}
+                    {document.pages.length === 1 ? "page" : "pages"}
                   </li>
                 ))}
               </ul>

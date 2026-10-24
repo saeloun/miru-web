@@ -51,6 +51,13 @@ export type Summary = {
   revision_number: number;
   updated_at: string;
 };
+export type ArchiveFile = {
+  key: string;
+  kind: "signed" | "certificate" | "audit_log";
+  filename: string;
+  byte_size: number;
+  sha256: string;
+};
 export type Revision = {
   id: number;
   number: number;
@@ -67,6 +74,12 @@ export type Revision = {
   recipients: Recipient[];
   fields: Field[];
   delivery: {
+    archive: {
+      status: "complete" | "pending" | "failed" | "unavailable";
+      completed_at: string | null;
+      error_message: string | null;
+      files: ArchiveFile[];
+    };
     operation_id: string | null;
     provider_envelope_id: string | null;
     provider_status: string | null;

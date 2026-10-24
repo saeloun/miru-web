@@ -25,7 +25,8 @@ class Signatures::Operations
 
   def cancel
     change do |revision|
-      unless %w[sending send_uncertain awaiting_signatures].include?(revision.status)
+      unless %w[sending send_uncertain awaiting_signatures].include?(revision.status) &&
+          [nil, "DRAFT", "PENDING"].include?(revision.provider_status)
         raise SignatureRequest::Conflict, "Only an in-progress signature request can be cancelled."
       end
       revision.update!(cancel_requested_at: revision.cancel_requested_at || Time.current, next_reminder_at: nil)

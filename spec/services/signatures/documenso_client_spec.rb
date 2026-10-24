@@ -75,6 +75,17 @@ RSpec.describe Signatures::DocumensoClient do
     expect(client.original("item_1")).to eq(pdf)
   end
 
+  it "fetches final PDFs, certificates and audit logs only from fixed authenticated endpoints" do
+    { signed: "envelope/item/item_1/download?version=signed", certificate: "envelope/envelope_1/certificate/download",
+      audit_log: "envelope/envelope_1/audit-log/download" }.each do |method, path|
+      request = stub_request(:get, "#{origin}/api/v2/#{path}").with(headers: { "Authorization" => api_key })
+        .to_return(body: pdf, headers: { "Content-Type" => "application/pdf" })
+      expect(client.public_send(method, method == :signed ? "item_1" : "envelope_1")).to eq(pdf)
+      expect(request).to have_been_requested.once
+      expect { client.public_send(method, "../untrusted?url=elsewhere") }.to raise_error(described_class::Rejected)
+    end
+  end
+
   it "rejects missing keys, header injection and credentials in object inspection" do
     [nil, "", "api_bad\r\nInjected: yes", "a" * 4097].each do |value|
       expect { described_class.new(api_key: value) }.to raise_error(described_class::ConfigurationError)

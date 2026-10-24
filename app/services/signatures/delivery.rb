@@ -20,6 +20,7 @@ class Signatures::Delivery
     when "refresh" then refresh
     end
     queue_waiting_cancellation
+    @revision.queue_reconciliation! if @revision.reload.provider_status == "COMPLETED" && !@revision.archived_at
   rescue Signatures::Envelope::Mismatch
     fail_operation("provider_mismatch")
   rescue Signatures::Envelope::InvalidConfiguration
@@ -287,38 +288,7 @@ class Signatures::Delivery
     end
 
     def apply_snapshot(data, checked_at)
-      return if @revision.provider_checked_at && checked_at < @revision.provider_checked_at
-      if @revision.status.in?(%w[cancelled signed]) || @revision.provider_status.in?(%w[COMPLETED CANCELLED REJECTED])
-        raise Signatures::Envelope::Mismatch unless data["status"] == @revision.provider_status
-      end
-      people = @revision.recipients.map do |person|
-        actual = data.fetch("recipients").find { |item| item["email"] == person.fetch("email").downcase }
-        unless %w[NOT_SIGNED SIGNED REJECTED].include?(actual["signingStatus"]) &&
-            %w[NOT_SENT SENT].include?(actual["sendStatus"]) && %w[NOT_OPENED OPENED].include?(actual["readStatus"])
-          raise Signatures::Envelope::Mismatch
-        end
-        { "recipient_id" => person.fetch("id"), "provider_recipient_id" => actual.fetch("id"),
-          "signing_status" => actual.fetch("signingStatus"), "send_status" => actual.fetch("sendStatus"),
-          "read_status" => actual.fetch("readStatus") }
-      end
-      check_status_progression(people)
-      next_reminder = if data["status"] == "PENDING" && @revision.cancel_requested_at.nil?
-        @revision.provider_status.in?([nil, "DRAFT"]) ? 3.days.from_now : @revision.next_reminder_at
-      end
-      status = { "PENDING" => "awaiting_signatures", "COMPLETED" => "awaiting_signatures", "REJECTED" => "declined", "CANCELLED" => "cancelled" }[data["status"]]
-      @revision.update!({ provider_status: data.fetch("status"), provider_checked_at: checked_at, recipient_statuses: people,
-        next_reminder_at: next_reminder }.tap { |attributes| attributes[:status] = status if status })
-    end
-
-    def check_status_progression(people)
-      people.each do |person|
-        previous = @revision.recipient_statuses&.find { |item| item["recipient_id"] == person["recipient_id"] }
-        if previous && %w[signing_status send_status read_status].any? do |key|
-            %w[SIGNED REJECTED SENT OPENED].include?(previous[key]) && previous[key] != person[key]
-          end
-          raise Signatures::Envelope::Mismatch
-        end
-      end
+      Signatures::Snapshot.new(@revision).apply!(data, checked_at:)
     end
 
     def fail_operation(code, uncertain: false)

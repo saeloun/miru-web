@@ -74,6 +74,9 @@ namespace :api, defaults: { format: "json" } do
       get :download, on: :member
     end
     resource :signature_connection, only: [:show, :create], controller: :signature_connections
+    resources :signature_archives, only: :index do
+      get "files/:key", on: :member, action: :download
+    end
     resources :signature_requests, only: [:index, :show, :create, :update] do
       resources :operations, only: :create, controller: :signature_operations
       resource :review, only: :show, controller: :signature_request_reviews do

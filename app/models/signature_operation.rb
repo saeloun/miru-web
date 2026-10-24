@@ -11,7 +11,8 @@ class SignatureOperation < ApplicationRecord
     "connection_unavailable" => "The signing connection is unavailable. Ask an administrator to check it.",
     "queue_unavailable" => "This action could not be queued. Check the status to try queuing it again.",
     "cancel_waiting" => "Cancellation is waiting for the in-progress send to be reconciled.",
-    "send_cancelled" => "Sending was cancelled before distribution."
+    "send_cancelled" => "Sending was cancelled before distribution.",
+    "request_closed" => "The provider already closed this request. It cannot be cancelled."
   }.freeze
 
   belongs_to :revision, class_name: "SignatureRequestRevision"

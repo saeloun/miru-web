@@ -11,5 +11,5 @@ Rails.application.config.filter_parameters += [
   :tax_declaration, "review.approved_amount", "review.reason", :consultant_compensation, :payroll_preview,
   :payroll_payload, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
   :salary_details, :profitability_billing_rate, :agreement, :agreement_template, :signature_request, :signature_review,
-  :signature_connection, :files
+  :signature_connection, :files, :payload, :webhookEndpoint
 ]

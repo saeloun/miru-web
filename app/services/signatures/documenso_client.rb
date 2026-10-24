@@ -51,7 +51,19 @@ class Signatures::DocumensoClient
   def get(id) = request(:get, "envelope/#{identifier(id)}")
 
   def original(id)
-    request(:get, "envelope/item/#{identifier(id)}/download?version=original", pdf: true)
+    request(:get, "envelope/item/#{identifier(id)}/download?version=original", pdf_limit: Signatures::PdfInfo::MAX_BYTES)
+  end
+
+  def signed(id)
+    request(:get, "envelope/item/#{identifier(id)}/download?version=signed", pdf_limit: Signatures::SealedPdf::MAX_BYTES)
+  end
+
+  def certificate(id)
+    request(:get, "envelope/#{identifier(id)}/certificate/download", pdf_limit: Signatures::PdfInfo::MAX_BYTES)
+  end
+
+  def audit_log(id)
+    request(:get, "envelope/#{identifier(id)}/audit-log/download", pdf_limit: Signatures::PdfInfo::MAX_BYTES)
   end
 
   def distribute(id)
@@ -99,10 +111,10 @@ class Signatures::DocumensoClient
       response
     end
 
-    def request(method, path, body: nil, multipart: nil, pdf: false)
+    def request(method, path, body: nil, multipart: nil, pdf_limit: nil)
       uri = URI.join(@origin.to_s, "/api/v2/#{path}")
       message = (method == :get ? Net::HTTP::Get : Net::HTTP::Post).new(uri,
-        "Authorization" => @api_key, "Accept" => pdf ? "application/pdf" : "application/json", "Accept-Encoding" => "identity")
+        "Authorization" => @api_key, "Accept" => pdf_limit ? "application/pdf" : "application/json", "Accept-Encoding" => "identity")
       if multipart
         message.set_form(multipart, "multipart/form-data")
       elsif body
@@ -113,10 +125,10 @@ class Signatures::DocumensoClient
       Timeout.timeout(30) do
         Net::HTTP.start(uri.host, uri.port, nil, use_ssl: uri.scheme == "https", open_timeout: 10,
           read_timeout: 10, write_timeout: 10, max_retries: 0) do |connection|
-          connection.request(message) { |response| data = read(response, mutation: method != :get, pdf:) }
+          connection.request(message) { |response| data = read(response, mutation: method != :get, pdf_limit:) }
         end
       end
-      pdf ? data : parse(data, mutation: method != :get)
+      pdf_limit ? data : parse(data, mutation: method != :get)
     rescue JSON::ParserError, Timeout::Error, IOError, SystemCallError, SocketError, OpenSSL::SSL::SSLError, Net::HTTPBadResponse, Net::ProtocolError
       fail_response!(mutation: method != :get)
     end
@@ -127,14 +139,14 @@ class Signatures::DocumensoClient
       parsed
     end
 
-    def read(response, mutation:, pdf:)
+    def read(response, mutation:, pdf_limit:)
       code = response.code.to_i
       if code.between?(400, 499) && ![408, 429].include?(code)
         raise Rejected, "The signing provider rejected the request."
       end
-      limit = pdf ? Signatures::PdfInfo::MAX_BYTES : JSON_LIMIT
+      limit = pdf_limit || JSON_LIMIT
       unless code.between?(200, 299) && response["Content-Encoding"].to_s.in?(["", "identity"]) &&
-          response.content_type == (pdf ? "application/pdf" : "application/json") &&
+          response.content_type == (pdf_limit ? "application/pdf" : "application/json") &&
           (response["Content-Length"].nil? || response["Content-Length"].match?(/\A\d{1,10}\z/) && response["Content-Length"].to_i <= limit)
         fail_response!(mutation:)
       end

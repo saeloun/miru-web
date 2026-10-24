@@ -159,6 +159,14 @@ RSpec.describe "Approved signature delivery" do
     expect(client).not_to have_received(:distribute)
   end
 
+  it "does not queue cancellation after authoritative completion while archival is pending" do
+    operation = request_operation(:send_request)
+    allow_provider
+    SignatureDeliveryJob.perform_now(operation.id)
+    @revision.reload.update!(provider_status: "COMPLETED")
+    expect { request_operation(:cancel) }.to raise_error(SignatureRequest::Conflict)
+  end
+
   it "cancels a queued send locally and never creates its provider envelope" do
     send_operation = request_operation(:send_request)
     cancel_operation = request_operation(:cancel)

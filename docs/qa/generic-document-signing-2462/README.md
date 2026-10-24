@@ -2,6 +2,18 @@
 
 **DONE_WITH_CONCERNS: the provider feasibility test below is complete. Miru's private upload/revision, field placement and version-bound review implementation is in progress; provider sending and completed-artifact integration are not released. PR #2475 stays a draft.** The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional. Existing authoring-unit CI/test counts do not verify this workflow.
 
+## Verified archive and private download checks
+
+The archive implementation verifies authoritative provider state, the approved configuration, original hashes, every actionable recipient and required field, then each final PDF's detached CMS service seal and complete-file byte coverage. It saves all signed PDFs, the completion certificate and audit log privately before marking a version signed. Callback receipts store metadata digests, not bodies or signing links. Retries cannot replace an existing archive. Provider completion and archival failure are separate visible states.
+
+The related regression gate passed **280 examples, zero failures**, including real-Brave downloads of all three file types on desktop/mobile, the locked editor and both profile pages. Access checks deny other tenants/profiles and removed memberships, preserve an employee's own historical documents while their membership remains kept, and reject damaged stored bytes. Queue/storage failures, stale/replayed callbacks, interrupted sends and completion racing cancellation have focused coverage. The migration passed up/down/up in the isolated test database; Ruby/JS lint, Reek and normal/test Vite builds passed.
+
+Provider API responses are stubbed in these native regression tests. The sealed PDF fixture is actual synthetic Documenso output with a disposable certificate and a frozen test clock. This gate is distinct from the remaining Miru-to-provider-to-archive integration check, final review, CI and production deployment; PR #2475 remains a draft.
+
+The [archive download report and synthetic screenshots](archive-download-checks.md) cover the employee archive, locked request and employee/client profiles. A final four-case Brave pass verified filename wrapping and replaced rejected blank viewport captures with settled full-page screenshots.
+
+Server setup requires `DOCUMENSO_ORIGIN` (HTTPS in production), a random `DOCUMENSO_WEBHOOK_SECRET` of 32–4096 bytes, and `DOCUMENSO_SEAL_SHA256`, the lowercase SHA-256 digest of the signing service certificate's DER encoding. Obtain that public fingerprint from the trusted certificate supplied by the operator; never from an unverified download. Register the provider's document/recipient callbacks at `/webhooks/documenso/CONNECTION_ID` with that shared secret. Callback bodies and their URLs cannot supply a download source. A single certificate pin is supported; coordinate rotation with outstanding requests. Existing archived bytes retain their recorded integrity checks after rotation. A pinned service seal does not establish publicly trusted recipient identity or legal suitability for every agreement.
+
 ## Miru upload and placement checks
 
 The current branch makes uploaded documents primary and keeps template authoring under the secondary archive. Local checks cover private original bytes, encrypted version snapshots, stale/workspace guards, exact-digest downloads, source-replacement remapping, recipient assignments, typed fields, keyboard/pointer movement and resizing, zoom, cropped/rotated pages and locally bundled JPEG2000 decoding. Sources use the documented file/page limits and a 16-megapixel image cap.
