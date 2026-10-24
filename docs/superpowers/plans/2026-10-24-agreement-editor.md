@@ -62,3 +62,150 @@ Review the document/parser trust boundary and resource limits; encrypted fields 
 ## Delivery after implementation
 
 One fresh whole-branch review and RED/GREEN fix pass, then exact-head public PR checks/CodeRabbit and screenshots. Merge/deploy only after gates, preserving private production deltas and recording image/revision/web/worker/live-browser/schema/log evidence. No issue2462 closure while review/signing requirements remain. Rollback application without dropping populated agreement tables.
+
+## Engineering review — 2026-10-24
+
+Target: this implementation plan and its concrete interfaces at d03555b65, compared with origin/develop 778afd114. Host: Codex. This is the engineering plan review, distinct from the completed independent whole-branch code review.
+
+### Scope Challenge and authority
+
+Scope accepted as-is. The user authorized continued implementation, all reviews and shipping, and delegated routine technical choices. No new user answer or scope reduction is claimed. Retain the original file/class arrangement: separate master/draft models and endpoints have different party/value contracts; a shared validator, authoring concern and renderer already centralize the common behavior. Consolidating them into generic controllers/models would introduce conditional permissions and copied-value behavior without reducing the required interfaces.
+
+The branch changes 68 files, including 23 documentation/evidence files; application code accounts for 26 files. It introduces 10 application Ruby classes including the import error class, plus one migration class [measured: d03555b65]. The count is substantial because the unit includes its parser, schema, API, editor and behavioral evidence. No new feature cuts are needed to make this unit reviewable. The overall issue remains open.
+
+Already done: a fresh HTTPS origin/develop fetch still points to 778afd114; the agreement model/editor path history contains no upstream implementation. Existing client agreement identity fields are reused, not rebuilt. No tracked TODOS.md or ship-policy override exists; one PR for this authoring unit remains the delivery arrangement. Brain recall is degraded; QMD lexical search returned no relevant hits. Current repository, issue and browser evidence determine this review.
+
+### Premise table
+
+| Premise | Receipt | Verdict |
+| --- | --- | --- |
+| Independent encrypted masters and drafts exist, not signed records | app/models/agreement_template.rb:3; app/models/agreement.rb:3 | verified |
+| Server owns the accepted document and field/value schema | app/services/agreements/document.rb:5 | verified |
+| Import is preview-only and bounded before persistence | app/controllers/api/v1/agreement_templates_controller.rb:37; app/services/agreements/docx_import.rb:34 | verified |
+| Editor provides clauses and field controls, not just file upload | app/javascript/src/components/Agreements/DocumentEditor.tsx:1; app/javascript/src/components/Agreements/Fields.tsx:1 | verified |
+| Local measurements describe the tested machine, not production guarantees | docs/qa/agreement-editor-2462/README.md:35; docs/qa/agreement-editor-2462/editor-performance.json:1 | verified |
+
+Unverified factual premises used to approve the design: 0. Production readiness is explicitly unproven and remains a release gate.
+
+### Architecture review
+
+No new issues found. Dispositions: retain the current boundaries under the user's implementation authorization.
+
+```
+authenticated request
+  -> current workspace + kept membership + owner/admin policy
+       deny -> 401/403; scoped lookup miss -> 404
+       allow -> expected parameter root + matching company
+                  malformed -> 400; wrong workspace/version -> 409
+                  valid -> Document(document, fields, values)
+                             invalid -> 422, no persistence
+                             valid -> encrypted master or independent draft + metadata audit
+
+DOCX upload -> file/ZIP/expanded-part limits -> strict NONET XML
+  unsafe/revision/unsupported content -> visible 422, existing document unchanged
+  supported -> normalized validated JSON preview -> explicit replace -> normal save path
+
+persisted draft -> same schema -> escaped DocumentHtml -> existing PDF service
+  success -> private DRAFT PDF + metadata download audit
+  failure -> visible download error; editable draft remains intact
+```
+
+The database migration creates new tables and foreign keys, with draft/party/source-version constraints; it does not rewrite existing rows. Company references, restricted deletion, immutable identity/source fields and optimistic locks complement policy scoping. Audits exclude bodies/field values; request filters cover authoring payloads. No recipient access or signature assertions are created. The existing PDF service and Rails encryption/locking are [Layer 1] framework reuse. Tiptap is [Layer 2] established rich-text infrastructure, not a custom editing engine.
+
+Distribution: package lockfile and migration accompany Rails/Vite changes. Existing CI/immutable-image deployment must run; integration must preserve private production webhook raw-body handling. Encryption keys, Linux fonts and deployed UI/revisions require release evidence. Rolling application code back must retain populated tables.
+
+### Code Quality review
+
+No new issues found. Dispositions: preserve the current explicit contracts; no extraction proposed.
+
+Shared-code checks: AgreementTemplate#valid_document and Agreement#valid_document both use Agreements::Document, with draft-only values intentionally different. An additional validation concern would remove approximately six simple lines and add roughly thirteen concern/include lines [estimated: app/models/agreement_template.rb:25; app/models/agreement.rb:30], with no reliability improvement. Keep the shared validator and explicit callers. Both controller archives already share pagination/metadata and write-lock checks through AgreementAuthoring. Template import, draft generation and PDF export differ enough that a configurable generic endpoint would increase coupling. The HTML renderer is shared with export; no duplicate contract body is built for PDFs.
+
+The independent review's hidden tracked-revision defect and populated-field configuration minor are fixed, with failing-before/passing-after evidence in the QA record. Those earlier findings are not relabeled as findings from this review. Signature values remain forbidden; required blanks and recipient read-only flags retain their explicitly draft-only meaning.
+
+### Test review
+
+Source and test boundaries were read together before this map. Framework: RSpec request/model/service tests and actual Brave/Cuprite system tests; no new test framework or production-only test seam.
+
+```
+CODE CONTRACT                                      USER FLOW / PROOF
+Document errors/limits/tree/fields/typed values      [***] service malformed, limits, date/number/false/signature cases
+Template/draft tenant/source/identity/copy checks    [***] model copy/profile isolation, ciphertext, audits, locks, retention
+Authoring params/policy/company/CSRF/version         [***] request 400/401/403/404/409/422 + no-write assertions
+Archive projection/pagination/party query           [***] SQL excludes encrypted bodies, bounded pages/query and tenant tests
+DOCX container/XML/relationships/stories/revisions   [***] hostile archive/XML and tracked-row/property cases
+DOCX styles/lists/split fields/table/break parsing   [***] independent short/long fixtures plus malformed properties
+DocumentHtml escaping/fields/breaks/table           [***] escaped output + real PDF request + rendered artifact evidence
+Editor body/field configuration/remove/undo         [*** E2E] create, reopen, Unicode and required/signing placeholders
+Generate and edit independent party copies         [*** E2E] client/consultant snapshots and master unchanged
+Save debounce/in-flight/failure/stale conflicts     [*** E2E] newer edits stay dirty; retry/recovery and explicit reload
+Navigation/import/workspace guards                 [*** E2E] prevent mutation/discard until explicit leave/replacement
+Mobile long editor/field settings/export            [*** E2E] widths, title, long Unicode, actual downloaded PDF, console errors
+```
+
+Legend: *** = behavior with meaningful boundary/error coverage; E2E = real running-app flow. This is a contract-group map, not measured line/branch coverage. The schema/import/request/model/system specs and artifact paths are listed in the implementation tasks and QA record. No LLM/eval scope. No existing tests become obsolete.
+
+No new test gaps found for this authoring unit. Dispositions: keep existing focused checks and shared navigation/login/client regression checks. Repository-wide TypeScript is not green and has no established clean baseline; a changed-module check does not replace exact-head CI. Physical software keyboards, Linux PDF fonts and production/load remain explicitly unverified release checks, not covered by viewport/local PDF tests. Test plan: /Users/sward/.gstack/projects/saeloun-miru-web/sward-feature-agreement-editor-2462-eng-review-test-plan-20261024-023332.md.
+
+### Performance review
+
+No new issues found. Dispositions: retain bounded payloads, metadata-only archives, lazy editor and explicit export; no speculative cache.
+
+Archive/party queries are company-scoped, paginated and eager-load users where required. Encrypted bodies are excluded from archive SQL. The document, field, ZIP-entry and decompressed-part limits bound work and memory. PDF rendering is explicit, not per keystroke. Tiptap's transaction renders are isolated; field nodes use DOM views instead of a React root per field. This follows the current upstream performance guidance at https://tiptap.dev/docs/guides/performance. The shared data router uses React Router's documented blocker at https://reactrouter.com/api/hooks/useBlocker.
+
+Measurements are local single observations: long-document cold readiness 925/921 ms and input-to-next-frame p95 7.8/8.1 ms at desktop/mobile widths [measured: docs/qa/agreement-editor-2462/editor-performance.json:1]. Save includes the debounce. This is not an interleaved main/branch benchmark, speedup claim, SLO, physical-device or load guarantee. Existing main has no equivalent editor. No measurement units/thresholds changed.
+
+### Failure modes and scope ledger
+
+| Path | Failure / handling / evidence | Silent critical gap |
+| --- | --- | --- |
+| Create/edit | Bad schema/party/role/company rejects without mutation; model/request specs | none |
+| Import | Unsafe/unsupported content rejects before replacement; service/request/browser cases | none |
+| Save | Network/validation/stale responses retain unsaved state and recovery; system cases | none |
+| Leave/switch | Dirty guard runs before navigation/session mutation; system cases | none |
+| Export | Trusted validated/escaped persisted body; real browser PDF; visible error on failure | none |
+| Distribution | Exact-head CI/private integration/encryption/Linux/image/live checks required before release | not claimed complete |
+
+NOT in scope for this authoring PR: mandatory invitation onboarding; version-bound client comments/replies and approval records; addenda/supporting-document relationships; signature provider/status/reminders/cancel/resend; sent locks and immutable signed bundles; counterparty/profile downloads. These remain the explicit next units of #2462 and must not be described as delivered or closed. Payroll/tax/ATS work also remains in the active overall goal. A static PDF overlay and lossless Word round-trip are not provided by this editor.
+
+What already exists: client identity/contact fields, auth/company membership, ui primitives, existing PDF generation, Rubyzip/Nokogiri and Rails encryption/locking are reused. No provider plan purchase, external mail, signing request or payment was made during QA.
+
+Sequential implementation, no parallelization opportunity for the remaining connected review/delivery gates. Original domain -> APIs/import/export -> editor tasks are completed and share interfaces. No new parallel worker is needed.
+
+### Outside Voice, decisions and tasks
+
+Outside voice unavailable: current host is Codex; the preflight refuses nested Codex outside execution. The native fallback requires a Plan agent type, TaskStop and background Bash, which this harness does not offer. No substitute agent or external process was launched; no outside coverage/clean credit is claimed. Fix: a supported outside-review host/runtime, or the required installed host adapter. This does not erase the separate completed independent code review and its resolved findings.
+
+No new pending engineering decisions, TODOs or implementation tasks. No scope cuts or user answers were fabricated. No new tasks from Architecture, Code Quality, Test or Performance review. Task aggregation artifact is empty to indicate completed review with no new tasks. Lake Score: N/A (no completeness-scored user choices). Suppressed findings: no low-confidence findings promoted; existing unrelated no-workspace routing behavior and unknown whole-project TypeScript baseline are not called regressions.
+
+REALITY: premise-table pass Verified concrete interfaces; no unverified approval premise docs/superpowers/plans/2026-10-24-agreement-editor.md:64
+REALITY: already-done pass Fresh origin/develop fetch and named agreement path history contain no upstream equivalent 778afd114
+REALITY: surface-check pass API routes and parameter contracts checked against actual callers app/javascript/src/components/Agreements/api.ts:1
+REALITY: binding-decisions pass No recorded branch decisions supersede user-authorized native scope docs/superpowers/specs/2026-10-24-agreement-editor-design.md:5
+REALITY: numbers pass Local raw measurements and code counts are labeled; no production or speedup claim docs/qa/agreement-editor-2462/editor-performance.json:1
+REALITY: deferred-asks pass Issue review/signing/onboarding/addenda requirements remain explicitly separate docs/superpowers/specs/2026-10-24-agreement-editor-design.md:7
+REALITY: pr-count pass No ship policy override; one authoring PR with all matching UI/API/tests/docs docs/superpowers/plans/2026-10-24-agreement-editor.md:62
+REALITY: prior-art pass Adopt supported Tiptap rendering and React Router blocker behavior without vendored patches app/javascript/src/components/Agreements/DocumentEditor.tsx:234
+REALITY: transaction-semantics pass Checked unchanged driver/pool/protocol; new-table migration and optimistic locks use current Rails db/migrate/20261024100000_create_agreement_templates_and_agreements.rb:3
+REALITY: contract-assumptions pass Runtime fields and lock versions checked at shared schema/API boundaries app/services/agreements/document.rb:5
+REALITY: units pass Checked unchanged input units and accuracy; raw browser observations retain milliseconds with no retuned threshold docs/qa/agreement-editor-2462/editor-performance.json:1
+REALITY: perf-table pass Machine/data/single-observation limits recorded; main has no comparable editor docs/qa/agreement-editor-2462/README.md:35
+REALITY: dependency-fallback pass Draft authoring/export stands alone; provider unavailable does not fabricate signing docs/superpowers/specs/2026-10-24-agreement-editor-design.md:7
+REALITY: obligation-tiers pass Must-ship authoring gates retained; next review/signing units keep original issue open docs/superpowers/plans/2026-10-24-agreement-editor.md:62
+
+### Completion summary
+
+Scope accepted as-is; no new issues in the four engineering sections, no critical silent gaps, no unresolved decisions. Required reality rows and saved-report read-back must pass before the review is logged. Local completion suite: 149 examples, zero failures [measured: docs/qa/agreement-editor-2462/README.md:7]. Full CI and production release remain unproven.
+
+## GSTACK REVIEW REPORT
+
+| Review | Trigger | Why | Runs | Status | Findings |
+| --- | --- | --- | --- | --- | --- |
+| CEO Review | not run | No new product-scope decision | 0 | NOT RUN | Existing authoring unit retained |
+| Outside Review | Codex preflight | Independent plan challenge | 1 | UNAVAILABLE | Host mismatch; required native fallback tools absent |
+| Eng Review | /plan-eng-review | Architecture and tests | 1 | CLEAR; required log follows read-back | No new issues; no critical gaps; no unresolved decisions |
+| Design Review | /plan-design-review | UI/UX coverage | 0 | PENDING | Separate review remains required |
+| DX Review | /plan-devex-review | Internal API developer experience | 0 | PENDING | Separate review remains required |
+
+**OUTSIDE COVERAGE:** Codex / plan-review unavailable; no completed external phase or substitute credit.
+**VERDICT:** Engineering design clear for this authoring unit. Design/DX, exact-head CI, CodeRabbit and release checks remain required; this is not deployment approval.
+NO UNRESOLVED DECISIONS
