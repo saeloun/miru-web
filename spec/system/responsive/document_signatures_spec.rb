@@ -198,6 +198,16 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     page.execute_script("window.scrollTo(0,0)")
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-desktop.png"), full: true)
     page.current_window.resize_to(375, 900)
+    page.document.synchronize(Capybara.default_max_wait_time) do
+      usable_width = page.evaluate_script(<<~JS)
+        (() => {
+          const box = document.querySelector(".signature-workspace").getBoundingClientRect();
+          return box.left <= 40 && box.width >= window.innerWidth - 80;
+        })()
+      JS
+      raise Capybara::ExpectationNotMet, "The mobile workspace did not reach a usable width" unless usable_width
+    end
+    expect(page).to have_css('[data-pdf-ready="true"]')
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
     page.execute_script("window.scrollTo(0,0)")
     page.save_screenshot(Rails.root.join("tmp/capybara/signature-placement-mobile.png"), full: false)
