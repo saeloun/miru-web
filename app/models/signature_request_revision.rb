@@ -7,6 +7,8 @@ class SignatureRequestRevision < ApplicationRecord
   belongs_to :signature_request
   belongs_to :created_by, class_name: "User"
   belongs_to :approved_by, class_name: "User", optional: true
+  belongs_to :signature_connection, optional: true
+  has_many :signature_operations, foreign_key: :revision_id, dependent: :restrict_with_exception
   has_many :review_invitations, class_name: "SignatureReviewInvitation", foreign_key: :revision_id, dependent: :restrict_with_exception
   has_many :review_comments, class_name: "SignatureReviewComment", foreign_key: :revision_id, dependent: :restrict_with_exception
   has_many_attached :originals
@@ -14,7 +16,8 @@ class SignatureRequestRevision < ApplicationRecord
   serialize :recipients, coder: JSON
   serialize :fields, coder: JSON
   serialize :signing_options, coder: JSON
-  encrypts :documents, :recipients, :fields, :signing_options, :approval_note
+  serialize :recipient_statuses, coder: JSON
+  encrypts :documents, :recipients, :fields, :signing_options, :approval_note, :recipient_statuses
   self.filter_attributes += [:title, :documents, :recipients, :fields, :approval_note]
   before_validation :assign_digest, on: :create
 
@@ -24,9 +27,16 @@ class SignatureRequestRevision < ApplicationRecord
   validates :content_digest, format: { with: /\A[0-9a-f]{64}\z/ }
   validate :valid_content, on: :create
   validate :immutable_content, on: :update
+  validate :valid_delivery_binding
 
   def configuration
     Signatures::Configuration.new(documents:, recipients:, fields:)
+  end
+
+  def delivery_summary
+    slice(:operation_id, :provider_envelope_id, :provider_status, :provider_checked_at, :cancel_requested_at,
+      :last_reminder_at, :next_reminder_at, :automatic_reminders_count).merge(
+      recipient_statuses: recipient_statuses || [], operations: signature_operations.order(id: :desc).limit(10).map(&:summary))
   end
 
   def ready_errors
@@ -68,6 +78,17 @@ class SignatureRequestRevision < ApplicationRecord
   end
 
   private
+
+    def valid_delivery_binding
+      if signature_connection && signature_connection.company_id != signature_request&.company_id
+        errors.add(:signature_connection, "must belong to this company")
+      end
+      %w[signature_connection_id provider_envelope_id operation_id].each do |name|
+        if attribute_in_database(name).present? && will_save_change_to_attribute?(name)
+          errors.add(name, "cannot be changed after delivery starts")
+        end
+      end
+    end
 
     def valid_content
       configuration.errors.each { |message| errors.add(:base, message) }

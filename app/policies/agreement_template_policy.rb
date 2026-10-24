@@ -2,7 +2,10 @@
 
 class AgreementTemplatePolicy < ApplicationPolicy
   def index?
-    company_id = user.current_workspace_id
+    administrator_of?(user.current_workspace_id)
+  end
+
+  def administrator_of?(company_id)
     user.kept? && user.employments.kept.where(company_id:)
       .where("joined_at IS NULL OR joined_at <= ?", Date.current)
       .where("resigned_at IS NULL OR resigned_at >= ?", Date.current).exists? &&

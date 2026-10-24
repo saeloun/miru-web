@@ -1,0 +1,31 @@
+{
+  "documents": 2,
+  "pages": 3,
+  "recipients": 4,
+  "signature_fields": 6,
+  "provider_mutations": {
+    "create": 1,
+    "distribute": 1,
+    "remind": 1,
+    "cancel": 1
+  },
+  "final_status": "cancelled",
+  "authoritative_provider_status": "CANCELLED",
+  "all_operations_confirmed": true,
+  "immutable_credential_version": true,
+  "parsed_reminder_schedules": {
+    "test": "17 * * * *",
+    "production": "17 * * * *"
+  },
+  "audit_actions": {
+    "create": 1,
+    "update": 2,
+    "review": 1,
+    "send_queued": 1,
+    "send_confirmed": 1,
+    "remind_queued": 1,
+    "remind_confirmed": 1,
+    "cancel_queued": 1,
+    "cancel_confirmed": 1
+  }
+}

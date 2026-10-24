@@ -75,6 +75,7 @@ namespace :api, defaults: { format: "json" } do
     end
     resource :signature_connection, only: [:show, :create], controller: :signature_connections
     resources :signature_requests, only: [:index, :show, :create, :update] do
+      resources :operations, only: :create, controller: :signature_operations
       resource :review, only: :show, controller: :signature_request_reviews do
         post :invitations, action: :invite
         delete "invitations/:invitation_id", action: :revoke

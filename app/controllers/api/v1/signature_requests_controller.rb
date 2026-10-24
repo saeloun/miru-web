@@ -150,7 +150,8 @@ class Api::V1::SignatureRequestsController < Api::V1::ApplicationController
 
     def details(record, revision)
       metadata(record).merge(revision: revision.slice(:id, :number, :title, :status, :content_digest, :signing_options, :created_at, :approved_at).merge(
-        documents: revision.documents.map { |document| document.except("blob_id") }, recipients: revision.recipients, fields: revision.fields),
+        documents: revision.documents.map { |document| document.except("blob_id") }, recipients: revision.recipients, fields: revision.fields,
+        delivery: revision.delivery_summary),
         revisions: record.signature_revisions.order(number: :desc).pluck(:id, :number, :status, :created_at).map do |id, number, status, created_at|
           { id:, number:, status:, created_at: }
         end)

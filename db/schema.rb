@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_200100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1200,6 +1200,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_190000) do
     t.index ["created_by_id"], name: "index_signature_connections_on_created_by_id"
   end
 
+  create_table "signature_operations", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "requested_by_id", null: false
+    t.string "key", limit: 36, null: false
+    t.string "kind", null: false
+    t.string "state", default: "queued", null: false
+    t.string "phase", default: "preparing", null: false
+    t.string "run_token", limit: 36
+    t.string "provider_candidate", limit: 200
+    t.string "error_code"
+    t.boolean "automatic", default: false, null: false
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_signature_operations_on_key", unique: true
+    t.index ["requested_by_id"], name: "index_signature_operations_on_requested_by_id"
+    t.index ["revision_id", "kind"], name: "index_signature_operations_single_send", unique: true, where: "((kind)::text = 'send'::text)"
+    t.index ["revision_id"], name: "index_signature_operations_on_revision_id"
+    t.check_constraint "kind::text = ANY (ARRAY['send'::character varying, 'cancel'::character varying, 'remind'::character varying, 'refresh'::character varying]::text[])", name: "signature_operations_kind"
+    t.check_constraint "phase::text = ANY (ARRAY['preparing'::character varying, 'creating'::character varying, 'verifying'::character varying, 'distributing'::character varying, 'cancelling'::character varying, 'reminding'::character varying, 'checking'::character varying]::text[])", name: "signature_operations_phase"
+    t.check_constraint "state::text = ANY (ARRAY['queued'::character varying, 'running'::character varying, 'waiting'::character varying, 'confirmed'::character varying, 'failed'::character varying, 'uncertain'::character varying]::text[])", name: "signature_operations_state"
+  end
+
   create_table "signature_request_revisions", force: :cascade do |t|
     t.bigint "signature_request_id", null: false
     t.bigint "created_by_id", null: false
@@ -1222,12 +1245,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_190000) do
     t.string "approval_source"
     t.text "approval_note"
     t.text "signing_options"
+    t.bigint "signature_connection_id"
+    t.string "provider_status"
+    t.datetime "provider_checked_at"
+    t.text "recipient_statuses"
+    t.datetime "cancel_requested_at"
+    t.datetime "last_reminder_at"
+    t.datetime "next_reminder_at"
+    t.integer "automatic_reminders_count", default: 0, null: false
     t.index ["approved_by_id"], name: "index_signature_request_revisions_on_approved_by_id"
     t.index ["created_by_id"], name: "index_signature_request_revisions_on_created_by_id"
+    t.index ["next_reminder_at"], name: "index_signature_request_revisions_on_next_reminder_at", where: "(next_reminder_at IS NOT NULL)"
     t.index ["operation_id"], name: "index_signature_request_revisions_on_operation_id", unique: true
     t.index ["provider_envelope_id"], name: "index_signature_request_revisions_on_provider_envelope_id", unique: true
+    t.index ["signature_connection_id"], name: "index_signature_request_revisions_on_signature_connection_id"
     t.index ["signature_request_id", "number"], name: "idx_on_signature_request_id_number_f9b90d1824", unique: true
     t.index ["signature_request_id"], name: "index_signature_request_revisions_on_signature_request_id"
+    t.check_constraint "automatic_reminders_count >= 0 AND automatic_reminders_count <= 3", name: "signature_revisions_reminder_count"
     t.check_constraint "number > 0", name: "signature_request_revisions_number"
     t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'under_review'::character varying, 'changes_requested'::character varying, 'approved'::character varying, 'sending'::character varying, 'send_uncertain'::character varying, 'awaiting_signatures'::character varying, 'signed'::character varying, 'declined'::character varying, 'cancelled'::character varying, 'expired'::character varying]::text[])", name: "signature_request_revisions_status"
   end
@@ -1733,6 +1767,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_190000) do
   add_foreign_key "second_factor_challenges", "users"
   add_foreign_key "signature_connections", "companies"
   add_foreign_key "signature_connections", "users", column: "created_by_id"
+  add_foreign_key "signature_operations", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_operations", "users", column: "requested_by_id"
+  add_foreign_key "signature_request_revisions", "signature_connections"
   add_foreign_key "signature_request_revisions", "signature_requests"
   add_foreign_key "signature_request_revisions", "users", column: "approved_by_id"
   add_foreign_key "signature_request_revisions", "users", column: "created_by_id"
