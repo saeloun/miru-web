@@ -73,6 +73,7 @@ namespace :api, defaults: { format: "json" } do
       get :parties, on: :collection
       get :download, on: :member
     end
+    resource :signature_connection, only: [:show, :create], controller: :signature_connections
     resources :signature_requests, only: [:index, :show, :create, :update] do
       resource :review, only: :show, controller: :signature_request_reviews do
         post :invitations, action: :invite

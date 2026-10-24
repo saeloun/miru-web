@@ -25,6 +25,14 @@ class Signatures::DocumensoClient
 
   def inspect = "#<#{self.class.name}>"
 
+  def origin = @origin.normalize.to_s.delete_suffix("/")
+
+  def check_connection
+    response = request(:get, "envelope?perPage=1")
+    fail_response!(mutation: false) unless response["data"].is_a?(Array) && response["data"].size <= 1
+    true
+  end
+
   def create(payload:, files:)
     json = encode(payload)
     unless files.is_a?(Array) && files.size.between?(1, 10) &&

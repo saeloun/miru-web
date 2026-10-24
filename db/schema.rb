@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_24_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1187,6 +1187,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_170000) do
     t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
   end
 
+  create_table "signature_connections", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "api_key", null: false
+    t.string "provider_origin", limit: 500, null: false
+    t.datetime "disabled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_signature_connections_active_company", unique: true, where: "(disabled_at IS NULL)"
+    t.index ["company_id"], name: "index_signature_connections_on_company_id"
+    t.index ["created_by_id"], name: "index_signature_connections_on_created_by_id"
+  end
+
   create_table "signature_request_revisions", force: :cascade do |t|
     t.bigint "signature_request_id", null: false
     t.bigint "created_by_id", null: false
@@ -1717,6 +1730,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_170000) do
   add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
   add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
   add_foreign_key "second_factor_challenges", "users"
+  add_foreign_key "signature_connections", "companies"
+  add_foreign_key "signature_connections", "users", column: "created_by_id"
   add_foreign_key "signature_request_revisions", "signature_requests"
   add_foreign_key "signature_request_revisions", "users", column: "approved_by_id"
   add_foreign_key "signature_request_revisions", "users", column: "created_by_id"

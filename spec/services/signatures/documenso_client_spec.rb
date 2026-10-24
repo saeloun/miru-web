@@ -180,4 +180,14 @@ RSpec.describe Signatures::DocumensoClient do
       expect { client.distribute("envelope_1") }.to raise_error(described_class::Uncertain)
     end
   end
+
+  it "checks credentials with a bounded read and accepts only an envelope list" do
+    request = stub_request(:get, "#{origin}/api/v2/envelope?perPage=1").with(headers: { "Authorization" => api_key })
+    request.to_return(body: '{"data":[]}', headers:)
+    expect(client.check_connection).to be(true)
+    ["{}", '{"data":{}}', '{"data":[{},{ }]}'].each do |body|
+      request.to_return(body:, headers:)
+      expect { client.check_connection }.to raise_error(described_class::Unavailable)
+    end
+  end
 end

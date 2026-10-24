@@ -48,7 +48,13 @@ A second live probe used this Miru client against the same pinned local provider
 
 A separate contract probe confirmed that cancelling an undistributed DRAFT returns HTTP 400 and leaves it DRAFT. Miru must distinguish cancellation before distribution from cancellation of a sent request, retaining an unused provider draft without treating it as a signed artifact. The probe deleted its disposable draft and confirmed HTTP 404 afterward; this cleanup does not establish an atomic deletion guard for arbitrary provider documents.
 
-Company credential management, approved-snapshot job orchestration, duplicate/crash reconciliation, provider field geometry and verified completed archives still need integration checks. This client probe does not exercise the complete Miru signing flow or change the production hold.
+Admin connection UI, approved-snapshot job orchestration, duplicate/crash reconciliation, provider field geometry and verified completed archives still need integration checks. This client probe does not exercise the complete Miru signing flow or change the production hold.
+
+## Company credential API checks
+
+The company-scoped connection API verifies a key using a bounded, read-only provider request before activation. Keys are encrypted and excluded from model inspection, request logs and API responses. Reconnecting creates a new credential version; old versions retain their original server binding so existing requests can use their original account. A server-origin change prevents an old key from being sent to the replacement host. New requests will select the current connection when job orchestration is added.
+
+The serial backend gate passed **96 examples, zero failures**, including 12 connection requests and 15 HTTP-client cases. Connection coverage includes stale rotation, cross-company IDs, employee/resigned-admin denial, CSRF, malformed/rejected credentials, membership revocation and workspace changes during provider validation. The additive migration passed up/down/up on the isolated test database. Ruby lint and Reek passed. The real provider probe also passed the new credential check before its two-document send/remind/cancel sequence. These are backend checks; no connection UI or complete signing journey is claimed.
 
 ## Environment and isolation
 
