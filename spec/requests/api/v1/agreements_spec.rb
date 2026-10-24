@@ -184,6 +184,30 @@ RSpec.describe "Private agreement drafts", type: :request do
     end
   end
 
+  it "returns a recoverable PDF failure with a reference while keeping contract text out of error reporting" do
+    record = create_draft
+    original = record.attributes
+    renderer = instance_double(PdfGeneration::HtmlTemplateService)
+    allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_return(renderer)
+    allow(renderer).to receive(:process).and_raise(Ferrum::StatusError.new("data:text/html,Sensitive contract text and bank details"))
+    expect(Rails.error).to receive(:report) do |error, **options|
+      expect(error.message).to eq("Agreement PDF rendering failed")
+      expect(error.cause).to be_nil
+      expect(options).to include(handled: true, context: hash_including(agreement_id: record.id, error_class: "Ferrum::StatusError"))
+    end
+    get "/api/v1/agreements/#{record.id}/download"
+    expect(response).to have_http_status(:service_unavailable)
+    expect(response.media_type).to eq("application/problem+json")
+    problem = JSON.parse(response.body)
+    expect(problem).to include("code" => "agreement_pdf_unavailable", "status" => 503,
+      "recovery" => { "action" => "retry", "side_effects" => "none", "max_retries" => 1 })
+    expect(problem.fetch("instance")).to include(response.headers.fetch("X-Request-Id"))
+    expect(problem.fetch("errors")).to include("Retry the download once", "administrator", "reference")
+    expect(response.body).not_to include("Sensitive contract", "Original party")
+    expect(record.reload.attributes).to eq(original)
+    expect(record.audits.where(action: "download")).not_to exist
+  end
+
   it "exports the actual persisted contract as a private DRAFT PDF and records a metadata-only download audit" do
     allow(Ferrum::Browser).to receive(:new).and_call_original
     record = create_draft

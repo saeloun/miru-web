@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { endpoint, failureMessage, quiet } from "./api";
+import { creationFailureMessage, endpoint, failureMessage, quiet } from "./api";
 import { emptyDocument, type Party, type Summary } from "./types";
 import "./editor.css";
 
@@ -93,7 +93,7 @@ const Generate = ({
       );
       if (mounted.current) navigate(`/agreements/drafts/${data.agreement.id}`);
     } catch (failure) {
-      if (mounted.current) setError(failureMessage(failure));
+      if (mounted.current) setError(creationFailureMessage(failure, "draft"));
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -295,7 +295,9 @@ const Workspace = ({ companyId }: { companyId: number | string }) => {
         navigate(`/agreements/templates/${data.agreement_template.id}`);
       }
     } catch (failure) {
-      if (mounted.current) setError(failureMessage(failure));
+      if (mounted.current) {
+        setError(creationFailureMessage(failure, "template"));
+      }
     } finally {
       if (mounted.current) setBusy(false);
     }

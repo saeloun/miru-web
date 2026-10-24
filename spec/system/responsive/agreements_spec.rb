@@ -138,6 +138,31 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "reconciles a draft after creation succeeds but the response fails" do
+    template = master
+    consultant = create(:employment, company:, resigned_at: nil, employment_type: "Consultant")
+    consultant.user.update!(first_name: "Synthetic", last_name: "Lost Response")
+    allow_any_instance_of(Api::V1::AgreementsController).to receive(:create).and_wrap_original do |original, *args|
+      original.call(*args)
+      original.receiver.response.status = 500
+    end
+    open_agreements
+    within("article", text: template.title) { click_button "Generate draft" }
+    within('[role="dialog"]') do
+      fill_in "Find counterparty", with: "Synthetic Lost Response"
+      choose "Synthetic Lost Response"
+      click_button "Generate draft"
+      expect(page).to have_css('[role="alert"]', text: /check Drafts before trying again/)
+      expect(Agreement.where(agreement_template: template).count).to eq(1)
+      page.save_screenshot(Rails.root.join("tmp/capybara/agreement-create-recovery.png"), full: false)
+      click_button "Cancel"
+    end
+    click_button "Drafts", exact: true
+    expect(page).to have_link(Agreement.find_by!(agreement_template: template).title)
+    expect(Agreement.where(agreement_template: template).count).to eq(1)
+    expect(@console_errors).to be_empty
+  end
+
   it "previews Word import before replacement and keeps existing content after an unsupported upload" do
     open_agreements("/agreements/templates/#{master.id}")
     expect(page).to have_content("Original clause नमस्कार")
@@ -233,6 +258,31 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(draft.fields.last["options"]).to eq(["INR"])
     expect(draft.field_values.values).to all(be_nil)
     expect(master.reload.fields).to eq(fields)
+    expect(@console_errors).to be_empty
+  end
+
+  it "shows the PDF failure reference and clears it after a successful download retry" do
+    consultant = create(:employment, company:, resigned_at: nil, employment_type: "Consultant")
+    draft = master.build_agreement(created_by: admin, employment: consultant, title: "Synthetic PDF retry")
+    draft.save!
+    renderer = instance_double(PdfGeneration::HtmlTemplateService)
+    allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_return(renderer)
+    allow(renderer).to receive(:process).and_raise(Ferrum::StatusError.new("data:text/html,Synthetic private contract"))
+    open_agreements("/agreements/drafts/#{draft.id}")
+    click_button "Download draft PDF"
+    expect(page).to have_css('[role="alert"]', text: /Retry the download once.*reference/)
+    page.save_screenshot(Rails.root.join("tmp/capybara/agreement-pdf-recovery.png"), full: false)
+    expect(page).not_to have_content("Synthetic private contract")
+    expect(draft.audits.where(action: "download")).not_to exist
+
+    allow(PdfGeneration::HtmlTemplateService).to receive(:new).and_call_original
+    Dir.mktmpdir("agreement-retry-download") do |directory|
+      page.driver.browser.downloads.set_behavior(save_path: directory)
+      expect(page.driver.browser.downloads.wait(10) { click_button "Download draft PDF" }).to be(true)
+      expect(File.binread(File.join(directory, "agreement-#{draft.id}-draft.pdf"))).to start_with("%PDF-")
+    end
+    expect(page).not_to have_css('[role="alert"]')
+    expect(draft.audits.where(action: "download").count).to eq(1)
     expect(@console_errors).to be_empty
   end
 

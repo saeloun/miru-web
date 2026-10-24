@@ -7,6 +7,15 @@ module Agreements
     MAX_DEPTH = 20
     FIELD_TYPES = %w[text date number checkbox dropdown signature initials].freeze
     ROLES = %w[admin counterparty company_signer].freeze
+    VALUE_GUIDANCE = {
+      "text" => "Use text of at most 5000 characters.",
+      "date" => "Use a valid date in YYYY-MM-DD format.",
+      "number" => "Use decimal text with at most 12 integer digits and 4 decimal places, without commas.",
+      "checkbox" => "Use true or false.",
+      "dropdown" => "Choose one of this field's listed options.",
+      "signature" => "Leave signing fields empty until verified signing is available.",
+      "initials" => "Leave signing fields empty until verified signing is available."
+    }.freeze
     MARKS = %w[bold italic underline strike].freeze
     BLOCKS = %w[paragraph heading bulletList orderedList table horizontalRule pageBreak].freeze
     INLINE = %w[text hardBreak mergeField].freeze
@@ -57,7 +66,7 @@ module Agreements
     private
 
       def validate_fields
-        @field_keys = []
+        @fields_by_key = {}
         unless fields.is_a?(Array) && fields.length <= 100 && fields.to_json.bytesize <= 64.kilobytes
           @problems << "Fields must be an array of at most 100 definitions and 64 KiB"
           return
@@ -67,7 +76,7 @@ module Agreements
             @problems << "Field definitions must have a unique safe key, label, type, role and boolean flags"
             next
           end
-          @field_keys << field["key"]
+          @fields_by_key[field["key"]] = field
         end
       end
 
@@ -77,7 +86,7 @@ module Agreements
 
         key = field["key"]
         key.is_a?(String) && key.match?(/\A[a-z][a-z0-9_]{0,63}\z/) &&
-          !%w[constructor prototype].include?(key) && !@field_keys.include?(key) &&
+          !%w[constructor prototype].include?(key) && !@fields_by_key.key?(key) &&
           field["label"].is_a?(String) && field["label"].present? && field["label"].length <= 120 &&
           FIELD_TYPES.include?(field["type"]) && ROLES.include?(field["role"]) &&
           [true, false].include?(field["required"]) && [true, false].include?(field["read_only"]) &&
@@ -154,7 +163,7 @@ module Agreements
         when "orderedList"
           @problems << "List start is invalid" unless positive_integer?(attributes.fetch("start", 1), 1_000_000)
         when "mergeField"
-          @problems << "Document references an unknown field" unless @field_keys.include?(attributes["key"])
+          @problems << "Document references an unknown field" unless @fields_by_key.key?(attributes["key"])
         when "tableCell", "tableHeader"
           %w[colspan rowspan].each do |key|
             @problems << "Table span is invalid" unless positive_integer?(attributes.fetch(key, 1), 20)
@@ -172,19 +181,15 @@ module Agreements
       end
 
       def validate_values
-        unless values.is_a?(Hash) && (values.keys - @field_keys).empty? && values.to_json.bytesize <= MAX_BYTES
+        unless values.is_a?(Hash) && (values.keys - @fields_by_key.keys).empty? && values.to_json.bytesize <= MAX_BYTES
           @problems << "Values must belong to declared fields and fit within 512 KiB"
           return
         end
-        return unless fields.is_a?(Array)
-
-        fields.each do |field|
-          next unless field.is_a?(Hash) && @field_keys.include?(field["key"])
-
+        @fields_by_key.each_value do |field|
           value = values[field["key"]]
           next if value.nil? || value == ""
 
-          @problems << "Invalid value for #{field['key']}" unless valid_value?(field, value)
+          @problems << "Invalid value for #{field['key']}. #{VALUE_GUIDANCE.fetch(field['type'])}" unless valid_value?(field, value)
         end
       end
 

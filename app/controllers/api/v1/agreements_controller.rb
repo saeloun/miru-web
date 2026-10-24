@@ -80,6 +80,19 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
     record.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
     response.headers["X-Content-Type-Options"] = "nosniff"
     send_data pdf, filename: "agreement-#{record.id}-draft.pdf", type: "application/pdf", disposition: "attachment"
+  rescue Ferrum::Error => error
+    failure = StandardError.new("Agreement PDF rendering failed")
+    failure.set_backtrace(error.backtrace)
+    Rails.error.report(failure, handled: true,
+      context: { agreement_id: record.id, error_class: error.class.name, request_id: request.request_id })
+    message = "Draft PDF could not be generated. Retry the download once; if it fails again, ask an administrator " \
+      "to check the PDF renderer using reference #{request.request_id}."
+    render json: {
+      type: "https://github.com/saeloun/miru-web/blob/develop/docs/agreements.md#pdf-unavailable",
+      title: "Draft PDF unavailable", status: 503, code: "agreement_pdf_unavailable",
+      detail: message, errors: message, instance: "urn:miru:request:#{request.request_id}",
+      recovery: { action: "retry", side_effects: "none", max_retries: 1 }
+    }, status: 503, content_type: "application/problem+json"
   end
 
   private

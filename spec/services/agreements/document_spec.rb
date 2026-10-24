@@ -7,6 +7,35 @@ RSpec.describe "Agreement document contract" do
     Agreements::Document.new(document, fields:, values:).errors
   end
 
+  it "explains how to correct each invalid field value without echoing private values" do
+    {
+      "text" => [123, "Use text"],
+      "date" => ["private-date", "YYYY-MM-DD"],
+      "number" => ["private-amount", "decimal"],
+      "checkbox" => ["private-answer", "true or false"],
+      "dropdown" => ["private-choice", "listed options"],
+      "signature" => ["private-signature", "Leave signing fields empty"],
+      "initials" => ["private-initials", "Leave signing fields empty"]
+    }.each do |type, (value, guidance)|
+      field = agreement_fields.first.merge("type" => type)
+      field["options"] = ["INR", "USD"] if type == "dropdown"
+      messages = errors(fields: [field], values: { "legal_name" => value })
+      expect(messages.join).to include("Invalid value for legal_name", guidance)
+      expect(messages.join).not_to include(value) if value.is_a?(String)
+    end
+  end
+
+  it "rejects invalid duplicate field definitions before using them to validate values" do
+    [
+      agreement_fields.first.merge("type" => "unsupported"),
+      agreement_fields.first.merge("type" => "dropdown", "options" => nil),
+      agreement_fields.first.merge("type" => "dropdown", "options" => 123)
+    ].each do |invalid|
+      expect(errors(fields: agreement_fields + [invalid], values: { "legal_name" => "Synthetic value" }).join)
+        .to include("Field definitions")
+    end
+  end
+
   it "accepts an editable formatted contract with table, list, breaks and assigned fields" do
     document = agreement_document
     document["content"] += [

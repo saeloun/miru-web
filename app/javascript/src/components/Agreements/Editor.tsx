@@ -370,6 +370,7 @@ const LoadedEditor = ({
             <Button
               disabled={dirty || busy || exporting}
               onClick={async () => {
+                setError("");
                 setExporting(true);
                 try {
                   await downloadPdf(record.id);

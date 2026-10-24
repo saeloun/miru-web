@@ -275,17 +275,146 @@ Standard combined suite:150/0 [measured: docs/qa/agreement-editor-2462/README.md
 ## Engineering follow-up after design fixes
 
 Revisited the affected stages before refreshing exact-head evidence: architecture/security/storage/API contracts unchanged; code quality retains active-request cancellation for the new search refresh state and the existing error envelope; tests prove failed lookup recovery plus44px settled geometry; performance adds bounded local state/CSS work without new endpoints, loops over records, eager payloads or rendering per keystroke. No new engineering issues or silent critical gap. Unchanged model/parser/auth/export evidence is reused; the current150-example combined run also rechecks those contracts [measured: docs/qa/agreement-editor-2462/README.md:7]. Original scope/deferred requirements stay intact.
+## Developer-experience review
+
+Target: this authoring unit's internal REST API and its actual Miru callers. Product type: API/Service. Persona: a Miru Rails/React contributor working in an already configured checkout. Mode: DX TRIAGE, chosen under the user's urgent shipping/fix-all instruction; no public SDK, provider purchase, new onboarding SLO or broader API-protocol migration is introduced. Routine review choices are the agent's implementation judgment under standing authorization, not fabricated user answers. All eight passes were evaluated.
+
+### Developer perspective and clock
+
+I'm a Miru contributor adding agreement authoring to the existing application. I already have its runtime, database and authentication setup; that prerequisite is not a measured fresh-start journey. I open the agreement API helpers and request examples because I need a working payload before studying every editor extension. I want a private template, an independent party copy and a real draft PDF, without setting up another signing account.
+
+I can run the existing request examples and inspect the returned document, fields and lock version. If my typed value is wrong, I need the accepted format, not an echo of confidential content. When a save conflicts, I preserve my edits and reconcile the saved version. When creation's response fails, I check the archive before repeating a request that may already have succeeded. If PDF rendering fails, I need a reference and a bounded retry instruction; I should never paste rendered contract HTML into an error ticket.
+
+This is a source-grounded simulated perspective, not a user study. Fresh-developer reading/install time remains unmeasured. The retained clock starts after standard Miru setup and ends at an understood template/copy/export result; no replacement clock or new latency guarantee was approved. Automated example durations below are not human onboarding measurements.
+
+### Competitive reference
+
+Aside is unavailable; primary web documentation was used. Comparisons establish interface choices, not equivalent timing, cost, licensing or provider selection.
+
+| Tool | Documented start -> result | Time evidence | Relevant choice / source |
+| --- | --- | --- | --- |
+| Miru | Configured contributor checkout -> private template/copy and DRAFT PDF | Human time unknown; actual API/browser examples pass | Existing auth/Api wrapper, copied values and optimistic lock; docs/agreements.md |
+| DocuSeal | API key -> authenticated API record requests | Documentation inspected; no timed onboarding or provider call | Explicit key header and request examples; https://www.docuseal.com/docs/api |
+| Documenso | API key/configured PDF -> envelope/document signing workflow | Documentation inspected; no timed onboarding or provider call | API version and staged first-call guide; https://docs.documenso.com/docs/developers/getting-started/first-api-call |
+
+First useful result: the existing request/system examples produce an encrypted master, an independent draft and actual PDF bytes. That existing vehicle is retained; no new playground or hosted account is needed for this unit. Competitive TTHW rank is unknown because the boundaries/results differ.
+
+### Journey and first-time roleplay
+
+In TRIAGE, the Install and Hello World stages are the detailed journey; other stages are assessed in the eight passes below.
+
+| Stage | Contributor action | Evidence / disposition |
+| --- | --- | --- |
+| Install | Use existing Miru setup, locked dependencies and local migration | No separate provider credential; current setup requirements stated in docs/agreements.md |
+| Hello World | Run the linked API examples, then exercise the editor/copy/export | Exact two-file example command passed32/0 [measured: docs/qa/agreement-editor-2462/README.md:7]; real browser/PDF evidence linked |
+
+Illustrative roleplay, not observed human timing: T+0:00 open the contributor reference; T+0:30 locate the existing request example and required JSON root; T+1:00 inspect company/lock-version and field/value types; T+2:00 run the example in the configured test database; T+3:00 inspect the saved copy/PDF and the documented error recovery. Predicted confusion about field formats, PDF references and ambiguous creation has been checked against source and failing-before/passing-after tests, then fixed. No fresh-install time or guaranteed completion time is inferred.
+
+### Pass1 — Getting started:7/10 ->8/10
+
+The existing application setup is a prerequisite, not a new zero-install product. The new contributor reference gives the dependency/migration path, encryption/browser constraints and an executable pair of API example files. That exact command passes32/0 [measured: docs/qa/agreement-editor-2462/README.md:7]. No card, sales contact or signing-provider account is required for draft authoring. No new onboarding defect remains in this unit; fresh-machine setup and human TTHW are unmeasured.
+
+### Pass2 — Interface design:8/10 ->8/10
+
+Plural resources, expected JSON roots, explicit workspace/lock version, independent copies, typed string/boolean values and bounded lookup/pagination match the existing callers. Both create callers share one small recovery helper. Network/server errors no longer instruct users to blindly repeat an uncertain creation: they check Templates/Drafts first. The browser fixture really creates a record before returning500, then finds it through the archive with no automatic duplicate [measured: spec/system/responsive/agreements_spec.rb:141]. This is reconciliation, not an exactly-once guarantee. No new endpoint, SDK, token flow or permission bypass was added for this review.
+
+### Pass3 — Errors and debugging:4/10 ->8/10
+
+Two caps were identified and resolved:
+
+- CAP4:pdf_navigation:redaction — a synthetic Ferrum navigation failure passed a rendered data URL into error reporting. This is a reproduced potential-exposure path, not a claim that production data leaked. The shared PDF service now removes the URL and chained cause while retaining the status-error family and Ruby stack. Existing callers were searched before the root fix; invoice, bulk-download and analytics regressions pass.
+- CAP6:field_value:fix and CAP6:pdf_export:recovery — typed-value failures lacked correction guidance, and renderer failures lacked a safe, useful recovery response. Field errors now give format guidance without values; only validated definitions reach value checks. The agreement PDF error is a private503 RFC9457 problem with stable code/doc anchor, request reference, retry-once/escalation and no successful-download audit. Bounded JSON error blobs are decoded for the UI; a successful retry clears the alert and downloads real PDF bytes. Uncertain creation recovery is also explicit.
+
+| Error path / class | what | fix | recovery | code | context | trace | redaction | channel | Remaining cap |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Typed value / pre-write validation | pass | pass: format guidance | N/A: rejected before write | legacy HTTP422/reference | N/A: usage | N/A: usage | pass | inherited JSON envelope | none |
+| Stale version/workspace / pre-write conflict | pass | pass: reload/reconcile | pass: edits not applied | legacy HTTP409/reference | pass | N/A: expected conflict | pass | inherited JSON envelope | none |
+| Tracked DOCX / pre-persistence validation | pass | pass: accept/reject revisions | pass: existing document unchanged | legacy HTTP422/reference | pass | N/A: expected import rejection | pass | inherited JSON envelope | none |
+| PDF renderer / unexpected dependency failure | pass | pass: retry once then administrator/reference | pass: none; bounded retry | pass: agreement_pdf_unavailable + doc anchor | pass: operation/reference; sanitized server class | pass: request reference | pass: URL/cause/report tests | pass: HTTP503 problem JSON | none |
+
+The legacy validation/auth envelopes are not RFC9457 objects and do not contain new per-error machine codes. This baseline limitation is explicit; no global RFC/SDK compliance is claimed. It does not introduce a missing safe fix, unsafe recovery, false success, secret disclosure or terminal wait in this scoped triage. Existing API conventions remain intact; the new renderer problem retains the existing errors string. Unexpected non-renderer exceptions retain the application's existing error path rather than being hidden by a broad rescue.
+
+### Pass4 — Documentation:6/10 ->8/10
+
+docs/agreements.md now links actual runnable examples, routes, types, roots, workspace/version behavior, manual creation reconciliation, privacy constraints, PDF reference/escalation and release/rollback checks. The registry output matches its named routes. Commands and current behavior were verified; no copied competitor prose or invented provider workflow is included.
+
+### Pass5 — Upgrade/migration:8/10 ->8/10
+
+No new migration or dependency was added by DX fixes. The original new-table migration, encrypted storage and independent copy contract remain. Keys must stay stable and rollback must retain populated tables. The shared status-error sanitization preserves the base error family; no application rescue depends on its URL-bearing subclasses. Exact-head CI/private integration remains mandatory. No new breaking-change/codemod policy is needed.
+
+### Pass6 — Environment/tooling:8/10 ->8/10
+
+Current local Rails/Brave examples, real PDF bytes, Vite and focused lint pass. The shared PDF regression command reports98 examples, zero failures and one compression-specific pending assertion [measured: docs/qa/agreement-editor-2462/README.md:7]. Whole-project TypeScript is not green with no proven clean baseline; no unrelated-failure or all-platform claim is made. Linux fonts, production encryption and deployed images/browser behavior remain release checks.
+
+### Pass7 — Community/ecosystem:8/10 ->8/10
+
+The existing MIT repository, GitHub issues/PRs, contributor conventions and typed first-party callers remain the extension/support path (LICENSE:1; AGENTS.md:1). This internal feature does not require a new plugin ecosystem, SDK language family or external provider plan. No community-response SLA or monitored channel is invented.
+
+### Pass8 — Measurement/feedback:8/10 ->8/10
+
+Reproducible example commands, synthetic fixtures, browser/PDF evidence and raw measurement files are available for a later live audit. Human onboarding time and comparable peer rank remain unknown. Existing test/export timings do not substitute for the retained clock. No analytics collection, scheduled review, automated latency release threshold or new ongoing human process was added.
+
+## DX implementation tasks
+
+- [x] T1: correct typed values using format guidance and trusted definitions; service/model/request evidence.
+- [x] T2: sanitize navigation data URLs at the shared PDF boundary; root redaction/cleanup test plus existing caller regressions.
+- [x] T3: return a private renderer problem/reference, decode bounded PDF error blobs and support clean retry; API/privacy and real browser/download evidence.
+- [x] T4: reconcile ambiguous creates through the archive before retry; shared helper with two actual callers and persisted-record browser fixture.
+- [x] T5: provide the contributor route/example/error/upgrade reference; exact example command and route registry verification.
+
+All tasks implement existing safe authoring, privacy and recovery requirements under the user's fix/review/ship authorization. No new user answers, product guarantees or deferred in-scope fixes are fabricated. No TODO proposed. Scope outside this PR remains approval/comments/sharing/signing/addenda/immutable completed artifacts and remaining payroll/tax/ATS work; the original goal and issue stay open.
+
+## DX Review Scorecard
+
+| Dimension | Before | After | Evidence limit |
+| --- | --- | --- | --- |
+| Getting started | 7 | 8 | Configured contributor path; human onboarding unmeasured |
+| API/CLI/SDK | 8 | 8 | Internal callers; no public SDK launched |
+| Error messages | 4 | 8 | Caps fixed; legacy non-problem envelopes retained explicitly |
+| Documentation | 6 | 8 | Commands/routes verified |
+| Upgrade path | 8 | 8 | Production rollout remains unproven |
+| Developer environment | 8 | 8 | Local evidence; global TypeScript/Linux limits retained |
+| Community | 8 | 8 | Existing project channels; no new SLA |
+| Measurement | 8 | 8 | Reproducible evidence; no invented human benchmark |
+
+Overall uses the lowest dimension conservatively:4->8. Product: API/Service. Mode: DX TRIAGE. Persona: Miru Rails/React contributor. TTHW current: unmeasured human journey; target: retain existing configured-contributor workflow, no new SLO; competitive tier: not comparable. Scores are review judgments. Useful first result exists through API examples and the real editor/copy/export path. Unresolved decisions:0; open implementation tasks:0.
+
+Checklist: locked dependencies/local migration and meaningful example output are documented; internal route/types are discoverable; safe format/export/create recovery is verified; first-party wrapper/auth is reused; draft workflow needs no provider purchase; original migration/rollback and actual platform verification are retained. One-command fresh-machine installation, new telemetry, SDK languages, global RFC9457 migration and new support commitments are not claimed. They are not secretly added as requirements to the existing internal feature.
+
+### Outside voice and final evidence
+
+Current-host preflight returned under_current_harness. Codex outside execution was not launched. The required native fallback needs Plan, TaskStop and background Bash; those tools are not offered here. No general-purpose substitute was launched and no external/native outside-completion credit is claimed for DX. Missing coverage is recorded as unavailable, not clear. The earlier independent whole-branch review and native design assessment remain separate evidence.
+
+Final agreement/middleware/browser command:155/0 [measured: docs/qa/agreement-editor-2462/README.md:7]. Separate shared PDF regressions:98 examples, zero failures, one pending; documented API example:32/0 [measured: docs/qa/agreement-editor-2462/README.md:7]. Required Vite build, current JS formatting/lint and seven-file Ruby lint pass. Screenshots of PDF and ambiguous-create recovery were captured in Brave and viewed. No fresh-machine, physical screen-reader/keyboard, global typecheck, full CI or production verification is implied.
+
+REALITY: premise-table pass Internal API and actual first-party callers inspected; no fabricated onboarding or approval premise docs/agreements.md:1
+REALITY: already-done pass Fresh origin/develop fetch still has no agreement authoring equivalent 778afd114
+REALITY: surface-check pass Named routes and example command verified against registry and actual run docs/agreements.md:9
+REALITY: binding-decisions pass Original full-body/draft scope and standing authorization retained; no new product boundary docs/superpowers/specs/2026-10-24-agreement-editor-design.md:7
+REALITY: numbers pass Runtime/test numbers have receipts; human onboarding and peer rank remain unmeasured docs/qa/agreement-editor-2462/README.md:7
+REALITY: deferred-asks pass Remaining issue review/signing/onboarding/addenda requirements stay open docs/superpowers/specs/2026-10-24-agreement-editor-design.md:7
+REALITY: pr-count pass One coherent authoring PR; no extra SDK/platform wave docs/superpowers/plans/2026-10-24-agreement-editor.md:62
+REALITY: prior-art pass Existing Rails/Api/PDF infrastructure reused; primary peer docs are interface reference only docs/agreements.md:21
+REALITY: contract-assumptions pass Preserve legacy errors string/auth and exact workspace/version contracts docs/agreements.md:21
+REALITY: dependency-fallback pass Draft authoring/export works without a signing provider; no fabricated signature value docs/agreements.md:3
+REALITY: obligation-tiers pass Must-ship checks retained; original issue requirements explicitly remain later work docs/agreements.md:70
+
+## Engineering and design follow-up after DX fixes
+
+All affected engineering stages were rechecked: field values now use only validated definitions; PDF status errors are sanitized at the shared owner while cleanup and other error classes remain; agreement failures preserve privacy/cache/authorization and compatible errors text; Blob parsing is bounded and JSON-only with safe fallback; both create callers share recovery guidance without automatic retries. The actual caller search and shared regressions cover the broader PDF change. Current core155/0 and shared98/0/1pending are the evidence above. No new architecture/code/test/performance issue remains after the fixes; no silent critical gap or new provider dependency is introduced.
+
+Design follow-up rechecked the two recovery states: existing alert/dialog patterns display the reference or archive instruction, error state clears on successful PDF retry, and the document remains intact. New screenshots are readable; existing mobile layout/control/role coverage passes in the current core run. Earlier unchanged seven-pass design evidence is reused; no new layout, new design decision, human approval or physical-device claim is made. These follow-ups must be logged at the final committed head, not assumed from earlier hashes.
 
 ## GSTACK REVIEW REPORT
 
 | Review | Trigger | Why | Runs | Status | Findings |
 | --- | --- | --- | --- | --- | --- |
-| CEO Review | not run | No new product-scope decision | 0 | NOT RUN | Existing authoring unit retained |
-| Outside Review | Codex preflight / native design assessment | Independent challenge | 2 phases | EXTERNAL UNAVAILABLE | Native design reviewer completed; three findings fixed |
-| Eng Review | /plan-eng-review + affected-stage follow-up | Architecture and tests | 2 | CLEAR; refreshed log follows read-back | No new issues; no critical gaps or unresolved decisions |
-| Design Review | /plan-design-review | UI/UX coverage | 1 | CLEAR; log follows read-back | Overall6->9; three implementation fixes; zero unresolved |
-| DX Review | /plan-devex-review | Internal API developer experience | 0 | PENDING | Separate review remains required |
+| CEO Review | not run | No new product-scope decision | 0 | NOT RUN | Original authoring unit retained |
+| Outside Review | Codex preflights / native design assessment | Independent challenge | plan/design/DX phases | EXTERNAL UNAVAILABLE | Native design findings fixed; no DX outside reviewer completed |
+| Eng Review | /plan-eng-review + affected-stage follow-ups | Architecture and tests | 3 | CLEAR; final-head log follows read-back | No new unresolved issue or critical gap after fixes |
+| Design Review | /plan-design-review + recovery follow-up | UI/UX | 2 | CLEAR; final-head log follows read-back | Prior6->9; new recovery states verified |
+| DX Review | /plan-devex-review | Internal developer experience | 1 | CLEAR; log follows read-back | Overall4->8; caps fixed; zero unresolved decisions |
 
-**OUTSIDE COVERAGE:** External Codex plan/design phases unavailable in current host. Native design assessment is in-host only; no outside-completion or cross-provider consensus claim.
-**VERDICT:** Engineering and design clear for this authoring unit after fixes. DX, exact-head CI, CodeRabbit and release checks remain required; no deployment approval is implied.
+**OUTSIDE COVERAGE:** External Codex phases unavailable in this host. Native design assessment is in-host only; the missing bounded DX fallback is not a completed review.
+**VERDICT:** Engineering, design and internal DX clear for the authoring unit after verified fixes. Exact-head CI, CodeRabbit and production release checks remain required; the full issue/goal is not complete.
 NO UNRESOLVED DECISIONS
