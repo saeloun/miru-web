@@ -195,13 +195,15 @@ export default async function runAuthenticationE2E(page, fixture) {
   await page
     .getByRole("button", { name: "Rename Work Mac", exact: true })
     .waitFor();
+  const renameNotice = page.getByText("Passkey name updated", { exact: true });
+  await renameNotice.waitFor();
+  if ((await renameNotice.count()) !== 1) {
+    throw new Error("Passkey rename must show one success notification");
+  }
   await page
     .getByRole("button", { name: "I've saved these codes", exact: true })
     .click();
-  await page
-    .getByText("Passkey name updated", { exact: true })
-    .last()
-    .waitFor({ state: "hidden" });
+  await renameNotice.waitFor({ state: "hidden" });
   if (
     await authenticator.evaluate(
       element => element.scrollWidth > element.clientWidth + 1
