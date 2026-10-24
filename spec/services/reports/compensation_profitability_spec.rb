@@ -98,6 +98,19 @@ RSpec.describe Reports::CompensationProfitability do
     expect(result[:available_people]).to eq([{ id: person.id, name: person.full_name }])
   end
 
+  it "matches filters against every employment while preserving the person's reconciliation warning" do
+    profile.update!(department: "Engineering", primary_project: project)
+    employment.update!(resigned_at: "2026-07-15")
+    create(:employment, company:, user: person, joined_at: "2026-07-16", resigned_at: nil)
+
+    [{ department: "Engineering" }, { primary_project_id: project.id }, { status: "exited" }].each do |filter|
+      result = report(**filter)
+      expect(result[:people].size).to eq(1)
+      expect(result[:people].first).to include(person_id: person.id, compensation_cost: nil, revenue: nil)
+      expect(result[:data_quality][:flags]).to include("multiple_employment_records_require_review" => 1)
+    end
+  end
+
   it "converts each day's cost at its applicable FX rate instead of converting the whole period at its final rate" do
     ExchangeRate.set_rate("USD", "INR", 40, Date.new(2026, 7, 16), "synthetic later rate")
     result = row(currency: "USD")

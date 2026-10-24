@@ -118,8 +118,9 @@ module Reports
         rows = @employments.filter_map do |employment|
           person_result(employment, from, to) if reportable_employment?(employment, from, to)
         end
+        matching_person_ids = rows.select { |row| matches_filters?(row) }.pluck(:person_id)
         people = one_row_per_person(rows)
-        rows = people.select { |row| matches_filters?(row) }
+        rows = people.select { |row| matching_person_ids.include?(row[:person_id]) }
         {
           from: from.iso8601, to: to.iso8601, people: rows,
           summary: summarize(rows),
