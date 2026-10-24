@@ -13,7 +13,7 @@ overrides:
   js-yaml@^4: 4.3.2
   postcss@^8: 8.5.23
   shell-quote@^1: 1.11.0
-  undici@^6: 6.28.1
+  undici@^6: 6.29.1
   ws@^6: 6.2.4
   ws@^7: 7.5.11
   ws@^8: 8.21.0
@@ -2443,8 +2443,8 @@ packages:
   undici-types@8.9.0:
     resolution: {integrity: sha512-KTDyRTYX8sWmKXAikPHHSyc63CRPETMctyjKFupcC6OBLXT3xsN0e9aF7m+mIXutFWpUXuedtowG7iLOzp0kQg==}
 
-  undici@6.28.1:
-    resolution: {integrity: sha512-zWpdTVD54H48CIybL0rWQ3ukpb9d23wM7eH5RtfdmeP70cWHNjtfo7P4vZX+5CoDcO53J4Pu5uXp7lNfjc6DRA==}
+  undici@6.29.1:
+    resolution: {integrity: sha512-EvRlUt/QqAEvXdQeRMYUfwOQsfzpDztykrG2owGEE/rBOBoYv9uF39ZzsNDh4lTFHhTr2XOZjKkYgueD12ZmGA==}
     engines: {node: '>=18.17'}
 
   unicode-canonical-property-names-ecmascript@2.0.1:
@@ -3282,7 +3282,7 @@ snapshots:
       structured-headers: 0.4.1
       tar: 7.5.22
       terminal-link: 2.1.1
-      undici: 6.28.1
+      undici: 6.29.1
       wrap-ansi: 7.0.0
       ws: 8.21.0
     optionalDependencies:
@@ -5510,7 +5510,7 @@ snapshots:
 
   undici-types@8.9.0: {}
 
-  undici@6.28.1: {}
+  undici@6.29.1: {}
 
   unicode-canonical-property-names-ecmascript@2.0.1: {}
 

@@ -125,6 +125,19 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     render_passkeys(notice: required ? I18n.t("passkeys.requirement_enabled") : I18n.t("passkeys.requirement_disabled"))
   end
 
+  def update
+    authorize current_user, policy_class: PasskeyPolicy
+    passkey = current_user.passkeys.find(params[:id])
+    nickname = params.permit(:nickname)[:nickname].to_s.strip
+    if nickname.blank? || nickname.length > 80
+      render json: { error: I18n.t("passkeys.invalid_name") }, status: 422
+      return
+    end
+
+    passkey.update!(nickname:)
+    render_passkeys(notice: I18n.t("passkeys.renamed"))
+  end
+
   def destroy
     authorize current_user, policy_class: PasskeyPolicy
     passkey = current_user.passkeys.find(params[:id])

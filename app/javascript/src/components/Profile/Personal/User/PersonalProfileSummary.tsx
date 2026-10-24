@@ -66,7 +66,7 @@ const PersonalProfileSummary = ({
       : 0;
 
   return (
-    <div className="min-h-screen bg-background font-geist">
+    <div className="bg-background font-geist">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="border-border shadow-sm lg:col-span-2">
@@ -248,6 +248,16 @@ const PersonalProfileSummary = ({
                       onClick={handleEditClick}
                     >
                       {i18n.t("settings.changePassword")}
+                    </Button>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                    >
+                      <a href="#account-security">
+                        {i18n.t("accountSecurity.manage")}
+                      </a>
                     </Button>
                   </div>
                 </CardContent>

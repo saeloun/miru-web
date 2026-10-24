@@ -227,30 +227,49 @@ export const authenticationApi = {
   },
 };
 
+const accountSecurityRequest = { skipSuccessToast: true, skipErrorToast: true };
+
 export const passkeysApi = {
-  index: () => http.get("/users/passkeys"),
+  index: () => http.get("/users/passkeys", accountSecurityRequest),
   registrationOptions: (payload: any) =>
-    http.post("/users/passkeys/registration_options", payload),
-  create: (payload: any) => http.post("/users/passkeys", payload),
+    http.post(
+      "/users/passkeys/registration_options",
+      payload,
+      accountSecurityRequest
+    ),
+  create: (payload: any) =>
+    http.post("/users/passkeys", payload, accountSecurityRequest),
   authenticate: (payload: any) =>
     http.post("/users/passkeys/authenticate", payload),
   updateRequirement: (payload: any) =>
-    http.patch("/users/passkeys/requirement", payload),
+    http.patch("/users/passkeys/requirement", payload, accountSecurityRequest),
+  update: (id: number, payload: any) =>
+    http.patch(`/users/passkeys/${id}`, payload, accountSecurityRequest),
   destroy: (id: number, payload: any) =>
-    http.delete(`/users/passkeys/${id}`, { data: payload }),
+    http.delete(`/users/passkeys/${id}`, {
+      ...accountSecurityRequest,
+      data: payload,
+    }),
 };
 
 export const totpApi = {
-  show: () => http.get("/users/totp"),
-  setup: (payload: any) => http.post("/users/totp/setup", payload),
-  confirm: (payload: any) => http.post("/users/totp/confirm", payload),
+  show: () => http.get("/users/totp", accountSecurityRequest),
+  setup: (payload: any) =>
+    http.post("/users/totp/setup", payload, accountSecurityRequest),
+  confirm: (payload: any) =>
+    http.post("/users/totp/confirm", payload, accountSecurityRequest),
   authenticate: (payload: any) =>
     http.post("/users/totp/authenticate", payload),
   regenerateRecoveryCodes: (payload: any) =>
-    http.post("/users/totp/recovery_codes", payload),
+    http.post("/users/totp/recovery_codes", payload, accountSecurityRequest),
   revokeTrustedBrowsers: (payload: any) =>
-    http.post("/users/totp/revoke_trusted_browsers", payload),
-  destroy: (payload: any) => http.delete("/users/totp", { data: payload }),
+    http.post(
+      "/users/totp/revoke_trusted_browsers",
+      payload,
+      accountSecurityRequest
+    ),
+  destroy: (payload: any) =>
+    http.delete("/users/totp", { ...accountSecurityRequest, data: payload }),
 };
 
 // Clients

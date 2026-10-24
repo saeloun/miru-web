@@ -1,4 +1,50 @@
 const en = {
+  accountSecurity: {
+    title: "Sign-in security",
+    manage: "Manage two-factor authentication",
+    description:
+      "Manage your authenticator, passkeys and trusted browsers. Changes save immediately.",
+    on: "Two-factor verification is on",
+    off: "Two-factor verification is off",
+    authenticator: "Authenticator app",
+    authenticatorDescription:
+      "Use an authenticator code or a recovery code to complete verification after your password.",
+    setupAuthenticator: "Set up authenticator",
+    disableAuthenticatorAction: "Turn off authenticator",
+    confirmPassword: "Confirm your current password to continue.",
+    disableAuthenticator:
+      "Authenticator codes and recovery codes will stop working. Your passkey verification will remain on.",
+    disableLastFactor:
+      "This turns off two-factor verification. Your password will be enough to sign in. Confirm your password to continue.",
+    replaceCodes:
+      "All previous recovery codes will stop working. Download the new codes and store them somewhere safe.",
+    savedCodes: "I've saved these codes",
+    removePasskey: "Remove this passkey?",
+    removeDescription:
+      "Remove this passkey from your Miru account. To delete the saved passkey, remove it separately from your device or password manager.",
+    removeLastFactor:
+      "This is your last passkey. Removing it also turns off two-factor verification. Your password will be enough to sign in.",
+    enablePasskeys: "Enable passkey verification",
+    disablePasskeys: "Turn off passkey verification",
+    passkeyRequirementDescription:
+      "Your password is still required. Complete verification with a passkey or your authenticator if one is enabled.",
+    defaultPasskeyName: "My passkey",
+    rename: "Rename",
+    renameNamed: "Rename %{name}",
+    removeNamed: "Remove %{name}",
+    passkeyName: "Passkey name",
+    saveName: "Save name",
+    renamed: "Passkey name updated",
+    trustedBrowsers: "Trusted browsers",
+    trustDescription:
+      "With two-factor verification on, you can trust a browser you own for 30 days after verifying. Your password is still required when you sign in.",
+    revokeDescription:
+      "Forget browser trust. If two-factor verification is on, each browser will need a code or passkey at its next sign-in. Your current session stays signed in.",
+    loadFailed:
+      "Could not load sign-in security. Try again before making changes.",
+    failed: "Could not update sign-in security. Please try again.",
+    saved: "Sign-in security updated",
+  },
   loginSecurity: {
     title: "Verify it’s you",
     description: "Complete two-factor verification to sign in to Miru.",
@@ -1843,9 +1889,9 @@ const en = {
     addDescription:
       "Use Face ID, Touch ID, Windows Hello, or a hardware security key.",
     addAction: "Add passkey",
-    requirementTitle: "Require passkey on sign in",
+    requirementTitle: "Use passkeys for two-factor verification",
     requirementDescription:
-      "After your password, Miru will require a passkey to complete sign in.",
+      "After your password, verify with a passkey or another enabled verification method.",
     emptyState: "No passkeys added yet.",
     fallbackName: "Passkey",
     addedAt: "Added %{time}",

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 
 import { Fingerprint, ShieldCheck, Trash } from "phosphor-react";
 import { i18n } from "../../../../../i18n";
 import { Button } from "../../../../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../../ui/card";
 import { Switch } from "../../../../ui/switch";
+import { Input } from "../../../../ui/input";
 
 const formatTimestamp = (value?: string | null) => {
   if (!value) return i18n.t("passkeys.neverUsed");
@@ -21,13 +22,20 @@ const PasskeysPanel = ({
   onRegister,
   onRemove,
   onToggleRequirement,
+  onRename,
   passkeyRequiredForLogin,
   passkeys,
 }) => {
+  const [editingId, setEditingId] = useState(null);
+  const [nickname, setNickname] = useState("");
   if (!canManage) return null;
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card
+      className="border-border shadow-sm"
+      role="region"
+      aria-label={i18n.t("passkeys.title")}
+    >
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg font-geist-semibold">
           <Fingerprint
@@ -81,8 +89,8 @@ const PasskeysPanel = ({
                 key={passkey.id}
                 className="flex flex-col gap-3 rounded-2xl border border-border p-4 sm:flex-row sm:items-center sm:justify-between"
               >
-                <div className="space-y-1">
-                  <p className="text-sm font-geist-medium text-foreground">
+                <div className="min-w-0 space-y-1">
+                  <p className="break-words text-sm font-geist-medium text-foreground">
                     {passkey.nickname || i18n.t("passkeys.fallbackName")}
                   </p>
                   <p className="text-xs text-muted-foreground">
@@ -96,16 +104,76 @@ const PasskeysPanel = ({
                     })}
                   </p>
                 </div>
-                <Button
-                  className="sm:self-center"
-                  disabled={busy}
-                  onClick={() => onRemove(passkey.id)}
-                  type="button"
-                  variant="outline"
-                >
-                  <Trash className="mr-2 h-4 w-4" weight="bold" />
-                  {i18n.t("passkeys.removeAction")}
-                </Button>
+                {editingId === passkey.id ? (
+                  <form
+                    className="w-full space-y-3 sm:max-w-xs"
+                    onSubmit={async event => {
+                      event.preventDefault();
+                      if (await onRename(passkey.id, nickname.trim())) {
+                        setEditingId(null);
+                      }
+                    }}
+                  >
+                    <label
+                      className="text-sm"
+                      htmlFor={`passkey-name-${passkey.id}`}
+                    >
+                      {i18n.t("accountSecurity.passkeyName")}
+                    </label>
+                    <Input
+                      autoFocus
+                      id={`passkey-name-${passkey.id}`}
+                      maxLength={80}
+                      value={nickname}
+                      onChange={event => setNickname(event.target.value)}
+                    />
+                    <div className="flex gap-2">
+                      <Button disabled={busy || !nickname.trim()} type="submit">
+                        {i18n.t("accountSecurity.saveName")}
+                      </Button>
+                      <Button
+                        disabled={busy}
+                        type="button"
+                        variant="outline"
+                        onClick={() => setEditingId(null)}
+                      >
+                        {i18n.t("cancel")}
+                      </Button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="flex shrink-0 flex-wrap gap-2">
+                    <Button
+                      disabled={busy}
+                      type="button"
+                      variant="outline"
+                      aria-label={i18n.t("accountSecurity.renameNamed", {
+                        name:
+                          passkey.nickname || i18n.t("passkeys.fallbackName"),
+                      })}
+                      onClick={() => {
+                        setNickname(passkey.nickname || "");
+                        setEditingId(passkey.id);
+                      }}
+                    >
+                      {i18n.t("accountSecurity.rename")}
+                    </Button>
+                    <Button
+                      className="sm:self-center"
+                      disabled={busy}
+                      onClick={() => onRemove(passkey.id)}
+                      type="button"
+                      variant="outline"
+                      aria-label={i18n.t("accountSecurity.removeNamed", {
+                        name:
+                          passkey.nickname || i18n.t("passkeys.fallbackName"),
+                      })}
+                    >
+                      <Trash className="mr-2 h-4 w-4" weight="bold" />
+                      {i18n.t("passkeys.removeAction")}
+                    </Button>
+                  </div>
+                )}
               </div>
             ))
           )}

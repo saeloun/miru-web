@@ -68,6 +68,43 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     end
   end
 
+  describe "PATCH /api/v1/users/passkeys/:id" do
+    it "renames an owned passkey without changing authentication or trust" do
+      passkey = register_passkey
+      token = user.reload.token
+      version = user.browser_trust_version
+
+      patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: "  Work Mac  " }
+
+      expect(response).to have_http_status(:ok)
+      expect(passkey.reload.nickname).to eq("Work Mac")
+      expect(user.reload.token).to eq(token)
+      expect(user.browser_trust_version).to eq(version)
+    end
+
+    ["", "x" * 81].each do |nickname|
+      it "rejects an invalid display name of length #{nickname.length}" do
+        passkey = register_passkey
+        original = passkey.nickname
+
+        patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(passkey.reload.nickname).to eq(original)
+      end
+    end
+
+    it "does not rename another user's passkey" do
+      passkey = register_passkey
+      sign_in create(:user)
+
+      patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: "Changed" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(passkey.reload.nickname).not_to eq("Changed")
+    end
+  end
+
   describe "DELETE /api/v1/users/passkeys/:id" do
     it "removes a passkey and clears the requirement when last passkey is deleted" do
       passkey = register_passkey

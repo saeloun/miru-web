@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from "react";
 
-import { passkeysApi, profileApi, teamsApi, totpApi } from "apis/api";
+import { profileApi, teamsApi } from "apis/api";
 import Loader from "common/Loader/index";
 import { MobileDetailsHeader } from "common/Mobile/MobileDetailsHeader";
 import EditHeader from "components/Profile/Common/EditHeader";
@@ -14,13 +14,13 @@ import { pickPrimaryAddress, teamsMapper } from "mapper/teams.mapper";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Button, Modal } from "StyledComponents";
-import { beginPasskeyRegistration } from "utils/passkeys";
 import worldCountries from "world-countries";
 import * as Yup from "yup";
 import { useCurrentUser } from "~/hooks/useCurrentUser";
 
 import MobileProfileEditor from "./MobileProfileEditor";
 import ProfileEditor from "./ProfileEditor";
+import AccountSecurity from "../AccountSecurity";
 import ProfileImageCard from "./ProfileImageCard";
 import { userSchema } from "./validationSchema";
 
@@ -63,7 +63,7 @@ const UserDetailsEdit = () => {
   const [showDatePicker, setShowDatePicker] = useState({ visibility: false });
   const [countries, setCountries] = useState([]);
   const [errDetails, setErrDetails] = useState(initialErrState);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [addrId, setAddrId] = useState();
   const [userId, setUserId] = useState();
   const [initialPersonalDetails, setInitialPersonalDetails] = useState(null);
@@ -76,17 +76,6 @@ const UserDetailsEdit = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passkeys, setPasskeys] = useState([]);
-  const [passkeyRequiredForLogin, setPasskeyRequiredForLogin] = useState(false);
-  const [passkeysBusy, setPasskeysBusy] = useState(false);
-  const [totpEnabled, setTotpEnabled] = useState(false);
-  const [totpBusy, setTotpBusy] = useState(false);
-  const [totpSecret, setTotpSecret] = useState("");
-  const [totpProvisioningUri, setTotpProvisioningUri] = useState("");
-  const [totpQrCode, setTotpQrCode] = useState("");
-  const [totpVerificationCode, setTotpVerificationCode] = useState("");
-  const [recoveryCodes, setRecoveryCodes] = useState([]);
-  const [recoveryCodesCount, setRecoveryCodesCount] = useState(0);
   const [reauthPassword, setReauthPassword] = useState("");
   const [showReauthDialog, setShowReauthDialog] = useState(false);
   const passwordResolverRef = useRef<
@@ -158,41 +147,6 @@ const UserDetailsEdit = () => {
       getDetails();
     }
   }, [currentUserId]);
-
-  const syncPasskeys = data => {
-    setPasskeys(data.passkeys || []);
-    setPasskeyRequiredForLogin(!!data.passkey_required_for_login);
-  };
-
-  const loadPasskeys = async () => {
-    if (!isCalledFromSettings) return;
-
-    const response = await passkeysApi.index();
-    syncPasskeys(response.data);
-  };
-
-  const syncTotp = data => {
-    setTotpEnabled(!!data.enabled);
-    setRecoveryCodesCount(data.recovery_codes_count || 0);
-    setTotpSecret(data.secret || "");
-    setTotpProvisioningUri(data.provisioning_uri || "");
-    setTotpQrCode(data.qr_code || "");
-    setRecoveryCodes(data.recovery_codes || []);
-  };
-
-  const loadTotp = async () => {
-    if (!isCalledFromSettings) return;
-
-    const response = await totpApi.show();
-    syncTotp(response.data);
-  };
-
-  useEffect(() => {
-    if (isCalledFromSettings && currentUserId) {
-      loadPasskeys();
-      loadTotp();
-    }
-  }, [isCalledFromSettings, currentUserId]);
 
   const cancelPasswordChange = () => {
     setChangePassword(false);
@@ -438,162 +392,6 @@ const UserDetailsEdit = () => {
     setShowReauthDialog(false);
   };
 
-  const handleRegisterPasskey = async () => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setPasskeysBusy(true);
-      const optionsResponse = await passkeysApi.registrationOptions({
-        current_password: currentPassword,
-      });
-
-      const credential = await beginPasskeyRegistration(
-        optionsResponse.data.public_key
-      );
-
-      const response = await passkeysApi.create({
-        challenge_token: optionsResponse.data.challenge_token,
-        credential,
-      });
-
-      syncPasskeys(response.data);
-      toast.success(i18n.t("passkeys.addedSuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error ||
-          error.message ||
-          i18n.t("passkeys.addFailed")
-      );
-    } finally {
-      setPasskeysBusy(false);
-    }
-  };
-
-  const handleRemovePasskey = async id => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setPasskeysBusy(true);
-      const response = await passkeysApi.destroy(id, {
-        current_password: currentPassword,
-      });
-      syncPasskeys(response.data);
-      toast.success(i18n.t("passkeys.removedSuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error || i18n.t("passkeys.removeFailed")
-      );
-    } finally {
-      setPasskeysBusy(false);
-    }
-  };
-
-  const handleTogglePasskeyRequirement = async required => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setPasskeysBusy(true);
-      const response = await passkeysApi.updateRequirement({
-        required,
-        current_password: currentPassword,
-      });
-      syncPasskeys(response.data);
-      toast.success(
-        required
-          ? i18n.t("passkeys.requirementEnabled")
-          : i18n.t("passkeys.requirementDisabled")
-      );
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error ||
-          i18n.t("passkeys.updateRequirementFailed")
-      );
-    } finally {
-      setPasskeysBusy(false);
-    }
-  };
-
-  const handleSetupTotp = async () => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setTotpBusy(true);
-      const response = await totpApi.setup({
-        current_password: currentPassword,
-      });
-      syncTotp(response.data);
-      setTotpVerificationCode("");
-      toast.success(i18n.t("twoFactor.setupReadySuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error || i18n.t("twoFactor.setupFailed")
-      );
-    } finally {
-      setTotpBusy(false);
-    }
-  };
-
-  const handleConfirmTotp = async () => {
-    try {
-      setTotpBusy(true);
-      const response = await totpApi.confirm({ code: totpVerificationCode });
-      syncTotp(response.data);
-      setTotpVerificationCode("");
-      toast.success(i18n.t("twoFactor.enabledSuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error || i18n.t("twoFactor.enableFailed")
-      );
-    } finally {
-      setTotpBusy(false);
-    }
-  };
-
-  const handleDisableTotp = async () => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setTotpBusy(true);
-      const response = await totpApi.destroy({
-        current_password: currentPassword,
-      });
-      syncTotp(response.data);
-      setTotpVerificationCode("");
-      toast.success(i18n.t("twoFactor.disabledSuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error || i18n.t("twoFactor.disableFailed")
-      );
-    } finally {
-      setTotpBusy(false);
-    }
-  };
-
-  const handleRegenerateRecoveryCodes = async () => {
-    const currentPassword = await requestCurrentPassword();
-    if (!currentPassword) return;
-
-    try {
-      setTotpBusy(true);
-      const response = await totpApi.regenerateRecoveryCodes({
-        current_password: currentPassword,
-      });
-      syncTotp(response.data);
-      toast.success(i18n.t("twoFactor.regeneratedSuccess"));
-    } catch (error) {
-      toast.error(
-        error?.response?.data?.error || i18n.t("twoFactor.regenerateFailed")
-      );
-    } finally {
-      setTotpBusy(false);
-    }
-  };
-
   return (
     <Fragment>
       {isDesktop && (
@@ -653,26 +451,6 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
-              canManagePasskeys={isCalledFromSettings}
-              onRegisterPasskey={handleRegisterPasskey}
-              onRemovePasskey={handleRemovePasskey}
-              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
-              passkeyRequiredForLogin={passkeyRequiredForLogin}
-              passkeys={passkeys}
-              passkeysBusy={passkeysBusy}
-              onConfirmTotp={handleConfirmTotp}
-              onDisableTotp={handleDisableTotp}
-              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
-              onSetupTotp={handleSetupTotp}
-              recoveryCodes={recoveryCodes}
-              recoveryCodesCount={recoveryCodesCount}
-              setTotpVerificationCode={setTotpVerificationCode}
-              totpBusy={totpBusy}
-              totpEnabled={totpEnabled}
-              totpProvisioningUri={totpProvisioningUri}
-              totpQrCode={totpQrCode}
-              totpSecret={totpSecret}
-              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />
@@ -729,26 +507,6 @@ const UserDetailsEdit = () => {
               showCurrentPassword={showCurrentPassword}
               showDatePicker={showDatePicker}
               showPassword={showPassword}
-              canManagePasskeys={isCalledFromSettings}
-              onRegisterPasskey={handleRegisterPasskey}
-              onRemovePasskey={handleRemovePasskey}
-              onTogglePasskeyRequirement={handleTogglePasskeyRequirement}
-              passkeyRequiredForLogin={passkeyRequiredForLogin}
-              passkeys={passkeys}
-              passkeysBusy={passkeysBusy}
-              onConfirmTotp={handleConfirmTotp}
-              onDisableTotp={handleDisableTotp}
-              onGenerateRecoveryCodes={handleRegenerateRecoveryCodes}
-              onSetupTotp={handleSetupTotp}
-              recoveryCodes={recoveryCodes}
-              recoveryCodesCount={recoveryCodesCount}
-              setTotpVerificationCode={setTotpVerificationCode}
-              totpBusy={totpBusy}
-              totpEnabled={totpEnabled}
-              totpProvisioningUri={totpProvisioningUri}
-              totpQrCode={totpQrCode}
-              totpSecret={totpSecret}
-              totpVerificationCode={totpVerificationCode}
               updateBasicDetails={updateBasicDetails}
               wrapperRef={wrapperRef}
             />
@@ -756,33 +514,8 @@ const UserDetailsEdit = () => {
         </Fragment>
       )}
       {isCalledFromSettings && !isLoading && (
-        <div className="mx-auto max-w-6xl space-y-3 px-4 pb-8 sm:px-6 lg:px-8">
-          <p className="text-sm text-muted-foreground">
-            {i18n.t("loginSecurity.revokeDescription")}
-          </p>
-          <Button
-            disabled={totpBusy}
-            style="secondary"
-            onClick={async () => {
-              const currentPassword = await requestCurrentPassword();
-              if (!currentPassword) return;
-              setTotpBusy(true);
-              try {
-                await totpApi.revokeTrustedBrowsers({
-                  current_password: currentPassword,
-                });
-              } catch (error) {
-                toast.error(
-                  error?.response?.data?.error ||
-                    i18n.t("loginSecurity.revokeFailed")
-                );
-              } finally {
-                setTotpBusy(false);
-              }
-            }}
-          >
-            {i18n.t("loginSecurity.revokeBrowsers")}
-          </Button>
+        <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+          <AccountSecurity />
         </div>
       )}
       <Modal
