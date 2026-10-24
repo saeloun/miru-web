@@ -224,6 +224,42 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "keeps the body and fields intact when preview replacement fails client validation" do
+    master.update!(fields: agreement_fields)
+    original_fields = master.fields.deep_dup
+    open_agreements("/agreements/templates/#{master.id}")
+    attach_file "Import Word document", Rails.root.join("spec/fixtures/agreements/synthetic-short.docx")
+    expect(page).to have_content("Preview Word import")
+    page.execute_script(<<~JS)
+      const schema = document.querySelector('[aria-label="Contract body"]').editor.schema;
+      window.originalAgreementNodeFromJSON = schema.nodeFromJSON;
+      schema.nodeFromJSON = () => { throw new Error('Synthetic preview validation failure'); };
+    JS
+    within('[role="dialog"]') { click_button "Replace body and fields" }
+    expect(page).to have_css('[role="dialog"] [role="alert"]', text: "The imported document could not be loaded safely.")
+    expect(page.evaluate_script(<<~JS)).to be(true)
+      (() => {
+        const alert = document.querySelector('[role="dialog"] [role="alert"]').getBoundingClientRect();
+        const dialog = document.querySelector('[role="dialog"]').getBoundingClientRect();
+        return alert.top >= dialog.top && alert.bottom <= dialog.bottom;
+      })()
+    JS
+    page.save_screenshot(Rails.root.join("tmp/capybara/agreement-import-recovery.png"))
+    page.execute_script(<<~JS)
+      document.querySelector('[aria-label="Contract body"]').editor.schema.nodeFromJSON = window.originalAgreementNodeFromJSON;
+      delete window.originalAgreementNodeFromJSON;
+    JS
+    within('[role="dialog"]') { click_button "Cancel import" }
+    expect(page).to have_content("Original clause नमस्कार")
+    expect(page).not_to have_button("Edit Field 0")
+    body_editor.click
+    body_editor.send_keys(:end, " Unchanged fields")
+    expect_saved
+    expect(master.reload.fields).to eq(original_fields)
+    expect(master.document.to_json).to include("Unchanged fields")
+    expect(@console_errors).to be_empty
+  end
+
   it "protects populated values when changing field types or dropdown options" do
     consultant = create(:employment, company:, resigned_at: nil, employment_type: "Consultant")
     fields = agreement_fields + [{ "key" => "payment_currency", "label" => "Payment currency", "type" => "dropdown",

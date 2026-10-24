@@ -7,6 +7,18 @@ RSpec.describe EncodingSanitizer do
   let(:middleware) { described_class.new(app) }
 
   describe "#call" do
+    it "decodes a complete Content-Length body before Rails raw_post consumes it" do
+      text = '{"name":"आनंद Núñez"}'
+      body = text.encode(Encoding::UTF_16LE)
+      app = ->(env) { [200, {}, [ActionDispatch::Request.new(env).raw_post]] }
+      env = { "PATH_INFO" => "/test", "CONTENT_TYPE" => "application/json", "CONTENT_LENGTH" => body.bytesize.to_s,
+              "rack.input" => StringIO.new(body) }
+
+      _status, _headers, response = described_class.new(app).call(env)
+
+      expect(response).to eq([text])
+    end
+
     it "preserves binary-labelled UTF-8 in URL values" do
       query = "name=आनंद Núñez"
       _status, response_env, _body = middleware.call({ "QUERY_STRING" => query.b, "PATH_INFO" => "/test" })
@@ -139,13 +151,16 @@ RSpec.describe EncodingSanitizer do
     end
 
     it "preserves multibyte sequences across byte-counted reads" do
-      body = "आनंद Núñez".b
-      input = described_class.new(StringIO.new(body))
-      result = +"".b
-      while (part = input.read(2))
-        result << part
+      ["आनंद Núñez".b, "आनंद Núñez".encode(Encoding::UTF_16LE)].each do |body|
+        [0, body.bytesize].each do |content_length|
+          input = described_class.new(StringIO.new(body), content_length:)
+          result = +"".b
+          while (part = input.read(2))
+            result << part
+          end
+          expect(result.bytes).to eq(body.bytes)
+        end
       end
-      expect(result).to eq(body)
     end
 
     describe "#read" do

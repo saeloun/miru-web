@@ -39,6 +39,45 @@ RSpec.describe "Agreement DOCX import preview" do
     expect(result[:fields].last).to include("key" => "scope", "type" => "text")
   end
 
+  it "imports adjacent placeholders without creating empty text nodes" do
+    result = preview(body: "<w:p><w:r><w:t>Party {{legal_name}}{{scope}}</w:t></w:r></w:p>")
+    nodes = result[:document].dig("content", 0, "content")
+    expect(nodes.pluck("type")).to eq(%w[text mergeField mergeField])
+    expect(nodes.filter_map { |node| node.dig("attrs", "key") }).to eq(%w[legal_name scope])
+  end
+
+  it "normalizes declared ignorable formatting in Word defaults without dropping substantive content" do
+    styles = <<~XML
+      <w:styles xmlns:w="#{AgreementFixtures::WORD_NAMESPACE}"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+        xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" mc:Ignorable="w14 w15">
+        <w:docDefaults>
+          <w:rPrDefault><w:rPr><w:b/><w14:ligatures w14:val="standardContextual"/></w:rPr></w:rPrDefault>
+          <w:pPrDefault><w:pPr><w:jc w:val="center"/><w15:collapsed/></w:pPr></w:pPrDefault>
+        </w:docDefaults>
+      </w:styles>
+    XML
+    paragraph = preview(parts: { "word/styles.xml" => styles })[:document]["content"].first
+    expect(paragraph["attrs"]).to include("textAlign" => "center")
+    expect(paragraph["content"].first).to include("text" => "Consulting terms", "marks" => [{ "type" => "bold" }])
+    expect { preview(parts: { "word/styles.xml" => styles.sub('mc:Ignorable="w14 w15"', "") }) }
+      .to raise_error(Agreements::DocxImport::Error, /namespace/i)
+    hidden = styles.sub('<w14:ligatures w14:val="standardContextual"/>', "<w14:ligatures><w:t>Hidden terms</w:t></w14:ligatures>")
+    expect { preview(parts: { "word/styles.xml" => hidden }) }.to raise_error(Agreements::DocxImport::Error, /namespace/i)
+  end
+
+  it "keeps foreign elements strict outside formatting even when the namespace is ignorable" do
+    source = <<~XML
+      <w:document xmlns:w="#{AgreementFixtures::WORD_NAMESPACE}"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" mc:Ignorable="w14">
+        <w:body><w:p><w:r><w14:ligatures w14:val="standardContextual"/><w:t>Terms</w:t></w:r></w:p></w:body>
+      </w:document>
+    XML
+    expect { preview(parts: { "word/document.xml" => source }) }.to raise_error(Agreements::DocxImport::Error, /namespace/i)
+  end
+
   it "imports an independently generated Word package with 60 fields and 25 explicit pages" do
     File.open(Rails.root.join("spec/fixtures/agreements/synthetic-long.docx"), "rb") do |file|
       upload = ActionDispatch::Http::UploadedFile.new(tempfile: file, filename: "synthetic-long.docx", type: Agreements::DocxImport::MIME_TYPE)

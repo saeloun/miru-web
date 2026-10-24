@@ -165,10 +165,21 @@ module Agreements
         if node.children.any? { |child| child.text? && child.text.present? }
           raise Error, "Unsupported text outside a Word text run"
         end
-        node.element_children.each do |child|
-          raise Error, "Unsupported XML namespace" unless WORD_NAMESPACES.include?(child.namespace&.href)
+        node.element_children.reject do |child|
+          next false if WORD_NAMESPACES.include?(child.namespace&.href)
+          raise Error, "Unsupported XML namespace" unless ignorable_property?(node, child)
+
+          true
         end
-        node.element_children
+      end
+
+      def ignorable_property?(parent, child)
+        return false unless %w[rPr pPr].include?(parent.name) && WORD_NAMESPACES.include?(parent.namespace&.href)
+        return false unless child.text.blank? && child.xpath(".//*").none? { |node| WORD_NAMESPACES.include?(node.namespace&.href) }
+
+        root = parent.document.root
+        prefixes = root.attribute_with_ns("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006")&.value.to_s.split
+        prefixes.any? { |prefix| root.namespaces["xmlns:#{prefix}"] == child.namespace&.href }
       end
 
       def word_value(node, attribute = "val")
@@ -426,6 +437,8 @@ module Agreements
       end
 
       def text_slice(offsets, from, to)
+        return [] if from >= to
+
         index = offsets.bsearch_index { |_start, finish, _node| finish > from }
         result = []
         while index && index < offsets.length && offsets[index][0] < to

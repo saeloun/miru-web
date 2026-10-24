@@ -279,19 +279,19 @@ const LoadedEditor = ({
         preview.fields.some(field => field.key === key)
       )
     );
+    setError("");
+    try {
+      editor.current.commands.setContent(preview.document, {
+        emitUpdate: false,
+        errorOnInvalidContent: true,
+      });
+    } catch {
+      setError("The imported document could not be loaded safely.");
+
+      return;
+    }
     setFields(preview.fields);
     setValues(field_values);
-    current.current = {
-      ...current.current,
-      fields: preview.fields,
-      field_values,
-    };
-
-    editor.current.commands.setContent(preview.document, {
-      emitUpdate: false,
-      errorOnInvalidContent: true,
-    });
-
     change({
       document: editor.current.getJSON(),
       fields: preview.fields,
@@ -530,7 +530,15 @@ const LoadedEditor = ({
                 values={{}}
                 readOnly
               />
-              <div className="flex flex-wrap justify-end gap-2">
+              <div className="sticky bottom-0 flex flex-wrap justify-end gap-2 border-t border-border bg-background pt-3">
+                {error && (
+                  <p
+                    className="w-full text-sm text-red-700 dark:text-red-300"
+                    role="alert"
+                  >
+                    {error}
+                  </p>
+                )}
                 <Button variant="outline" onClick={() => setPreview(null)}>
                   Cancel import
                 </Button>
