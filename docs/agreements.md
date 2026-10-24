@@ -1,5 +1,7 @@
 # Agreement authoring for Miru contributors
 
+> Release hold: the template-first authoring unit below does not meet the clarified upload-and-sign workflow. [The revised requirements](superpowers/specs/2026-10-24-generic-document-signing.md) make individual document uploads primary and templates optional. Actual recipient signing remains unfinished; do not deploy this unit as a signing feature.
+
 Owners/admins with an active membership can author private client/consultant templates at `/agreements` and generate independent drafts. The current unit provides editable clauses, fields, DOCX preview import and DRAFT PDF export. Approval, sharing, actual signing and immutable completed artifacts remain unfinished; none of these endpoints sends mail, signs a document or settles a payment.
 
 Use the existing Miru development setup in [CLAUDE.md](../CLAUDE.md). Install the checked-in dependencies with `pnpm install --frozen-lockfile` and `bundle install`, then apply `bin/rails db:migrate` to your local development database. Keep encryption keys stable; do not copy production data or credentials into fixtures. This feature needs no separate signing-provider account.

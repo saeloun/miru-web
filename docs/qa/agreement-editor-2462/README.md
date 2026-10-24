@@ -1,5 +1,7 @@
 # Agreement authoring evidence — implementation in progress
 
+> Product direction changed: [generic upload/signing requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md), [local provider validation](../generic-document-signing-2462/README.md). The evidence below covers the existing authoring unit. PR #2475 is held as a draft; these checks do not establish signing readiness.
+
 Part of #2462; not a complete agreement/signing workflow. This local branch provides encrypted structured masters and independent drafts, owner/admin-scoped authoring, full body/table/field editing, identity and payment field presets, bounded DOCX preview import, party lookup, autosave, conflict recovery, metadata-only edit/download audits and private DRAFT PDFs. Mobile fields open in a focused dialog. Reviews/approvals, sent locks, signing and immutable completed artifacts remain separate work. No deployment is claimed here.
 
 ## Verification

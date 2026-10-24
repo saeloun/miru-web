@@ -1,5 +1,7 @@
 # Editable agreement templates and drafts
 
+> Superseded product direction: the user clarified that an individual uploaded document, with fields placed on its pages and sent for signature, is the primary flow. See [generic document signing](2026-10-24-generic-document-signing.md). This document describes the existing authoring unit only; it does not establish signing readiness. PR #2475 is held as a draft.
+
 Issue #2462 requires reusable consultant/client masters, separately editable generated copies, review, signing and immutable completed records. The user additionally requires full body editing and configurable signer fields with measured performance. PR #2474 only supplies client identity/contact data; the contract upload UI supplies private file retention. Neither is an editor.
 
 ## Choice and boundaries
