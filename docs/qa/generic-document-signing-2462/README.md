@@ -38,6 +38,18 @@ These screenshots are actual local Miru UI with synthetic documents and recipien
 
 Provider connection/send/cancel/reconciliation and verified completed artifacts are the next units. No production readiness or completed Miru signature follows from these review checks.
 
+## Miru HTTP client checks
+
+The new server-side client uses the pinned envelope API: multipart `payload` plus repeated `files`, raw `Authorization` API key, fixed provider paths and original-item downloads. The provider origin comes only from server configuration. HTTPS is required in production; development/test HTTP is restricted to loopback. Requests have explicit connection/read/write and total time limits, disabled transport retries, bounded JSON/file responses and no redirect following. Provider bodies and credentials are excluded from public errors. A timeout, server error or malformed mutation response produces an uncertain outcome rather than permission to create or send again.
+
+The focused client/source/configuration run passed **40 examples, zero failures**. The multipart case uses a real loopback HTTP receiver because the HTTP mock bypasses the standard library's multipart encoder. Ruby lint and Reek passed.
+
+A second live probe used this Miru client against the same pinned local provider with two synthetic PDFs and two fictional signers. Both original downloads matched their source SHA-256 digests. Creation returned DRAFT, distribution returned PENDING, a reminder was accepted and cancellation read back as CANCELLED. `Asia/Kolkata`, `dd/MM/yyyy` and parallel signing persisted. Only local Mailpit SMTP was configured; reminder acceptance does not establish delivery to a real mailbox.
+
+A separate contract probe confirmed that cancelling an undistributed DRAFT returns HTTP 400 and leaves it DRAFT. Miru must distinguish cancellation before distribution from cancellation of a sent request, retaining an unused provider draft without treating it as a signed artifact. The probe deleted its disposable draft and confirmed HTTP 404 afterward; this cleanup does not establish an atomic deletion guard for arbitrary provider documents.
+
+Company credential management, approved-snapshot job orchestration, duplicate/crash reconciliation, provider field geometry and verified completed archives still need integration checks. This client probe does not exercise the complete Miru signing flow or change the production hold.
+
 ## Environment and isolation
 
 Live local self-hosted Documenso **2.21.1**, Node 24.22.1, Linux arm64 on Docker 29.5.2. Image pinned to `ghcr.io/documenso/documenso@sha256:41a69062febc915d1508b87be8c5bbe72ecd3c49232ddcd983490f5f7832f053`. PostgreSQL 15, local Mailpit SMTP capture, internal Docker network, localhost-only proxy on ports 3318/3319. No licence key, subscription, production credentials, real contract or external SMTP delivery. The certificate was disposable, self-signed and explicitly named Synthetic QA ONLY.
