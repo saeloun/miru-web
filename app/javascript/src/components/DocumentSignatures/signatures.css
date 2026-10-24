@@ -1,0 +1,89 @@
+.signature-workspace input,
+.signature-workspace select,
+.signature-workspace textarea,
+.signature-workspace button {
+  min-height: 44px;
+}
+.signatures-select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-height: 44px;
+  border: 1px solid hsl(var(--input));
+  border-radius: 6px;
+  padding: 8px;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+.signatures-select:focus-visible,
+.signature-workspace button:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+.signature-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+@media (min-width: 1100px) {
+  .signature-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 330px);
+  }
+}
+.signature-page {
+  position: relative;
+  flex: none;
+  background: white;
+  color: black;
+}
+.signature-page canvas {
+  width: 100%;
+  height: 100%;
+}
+.signature-placement {
+  position: absolute;
+  border: 2px solid hsl(var(--primary));
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+}
+.signature-placement.selected {
+  box-shadow: 0 0 0 2px hsl(var(--background)), 0 0 0 4px hsl(var(--primary));
+}
+.signature-workspace .signature-move {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 2px 24px 2px 4px;
+  font-size: 12px;
+  text-align: left;
+  overflow-wrap: anywhere;
+  touch-action: none;
+  cursor: move;
+}
+.signature-workspace .signature-resize {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  width: 24px;
+  height: 24px;
+  min-height: 24px;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  touch-action: none;
+  cursor: nwse-resize;
+}
+.signature-check {
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+.signature-workspace .signature-check input {
+  min-height: 20px;
+  height: 20px;
+  width: 20px;
+}

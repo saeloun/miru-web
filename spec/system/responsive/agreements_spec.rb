@@ -23,7 +23,7 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     controllers.zip(original).each { |controller, value| controller.allow_forgery_protection = value }
   end
 
-  def open_agreements(path = "/agreements")
+  def open_agreements(path = "/agreements/authoring")
     sign_in(admin)
     @console_errors = []
     page.driver.browser.on("Runtime.consoleAPICalled") { |event| @console_errors << event if event["type"] == "error" }
