@@ -64,6 +64,7 @@ module Signatures
             document["pages"].size.between?(1, PdfInfo::MAX_PAGES) && document["pages"].all? do |page|
             page.is_a?(Hash) && number?(page["width"]) && page["width"].positive? &&
               number?(page["height"]) && page["height"].positive? &&
+              PdfInfo.valid_dimensions?(page["width"], page["height"]) &&
               page["rotation"].is_a?(Integer) && [0, 90, 180, 270].include?(page["rotation"])
           end
         end && @documents.sum { |document| document["pages"].size } <= PdfInfo::MAX_PAGES

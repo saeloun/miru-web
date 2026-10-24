@@ -173,6 +173,33 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "bounds tall PDF preview buffers while retaining zoomed field coordinates" do
+    open_documents(files: [Rails.root.join("spec/fixtures/files/signature-tall.pdf")])
+    add_signer
+    click_button "Add field"
+    fill_in "Left (%)", with: "20"
+    fill_in "Top (%)", with: "40"
+    ["100%", "200%"].each do |zoom|
+      select zoom, from: "Preview zoom"
+      expect(page).to have_css('[data-pdf-ready="true"]')
+      dimensions = page.evaluate_script(<<~JS)
+        (() => {
+          const canvas = document.querySelector('[aria-label="PDF page 1"]');
+          const page = document.querySelector(".signature-page").getBoundingClientRect();
+          const field = document.querySelector(".signature-placement").getBoundingClientRect();
+          return { width: canvas.width, height: canvas.height, ratio: page.width / page.height,
+            left: (field.left - page.left) / page.width * 100, top: (field.top - page.top) / page.height * 100 };
+        })()
+      JS
+      expect(dimensions.fetch("width")).to be_between(1, 4000)
+      expect(dimensions.fetch("height")).to be_between(1, 4000)
+      expect(dimensions.fetch("ratio")).to be_within(0.0001).of(0.05)
+      expect(dimensions.fetch("left")).to be_within(0.01).of(20)
+      expect(dimensions.fetch("top")).to be_within(0.01).of(40)
+    end
+    expect(@console_errors).to be_empty
+  end
+
   it "drags and resizes fields assigned to different signers and persists their exact positions" do
     company.update!(timezone: "Mumbai")
     open_documents

@@ -13,11 +13,19 @@ module Signatures
     MAX_BYTES = 5 * 1024 * 1024
     MAX_PAGES = 100
     MAX_IMAGE_PIXELS = 16_000_000
+    MAX_PAGE_AREA = 16_000_000
+    MAX_PAGE_SIDE = 14_400
     MAX_OUTPUT_BYTES = 65_536
     MAX_STRUCTURE_BYTES = 1024 * 1024
     TIMEOUT_SECONDS = 5
     ACTIVE_ACTIONS = %w[/JavaScript /Launch /SubmitForm /ImportData /GoToR /GoToE /Rendition /Movie /Sound].freeze
     INVALID_MESSAGE = "Upload a flat, unlocked PDF of at most 5 MiB and 100 pages."
+    GEOMETRY_MESSAGE = "PDF page sizes exceed the supported rendering limits. Export oversized or unusually scaled pages as standard-size PDF pages and retry."
+
+    def self.valid_dimensions?(width, height)
+      [width, height].all? { |value| (value.is_a?(Integer) || value.is_a?(Float)) && value.finite? && value.between?(1, MAX_PAGE_SIDE) } &&
+        width * height <= MAX_PAGE_AREA
+    end
 
     def initialize(path)
       @path = path
@@ -27,8 +35,9 @@ module Signatures
       invalid! unless File.file?(@path) && File.size(@path).between?(1, MAX_BYTES)
       invalid! unless File.binread(@path, 5) == "%PDF-"
       pages = parse(capture("pdfinfo", "-box", "-f", "1", "-l", MAX_PAGES.to_s, @path))
-      reject_active_content(capture("qpdf", "--json", "--json-key=qpdf", "--json-stream-data=none", @path,
+      structure = reject_active_content(capture("qpdf", "--json", "--json-key=qpdf", "--json-key=pages", "--json-stream-data=none", @path,
         output_limit: MAX_STRUCTURE_BYTES))
+      check_page_boxes(structure, pages.size)
       check_images(capture("pdfimages", "-list", @path))
       { "sha256" => Digest::SHA256.file(@path).hexdigest, "pages" => pages }
     rescue Timeout::Error, IOError, Errno::EACCES, Errno::ENOENT, Errno::EISDIR, JSON::ParserError, JSON::NestingError
@@ -71,7 +80,8 @@ module Signatures
       end
 
       def reject_active_content(output)
-        remaining = [JSON.parse(output, max_nesting: 40)]
+        structure = JSON.parse(output, max_nesting: 40)
+        remaining = [structure]
         until remaining.empty?
           node = remaining.pop
           if node.is_a?(Hash)
@@ -82,6 +92,59 @@ module Signatures
             remaining.concat(node)
           end
         end
+        structure
+      end
+
+      def check_page_boxes(structure, count)
+        invalid! unless structure.is_a?(Hash) && structure["qpdf"].is_a?(Array)
+        objects = structure["qpdf"]&.last
+        pages = structure["pages"]
+        invalid! unless objects.is_a?(Hash) && pages.is_a?(Array) && pages.size == count
+        pages.each do |item|
+          invalid! unless item.is_a?(Hash)
+          page = resolve_pdf_value(item["object"], objects)
+          invalid! unless page.is_a?(Hash) && page["/Type"] == "/Page"
+          media = inherited_pdf_value(page, "/MediaBox", objects)
+          crop = inherited_pdf_value(page, "/CropBox", objects) || media
+          unit = resolve_pdf_value(page["/UserUnit"], objects)
+          unit = 1 if unit.nil?
+          invalid! unless (unit.is_a?(Integer) || unit.is_a?(Float)) && unit.finite? && unit.positive?
+          [media, crop].each { |box| check_box(box, unit, objects) }
+        end
+      end
+
+      def check_box(box, unit, objects)
+        box = resolve_pdf_value(box, objects)
+        invalid! unless box.is_a?(Array) && box.size == 4
+        coordinates = box.map { |value| resolve_pdf_value(value, objects) }
+        invalid! unless coordinates.all? { |value| (value.is_a?(Integer) || value.is_a?(Float)) && value.finite? }
+        width, height = coordinates[2] - coordinates[0], coordinates[3] - coordinates[1]
+        unless self.class.valid_dimensions?(width, height) && self.class.valid_dimensions?(width * unit, height * unit)
+          raise InvalidDocument, GEOMETRY_MESSAGE, cause: nil
+        end
+      end
+
+      def inherited_pdf_value(page, key, objects)
+        100.times do
+          invalid! unless page.is_a?(Hash)
+          value = resolve_pdf_value(page[key], objects)
+          return value unless value.nil?
+          return nil unless page["/Parent"]
+
+          page = resolve_pdf_value(page["/Parent"], objects)
+        end
+        invalid!
+      end
+
+      def resolve_pdf_value(value, objects)
+        100.times do
+          return value unless value.is_a?(String) && value.match?(/\A\d+ \d+ R\z/)
+
+          object = objects["obj:#{value}"]
+          invalid! unless object.is_a?(Hash) && object.key?("value")
+          value = object["value"]
+        end
+        invalid!
       end
 
       def parse(output)
@@ -121,6 +184,7 @@ module Signatures
           rotation = rotations.fetch(number).to_i
           invalid! unless number.to_i == index + 1 && width.finite? && height.finite? &&
             width.positive? && height.positive? && rotation.modulo(90).zero?
+          raise InvalidDocument, GEOMETRY_MESSAGE, cause: nil unless self.class.valid_dimensions?(width, height)
           { "width" => width, "height" => height, "rotation" => rotation.modulo(360) }
         end
       end

@@ -14,6 +14,7 @@ import { failureMessage } from "./api";
 import type { Field, SourceDocument } from "./types";
 
 GlobalWorkerOptions.workerSrc = workerUrl;
+const MAX_CANVAS_SIDE = 4000;
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
@@ -125,10 +126,39 @@ export default function PdfPages({
       .then(async page => {
         if (!active || !canvas.current) return;
         const base = page.getViewport({ scale: 1 });
+        if (!Number.isFinite(base.width) || base.width <= 0) {
+          throw new Error(
+            "This PDF page cannot be previewed. Export a standard-size PDF and retry."
+          );
+        }
         const viewport = page.getViewport({ scale: displayWidth / base.width });
-        const density = Math.min(window.devicePixelRatio || 1, 2);
-        canvas.current.width = Math.ceil(viewport.width * density);
-        canvas.current.height = Math.ceil(viewport.height * density);
+        if (
+          ![viewport.width, viewport.height].every(
+            value => Number.isFinite(value) && value > 0
+          )
+        ) {
+          throw new Error(
+            "This PDF page cannot be previewed. Export a standard-size PDF and retry."
+          );
+        }
+
+        const density = Math.min(
+          window.devicePixelRatio || 1,
+          2,
+          MAX_CANVAS_SIDE / viewport.width,
+          MAX_CANVAS_SIDE / viewport.height
+        );
+
+        canvas.current.width = Math.max(
+          1,
+          Math.floor(viewport.width * density)
+        );
+
+        canvas.current.height = Math.max(
+          1,
+          Math.floor(viewport.height * density)
+        );
+
         render = page.render({
           canvas: canvas.current,
           viewport,

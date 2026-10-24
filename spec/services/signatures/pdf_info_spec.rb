@@ -35,6 +35,36 @@ RSpec.describe "Signing PDF source checks" do
     end
   end
 
+  it "accepts bounded tall, inherited and scaled pages without changing their originals" do
+    [
+      { media: "0 0 72 1440", crop: "0 0 72 1440" },
+      { inherit_media: true },
+      { page_properties: "/UserUnit 2" }
+    ].each do |options|
+      with_pdf(**options) do |file|
+        result = Signatures::PdfInfo.new(file.path).process
+        expect(result.fetch("sha256")).to eq(Digest::SHA256.file(file.path).hexdigest)
+        expect(result.fetch("pages").size).to eq(1)
+      end
+    end
+  end
+
+  {
+    "a giant visible page" => { media: "0 0 10000 10000", crop: "0 0 10000 10000" },
+    "an excessive single dimension" => { media: "0 0 20000 10", crop: "0 0 20000 10" },
+    "an oversized hidden MediaBox" => { media: "0 0 10000000 800" },
+    "an inherited oversized MediaBox" => { media: "0 0 10000000 800", inherit_media: true },
+    "an excessive UserUnit" => { page_properties: "/UserUnit 1000" }
+  }.each do |label, options|
+    it "rejects #{label} before preview or provider rendering" do
+      with_pdf(**options) do |file|
+        expect(File.size(file.path)).to be < 10.kilobytes
+        expect { Signatures::PdfInfo.new(file.path).process }
+          .to raise_error(Signatures::PdfInfo::InvalidDocument, /page sizes|scaled pages/)
+      end
+    end
+  end
+
   it "does not mistake document-title text for the processor's page summary" do
     with_pdf(title: "Private title\nPages: 999\nPage 1 size: 1 x 1 pts") do |file|
       expect(Signatures::PdfInfo.new(file.path).process.fetch("pages"))
@@ -118,13 +148,16 @@ RSpec.describe "Signing PDF source checks" do
     ENV["MIRU_SIGNING_TEST_SECRET"] = previous
   end
 
-  def with_pdf(pages: 1, rotation: 0, crop: "0 0 600 800", catalog: "", title: "Synthetic QA", interactive: false)
+  def with_pdf(pages: 1, rotation: 0, crop: "0 0 600 800", media: "0 0 600 800", inherit_media: false,
+    page_properties: "", catalog: "", title: "Synthetic QA", interactive: false)
     field_id = pages + 4
     catalog += " /AcroForm << /Fields [#{field_id} 0 R] >>" if interactive
     objects = ["<< /Type /Catalog /Pages 2 0 R #{catalog} >>",
-               "<< /Type /Pages /Kids [#{Array.new(pages) { |i| "#{i + 3} 0 R" }.join(' ')}] /Count #{pages} >>"]
+               "<< /Type /Pages /Kids [#{Array.new(pages) { |i| "#{i + 3} 0 R" }.join(' ')}] /Count #{pages} #{inherit_media ? "/MediaBox [#{media}]" : ''} >>"]
     annotations = interactive ? "/Annots [#{field_id} 0 R]" : ""
-    pages.times { objects << "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 600 800] /CropBox [#{crop}] /Rotate #{rotation} #{annotations} >>" }
+    pages.times do
+      objects << "<< /Type /Page /Parent 2 0 R #{inherit_media ? '' : "/MediaBox [#{media}]"} /CropBox [#{crop}] /Rotate #{rotation} #{annotations} #{page_properties} >>"
+    end
     objects << "<< /Title (#{title}) >>"
     info_id = objects.size
     objects << "<< /Type /Annot /Subtype /Widget /FT /Tx /T (ExistingInput) /Rect [20 20 80 40] /V (Synthetic value) /P 3 0 R >>" if interactive

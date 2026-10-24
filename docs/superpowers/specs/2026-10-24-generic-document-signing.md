@@ -14,7 +14,7 @@ People can continue changing the source in Google Docs or Word, then upload a ne
 
 The privately supplied example contains a main agreement and a Statement of Work, each with two party signature blocks. Reproduce that structure with synthetic content for QA, including separate signature/date/name/title fields at both locations. Keep the actual example, terms and identities out of public fixtures and screenshots. Do not modify the original Google Doc.
 
-PDF processing is bounded to 10 files, 5 MiB each, 25 MiB and 100 source pages combined. Each embedded image must have verifiable dimensions and at most 16 million pixels, matching the preview decoder limit; larger images require a lower-resolution PDF export. Reject unsupported sources visibly rather than accepting a document whose images the preview silently omits. These checks do not establish malware scanning or universal PDF compatibility.
+PDF processing is bounded to 10 files, 5 MiB each, 25 MiB and 100 source pages combined. Each embedded image must have verifiable dimensions and at most 16 million pixels, matching the preview decoder limit; larger images require a lower-resolution PDF export. MediaBox and CropBox, including inherited boxes, must have sides from 1 to 14,400 points and an area at most 16 million square points, both before and after UserUnit scaling. The preview raster is capped at 4,000 pixels per side while CSS dimensions retain field placement through zoom. Reject unsupported sources visibly rather than accepting a document whose images the preview silently omits. These checks do not establish malware scanning or universal PDF compatibility.
 
 ## Fields and recipients
 
