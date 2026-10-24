@@ -66,6 +66,30 @@ export type Revision = {
   documents: SourceDocument[];
   recipients: Recipient[];
   fields: Field[];
+  delivery: {
+    operation_id: string | null;
+    provider_envelope_id: string | null;
+    provider_status: string | null;
+    provider_checked_at: string | null;
+    cancel_requested_at: string | null;
+    last_reminder_at: string | null;
+    next_reminder_at: string | null;
+    automatic_reminders_count: number;
+    recipient_statuses: {
+      recipient_id: string;
+      signing_status: string;
+      send_status: string;
+      read_status: string;
+    }[];
+    operations: {
+      id: number;
+      kind: string;
+      state: string;
+      phase: string;
+      error_message: string | null;
+      created_at: string;
+    }[];
+  };
 };
 export type SigningRequest = Summary & {
   revision: Revision;

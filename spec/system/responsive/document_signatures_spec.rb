@@ -63,10 +63,11 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     end
     [375, 1440].each do |width|
       page.current_window.resize_to(width, 900)
+      page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done));")
       expect(page).to have_css('[data-pdf-ready="true"]')
       expect(page).not_to have_content("Loading PDF preview…")
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
-      page.save_screenshot(Rails.root.join("tmp/capybara/signature-authentication-#{width}.png"), full: true)
+      page.save_screenshot(Rails.root.join("tmp/capybara/signature-authentication-#{width}.png"), full: false)
     end
     expect(@console_errors).to be_empty
   end

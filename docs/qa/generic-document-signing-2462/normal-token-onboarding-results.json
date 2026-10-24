@@ -38,7 +38,15 @@
     "kolkata_duration_display_bug_confirmed": true,
     "candidate_duration_assertions_passed": 9,
     "candidate_timezones_checked": 3,
-    "patched_running_ui_verified": false
+    "patched_running_ui_verified": true,
+    "patched_image_id": "sha256:85ab4e23673b51fa75f341b38b3f674b78dc6ab0e386a4802358159806355fa6",
+    "source_commit": "8707e33c124e4b1a68dde92d5e05178c9aabd0be",
+    "brave_timezone": "Asia/Calcutta",
+    "countdown_observed": "04:59",
+    "patched_missing_code_status": 401,
+    "patched_incorrect_code_status": 401,
+    "patched_correct_code_envelope_status": "COMPLETED",
+    "patched_correct_code_recipient_status": "SIGNED"
   },
   "real_recipients_or_production_changes": false
 }

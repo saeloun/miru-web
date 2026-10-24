@@ -25,6 +25,7 @@ import Fields from "./Fields";
 import Recipients from "./Recipients";
 import PdfPages from "./PdfPages";
 import ReviewPanel from "./ReviewPanel";
+import DeliveryPanel from "./DeliveryPanel";
 
 export default function Editor({
   id,
@@ -96,6 +97,17 @@ export default function Editor({
     setSelected(value.revision.fields[0]?.id || "");
     setPreview({ document: value.revision.documents[0].key, page: 1 });
   };
+
+  const updateDelivery = useCallback((value: SigningRequest) => {
+    setRecord(current =>
+      current &&
+      current.id === value.id &&
+      current.revision.id === value.revision.id &&
+      value.lock_version >= current.lock_version
+        ? value
+        : current
+    );
+  }, []);
 
   useEffect(() => {
     mounted.current = true;
@@ -420,6 +432,16 @@ export default function Editor({
         onRecordChange={setRecord}
         onBusyChange={setBusy}
         onDirtyChange={setReviewDirty}
+        reload={() => setConfirm("reload")}
+      />
+      <DeliveryPanel
+        key={`${companyId}:${record.revision.id}`}
+        record={record}
+        companyId={companyId}
+        disabled={dirty || reviewDirty || conflict}
+        busy={busy}
+        onRecordChange={updateDelivery}
+        onBusyChange={setBusy}
         reload={() => setConfirm("reload")}
       />
       <section aria-label="Original documents" className="space-y-2">
