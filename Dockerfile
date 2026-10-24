@@ -46,7 +46,7 @@ RUN gem update --system --no-document && \
 
 # Install base packages needed to install nodejs and chrome
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl gnupg libjemalloc2 libvips postgresql-client && \
+    apt-get install --no-install-recommends -y curl gnupg libjemalloc2 libvips postgresql-client poppler-utils qpdf && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
