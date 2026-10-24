@@ -400,6 +400,7 @@ const en = {
       other: "Other claim for accountant review",
     },
   },
+  agreements: { title: "Agreements" },
   salarySlips: {
     title: "Salary slips",
     description: "View and download salary slips published by your employer.",

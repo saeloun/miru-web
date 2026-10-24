@@ -1,0 +1,82 @@
+{
+  "environment": "local arm64 macOS; headed Brave; Ruby4.0.9; RAILS_ENV=test; isolated localhost database",
+  "readiness": [
+    {
+      "name": "short",
+      "width": 1440,
+      "cache": "cold",
+      "ready_ms": 934,
+      "fields": 4
+    },
+    {
+      "name": "short",
+      "width": 1440,
+      "cache": "warm",
+      "ready_ms": 832,
+      "fields": 4
+    },
+    {
+      "name": "short",
+      "width": 375,
+      "cache": "cold",
+      "ready_ms": 927,
+      "fields": 4
+    },
+    {
+      "name": "short",
+      "width": 375,
+      "cache": "warm",
+      "ready_ms": 832,
+      "fields": 4
+    },
+    {
+      "name": "long",
+      "width": 1440,
+      "cache": "cold",
+      "ready_ms": 925,
+      "fields": 60
+    },
+    {
+      "name": "long",
+      "width": 1440,
+      "cache": "warm",
+      "ready_ms": 836,
+      "fields": 60
+    },
+    {
+      "name": "long",
+      "width": 375,
+      "cache": "cold",
+      "ready_ms": 921,
+      "fields": 60
+    },
+    {
+      "name": "long",
+      "width": 375,
+      "cache": "warm",
+      "ready_ms": 830,
+      "fields": 60
+    }
+  ],
+  "typing": [
+    {
+      "width": 1440,
+      "characters": 69,
+      "samples": 62,
+      "p50_ms": 4.200000047683716,
+      "p95_ms": 7.799999952316284,
+      "max_ms": 8.5,
+      "after_typing_to_saved_ms": 1292
+    },
+    {
+      "width": 375,
+      "characters": 68,
+      "samples": 61,
+      "p50_ms": 3.8000000715255737,
+      "p95_ms": 8.100000023841858,
+      "max_ms": 9.200000047683716,
+      "after_typing_to_saved_ms": 1293
+    }
+  ],
+  "limits": "Single local runs. Cold means cleared browser cache, not a cold machine. Input-to-next-animation-frame is not full paint latency. Save includes the 800ms debounce. No production/load/device-keyboard claim."
+}
