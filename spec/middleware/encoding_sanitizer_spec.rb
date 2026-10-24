@@ -7,6 +7,12 @@ RSpec.describe EncodingSanitizer do
   let(:middleware) { described_class.new(app) }
 
   describe "#call" do
+    it "preserves binary-labelled UTF-8 in URL values" do
+      query = "name=आनंद Núñez"
+      _status, response_env, _body = middleware.call({ "QUERY_STRING" => query.b, "PATH_INFO" => "/test" })
+      expect(response_env["QUERY_STRING"]).to eq(query)
+    end
+
     context "with UTF-8 encoded query string" do
       it "passes through unchanged" do
         env = {
@@ -117,6 +123,31 @@ RSpec.describe EncodingSanitizer do
   end
 
   describe EncodingSanitizer::SanitizedInput do
+    it "preserves binary-labelled UTF-8 through whole-body and line readers" do
+      body = "{\"clause\":\"नमस्कार आनंद – Núñez\"}\n"
+      %i[read gets each].each do |reader|
+        input = described_class.new(StringIO.new(body.b))
+        lines = []
+        result = if reader == :each
+          input.each { |line| lines << line }
+          lines.join
+        else
+          input.public_send(reader)
+        end
+        expect(result).to eq(body)
+      end
+    end
+
+    it "preserves multibyte sequences across byte-counted reads" do
+      body = "आनंद Núñez".b
+      input = described_class.new(StringIO.new(body))
+      result = +"".b
+      while (part = input.read(2))
+        result << part
+      end
+      expect(result).to eq(body)
+    end
+
     describe "#read" do
       it "sanitizes UTF-16LE encoded POST body" do
         utf16_body = "name=test&email=user@example.com".encode(Encoding::UTF_16LE)
@@ -126,7 +157,7 @@ RSpec.describe EncodingSanitizer do
         result = sanitized.read
 
         expect(result.encoding).to eq(Encoding::UTF_8)
-        expect(result).to be_valid_encoding
+        expect(result).to eq("name=test&email=user@example.com")
       end
 
       it "passes through valid UTF-8 unchanged" do
