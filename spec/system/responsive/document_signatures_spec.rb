@@ -24,6 +24,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     sign_in(admin)
     @console_errors = []
     page.driver.browser.on("Runtime.consoleAPICalled") { |event| @console_errors << event if event["type"] == "error" }
+    page.driver.browser.on("Runtime.exceptionThrown") { |event| @console_errors << event }
     visit "/agreements"
     click_button "Upload documents"
     fill_in "Document title", with: "Synthetic uploaded agreement"
@@ -100,6 +101,54 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     visit current_path
     expect(page).to have_css('button[aria-label="Edit Statement of work signature"]')
     expect(@console_errors).to be_empty
+  end
+
+  it "handles a cancelled render while its text extraction is still pending" do
+    open_documents
+    uncaught = []
+    page.driver.browser.on("Runtime.exceptionThrown") do |event|
+      uncaught << event.dig("exceptionDetails", "exception", "description")
+    end
+    page.execute_script(<<~JS)
+      const originalPost = Worker.prototype.postMessage;
+      const originalFrame = window.requestAnimationFrame;
+      const originalCancel = window.cancelAnimationFrame;
+      const text = [];
+      const frames = new Map();
+      let frameId = 1000000;
+      Worker.prototype.postMessage = function(...args) {
+        if (args[0]?.action === "GetTextContent") {
+          text.push(() => originalPost.apply(this, args));
+          document.documentElement.dataset.pdfHeldText = "true";
+        } else originalPost.apply(this, args);
+      };
+      window.requestAnimationFrame = callback => {
+        frames.set(++frameId, callback);
+        document.documentElement.dataset.pdfHeldFrame = "true";
+        return frameId;
+      };
+      window.cancelAnimationFrame = id => {
+        if (!frames.delete(id)) originalCancel.call(window, id);
+      };
+      window.restorePdfTiming = () => {
+        delete window.restorePdfTiming;
+        Worker.prototype.postMessage = originalPost;
+        window.requestAnimationFrame = originalFrame;
+        window.cancelAnimationFrame = originalCancel;
+        text.forEach(send => send());
+        frames.forEach(callback => originalFrame.call(window, callback));
+      };
+    JS
+    select "2", from: "Preview page"
+    expect(page).to have_css('html[data-pdf-held-text="true"][data-pdf-held-frame="true"]')
+    select "1", from: "Preview page"
+    page.evaluate_async_script("window.setTimeout(arguments[0], 50)")
+    page.execute_script("window.restorePdfTiming()")
+    expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(uncaught).to be_empty
+    expect(@console_errors).to be_empty
+  ensure
+    page.execute_script("window.restorePdfTiming?.()")
   end
 
   it "retains unsaved input after a stale save and requires confirmation before reloading" do

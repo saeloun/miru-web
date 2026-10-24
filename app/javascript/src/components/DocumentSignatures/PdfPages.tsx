@@ -164,13 +164,17 @@ export default function PdfPages({
           viewport,
           transform: [density, 0, 0, density, 0, 0],
         });
-        const content = await page.getTextContent();
+
+        const [, content] = await Promise.all([
+          render.promise,
+          page.getTextContent(),
+        ]);
         if (active) {
           setText(
             content.items.map(item => ("str" in item ? item.str : "")).join(" ")
           );
         }
-        await render.promise;
+
         if (active) setReady(true);
       })
       .catch(failure => {

@@ -31,6 +31,7 @@ RSpec.describe "Signature delivery controls", type: :system, js: true do
     sign_in(admin)
     @console_errors = []
     page.driver.browser.on("Runtime.consoleAPICalled") { |event| @console_errors << event if event["type"] == "error" }
+    page.driver.browser.on("Runtime.exceptionThrown") { |event| @console_errors << event }
     visit "/agreements/documents/#{@record.id}"
     expect(page).to have_css('[data-pdf-ready="true"]')
     expect(page).to have_content("Signing delivery")
