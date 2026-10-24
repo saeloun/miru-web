@@ -432,7 +432,8 @@ const Review = () => {
             String(run.company_id) !== companyId ||
             String(preflight.company_id) !== companyId ||
             run.id !== runId ||
-            preflight.revision_digest !== (run.revision?.digest ?? null)
+            preflight.revision_digest !== (run.revision?.digest ?? null) ||
+            preflight.approval_state !== run.status
           ) {
             throw new Error("scope");
           }
