@@ -202,6 +202,13 @@ export default async function runAuthenticationE2E(page, fixture) {
     .getByText("Passkey name updated", { exact: true })
     .last()
     .waitFor({ state: "hidden" });
+  if (
+    await authenticator.evaluate(
+      element => element.scrollWidth > element.clientWidth + 1
+    )
+  ) {
+    throw new Error("Authenticator controls overflow their panel");
+  }
   await page
     .getByRole("region", { name: "Sign-in security", exact: true })
     .screenshot({

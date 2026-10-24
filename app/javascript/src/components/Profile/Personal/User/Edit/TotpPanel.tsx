@@ -101,7 +101,7 @@ const TotpPanel = ({
                 onChange={event => setVerificationCode(event.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
                 disabled={busy || !verificationCode.trim()}
                 onClick={onConfirm}
@@ -146,7 +146,7 @@ const TotpPanel = ({
                 })}
               </span>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
                 disabled={busy}
                 onClick={onGenerateRecoveryCodes}
