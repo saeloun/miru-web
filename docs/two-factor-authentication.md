@@ -1,6 +1,8 @@
 # Two-factor authentication
 
-Users configure authenticator apps and passkeys in **Settings → Profile → Edit**.
+Users configure authenticator apps and passkeys directly in **Settings → Profile → Sign-in security**, also available from Profile → Edit.
+The account's Security card links to these controls. Changes save immediately without saving the profile form.
+Users can cancel authenticator setup, turn either verification method off after confirming their password, rename or remove passkeys, replace recovery codes, and revoke browser trust.
 Both can be enabled together; either completes verification after primary sign-in.
 Authenticator setup includes a QR code and downloadable, single-use recovery codes.
 Passkeys support device verification such as Touch ID, iCloud Keychain and Windows Hello.

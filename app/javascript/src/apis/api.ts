@@ -236,6 +236,8 @@ export const passkeysApi = {
     http.post("/users/passkeys/authenticate", payload),
   updateRequirement: (payload: any) =>
     http.patch("/users/passkeys/requirement", payload),
+  update: (id: number, payload: any) =>
+    http.patch(`/users/passkeys/${id}`, payload),
   destroy: (id: number, payload: any) =>
     http.delete(`/users/passkeys/${id}`, { data: payload }),
 };

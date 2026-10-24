@@ -30,7 +30,10 @@ export default async function runAuthenticationE2E(page, fixture) {
   };
   const logout = async () => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.getByRole("button", { name: "Logout", exact: true }).click();
+    await page
+      .getByRole("button", { name: "Logout", exact: true })
+      .first()
+      .click();
     await page.waitForURL(url => /\/(login|user\/sign_in)$/.test(url.pathname));
     await page.getByRole("textbox", { name: "Email", exact: true }).waitFor();
   };
@@ -78,8 +81,46 @@ export default async function runAuthenticationE2E(page, fixture) {
   await login();
   await waitSignedIn();
   result.passwordLogin = true;
-  await page.goto(`${baseURL}/settings/profile/edit`);
-  await page.getByRole("button", { name: "Set up 2FA", exact: true }).click();
+  await page.goto(`${baseURL}/settings/profile`);
+  await page
+    .getByRole("region", { name: "Sign-in security", exact: true })
+    .waitFor();
+  await page
+    .getByText("Two-factor verification is off", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Set up authenticator", exact: true })
+    .click();
+  await page
+    .getByLabel("Current password", { exact: true })
+    .fill("wrong-password");
+  await page.getByRole("button", { name: "Continue", exact: true }).click();
+  await page.getByRole("dialog").getByRole("alert").waitFor();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Set up authenticator", exact: true })
+    .click();
+  await confirmPassword();
+  const authenticator = page.getByRole("region", {
+    name: "Authenticator app",
+    exact: true,
+  });
+  await authenticator
+    .getByLabel("Verification code", { exact: true })
+    .waitFor();
+  await authenticator
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
+  await page
+    .getByText("Two-factor verification is off", { exact: true })
+    .waitFor();
+  result.cancelSetupAndRetryPassword = true;
+  await page
+    .getByRole("button", { name: "Set up authenticator", exact: true })
+    .click();
   const setupResponse = page.waitForResponse(response =>
     response.url().endsWith("/users/totp/setup")
   );
@@ -137,7 +178,7 @@ export default async function runAuthenticationE2E(page, fixture) {
   if ((await registrationResponse).status() !== 201)
     throw new Error("Passkey registration failed");
   await page
-    .getByRole("switch", { name: "Require passkey on sign in" })
+    .getByRole("switch", { name: "Use passkeys for two-factor verification" })
     .click();
   const requirementResponse = page.waitForResponse(response =>
     response.url().endsWith("/users/passkeys/requirement")
@@ -146,6 +187,28 @@ export default async function runAuthenticationE2E(page, fixture) {
   if ((await requirementResponse).status() !== 200)
     throw new Error("Passkey could not coexist with TOTP");
   result.passkeySetup = true;
+  await page
+    .getByRole("button", { name: "Rename My passkey", exact: true })
+    .click();
+  await page.getByLabel("Passkey name", { exact: true }).fill("Work Mac");
+  await page.getByRole("button", { name: "Save name", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Rename Work Mac", exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "I've saved these codes", exact: true })
+    .click();
+  await page
+    .getByText("Passkey name updated", { exact: true })
+    .last()
+    .waitFor({ state: "hidden" });
+  await page
+    .getByRole("region", { name: "Sign-in security", exact: true })
+    .screenshot({
+      path: `${prefix}-account-desktop.png`,
+      animations: "disabled",
+    });
+  result.passkeyRename = true;
 
   await logout();
   await login();
@@ -156,7 +219,10 @@ export default async function runAuthenticationE2E(page, fixture) {
       .isChecked()
   )
     throw new Error("Trust must default off");
-  await page.screenshot({ path: `${prefix}-desktop.png` });
+  await page.screenshot({
+    path: `${prefix}-desktop.png`,
+    animations: "disabled",
+  });
   await page
     .getByLabel("Trust this browser for 30 days", { exact: false })
     .check();
@@ -196,7 +262,11 @@ export default async function runAuthenticationE2E(page, fixture) {
   await login();
   await page.getByRole("heading", { name: "Verify it’s you" }).waitFor();
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.screenshot({ path: `${prefix}-mobile.png`, fullPage: true });
+  await page.screenshot({
+    path: `${prefix}-mobile.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
   await page
     .getByRole("button", { name: "Switch to dark mode", exact: true })
     .click();
@@ -206,7 +276,11 @@ export default async function runAuthenticationE2E(page, fixture) {
   await page
     .getByRole("button", { name: "Use a recovery code instead", exact: true })
     .click();
-  await page.screenshot({ path: `${prefix}-mobile-dark.png`, fullPage: true });
+  await page.screenshot({
+    path: `${prefix}-mobile-dark.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
   await page
     .getByLabel("Recovery code", { exact: false })
     .fill(confirmed.recovery_codes[0]);
@@ -234,6 +308,98 @@ export default async function runAuthenticationE2E(page, fixture) {
     throw new Error("Recovery code was reusable");
   if (errors.length) throw new Error(JSON.stringify(errors));
   result.recoveryReplayRejected = true;
+  await page
+    .getByLabel("Recovery code", { exact: false })
+    .fill(confirmed.recovery_codes[1]);
+  await page
+    .getByRole("button", { name: "Verify and sign in", exact: true })
+    .click();
+  await waitSignedIn();
+  await page.goto(`${baseURL}/settings/profile`);
+  await page
+    .getByRole("button", { name: "Rename Work Mac", exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Regenerate recovery codes", exact: true })
+    .click();
+  await confirmPassword();
+  await page
+    .getByRole("button", { name: "Download recovery codes", exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "I've saved these codes", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Turn off authenticator", exact: true })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByRole("button", { name: "Cancel", exact: true })
+    .click();
+  await page
+    .getByRole("button", { name: "Turn off authenticator", exact: true })
+    .click();
+  await confirmPassword();
+  await page
+    .getByRole("button", { name: "Set up authenticator", exact: true })
+    .waitFor();
+  await page
+    .getByText("Two-factor verification is on", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("switch", { name: "Use passkeys for two-factor verification" })
+    .click();
+  await page
+    .getByRole("dialog")
+    .getByText("This turns off two-factor verification.", { exact: false })
+    .waitFor();
+  await confirmPassword();
+  await page
+    .getByText("Two-factor verification is off", { exact: true })
+    .waitFor();
+  await page
+    .getByRole("button", { name: "Remove Work Mac", exact: true })
+    .click();
+  await confirmPassword();
+  await page.getByText("No passkeys added yet.", { exact: true }).waitFor();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.getByRole("link", { name: "Edit", exact: true }).waitFor();
+  await page.getByText("No passkeys added yet.", { exact: true }).waitFor();
+  const darkMode = page.getByRole("button", {
+    name: "Switch to dark mode",
+    exact: true,
+  });
+  if (await darkMode.isVisible()) await darkMode.click();
+  await page.waitForFunction(() =>
+    document.documentElement.classList.contains("dark")
+  );
+  await page
+    .getByText("Sign-in security updated", { exact: true })
+    .last()
+    .waitFor({ state: "hidden" });
+  await page
+    .getByRole("region", { name: "Sign-in security", exact: true })
+    .screenshot({
+      path: `${prefix}-account-mobile-dark.png`,
+      animations: "disabled",
+    });
+  await page.route("**/api/v1/users/totp", route =>
+    route.fulfill({ status: 503, json: { error: "Unavailable" } })
+  );
+  await page.reload();
+  await page
+    .getByText(
+      "Could not load sign-in security. Try again before making changes.",
+      { exact: true }
+    )
+    .waitFor();
+  await page.unroute("**/api/v1/users/totp");
+  await page.getByRole("button", { name: "Retry", exact: true }).click();
+  await page
+    .getByText("Two-factor verification is off", { exact: true })
+    .waitFor();
+  if (errors.length) throw new Error(JSON.stringify(errors));
+  result.accountSecurityManagement = true;
   result.pageErrors = errors;
   return result;
 }

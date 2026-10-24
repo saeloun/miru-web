@@ -14,7 +14,8 @@ const TotpPanel = ({
   onDisable,
   onGenerateRecoveryCodes,
   onSetup,
-  provisioningUri,
+  onCancelSetup,
+  onDismissCodes,
   qrCode,
   recoveryCodes,
   recoveryCodesCount,
@@ -25,14 +26,18 @@ const TotpPanel = ({
   if (!canManage) return null;
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card
+      className="border-border shadow-sm"
+      role="region"
+      aria-label={i18n.t("accountSecurity.authenticator")}
+    >
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg font-geist-semibold">
           <ShieldCheck
             className="h-5 w-5 text-muted-foreground"
             weight="bold"
           />
-          {i18n.t("twoFactor.title")}
+          {i18n.t("accountSecurity.authenticator")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -47,7 +52,7 @@ const TotpPanel = ({
               </p>
             </div>
             <Button disabled={busy} onClick={onSetup} type="button">
-              {i18n.t("twoFactor.setupAction")}
+              {i18n.t("accountSecurity.setupAuthenticator")}
             </Button>
           </div>
         )}
@@ -79,11 +84,6 @@ const TotpPanel = ({
               <p className="mt-2 break-all font-mono text-sm text-foreground">
                 {secret}
               </p>
-              {provisioningUri && (
-                <p className="mt-2 break-all text-xs text-muted-foreground">
-                  {provisioningUri}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label
@@ -117,6 +117,14 @@ const TotpPanel = ({
               >
                 {i18n.t("twoFactor.resetKeyAction")}
               </Button>
+              <Button
+                disabled={busy}
+                onClick={onCancelSetup}
+                type="button"
+                variant="outline"
+              >
+                {i18n.t("cancel")}
+              </Button>
             </div>
           </div>
         )}
@@ -128,7 +136,7 @@ const TotpPanel = ({
                 {i18n.t("twoFactor.enabledTitle")}
               </p>
               <p className="text-sm text-muted-foreground">
-                {i18n.t("twoFactor.enabledDescription")}
+                {i18n.t("accountSecurity.authenticatorDescription")}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -154,7 +162,7 @@ const TotpPanel = ({
                 type="button"
                 variant="outline"
               >
-                {i18n.t("twoFactor.disableAction")}
+                {i18n.t("accountSecurity.disableAuthenticatorAction")}
               </Button>
             </div>
           </div>
@@ -202,6 +210,9 @@ const TotpPanel = ({
               }}
             >
               {i18n.t("loginSecurity.downloadCodes")}
+            </Button>
+            <Button type="button" variant="outline" onClick={onDismissCodes}>
+              {i18n.t("accountSecurity.savedCodes")}
             </Button>
           </div>
         )}

@@ -18,6 +18,7 @@ import { sendGAPageView } from "utils/googleAnalytics";
 import { i18n } from "../../../../i18n";
 
 import PersonalProfileSummary from "./PersonalProfileSummary";
+import AccountSecurity from "./AccountSecurity";
 
 const UserDetailsView = () => {
   const { updateDetails, personalDetails, isCalledFromSettings } =
@@ -127,6 +128,11 @@ const UserDetailsView = () => {
           isCalledFromSettings={isCalledFromSettings}
           personalDetails={personalDetails}
         />
+      )}
+      {isCalledFromSettings && !isLoading && (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+          <AccountSecurity />
+        </div>
       )}
       {hasEmployeeRecordsAccess(
         company,

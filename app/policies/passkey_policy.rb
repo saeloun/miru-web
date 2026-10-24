@@ -21,6 +21,10 @@ class PasskeyPolicy < ApplicationPolicy
     owns_passkeys?
   end
 
+  def update?
+    owns_passkeys?
+  end
+
   private
 
     def owns_passkeys?
