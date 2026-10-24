@@ -201,6 +201,23 @@ const Fields = ({
       return;
     }
 
+    const previous = fields.find(field => field.key === original);
+    const value = original ? values[original] : null;
+    if (
+      isDraft &&
+      previous &&
+      value != null &&
+      value !== "" &&
+      (next.type !== previous.type ||
+        (next.type === "dropdown" && !next.options.includes(String(value))))
+    ) {
+      setError(
+        "Clear the current value before changing its type or removing its selected option."
+      );
+
+      return;
+    }
+
     onChange(
       original
         ? fields.map(field => (field.key === original ? next : field))

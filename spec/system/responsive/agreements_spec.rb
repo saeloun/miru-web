@@ -158,6 +158,43 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "protects populated values when changing field types or dropdown options" do
+    consultant = create(:employment, company:, resigned_at: nil, employment_type: "Consultant")
+    fields = agreement_fields + [{ "key" => "payment_currency", "label" => "Payment currency", "type" => "dropdown",
+                                  "role" => "admin", "required" => false, "read_only" => false, "options" => ["INR", "USD"] }]
+    master.update!(fields:)
+    draft = Agreement.create!(company:, created_by: admin, agreement_template: master, source_template_version: master.lock_version,
+      employment: consultant, title: "Synthetic populated draft", kind: "consultant", document: master.document, fields:,
+      field_values: { "legal_name" => "Synthetic Consultant", "payment_currency" => "USD" })
+    open_agreements("/agreements/drafts/#{draft.id}")
+
+    [["Legal name", "Number", nil], ["Payment currency", "Dropdown", "INR"]].each do |label, type, options|
+      find('button[aria-controls="field-panel-payment_currency"]').click if label == "Payment currency"
+      click_button "Edit #{label}"
+      within('[role="dialog"]') do
+        select type, from: "Field type"
+        fill_in "Dropdown options", with: options if options
+        click_button "Save field"
+      end
+      expect(page).to have_css('[role="dialog"] [role="alert"]', text: "Clear the current value before changing its type or removing its selected option.")
+      within('[role="dialog"]') { click_button "Cancel" }
+      expect(draft.reload.field_values).to include(label == "Legal name" ? { "legal_name" => "Synthetic Consultant" } : { "payment_currency" => "USD" })
+      click_button "Clear #{label}"
+      click_button "Edit #{label}"
+      within('[role="dialog"]') do
+        select type, from: "Field type"
+        fill_in "Dropdown options", with: options if options
+        click_button "Save field"
+      end
+      expect_saved
+    end
+    expect(draft.reload.fields.first["type"]).to eq("number")
+    expect(draft.fields.last["options"]).to eq(["INR"])
+    expect(draft.field_values.values).to all(be_nil)
+    expect(master.reload.fields).to eq(fields)
+    expect(@console_errors).to be_empty
+  end
+
   it "retains local edits after a concurrent save and guards navigation before discarding them" do
     open_agreements("/agreements/templates/#{master.id}")
     expect(page).to have_content("Original clause")
