@@ -56,4 +56,16 @@ RSpec.describe "Private document review invitations", type: :mailer do
     expect(events.join).not_to include(token, "reviewer@example.test", "Private compensation terms")
     expect(invitation.reload.email_status).to eq("failed")
   end
+
+  it "records a completed delivery when the version is replaced while SMTP is sending" do
+    allow_any_instance_of(Mail::TestMailer).to receive(:deliver!).and_wrap_original do |method, *arguments|
+      record = invitation.revision.signature_request
+      record.with_lock { record.revise!(actor: admin, attributes: { title: "Replaced during delivery" }) }
+      method.call(*arguments)
+    end
+    mail = SignatureReviewMailer.invite(invitation.id).deliver_now
+    expect(mail.to).to eq(["reviewer@example.test"])
+    expect(invitation.reload).to have_attributes(email_status: "sent")
+    expect(invitation).not_to be_active
+  end
 end

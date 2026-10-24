@@ -5,7 +5,7 @@ class SignatureReviewMailer < ApplicationMailer
 
   after_deliver do
     @invitation.update!(email_status: mail.perform_deliveries ? "sent" : "failed",
-      email_sent_at: mail.perform_deliveries ? Time.current : nil) if @invitation&.active?
+      email_sent_at: mail.perform_deliveries ? Time.current : nil) if @review_url
   end
   rescue_from DeliveryFailure do
     @invitation&.update!(email_status: "failed")
