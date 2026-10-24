@@ -22,6 +22,13 @@ RSpec.describe "Agreement HTML rendering" do
     expect(html).to include("[Company signature — incomplete]")
   end
 
+  it "preserves formatting applied to a populated field" do
+    document = agreement_document
+    document["content"][1]["content"][1]["marks"] = [{ "type" => "bold" }]
+    html = Agreements::DocumentHtml.new(document, fields: agreement_fields, values: { "legal_name" => "Anand & Partners" }).process
+    expect(html).to include("<strong>Anand &amp; Partners</strong>")
+  end
+
   it "validates untrusted content before any HTML can be generated" do
     expect do
       Agreements::DocumentHtml.new({ "type" => "doc", "content" => [{ "type" => "script" }] }, fields: [], values: {}).process

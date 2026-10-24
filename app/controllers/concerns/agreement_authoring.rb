@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module AgreementAuthoring
+  SUMMARY_COLUMNS = %i[id title kind lock_version created_at updated_at].freeze
+
   extend ActiveSupport::Concern
   include ActionController::RequestForgeryProtection
 
@@ -35,12 +37,12 @@ module AgreementAuthoring
       unless page.is_a?(String) && page.match?(/\A[1-9]\d{0,5}\z/)
         raise ActionController::BadRequest, "Invalid page"
       end
-      pages = [(records.count / 30.0).ceil, 1].max
+      pages = [(records.count(:all) / 30.0).ceil, 1].max
       selected = [page.to_i, pages].min
       [records.order(id: :desc).limit(30).offset((selected - 1) * 30), { page: selected, pages: }]
     end
 
     def agreement_metadata(record)
-      record.slice(:id, :title, :kind, :lock_version, :created_at, :updated_at)
+      record.slice(*SUMMARY_COLUMNS)
     end
 end

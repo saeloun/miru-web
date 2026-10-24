@@ -122,12 +122,51 @@ RSpec.describe "Private agreement drafts", type: :request do
     expect(response).to have_http_status(:not_found)
   end
 
+  it "does not fetch confidential content and field values when listing drafts" do
+    create_draft
+    queries = []
+    listener = ->(*args) { queries << args.last[:sql] if args.last[:sql].include?('FROM "agreements"') }
+    ActiveSupport::Notifications.subscribed(listener, "sql.active_record") { get "/api/v1/agreements" }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("agreements").size).to eq(1)
+    expect(queries.join).not_to match(/"agreements"\.\*|"document"|"fields"|"field_values"/)
+  end
+
+  it "provides bounded company-scoped party search for generating drafts" do
+    client.update!(legal_name: "Findable Legal Company")
+    create(:client, legal_name: "Findable other workspace")
+    get "/api/v1/agreements/parties", params: { kind: "client", query: "Findable" }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("parties")).to eq([{ "id" => client.id, "name" => "Findable Legal Company", "email" => client.email }])
+    consultant = create(:employment, company:, resigned_at: nil)
+    consultant.user.update!(first_name: "Uniqueconsultant", last_name: "Person")
+    ["Uniqueconsultant Person", consultant.user.email, consultant.employee_id].each do |query|
+      get "/api/v1/agreements/parties", params: { kind: "consultant", query: }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.fetch("parties")).to include(hash_including("id" => consultant.id, "name" => "Uniqueconsultant Person"))
+    end
+    get "/api/v1/agreements/parties", params: { kind: "bank", query: "Findable" }
+    expect(response).to have_http_status(:bad_request)
+    get "/api/v1/agreements/parties", params: { kind: "client", query: "x" * 101 }
+    expect(response).to have_http_status(:bad_request)
+    admin.remove_role(:owner, company)
+    admin.add_role(:employee, company)
+    get "/api/v1/agreements/parties", params: { kind: "client" }
+    expect(response).to have_http_status(:forbidden)
+  end
+
   it "rejects invalid field values without altering the persisted contract" do
     record = create_draft
     patch "/api/v1/agreements/#{record.id}", params: { agreement: { company_id: company.id, lock_version: 0,
       field_values: { legal_name: { html: "<script>" } } } }, as: :json
     expect(response).to have_http_status(:unprocessable_content)
     expect(record.reload.field_values).to eq("legal_name" => "Original party")
+  end
+
+  it "rejects a malformed draft root without attempting an assignment" do
+    post "/api/v1/agreements", params: { agreement: "invalid" }, as: :json
+    expect(response).to have_http_status(:bad_request)
+    expect(Agreement.count).to eq(0)
   end
 
   it "denies an employee or bookkeeper reads, exports and draft generation" do

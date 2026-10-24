@@ -70,6 +70,12 @@ RSpec.describe "Agreement document contract" do
     expect(contract.missing_required_keys).to eq(["legal_name"])
   end
 
+  it "allows formatting on editable field tokens" do
+    document = agreement_document
+    document["content"][1]["content"][1]["marks"] = [{ "type" => "bold" }]
+    expect(errors(document)).to be_empty
+  end
+
   it "preserves intentional spaces in contract text but treats a blank required value as incomplete" do
     document = { "type" => "doc", "content" => [{ "type" => "paragraph", "content" => [{ "type" => "text", "text" => " " }] }] }
     expect(errors(document)).to be_empty

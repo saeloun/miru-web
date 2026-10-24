@@ -58,6 +58,16 @@ RSpec.describe "Agreement template authoring", type: :request do
     expect(response).to have_http_status(:bad_request)
   end
 
+  it "does not fetch encrypted document bodies for the metadata archive" do
+    master
+    queries = []
+    listener = ->(*args) { queries << args.last[:sql] if args.last[:sql].include?('FROM "agreement_templates"') }
+    ActiveSupport::Notifications.subscribed(listener, "sql.active_record") { get "/api/v1/agreement_templates" }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("agreement_templates").size).to eq(1)
+    expect(queries.join).not_to match(/"agreement_templates"\.\*|"document"|"fields"/)
+  end
+
   it "rejects malformed documents/fields without creating any master" do
     create_master(document: { type: "script", text: "alert(1)" })
     expect(response).to have_http_status(:unprocessable_content)
@@ -65,6 +75,14 @@ RSpec.describe "Agreement template authoring", type: :request do
     create_master(fields: { forged: true })
     expect(response).to have_http_status(:unprocessable_content)
     expect(AgreementTemplate.count).to eq(0)
+  end
+
+  ["invalid", ["invalid"]].each do |root|
+    it "rejects a #{root.class} authoring root as a bad request" do
+      post "/api/v1/agreement_templates", params: { agreement_template: root }, as: :json
+      expect(response).to have_http_status(:bad_request)
+      expect(AgreementTemplate.count).to eq(0)
+    end
   end
 
   it "requires the original company and an exact non-coerced version on every update" do
@@ -136,5 +154,40 @@ RSpec.describe "Agreement template authoring", type: :request do
     result = filter.filter("agreement_template" => { "document" => "Private terms" },
       "agreement" => { "field_values" => { "fee" => "98765.43" } })
     expect(result.to_json).not_to include("Private terms", "98765.43")
+  end
+
+  it "previews an uploaded master without changing the saved template" do
+    record = master
+    with_agreement_docx(body: "<w:p><w:r><w:t>New terms for {{legal_name}}</w:t></w:r></w:p>") do |upload|
+      post "/api/v1/agreement_templates/import", params: { agreement_template: { company_id: company.id,
+        file: Rack::Test::UploadedFile.new(upload.tempfile.path, upload.content_type), fields: agreement_fields.to_json } }
+    end
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("preview").fetch("fields")).to eq(agreement_fields)
+    expect(response.parsed_body.fetch("preview").fetch("document").fetch("content").first.fetch("type")).to eq("paragraph")
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    expect(record.reload.document).to eq(agreement_document)
+    expect(record.lock_version).to eq(0)
+  end
+
+  it "rejects unsupported imports and stale workspaces while retaining existing masters" do
+    record = master
+    with_agreement_docx(body: "<w:p><w:ins><w:r><w:t>Unreviewed change</w:t></w:r></w:ins></w:p>") do |upload|
+      file = Rack::Test::UploadedFile.new(upload.tempfile.path, upload.content_type)
+      post "/api/v1/agreement_templates/import", params: { agreement_template: { company_id: company.id, file: } }
+      expect(response).to have_http_status(:unprocessable_content)
+      post "/api/v1/agreement_templates/import", params: { agreement_template: { company_id: create(:company).id, file: } }
+      expect(response).to have_http_status(:conflict)
+    end
+    expect(record.reload.document).to eq(agreement_document)
+  end
+
+  it "denies unauthorized import previews and requires a real uploaded DOCX" do
+    post "/api/v1/agreement_templates/import", params: { agreement_template: { company_id: company.id, file: "blob-id" } }, as: :json
+    expect(response).to have_http_status(:unprocessable_content)
+    admin.remove_role(:admin, company)
+    admin.add_role(:employee, company)
+    post "/api/v1/agreement_templates/import", params: { agreement_template: { company_id: company.id, file: "blob-id" } }, as: :json
+    expect(response).to have_http_status(:forbidden)
   end
 end

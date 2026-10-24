@@ -135,7 +135,7 @@ module Agreements
         end
         marks = node.fetch("marks", [])
         unless marks.is_a?(Array) && marks.all? { |mark| mark.is_a?(Hash) && mark.keys == ["type"] && MARKS.include?(mark["type"]) } &&
-            marks.uniq == marks && (marks.empty? || type == "text")
+            marks.uniq == marks && (marks.empty? || %w[text mergeField].include?(type))
           @problems << "Document contains unsupported formatting"
         end
       end

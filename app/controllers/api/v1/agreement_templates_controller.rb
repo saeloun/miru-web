@@ -5,7 +5,7 @@ class Api::V1::AgreementTemplatesController < Api::V1::ApplicationController
 
   def index
     authorize AgreementTemplate
-    records, pagination = agreement_page(company_templates)
+    records, pagination = agreement_page(company_templates.select(*SUMMARY_COLUMNS))
     render json: { agreement_templates: records.map { |record| agreement_metadata(record) }, pagination: }
   end
 
@@ -34,6 +34,24 @@ class Api::V1::AgreementTemplatesController < Api::V1::ApplicationController
     render json: { agreement_template: details(record) }
   end
 
+  def import
+    authorize AgreementTemplate, :import?
+    attributes = params.expect(agreement_template: {})
+    return unless current_agreement_workspace?(attributes)
+
+    fields = attributes[:fields].presence || []
+    if fields.is_a?(String)
+      return render json: { errors: "Field definitions exceed the import limit" }, status: 422 if fields.bytesize > 64.kilobytes
+
+      fields = JSON.parse(fields)
+    end
+    preview = Agreements::DocxImport.new(attributes[:file], fields:).process
+    render json: { preview: }
+  rescue Agreements::DocxImport::Error, JSON::ParserError, JSON::NestingError => error
+    message = error.is_a?(Agreements::DocxImport::Error) ? error.message : "Field definitions must contain valid JSON"
+    render json: { errors: message }, status: 422
+  end
+
   private
 
     def company_templates
@@ -41,7 +59,7 @@ class Api::V1::AgreementTemplatesController < Api::V1::ApplicationController
     end
 
     def template_params
-      attributes = params.require(:agreement_template)
+      attributes = params.expect(agreement_template: {})
       attributes.permit(:company_id, :title, :kind, :lock_version).to_h.symbolize_keys.tap do |permitted|
         %i[document fields].each do |key|
           permitted[key] = attributes[key].is_a?(ActionController::Parameters) ? attributes[key].to_unsafe_h : attributes[key] if attributes.key?(key)

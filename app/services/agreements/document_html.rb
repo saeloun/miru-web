@@ -25,11 +25,8 @@ module Agreements
         attributes = node.fetch("attrs", {})
         case type
         when "text"
-          node.fetch("marks", []).reduce(escape(node["text"])) do |text, mark|
-            tag = MARK_TAGS.fetch(mark["type"])
-            "<#{tag}>#{text}</#{tag}>"
-          end
-        when "mergeField" then render_field(attributes["key"])
+          formatted(node, escape(node["text"]))
+        when "mergeField" then formatted(node, render_field(attributes["key"]))
         when "hardBreak" then "<br>"
         when "horizontalRule" then "<hr>"
         when "pageBreak" then '<div class="page-break"></div>'
@@ -39,6 +36,13 @@ module Agreements
 
           tag = type == "heading" ? "h#{attributes.fetch('level')}" : TAGS.fetch(type)
           "<#{tag}#{html_attributes(type, attributes)}>#{children}</#{tag}>"
+        end
+      end
+
+      def formatted(node, content)
+        node.fetch("marks", []).reduce(content) do |text, mark|
+          tag = MARK_TAGS.fetch(mark["type"])
+          "<#{tag}>#{text}</#{tag}>"
         end
       end
 

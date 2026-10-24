@@ -5,7 +5,8 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
 
   def index
     authorize Agreement
-    records, pagination = agreement_page(company_agreements)
+    records, pagination = agreement_page(company_agreements.select(*SUMMARY_COLUMNS,
+      :status, :client_id, :employment_id, :agreement_template_id, :source_template_version))
     render json: { agreements: records.map { |record| metadata(record) }, pagination: }
   end
 
@@ -13,6 +14,32 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
     record = company_agreements.find(params[:id])
     authorize record
     render json: { agreement: details(record) }
+  end
+
+  def parties
+    authorize Agreement, :index?
+    kind = params[:kind]
+    query = params[:query] || ""
+    unless %w[client consultant].include?(kind) && query.is_a?(String) && query.length <= 100
+      return render json: { errors: "Choose a client or consultant and use at most 100 search characters" }, status: 400
+    end
+    pattern = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
+    records = if kind == "client"
+      current_company.clients.kept.where("name ILIKE :query OR legal_name ILIKE :query", query: pattern)
+    else
+      current_company.employments.kept.joins(:user).merge(User.kept).includes(:user)
+        .where("concat_ws(' ', users.first_name, users.last_name) ILIKE :query OR users.email ILIKE :query OR employments.employee_id ILIKE :query", query: pattern)
+    end
+    page, pagination = agreement_page(records)
+    parties = page.map do |record|
+      if kind == "client"
+        { id: record.id, name: record.legal_name.presence || record.name, email: record.email }
+      else
+        { id: record.id, name: record.user.full_name, email: record.user.email,
+          employment_type: record.employment_type, employee_id: record.employee_id }
+      end
+    end
+    render json: { parties:, pagination: }
   end
 
   def create
@@ -62,7 +89,7 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
     end
 
     def agreement_params
-      attributes = params.require(:agreement)
+      attributes = params.expect(agreement: {})
       attributes.permit(:company_id, :title, :agreement_template_id, :client_id, :employment_id, :lock_version)
         .to_h.symbolize_keys.tap do |permitted|
         %i[document fields field_values].each do |key|
