@@ -16,6 +16,12 @@ module Agreements
     RUN_METADATA = %w[rStyle rFonts sz szCs color lang highlight kern spacing noProof rtl cs].freeze
     PARAGRAPH_METADATA = %w[pStyle spacing ind keepNext keepLines widowControl tabs contextualSpacing
       suppressAutoHyphens adjustRightInd snapToGrid rPr sectPr].freeze
+    REVISION_ELEMENTS = %w[ins del delText delInstrText moveFrom moveTo moveFromRangeStart moveFromRangeEnd
+      moveToRangeStart moveToRangeEnd customXmlInsRangeStart customXmlInsRangeEnd customXmlDelRangeStart
+      customXmlDelRangeEnd customXmlMoveFromRangeStart customXmlMoveFromRangeEnd customXmlMoveToRangeStart
+      customXmlMoveToRangeEnd rPrChange pPrChange tblPrChange tblPrExChange tblGridChange trPrChange tcPrChange
+      sectPrChange numberingChange cellIns cellDel cellMerge conflictIns conflictDel customXmlConflictInsRangeStart
+      customXmlConflictInsRangeEnd customXmlConflictDelRangeStart customXmlConflictDelRangeEnd].freeze
 
     def initialize(upload, fields: [])
       @upload, @fields = upload, fields.deep_dup
@@ -137,6 +143,9 @@ module Agreements
         document = Nokogiri::XML(data) { |config| config.strict.nonet }
         if document.internal_subset || document.children.any?(&:processing_instruction?)
           raise Error, "XML entities, DTDs and processing instructions are unsupported"
+        end
+        if document.xpath("//*").any? { |node| REVISION_ELEMENTS.include?(node.name) }
+          raise Error, "Tracked Word changes are unsupported. Accept or reject all changes in Word before importing."
         end
         document
       end

@@ -113,6 +113,26 @@ RSpec.describe "Agreement DOCX import preview" do
     end
   end
 
+  %w[del ins].each do |revision|
+    it "rejects tracked table-row #{revision} before treating its cells as live contract text" do
+      body = "<w:tbl><w:tr><w:trPr><w:#{revision} w:id=\"1\" w:author=\"Reviewer\"/></w:trPr><w:tc><w:p><w:r><w:t>Changed payment obligation</w:t></w:r></w:p></w:tc></w:tr></w:tbl>"
+      expect { preview(body:) }.to raise_error(Agreements::DocxImport::Error, /tracked.*unsupported/i)
+    end
+  end
+
+  it "rejects revisions inside ignored properties in both supported Word namespaces" do
+    bodies = [
+      '<w:tbl><w:tblPr><w:tblPrChange w:id="1"><w:tblPr/></w:tblPrChange></w:tblPr><w:tr><w:tc><w:p><w:r><w:t>Terms</w:t></w:r></w:p></w:tc></w:tr></w:tbl>',
+      '<w:p><w:pPr><w:sectPr><w:sectPrChange w:id="1"><w:sectPr/></w:sectPrChange></w:sectPr></w:pPr><w:r><w:t>Terms</w:t></w:r></w:p>'
+    ]
+    Agreements::DocxImport::WORD_NAMESPACES.each do |namespace|
+      bodies.each do |body|
+        source = "<w:document xmlns:w=\"#{namespace}\"><w:body>#{body}</w:body></w:document>"
+        expect { preview(parts: { "word/document.xml" => source }) }.to raise_error(Agreements::DocxImport::Error, /tracked.*unsupported/i)
+      end
+    end
+  end
+
   it "rejects headers, footnotes, macros and external relationships without fetching resources" do
     ["word/header1.xml", "word/footnotes.xml", "word/vbaProject.bin"].each do |name|
       expect { preview(parts: { name => "Important legal content" }) }.to raise_error(Agreements::DocxImport::Error)
