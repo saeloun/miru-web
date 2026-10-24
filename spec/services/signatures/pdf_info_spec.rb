@@ -35,6 +35,13 @@ RSpec.describe "Signing PDF source checks" do
     end
   end
 
+  it "accepts the provider's multi-recipient audit with its font dictionaries" do
+    source = Rails.root.join("spec/fixtures/files/signature-audit-synthetic.pdf")
+    result = Signatures::PdfInfo.new(source).process
+    expect(result.fetch("pages").size).to eq(8)
+    expect(result.fetch("sha256")).to eq(Digest::SHA256.file(source).hexdigest)
+  end
+
   it "accepts bounded tall, inherited and scaled pages without changing their originals" do
     [
       { media: "0 0 72 1440", crop: "0 0 72 1440" },
@@ -133,6 +140,13 @@ RSpec.describe "Signing PDF source checks" do
       method.call(RbConfig.ruby, "-e", "STDOUT.write('x' * 70_000)", **options, &block)
     end
     expect { Signatures::PdfInfo.new(path).process }.to raise_error(Signatures::PdfInfo::InvalidDocument)
+  end
+
+  it "bounds expanded object metadata before parsing it" do
+    expect do
+      Signatures::PdfInfo.new(path).send(:capture, RbConfig.ruby, "-e", "STDOUT.write('x' * 5_000_000)",
+        output_limit: Signatures::PdfInfo::MAX_STRUCTURE_BYTES)
+    end.to raise_error(Signatures::PdfInfo::InvalidDocument)
   end
 
   it "does not pass application credentials to native PDF processors" do

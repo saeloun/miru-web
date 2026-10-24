@@ -16,7 +16,8 @@ module Signatures
     MAX_PAGE_AREA = 16_000_000
     MAX_PAGE_SIDE = 14_400
     MAX_OUTPUT_BYTES = 65_536
-    MAX_STRUCTURE_BYTES = 1024 * 1024
+    # Font dictionaries in a normal multi-recipient audit exceed 1 MiB of qpdf JSON.
+    MAX_STRUCTURE_BYTES = 4 * 1024 * 1024
     TIMEOUT_SECONDS = 5
     ACTIVE_ACTIONS = %w[/JavaScript /Launch /SubmitForm /ImportData /GoToR /GoToE /Rendition /Movie /Sound].freeze
     INVALID_MESSAGE = "Upload a flat, unlocked PDF of at most 5 MiB and 100 pages."
