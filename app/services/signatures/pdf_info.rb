@@ -28,16 +28,16 @@ module Signatures
     end
 
     def initialize(path)
-      @path = path
+      @path = File.path(path)
     end
 
     def process
-      invalid! unless File.file?(@path) && File.size(@path).between?(1, MAX_BYTES)
+      invalid! unless File.file?(@path) && File.size(@path).between?(1, self.class::MAX_BYTES)
       invalid! unless File.binread(@path, 5) == "%PDF-"
-      pages = parse(capture("pdfinfo", "-box", "-f", "1", "-l", MAX_PAGES.to_s, @path))
+      pages = parse(capture("pdfinfo", "-box", "-f", "1", "-l", self.class::MAX_PAGES.to_s, @path))
       structure = reject_active_content(capture("qpdf", "--json", "--json-key=qpdf", "--json-key=pages", "--json-stream-data=none", @path,
         output_limit: MAX_STRUCTURE_BYTES))
-      check_page_boxes(structure, pages.size)
+      check_structure(structure, pages.size)
       check_images(capture("pdfimages", "-list", @path))
       { "sha256" => Digest::SHA256.file(@path).hexdigest, "pages" => pages }
     rescue Timeout::Error, IOError, Errno::EACCES, Errno::ENOENT, Errno::EISDIR, JSON::ParserError, JSON::NestingError
@@ -113,6 +113,12 @@ module Signatures
         end
       end
 
+      def check_structure(structure, count)
+        check_page_boxes(structure, count)
+      end
+
+      def valid_form?(form) = form == "none"
+
       def check_box(box, unit, objects)
         box = resolve_pdf_value(box, objects)
         invalid! unless box.is_a?(Array) && box.size == 4
@@ -152,11 +158,11 @@ module Signatures
         summary = output.rindex(/^Pages:[ \t]+\d+[ \t]*$/)
         invalid! unless summary
         header = output[...summary]
-        invalid! unless header.scan(/^Form:[ \t]+(.+?)[ \t]*$/).last == ["none"] &&
+        invalid! unless valid_form?(header.scan(/^Form:[ \t]+(.+?)[ \t]*$/).last&.first) &&
           header.scan(/^JavaScript:[ \t]+(.+?)[ \t]*$/).last == ["no"]
         output = output[summary..]
         count = output[/\APages:[ \t]+(\d+)/, 1].to_i
-        invalid! unless count.between?(1, MAX_PAGES)
+        invalid! unless count.between?(1, self.class::MAX_PAGES)
         invalid! unless output.match?(/^Encrypted:[ \t]+no[ \t]*$/)
         page_geometry(output, count)
       end
