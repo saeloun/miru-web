@@ -145,8 +145,8 @@ export default function ReviewPanel({
       <h2 className="font-semibold">Review and approval</h2>
       <p className="text-sm text-muted-foreground">
         Approval covers version {record.revision.number}, including its sources,
-        recipients, fields and signing settings. It is not a signature. Any edit
-        creates a version requiring fresh approval.
+        recipients, verification methods, fields and signing settings. It is not
+        a signature. Any edit creates a version requiring fresh approval.
       </p>
       {settings ? (
         <p className="break-words text-sm text-muted-foreground">

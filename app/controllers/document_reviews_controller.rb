@@ -68,6 +68,6 @@ class DocumentReviewsController < ActionController::Base
         expires_at: @invitation.expires_at, decision: @invitation.decision,
         revision: revision.slice(:number, :title, :content_digest, :signing_options, :status).merge(
           documents: revision.documents.map { |document| document.except("blob_id") }, fields: revision.fields,
-          recipients: revision.recipients.map { |recipient| recipient.slice("id", "name", "role") }))
+          recipients: revision.recipients.map { |recipient| recipient.slice("id", "name", "role", "authentication") }))
     end
 end

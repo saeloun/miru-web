@@ -161,6 +161,27 @@ RSpec.describe "Version-bound signature reviews", type: :request do
     expect(@record.current_revision.approval_digest).to be_nil
   end
 
+  it "binds recipient authentication to approval and exposes it in the private review without email addresses" do
+    previous = @record.current_revision
+    post review_path("/approval"), params: { signature_request: context(approval_source: "manual", approval_note: "Recorded approval") }, as: :json
+    expect(response).to have_http_status(:ok)
+    patch "/api/v1/signature_requests/#{@record.id}", params: { signature_request: {
+      company_id: company.id, lock_version: @record.reload.lock_version,
+      recipients: previous.recipients.map { |person| person.merge("authentication" => "email_code") } } }, as: :json
+    expect(response).to have_http_status(:ok)
+    current = @record.reload.current_revision
+    expect(current).to have_attributes(status: "draft", approval_digest: nil, approved_at: nil)
+    expect(current.content_digest).not_to eq(previous.content_digest)
+    expect(previous.reload.recipients.first).not_to have_key("authentication")
+    expect(previous.status).to eq("approved")
+    invitation = invite
+    sign_out admin
+    public_review(invitation)
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.dig("review", "revision", "recipients", 0, "authentication")).to eq("email_code")
+    expect(response.body).not_to include("client@example.test")
+  end
+
   it "requires a new version before approving a legacy package without signing settings" do
     @record.current_revision.update_columns(signing_options: nil)
     post review_path("/approval"), params: { signature_request: context(approval_source: "manual", approval_note: "Recorded approval") }, as: :json

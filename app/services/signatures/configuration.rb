@@ -11,7 +11,7 @@ module Signatures
     MAX_RECIPIENTS = 20
     TYPES = %w[signature initials date name email text number checkbox dropdown].freeze
     FIELD_KEYS = %w[id document_id recipient_id page type label required read_only x y width height options value].freeze
-    RECIPIENT_KEYS = %w[id name email role].freeze
+    RECIPIENT_KEYS = %w[id name email role authentication].freeze
     ID = /\A[a-zA-Z0-9_-]{1,64}\z/
 
     def initialize(documents:, recipients:, fields:)
@@ -73,7 +73,9 @@ module Signatures
       def valid_recipients?
         unique?(@recipients, "id") && @recipients.all? do |person|
           person.is_a?(Hash) && (person.keys - RECIPIENT_KEYS).empty? && valid_id?(person["id"]) &&
-            label?(person["name"]) && email?(person["email"]) && %w[signer reviewer cc].include?(person["role"])
+            label?(person["name"]) && email?(person["email"]) && %w[signer reviewer cc].include?(person["role"]) &&
+            (!person.key?("authentication") || %w[email_link email_code].include?(person["authentication"])) &&
+            (person["role"] != "cc" || person["authentication"] != "email_code")
         end && @recipients.map { |person| person["email"].downcase }.uniq.size == @recipients.size
       end
 

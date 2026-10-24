@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import type { Field, Recipient } from "./types";
+import { authenticationLabels, type Field, type Recipient } from "./types";
 
 export default function Recipients({
   recipients,
@@ -39,6 +39,7 @@ export default function Recipients({
                   name: "",
                   email: "",
                   role: "signer",
+                  authentication: "email_code",
                 },
               ])
             }
@@ -93,6 +94,10 @@ export default function Recipients({
                 onChange={event =>
                   update(person.id, {
                     role: event.target.value as Recipient["role"],
+                    authentication:
+                      event.target.value === "cc"
+                        ? "email_link"
+                        : person.authentication || "email_link",
                   })
                 }
               >
@@ -100,6 +105,37 @@ export default function Recipients({
                 <option value="reviewer">Reviewer</option>
                 <option value="cc">Copy recipient</option>
               </select>
+            </div>
+            <div>
+              <Label htmlFor={`${person.id}-authentication`}>
+                Signing verification
+              </Label>
+              <select
+                id={`${person.id}-authentication`}
+                className="signatures-select"
+                value={person.authentication || "email_link"}
+                disabled={person.role === "cc"}
+                aria-describedby={`${person.id}-authentication-help`}
+                onChange={event =>
+                  update(person.id, {
+                    authentication: event.target
+                      .value as Recipient["authentication"],
+                  })
+                }
+              >
+                {Object.entries(authenticationLabels).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+              <p
+                id={`${person.id}-authentication-help`}
+                className="mt-1 text-xs text-muted-foreground"
+              >
+                Links permit viewing. Codes verify mailbox access before
+                completion, without a signing account.
+              </p>
             </div>
             {assigned && (
               <p className="text-xs text-muted-foreground">

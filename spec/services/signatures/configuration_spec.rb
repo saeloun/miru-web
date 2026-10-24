@@ -28,6 +28,20 @@ RSpec.describe "Signing field configuration" do
       .to include("Each signer needs a required signature field")
   end
 
+  it "allows email-link or email-code completion for signers and reviewers while preserving legacy recipients" do
+    %w[signer reviewer].each do |role|
+      %w[email_link email_code].each do |authentication|
+        expect(configuration(fields: [], people: [recipients.first.merge("role" => role, "authentication" => authentication)]).errors).to be_empty
+      end
+    end
+    expect(configuration(fields: [], people: [recipients.first.merge("role" => "cc", "authentication" => "email_link")]).errors).to be_empty
+    [nil, "account", "authenticator", {}, ["email_code"]].each do |authentication|
+      expect(configuration(people: [recipients.first.merge("authentication" => authentication)]).errors).not_to be_empty
+    end
+    expect(configuration(fields: [], people: [recipients.first.merge("role" => "cc", "authentication" => "email_code")]).errors).not_to be_empty
+    expect(configuration(people: [recipients.first.merge("actionAuth" => ["ACCOUNT"])]).errors).not_to be_empty
+  end
+
   it "rejects fields on nonexistent pages and fields that extend beyond the page edge" do
     [{ "page" => 99 }, { "x" => 95 }, { "y" => 99 }, { "width" => 0 }, { "x" => -1 }, { "x" => "10" }].each do |change|
       expect(configuration(fields: [field.merge(change)]).errors).not_to be_empty, change.inspect

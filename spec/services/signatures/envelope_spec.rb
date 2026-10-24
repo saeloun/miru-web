@@ -97,6 +97,25 @@ RSpec.describe Signatures::Envelope do
     expect { envelope.payload(operation_id:) }.to raise_error(described_class::InvalidConfiguration)
   end
 
+  it "requires the exact approved email-code authentication without adding paid action authentication" do
+    people.first["authentication"] = "email_code"
+    people[2]["authentication"] = "email_code"
+    payload = envelope.payload(operation_id:)
+    [0, 2].each do |index|
+      expect(payload.fetch("recipients")[index]).to include("accessAuth" => ["TWO_FACTOR_AUTH"], "actionAuth" => [])
+    end
+    data = provider_record
+    [0, 2].each { |index| data["recipients"][index]["authOptions"] = { "accessAuth" => ["TWO_FACTOR_AUTH"], "actionAuth" => [] } }
+    expect(envelope.verify!(data, client:, operation_id:, before_send: true)).to be(true)
+    [nil, {}, { "accessAuth" => [] }, { "accessAuth" => ["ACCOUNT"] },
+      { "accessAuth" => ["TWO_FACTOR_AUTH"], "actionAuth" => ["ACCOUNT"] },
+      { "accessAuth" => ["TWO_FACTOR_AUTH"], "unexpected" => [] }].each do |auth|
+      changed = data.deep_dup
+      changed["recipients"][0]["authOptions"] = auth
+      expect { envelope.verify!(changed, client:, operation_id:, before_send: true) }.to raise_error(described_class::Mismatch)
+    end
+  end
+
   it "requires versioned, explicit date/delivery settings and a complete valid configuration" do
     [nil, options.merge("version" => 99), options.merge("timezone" => "Not/A_Timezone"),
       options.merge("redirectUrl" => "https://attacker.example.test")].each do |value|
@@ -142,6 +161,7 @@ RSpec.describe Signatures::Envelope do
       ->(data) { data["recipients"][0]["email"] = "attacker@example.test" },
       ->(data) { data["recipients"][0]["role"] = "CC" }, ->(data) { data["recipients"][0]["name"] = "Another person" },
       ->(data) { data["recipients"][0]["authOptions"] = { "actionAuth" => ["PASSWORD"] } },
+      ->(data) { data["recipients"][0]["authOptions"] = { "actionAuth" => false } },
       ->(data) { data["authOptions"] = { "globalAccessAuth" => ["ACCOUNT"] } }
     ]
     changes.each do |change|

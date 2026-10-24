@@ -41,6 +41,36 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     end
   end
 
+  it "saves explicit recipient authentication and keeps copy recipients on email links" do
+    open_documents
+    add_signer
+    within("fieldset[aria-label='Recipient 1']") do
+      expect(page).to have_select("Signing verification", selected: "Email code at completion")
+    end
+    click_button "Add field"
+    add_signer(index: 2, name: "Synthetic Copy", email: "copy@example.test")
+    within("fieldset[aria-label='Recipient 2']") do
+      select "Copy recipient", from: "Role"
+      expect(page).to have_select("Signing verification", selected: "Email link", disabled: true)
+    end
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    record = SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+    expect(record.current_revision.recipients.pluck("authentication")).to eq(%w[email_code email_link])
+    refresh
+    within("fieldset[aria-label='Recipient 1']") do
+      expect(page).to have_select("Signing verification", selected: "Email code at completion")
+    end
+    [375, 1440].each do |width|
+      page.current_window.resize_to(width, 900)
+      expect(page).to have_css('[data-pdf-ready="true"]')
+      expect(page).not_to have_content("Loading PDF preview…")
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+      page.save_screenshot(Rails.root.join("tmp/capybara/signature-authentication-#{width}.png"), full: true)
+    end
+    expect(@console_errors).to be_empty
+  end
+
   it "uploads individual PDFs and saves repeated signature blocks with keyboard placement on mobile" do
     open_documents
     expect(page).not_to have_content("Choose a template")
@@ -332,6 +362,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     visit link
     expect(page).to have_content("Review this document")
     expect(page).to have_content("Time zone: Asia/Kolkata")
+    expect(page).to have_content("Email code at completion")
     expect(page).to have_css('[data-pdf-ready="true"]')
     expect(page.evaluate_script("window.location.hash")).to eq("")
     expect(page).to have_content("INR 12345")

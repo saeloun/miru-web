@@ -3,6 +3,11 @@ export type Recipient = {
   name: string;
   email: string;
   role: "signer" | "reviewer" | "cc";
+  authentication?: "email_link" | "email_code";
+};
+export const authenticationLabels = {
+  email_code: "Email code at completion",
+  email_link: "Email link",
 };
 export type SourceDocument = {
   key: string;

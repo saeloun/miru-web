@@ -66,7 +66,7 @@ class Signatures::Envelope
 
     def recipient(person)
       { "name" => person.fetch("name"), "email" => person.fetch("email").downcase, "role" => ROLES.fetch(person.fetch("role")),
-        "accessAuth" => [], "actionAuth" => [],
+        "accessAuth" => person["authentication"] == "email_code" ? ["TWO_FACTOR_AUTH"] : [], "actionAuth" => [],
         "fields" => @revision.fields.filter_map { |field| provider_field(field) if field["recipient_id"] == person["id"] } }
         .tap { |result| result["signingOrder"] = 1 unless person["role"] == "cc" }
     end
@@ -118,12 +118,13 @@ class Signatures::Envelope
       people = data["recipients"]
       mismatch! unless people.is_a?(Array) && people.size == expected.size && people.all? do |person|
         person.is_a?(Hash) && person["envelopeId"] == data["id"] && person["id"].is_a?(Integer) && person["id"].positive? &&
-          empty_auth?(person["authOptions"], %w[accessAuth actionAuth]) && (!before_send || pristine_recipient?(person))
+          (!before_send || pristine_recipient?(person))
       end
       mismatch! unless people.pluck("id").uniq.size == people.size
       expected.map do |person|
         matches = people.select { |actual| actual.values_at("name", "email", "role") == person.values_at("name", "email", "role") }
-        mismatch! unless matches.size == 1 && matches.first["signingOrder"] == person["signingOrder"]
+        mismatch! unless matches.size == 1 && matches.first["signingOrder"] == person["signingOrder"] &&
+          recipient_auth?(matches.first["authOptions"], person)
         matches.first
       end
     end
@@ -162,6 +163,13 @@ class Signatures::Envelope
 
     def empty_auth?(options, keys)
       options.nil? || options.is_a?(Hash) && (options.keys - keys).empty? && options.values.all? { |value| value.nil? || value == [] }
+    end
+
+    def recipient_auth?(options, person)
+      return person["accessAuth"].empty? if options.nil?
+
+      options.is_a?(Hash) && (options.keys - %w[accessAuth actionAuth]).empty? &&
+        %w[accessAuth actionAuth].all? { |key| (options[key].nil? ? [] : options[key]) == person[key] }
     end
 
     def mismatch!

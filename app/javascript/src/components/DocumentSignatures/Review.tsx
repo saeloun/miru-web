@@ -7,7 +7,12 @@ import { Textarea } from "../ui/textarea";
 import PdfPages from "./PdfPages";
 import ReviewComments from "./ReviewComments";
 import { download } from "./api";
-import type { Revision, ReviewComment } from "./types";
+import {
+  authenticationLabels,
+  type Recipient,
+  type Revision,
+  type ReviewComment,
+} from "./types";
 import "./signatures.css";
 
 type ReviewData = {
@@ -25,7 +30,7 @@ type ReviewData = {
     | "documents"
     | "fields"
   > & {
-    recipients: { id: string; name: string; role: string }[];
+    recipients: Pick<Recipient, "id" | "name" | "role" | "authentication">[];
   };
   comments: ReviewComment[];
   older_before_id: number | null;
@@ -197,6 +202,22 @@ function Review({ token }: { token: string }) {
               Review approval is not a signature. This link expires{" "}
               {new Date(review.expires_at).toLocaleString()}.
             </p>
+            <ul aria-label="Signing recipients" className="space-y-1 text-sm">
+              {review.revision.recipients.map(person => (
+                <li key={person.id} className="break-words">
+                  {person.name} ({person.role}) ·{" "}
+                  {authenticationLabels[person.authentication || "email_link"]}
+                </li>
+              ))}
+            </ul>
+            {review.revision.recipients.some(
+              person => person.authentication === "email_code"
+            ) && (
+              <p className="text-sm text-muted-foreground">
+                The signing link allows viewing. Email codes verify mailbox
+                access before completion, without a signing account.
+              </p>
+            )}
           </header>
           <PdfPages
             documents={review.revision.documents}
