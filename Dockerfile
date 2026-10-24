@@ -143,10 +143,10 @@ FROM base AS production
 
 # Install packages needed for deployment
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y chromium chromium-sandbox fonts-noto-core imagemagick libvips && \
+    apt-get install --no-install-recommends -y chromium chromium-sandbox fontconfig fonts-noto-core imagemagick libvips && \
     fc-list :charset=0906 | grep -q . && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives && \
-    rm -rf /usr/local/node || true
+    rm -rf /usr/local/node
 
 # Copy built artifacts: gems, application
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
