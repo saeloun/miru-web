@@ -85,6 +85,7 @@ export type Revision = {
     provider_status: string | null;
     provider_checked_at: string | null;
     cancel_requested_at: string | null;
+    cancel_retryable: boolean;
     last_reminder_at: string | null;
     next_reminder_at: string | null;
     automatic_reminders_count: number;

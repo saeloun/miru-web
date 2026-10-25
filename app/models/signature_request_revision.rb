@@ -48,9 +48,11 @@ class SignatureRequestRevision < ApplicationRecord
 
   def delivery_summary
     expired = provider_status == "PENDING" && signing_window_expired?
+    cancellation = signature_operations.where(kind: "cancel").order(id: :desc).first if cancel_requested_at
     slice(:operation_id, :provider_envelope_id, :provider_status, :provider_checked_at, :cancel_requested_at,
       :last_reminder_at, :automatic_reminders_count).merge(
       signing_window_expired: expired, next_reminder_at: expired ? nil : next_reminder_at,
+      cancel_retryable: cancellation&.failed_preparation? || false,
       recipient_statuses: recipient_statuses || [], operations: signature_operations.order(id: :desc).limit(10).map(&:summary),
       archive: archive_summary)
   end

@@ -29,6 +29,10 @@ class SignatureOperation < ApplicationRecord
 
   def error_message = ERRORS[error_code]
 
+  def failed_preparation?
+    state == "failed" && phase == "preparing"
+  end
+
   def summary
     slice(:id, :key, :kind, :state, :phase, :automatic, :created_at, :finished_at).merge(error_code:, error_message:)
   end

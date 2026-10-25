@@ -118,6 +118,35 @@ RSpec.describe "Signature delivery controls", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "retries a cancellation that failed before changing the provider without unlocking the document" do
+    operation = queue_send
+    operation.update!(state: "confirmed", phase: "distributing", finished_at: Time.current)
+    revision = @record.current_revision
+    revision.update!(status: "awaiting_signatures", provider_envelope_id: "envelope_synthetic", provider_status: "PENDING")
+    cancellation = Signatures::Operations.new(@record, actor: admin, attributes: signature_context(@record)).cancel
+    cancellation.update!(state: "failed", phase: "preparing", error_code: "queue_unavailable", finished_at: Time.current)
+    10.times do
+      check = Signatures::Operations.new(@record, actor: admin, attributes: signature_context(@record)).refresh
+      check.update!(state: "confirmed", finished_at: Time.current)
+    end
+
+    open_delivery
+    expect(page).to have_button("Cancel signature request", disabled: false)
+    click_button "Cancel signature request"
+    within('[role="dialog"]') { click_button "Request cancellation" }
+    expect(page).to have_content("Cancellation requested")
+    expect(revision.signature_operations.where(kind: "cancel").count).to eq(2)
+    expect(revision.reload.status).to eq("awaiting_signatures")
+    expect(page).to have_field("Document title", disabled: true)
+    expect(page).to have_button("Cancel signature request", disabled: true)
+    replacement = revision.signature_operations.where(kind: "cancel").order(id: :desc).first
+    replacement.update!(state: "uncertain", phase: "cancelling", error_code: "provider_uncertain")
+    visit current_path
+    expect(page).to have_button("Cancel signature request", disabled: true)
+    expect(page).to have_field("Document title", disabled: true)
+    expect(@console_errors).to be_empty
+  end
+
   it "shows recipient status and enforces the reminder cooldown" do
     @record.with_lock do
       @record.revise!(actor: admin, attributes: { recipients: @record.current_revision.recipients + [

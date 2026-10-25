@@ -31,7 +31,7 @@ class Signatures::Operations
       end
       revision.update!(cancel_requested_at: revision.cancel_requested_at || Time.current, next_reminder_at: nil)
       previous = revision.signature_operations.where(kind: "cancel").order(id: :desc).first
-      if previous && (previous.state != "failed" || previous.phase != "preparing")
+      if previous && !previous.failed_preparation?
         previous
       else
         create_operation(revision, "cancel")

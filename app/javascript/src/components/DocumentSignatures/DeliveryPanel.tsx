@@ -338,7 +338,12 @@ export default function DeliveryPanel({
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={blocked || Boolean(delivery.cancel_requested_at)}
+                  disabled={
+                    blocked ||
+                    Boolean(
+                      delivery.cancel_requested_at && !delivery.cancel_retryable
+                    )
+                  }
                   onClick={() => setConfirm("cancel")}
                 >
                   Cancel signature request
