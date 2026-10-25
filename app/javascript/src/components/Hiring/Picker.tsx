@@ -47,6 +47,7 @@ export default function Picker({
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
   const trigger = useRef<HTMLButtonElement>(null);
+  const search = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -159,6 +160,7 @@ export default function Picker({
         >
           <Command shouldFilter={false}>
             <CommandInput
+              ref={search}
               aria-label={`Search ${kind}`}
               placeholder={`Search ${kind}`}
               value={query}
@@ -197,38 +199,44 @@ export default function Picker({
                 {error}
               </p>
             )}
-            <div className="flex flex-wrap gap-2 border-t p-2">
+          </Command>
+          <div className="flex flex-wrap gap-2 border-t p-2">
+            <Button
+              type="button"
+              variant="ghost"
+              className="min-h-11"
+              onClick={() => choose(null)}
+            >
+              {emptyLabel}
+            </Button>
+            {error && (
               <Button
                 type="button"
-                variant="ghost"
+                variant="outline"
                 className="min-h-11"
-                onClick={() => choose(null)}
+                onClick={() => {
+                  setRetry(retry + 1);
+                  search.current?.focus();
+                }}
               >
-                {emptyLabel}
+                Retry
               </Button>
-              {error && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="min-h-11"
-                  onClick={() => setRetry(retry + 1)}
-                >
-                  Retry
-                </Button>
-              )}
-              {more && !error && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="min-h-11"
-                  disabled={loading}
-                  onClick={() => setPage(page + 1)}
-                >
-                  Load more
-                </Button>
-              )}
-            </div>
-          </Command>
+            )}
+            {more && !error && (
+              <Button
+                type="button"
+                variant="outline"
+                className="min-h-11"
+                disabled={loading}
+                onClick={() => {
+                  setPage(page + 1);
+                  search.current?.focus();
+                }}
+              >
+                Load more
+              </Button>
+            )}
+          </div>
         </PopoverContent>
       </Popover>
     </div>

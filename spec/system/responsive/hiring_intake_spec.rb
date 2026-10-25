@@ -145,12 +145,28 @@ RSpec.describe "Hiring intake", type: :system, js: true do
 
   it "reopens a paginated picker without repeating options or emitting duplicate-key errors" do
     21.times { |index| HiringRole.create!(company:, title: "Synthetic Role #{index.to_s.rjust(2, '0')}") }
+    first_request = true
+    allow_any_instance_of(Api::V1::Hiring::RolesController).to receive(:search).and_wrap_original do |action, *args|
+      if first_request
+        first_request = false
+        action.receiver.render json: { errors: "Synthetic options temporarily unavailable." }, status: 503
+      else
+        action.call(*args)
+      end
+    end
     open_hiring
     add_candidate
     find("#application-role").click
+    expect(page).to have_css('[role="alert"]', text: "Synthetic options temporarily unavailable.")
+    page.execute_script("arguments[0].focus()", find_button("Retry"))
+    page.driver.browser.keyboard.type(:enter)
     expect(page).to have_css("[cmdk-item]", count: 20)
-    click_button "Load more"
+    page.execute_script("arguments[0].focus()", find_button("Load more"))
+    page.driver.browser.keyboard.type(:enter)
+    expect(page).to have_css("#application-role[aria-expanded='true']", text: "No role yet")
     expect(page).to have_css("[cmdk-item]", count: 21)
+    expect(page).to have_css("[cmdk-input]:focus")
+    capture("picker-keyboard-pagination-desktop.png")
     find("[cmdk-item]", text: "Synthetic Role 20").click
     find("#application-role").click
     expect(page).to have_css("[cmdk-item]", count: 20)
@@ -161,8 +177,13 @@ RSpec.describe "Hiring intake", type: :system, js: true do
     expect(page).to have_css("#application-role:focus[aria-expanded='false']")
     expect(page).to have_no_css("[cmdk-root]", visible: :all)
     capture("picker-keyboard-focus-desktop.png")
-    find("#application-role").send_keys(:down)
+    page.driver.browser.keyboard.type(:down)
     expect(page).to have_css("#application-role[aria-expanded='true']")
+    expect(page).to have_css("[cmdk-item]", count: 20)
+    page.execute_script("arguments[0].focus()", find_button("No role yet"))
+    page.driver.browser.keyboard.type(:enter)
+    expect(page).to have_css("#application-role:focus[aria-expanded='false']", text: "No role yet")
+    page.driver.browser.keyboard.type(:down)
     expect(page).to have_css("[cmdk-item]", count: 20)
     find("#candidate-name").click
     expect(page).to have_css("#candidate-name:focus")
