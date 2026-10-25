@@ -55,8 +55,28 @@ The subsequent expiry change passed **57 examples with zero failures**, includin
 
 ![The recipient sees the rejected document](actual-rejected-link.png)
 
+## Rebuilt-provider completion and cancellation recovery
+
+The final rebuilt provider image `sha256:c0801c28ac2dc4bf4e128c992a097dac7ded4422edc5a58ad4f77da490c06a54` ran with Miru backend `09b2cb8d393df5016abaa4ed6fbe1447c7998721`. A pending synthetic request survived the provider upgrade, completed with a mobile signer and a real Mailpit email code, and automatically archived all three files. Code request/final signing returned 200/200 with zero page/CSP errors. All three UI downloads matched the manifest; native checks verified the service seal and all six final pages were inspected. This smoke request assigned one signature field; the earlier rotated request remains the all-nine-field case.
+
+The independent review found that a failed cancellation could not be retried through the UI. The fix derives retryability from the latest cancellation on the server, including when it falls outside the ten-entry displayed history. A browser regression failed first, then passed with history truncation and uncertain-outcome protection. Forty related examples passed; after integrating the latest upstream changes, the whole-branch gate passed **382 examples, zero failures**.
+
+A fresh request then exercised a real provider outage. A guarded 25-second pause caused its first cancellation to fail before mutation, kept editing locked and exposed the enabled retry control. After automatic service restoration, normal UI retry confirmed CANCELLED with one failed preparation and one confirmed cancellation, no archived files and no failed queue jobs. The [security/runtime report](provider-security-checks.md) records scanner findings, source patches, font warnings and probe limits.
+
+![The rebuilt provider completes and archives files automatically](actual-security-image-archive.png)
+
+![The required signature remains inside its approved field](actual-security-signed.png)
+
+![A failed preparation keeps the request locked and allows retry](actual-cancel-retry-enabled.png)
+
+![The normal retry confirms cancellation](actual-cancel-recovered.png)
+
+The final placement polish preserves the visible 24px resize corner and gives it a measured 44×44px hit area at mobile and desktop widths. The old 24px target failed the browser check; three focused placement/drag/resize/page-edge cases then passed with no console errors. Both asset builds and Ruby style checks passed for this polish.
+
+![Mobile placement with the enlarged resize hit area](actual-resize-mobile.png)
+
 ## Remaining release checks
 
-The tested provider image's production dependency audit reported eleven high and ten moderate entries, including transitive entries. Dependency repairs and verification of a replacement image are in progress; the source lockfile alone does not establish the running image's safety. Production remains on hold.
+The rebuilt image's scan reports zero Alpine findings and two high/three medium Node entries; [remaining findings and reachability limits](provider-security-checks.md) are explicit. The modified Zod version remains scanner-visible despite the tested backport. Production remains on hold.
 
-Final branch review, CodeRabbit, exact-head CI and private release integration remain. Production HTTPS, provider certificate/storage/SMTP, backup/restore and deployment have not been verified. The certificate used here is a disposable self-signed QA service seal. These checks establish this local workflow and file integrity; they do not establish production operation or public/legal certificate trust.
+CodeRabbit, exact-head CI and private release integration remain. The independent whole-branch code review's cancellation finding was fixed and read back. Production HTTPS, provider certificate/storage/SMTP, backup/restore and deployment have not been verified. The certificate used here is a disposable self-signed QA service seal. These checks establish this local workflow and file integrity; they do not establish production operation or public/legal certificate trust.

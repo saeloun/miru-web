@@ -1,10 +1,20 @@
-# Agreement authoring for Miru contributors
+# Agreements and document signing for Miru contributors
 
-> Release hold: the template-first authoring unit below does not meet the clarified upload-and-sign workflow. [The revised requirements](superpowers/specs/2026-10-24-generic-document-signing.md) make individual document uploads primary and templates optional. Actual recipient signing remains unfinished; do not deploy this unit as a signing feature.
+> Production remains on hold. The generic upload, review, signing and private-archive workflow is implemented and verified locally; final release and provider commissioning checks remain. See the [current requirements](superpowers/specs/2026-10-24-generic-document-signing.md) and [actual provider evidence](qa/generic-document-signing-2462/actual-signing-and-archive.md).
 
-Owners/admins with an active membership can author private client/consultant templates at `/agreements` and generate independent drafts. The current unit provides editable clauses, fields, DOCX preview import and DRAFT PDF export. Approval, sharing, actual signing and immutable completed artifacts remain unfinished; none of these endpoints sends mail, signs a document or settles a payment.
+Owners/admins with an active membership upload PDFs at `/agreements`, place recipient fields at `/agreements/documents/:id`, approve the exact version and send it through the company's signing connection. Verified completed files appear at `/signed-documents` and on linked employee/client profiles. Optional private template authoring, editable clauses, DOCX preview import and DRAFT PDF export remain at `/agreements/authoring`; the authoring API described below exports drafts and does not itself send signature requests.
 
-Use the existing Miru development setup in [CLAUDE.md](../CLAUDE.md). Install the checked-in dependencies with `pnpm install --frozen-lockfile` and `bundle install`, then apply `bin/rails db:migrate` to your local development database. Keep encryption keys stable; do not copy production data or credentials into fixtures. This feature needs no separate signing-provider account.
+Use the existing Miru development setup in [README.md](../README.md). Install the checked-in dependencies with `pnpm install --frozen-lockfile` and `bundle install`, then apply `bin/rails db:migrate` to your local development database. Keep encryption keys stable; do not copy production data or credentials into fixtures. Local authoring and upload preparation need no provider account; actual sending requires an ordinary Documenso account/API token connected separately for each Miru company.
+
+## Generic signing setup and recovery
+
+The operator configures `DOCUMENSO_ORIGIN` (HTTPS in production), a random `DOCUMENSO_WEBHOOK_SECRET` of 32–4096 bytes, and `DOCUMENSO_SEAL_SHA256` (the lowercase SHA-256 fingerprint of the trusted service certificate's DER bytes). Obtain the certificate from the operator, not an unverified completed-file download. Owners/admins enter the company API token through **Connect signing**; Miru encrypts the credential and retains its immutable binding for requests already sent.
+
+Register the provider's supported document/recipient callbacks at `/webhooks/documenso/CONNECTION_ID` with the configured shared secret. Run `bundle exec rake solid_queue:start` alongside the web process, as declared in [Procfile](../Procfile). Keep the recurring dispatcher enabled: [config/solid_queue.yml](../config/solid_queue.yml) schedules `SignatureRemindersJob` at minute 17 each hour. Configuration alone does not establish that production jobs run. Pending recipients receive at most three automatic reminders, three days apart; manual reminders have a 24-hour cooldown. Expiry, cancellation and sender-access loss stop reminders.
+
+Use **Check signing status** to reconcile authoritative provider state. An ambiguous send must not be resent or replaced with a fresh provider request. Cancellation keeps the version locked until confirmed; a failure before provider mutation allows the same UI cancellation action to queue a safe replacement operation. Uncertain cancellation outcomes stay locked. Completed downloads remain unavailable until every signed PDF, completion certificate and audit log has been verified and saved privately.
+
+The [signing implementation and operator notes](qa/generic-document-signing-2462/README.md) describe the API, PDF/process limits, pinned source, local fixture setup and retained release gates. These workflows do not settle payments or perform statutory tax filing.
 
 ## Follow a working example
 
