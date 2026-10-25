@@ -219,6 +219,36 @@ RSpec.describe "Approved signature delivery" do
     expect { request_operation(:remind) }.to raise_error(SignatureRequest::Conflict, /24 hours/)
   end
 
+  it "stops a queued reminder when the signing window expires before its worker runs" do
+    operation = request_operation(:send_request)
+    allow_provider
+    deadline = 3.months.from_now.change(usec: 0)
+    data = provider_record("PENDING")
+    data.fetch("recipients").first["expiresAt"] = deadline.iso8601
+    allow(client).to receive(:get).and_return(provider_record, data)
+    allow(client).to receive(:remind)
+    SignatureDeliveryJob.perform_now(operation.id)
+    reminder = request_operation(:remind)
+    travel_to(deadline) { SignatureDeliveryJob.perform_now(reminder.id) }
+    expect(client).not_to have_received(:remind)
+    expect(reminder.reload).to have_attributes(state: "failed", error_code: "request_expired")
+    expect(@revision.reload).to have_attributes(status: "expired", next_reminder_at: nil)
+  end
+
+  it "denies a reminder at the recorded deadline before an expiry callback arrives" do
+    operation = request_operation(:send_request)
+    allow_provider
+    deadline = 3.months.from_now.change(usec: 0)
+    data = provider_record("PENDING")
+    data.fetch("recipients").first["expiresAt"] = deadline.iso8601
+    allow(client).to receive(:get).and_return(provider_record, data)
+    SignatureDeliveryJob.perform_now(operation.id)
+    travel_to(deadline) do
+      expect { request_operation(:remind) }.to raise_error(SignatureRequest::Conflict, /expired/)
+      expect(@revision.reload.delivery_summary).to include(signing_window_expired: true, next_reminder_at: nil)
+    end
+  end
+
   it "does not manufacture a signed archive from the provider's completed status" do
     operation = request_operation(:send_request)
     allow_provider

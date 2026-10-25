@@ -73,7 +73,8 @@ export default function DeliveryPanel({
 
   const pending =
     revision.status === "awaiting_signatures" &&
-    delivery.provider_status === "PENDING";
+    delivery.provider_status === "PENDING" &&
+    !delivery.signing_window_expired;
 
   const cooldown = Boolean(
     delivery.last_reminder_at &&
@@ -372,6 +373,12 @@ export default function DeliveryPanel({
               : "Not yet checked"}
             .
           </p>
+          {delivery.signing_window_expired && (
+            <p role="status">
+              Signing window expired. Upload a new request to collect
+              signatures.
+            </p>
+          )}
           {delivery.provider_status === "COMPLETED" &&
             revision.status !== "signed" && (
               <p>
@@ -456,6 +463,12 @@ export default function DeliveryPanel({
                 item => item.recipient_id === person.id
               );
 
+              const expired =
+                delivery.signing_window_expired &&
+                status?.signing_status === "NOT_SIGNED" &&
+                status.expires_at &&
+                new Date(status.expires_at).getTime() <= Date.now();
+
               return (
                 <li
                   key={person.id}
@@ -465,6 +478,8 @@ export default function DeliveryPanel({
                   {person.email} ·{" "}
                   {person.role === "cc"
                     ? "Copy recipient (no signature required)"
+                    : expired
+                    ? "Expired"
                     : status?.signing_status === "SIGNED"
                     ? person.role === "reviewer"
                       ? "Approved"
@@ -481,6 +496,12 @@ export default function DeliveryPanel({
                     <p>
                       Provider email: {label(status.send_status)} ·{" "}
                       {label(status.read_status)}
+                    </p>
+                  )}
+                  {status?.expires_at && (
+                    <p>
+                      Signing deadline:{" "}
+                      {new Date(status.expires_at).toLocaleString()}
                     </p>
                   )}
                 </li>

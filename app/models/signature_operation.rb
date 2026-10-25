@@ -12,6 +12,7 @@ class SignatureOperation < ApplicationRecord
     "queue_unavailable" => "This action could not be queued. Check the status to try queuing it again.",
     "cancel_waiting" => "Cancellation is waiting for the in-progress send to be reconciled.",
     "send_cancelled" => "Sending was cancelled before distribution.",
+    "request_expired" => "The signing window has expired. No reminder was sent.",
     "request_closed" => "The provider already closed this request. It cannot be cancelled."
   }.freeze
 

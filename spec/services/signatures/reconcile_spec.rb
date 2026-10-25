@@ -66,6 +66,55 @@ RSpec.describe "Signature completion and private archives" do
     expect { @revision.artifact_bytes("missing") }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it "closes an expired signing window without publishing files or scheduling reminders" do
+    data = stub_provider(status: "PENDING")
+    data.fetch("recipients").first["expiresAt"] = Time.current.iso8601
+    @revision.update!(next_reminder_at: 1.day.from_now)
+    expect(reconcile).to be(true)
+    expect(@revision.reload).to have_attributes(status: "expired", next_reminder_at: nil, archived_at: nil)
+    expect(@revision.delivery_summary).to include(signing_window_expired: true)
+    expect(@revision.recipient_statuses.first.fetch("expires_at")).to eq(Time.current.iso8601(3))
+    expect(client).not_to have_received(:signed)
+  end
+
+  it "keeps an already signed recipient valid after their signing deadline" do
+    data = stub_provider(status: "PENDING")
+    data.fetch("recipients").first.merge!("expiresAt" => 1.minute.ago.iso8601, "signingStatus" => "SIGNED")
+    expect(reconcile).to be(true)
+    expect(@revision.reload.status).to eq("awaiting_signatures")
+    expect(@revision.delivery_summary).to include(signing_window_expired: false)
+  end
+
+  it "ignores copy-recipient deadlines when an actionable signer is still within their window" do
+    connection = @revision.signature_connection
+    @record = approved_signature_request(company:, actor: admin)
+    @record.with_lock do
+      @record.revise!(actor: admin, attributes: { recipients: @record.current_revision.recipients +
+        [{ id: "copy", name: "Synthetic Copy", email: "copy@example.test", role: "cc" }] })
+    end
+    Signatures::Review.new(@record, actor: admin, attributes: signature_context(@record).merge(
+      approval_source: "manual", approval_note: "Synthetic copy-recipient expiry check")).approve
+    @revision = @record.reload.current_revision
+    @revision.update!(signature_connection: connection, provider_envelope_id: "envelope_copy_expiry",
+      operation_id: SecureRandom.uuid, status: "awaiting_signatures", provider_status: "PENDING")
+    data = stub_provider(status: "PENDING")
+    data.fetch("recipients").find { |person| person["role"] == "SIGNER" }["expiresAt"] = 1.day.from_now.iso8601
+    data.fetch("recipients").find { |person| person["role"] == "CC" }["expiresAt"] = 1.day.ago.iso8601
+    expect(reconcile).to be(true)
+    expect(@revision.reload.status).to eq("awaiting_signatures")
+    expect(@revision.recipient_statuses.find { |person| person["recipient_id"] == "copy" }.fetch("expires_at")).to be_nil
+  end
+
+  it "rejects malformed or ambiguous signing deadlines without publishing files" do
+    data = stub_provider(status: "PENDING")
+    ["2026-10-25", "2026-02-30T00:00:00Z", 20261025, "invalid-clock", "x" * 41].each do |deadline|
+      data.fetch("recipients").first["expiresAt"] = deadline
+      expect(reconcile).to be(false)
+      expect(@revision.reload).to have_attributes(status: "awaiting_signatures", archive_error: "provider_mismatch")
+    end
+    expect(client).not_to have_received(:signed)
+  end
+
   it "requires every actionable recipient and required field to be completed" do
     data = stub_provider
     data.fetch("recipients").first["signingStatus"] = "NOT_SIGNED"

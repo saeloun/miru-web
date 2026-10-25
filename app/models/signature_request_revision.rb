@@ -47,10 +47,18 @@ class SignatureRequestRevision < ApplicationRecord
   end
 
   def delivery_summary
+    expired = provider_status == "PENDING" && signing_window_expired?
     slice(:operation_id, :provider_envelope_id, :provider_status, :provider_checked_at, :cancel_requested_at,
-      :last_reminder_at, :next_reminder_at, :automatic_reminders_count).merge(
+      :last_reminder_at, :automatic_reminders_count).merge(
+      signing_window_expired: expired, next_reminder_at: expired ? nil : next_reminder_at,
       recipient_statuses: recipient_statuses || [], operations: signature_operations.order(id: :desc).limit(10).map(&:summary),
       archive: archive_summary)
+  end
+
+  def signing_window_expired?(people = recipient_statuses)
+    (people || []).any? do |person|
+      person["signing_status"] == "NOT_SIGNED" && person["expires_at"] && Time.iso8601(person["expires_at"]) <= Time.current
+    end
   end
 
   def archive_summary

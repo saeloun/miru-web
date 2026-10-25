@@ -124,4 +124,20 @@ RSpec.describe "Signed document archives", type: :system, js: true do
     expect(page).to have_button("Check signing status")
     expect(@console_errors).to be_empty
   end
+
+  it "shows an elapsed signing deadline and stops offering reminders before its callback arrives" do
+    record = approved_signature_request(company:, actor: admin)
+    record.current_revision.update!(signature_connection: @connection, operation_id: SecureRandom.uuid,
+      provider_envelope_id: "envelope_expiring", provider_status: "PENDING", status: "awaiting_signatures",
+      recipient_statuses: [{ "recipient_id" => "signer", "signing_status" => "NOT_SIGNED", "send_status" => "SENT",
+        "read_status" => "OPENED", "expires_at" => 1.minute.ago.iso8601 }])
+    open_page(admin, "/agreements/documents/#{record.id}")
+    expect(page).to have_css('[data-pdf-ready="true"]')
+    expect(page).to have_content("Signing window expired")
+    expect(page).to have_content("Signing deadline:")
+    expect(page).not_to have_button("Remind pending recipients")
+    expect(page).not_to have_content("Next automatic reminder:")
+    expect(page).not_to have_content("Signed files saved in Miru")
+    expect(@console_errors).to be_empty
+  end
 end

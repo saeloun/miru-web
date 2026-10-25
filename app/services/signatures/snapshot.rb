@@ -16,17 +16,16 @@ class Signatures::Snapshot
       end
       people = recipient_statuses(data)
       check_progression(people)
-      next_reminder = if provider_status == "PENDING" && @revision.cancel_requested_at.nil?
+      status = { "PENDING" => @revision.signing_window_expired?(people) ? "expired" : "awaiting_signatures", "COMPLETED" => "awaiting_signatures",
+        "REJECTED" => "declined", "CANCELLED" => "cancelled" }.fetch(provider_status, @revision.status)
+      next_reminder = if provider_status == "PENDING" && status != "expired" && @revision.cancel_requested_at.nil?
         @revision.provider_status.in?([nil, "DRAFT"]) ? 3.days.from_now : @revision.next_reminder_at
       end
-      status = { "PENDING" => "awaiting_signatures", "COMPLETED" => "awaiting_signatures",
-        "REJECTED" => "declined", "CANCELLED" => "cancelled" }.fetch(provider_status, @revision.status)
       status = "signed" if @revision.archived_at
+      close_pending_cancellations if %w[COMPLETED REJECTED].include?(provider_status)
       @revision.update!(provider_status:, provider_checked_at: checked_at, recipient_statuses: people, status:,
         next_reminder_at: next_reminder,
         archive_error: provider_status == "COMPLETED" || @revision.archived_at ? @revision.archive_error : nil)
-      close_pending_cancellations if %w[COMPLETED REJECTED].include?(provider_status)
-      true
     end
   end
 
@@ -50,8 +49,19 @@ class Signatures::Snapshot
         end
         { "recipient_id" => person.fetch("id"), "provider_recipient_id" => actual.fetch("id"),
           "signing_status" => actual.fetch("signingStatus"), "send_status" => actual.fetch("sendStatus"),
-          "read_status" => actual.fetch("readStatus") }
+          "read_status" => actual.fetch("readStatus"), "expires_at" => person["role"] == "cc" ? nil : deadline(actual["expiresAt"]) }
       end
+    end
+
+    def deadline(value)
+      return if value.nil?
+
+      unless value.is_a?(String) && value.bytesize <= 40 && value.match?(/T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})\z/)
+        raise Signatures::Envelope::Mismatch
+      end
+      DateTime.iso8601(value).to_time.utc.iso8601(3)
+    rescue ArgumentError
+      raise Signatures::Envelope::Mismatch, cause: nil
     end
 
     def check_progression(people)

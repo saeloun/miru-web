@@ -79,6 +79,16 @@ RSpec.describe "Authorized signed document archives", type: :request do
     expect(response).to have_http_status(:unauthorized)
   end
 
+  it "keeps verified archives downloadable after their signing window and service certificate expire" do
+    signed = archive(employment:)
+    travel_to(4.months.from_now)
+    sign_in admin
+    download(signed)
+    expect(response).to have_http_status(:ok)
+    expect(response.body.b).to eq(pdf)
+    expect(signed.reload.status).to eq("signed")
+  end
+
   it "limits client users to their active client membership and excludes other clients and consultant documents" do
     own = archive(client: client_record)
     other = archive(employment:)

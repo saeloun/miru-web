@@ -196,7 +196,12 @@ class Signatures::Delivery
 
     def remind
       data, checked_at = observe
-      locked { apply_snapshot(data, checked_at) }
+      stopped = locked do
+        apply_snapshot(data, checked_at)
+        finish_locked("failed", "request_expired") if @revision.status == "expired" && current_run?
+      end
+      return if stopped
+
       people = data.fetch("recipients").select { |person| person["role"] != "CC" && person["signingStatus"] == "NOT_SIGNED" }
       if data["status"] != "PENDING" || people.empty?
         locked { finish_locked("confirmed") if current_run? }

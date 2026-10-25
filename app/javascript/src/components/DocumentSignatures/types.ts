@@ -88,11 +88,13 @@ export type Revision = {
     last_reminder_at: string | null;
     next_reminder_at: string | null;
     automatic_reminders_count: number;
+    signing_window_expired?: boolean;
     recipient_statuses: {
       recipient_id: string;
       signing_status: string;
       send_status: string;
       read_status: string;
+      expires_at?: string | null;
     }[];
     operations: {
       id: number;

@@ -44,6 +44,8 @@ class Signatures::Operations
       unless revision.status == "awaiting_signatures" && revision.provider_status == "PENDING" && revision.cancel_requested_at.nil?
         raise SignatureRequest::Conflict, "Only pending signature requests can receive reminders."
       end
+      raise SignatureRequest::Conflict, "The signing window has expired. No reminder was sent." if revision.signing_window_expired?
+
       if revision.last_reminder_at && revision.last_reminder_at > 24.hours.ago
         raise SignatureRequest::Conflict, "Wait 24 hours between reminders."
       end
