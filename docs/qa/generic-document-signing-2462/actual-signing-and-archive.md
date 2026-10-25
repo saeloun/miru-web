@@ -1,6 +1,8 @@
 # Actual signing and archive checks
 
-Local synthetic QA on 25 October 2026. Completion/archive checks used Miru `7678d9818b40f2d98dd8edbf440c3da52649ae6b`; expiry/rejection used `c4d2362b2b3b81573865c9d24e6d0966de59f8b5`. Tested provider image: `sha256:4be09d51a2ae0a4462f4a7dc1f593475cc797ae089705134caaa6199acabb7c9`. Brave, a separate Miru database, persistent Solid Queue worker, local Documenso/PostgreSQL and Mailpit were used. Every recipient and document is fictional; no external signature email was sent.
+Local synthetic QA on 25 October 2026. The initial completion/archive checks used Miru `7678d9818b40f2d98dd8edbf440c3da52649ae6b`; expiry/rejection used `c4d2362b2b3b81573865c9d24e6d0966de59f8b5` and provider image `sha256:4be09d51a2ae0a4462f4a7dc1f593475cc797ae089705134caaa6199acabb7c9`. Brave, a separate Miru database, persistent Solid Queue worker, local Documenso/PostgreSQL and Mailpit were used. Every recipient and document is fictional; no external signature email was sent.
+
+The latest dependency-upgrade retest used Miru `43fc084c9` and provider `sha256:9309cef4bf702348b3bcc96b4e1625e9d2312f4e87cf546847f7d41602994306`. A fresh upload completed through anonymous 375px signing and a real local email code; all three signing POSTs returned 200. The actual callback and worker archived three files automatically. All three UI downloads matched their hashes; native checks verified the signed PDF's complete-file service seal and parsed the certificate/audit. All six rendered pages were inspected, including the signature inside its original field; Poppler emitted five font warnings. Three historical UI downloads also retained their pre-upgrade hashes. No manual refresh, browser privacy change or signing account was needed. See the [archive](actual-upgraded-provider-archive.png), [signed source page](actual-upgraded-provider-signed-page.png) and [dependency/runtime evidence](provider-security-checks.md).
 
 ## Completed flows
 

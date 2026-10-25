@@ -1,34 +1,35 @@
 diff --git a/docker/Dockerfile b/docker/Dockerfile
-index 22cad2e..fa7bb5c 100644
+index 22cad2e..b3fb42c 100644
 --- a/docker/Dockerfile
 +++ b/docker/Dockerfile
-@@ -81,13 +81,17 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
+@@ -81,13 +81,18 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
  COPY --from=builder /app/lingui.config.ts ./lingui.config.ts
  COPY --from=builder /app/patches ./patches
-
+ 
 -RUN npm ci
 +RUN npm ci && npm cache clean --force
-
+ 
  # Then copy all the source code (as it changes more often)
  COPY --from=builder /app/out/full/ .
  # Finally copy the turbo.json file so that we can run turbo commands
  COPY turbo.json turbo.json
-
+ 
 +COPY --from=builder /app/scripts/security ./scripts/security
 +RUN node scripts/security/zod-size-gate-check.mjs \
-+    && node --import tsx scripts/security/mailchannels-transport-check.mjs
++    && node --import tsx scripts/security/mailchannels-transport-check.mjs \
++    && node scripts/security/dependency-guards-check.mts
 +
  ENV NODE_OPTIONS="--max-old-space-size=8192"
-
+ 
  RUN npx turbo run build --filter=@documenso/remix...
-@@ -145,6 +149,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
+@@ -145,6 +150,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
  RUN npx prisma generate --schema ./packages/prisma/schema.prisma --generator client \
      && npm cache clean --force
-
+ 
 +USER root
 +RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 +USER nodejs
-
+ 
  # Get the start script from docker/
  COPY --chown=nodejs:nodejs ./docker/start.sh /app/apps/remix/start.sh
 diff --git a/docker/start.sh b/docker/start.sh
@@ -37,24 +38,24 @@ index 7121790..81400c7 100755
 +++ b/docker/start.sh
 @@ -1,5 +1,7 @@
  #!/bin/sh
-
+ 
 +set -e
 +
  # 🚀 Starting Documenso...
  printf "🚀 Starting Documenso...\n\n"
-
+ 
 @@ -28,7 +30,7 @@ printf "👥 Community: https://github.com/documenso/documenso\n\n"
  export NEXT_PRIVATE_DIRECT_DATABASE_URL="${NEXT_PRIVATE_DIRECT_DATABASE_URL:-$NEXT_PRIVATE_DATABASE_URL}"
-
+ 
  printf "🗄️  Running database migrations...\n"
 -npx prisma migrate deploy --schema ../../packages/prisma/schema.prisma
 +node ../../node_modules/prisma/build/index.js migrate deploy --schema ../../packages/prisma/schema.prisma
-
+ 
  printf "🌟 Starting Documenso server...\n"
 -HOSTNAME=0.0.0.0 node build/server/main.js
 +HOSTNAME=0.0.0.0 exec node build/server/main.js
 diff --git a/package-lock.json b/package-lock.json
-index b999c2b..92d6da6 100644
+index b999c2b..f01fba8 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -55,9 +55,9 @@
@@ -595,7 +596,27 @@ index b999c2b..92d6da6 100644
        "cpu": [
          "x64"
        ],
-@@ -13774,9 +13774,10 @@
+@@ -13701,19 +13701,6 @@
+         "tailwindcss": ">=3.0.0 || >=4.0.0 || insiders"
+       }
+     },
+-    "node_modules/@tailwindcss/typography/node_modules/postcss-selector-parser": {
+-      "version": "6.0.10",
+-      "resolved": "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-6.0.10.tgz",
+-      "integrity": "sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "cssesc": "^3.0.0",
+-        "util-deprecate": "^1.0.2"
+-      },
+-      "engines": {
+-        "node": ">=4"
+-      }
+-    },
+     "node_modules/@tanstack/query-core": {
+       "version": "5.90.10",
+       "resolved": "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.90.10.tgz",
+@@ -13774,9 +13761,10 @@
        }
      },
      "node_modules/@team-plain/typescript-sdk": {
@@ -609,7 +630,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "dependencies": {
          "@graphql-typed-document-node/core": "^3.2.0",
-@@ -14713,16 +14714,16 @@
+@@ -14713,16 +14701,16 @@
        }
      },
      "node_modules/@vitest/expect": {
@@ -631,7 +652,7 @@ index b999c2b..92d6da6 100644
          "chai": "^6.2.2",
          "tinyrainbow": "^3.1.0"
        },
-@@ -14731,13 +14732,13 @@
+@@ -14731,13 +14719,13 @@
        }
      },
      "node_modules/@vitest/mocker": {
@@ -649,7 +670,7 @@ index b999c2b..92d6da6 100644
          "estree-walker": "^3.0.3",
          "magic-string": "^0.30.21"
        },
-@@ -14768,9 +14769,9 @@
+@@ -14768,9 +14756,9 @@
        }
      },
      "node_modules/@vitest/pretty-format": {
@@ -662,7 +683,7 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "license": "MIT",
        "dependencies": {
-@@ -14781,13 +14782,13 @@
+@@ -14781,13 +14769,13 @@
        }
      },
      "node_modules/@vitest/runner": {
@@ -680,7 +701,7 @@ index b999c2b..92d6da6 100644
          "pathe": "^2.0.3"
        },
        "funding": {
-@@ -14802,14 +14803,14 @@
+@@ -14802,14 +14790,14 @@
        "license": "MIT"
      },
      "node_modules/@vitest/snapshot": {
@@ -700,7 +721,7 @@ index b999c2b..92d6da6 100644
          "magic-string": "^0.30.21",
          "pathe": "^2.0.3"
        },
-@@ -14825,9 +14826,9 @@
+@@ -14825,9 +14813,9 @@
        "license": "MIT"
      },
      "node_modules/@vitest/spy": {
@@ -713,7 +734,7 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "license": "MIT",
        "funding": {
-@@ -14835,13 +14836,13 @@
+@@ -14835,13 +14823,13 @@
        }
      },
      "node_modules/@vitest/utils": {
@@ -731,7 +752,7 @@ index b999c2b..92d6da6 100644
          "convert-source-map": "^2.0.0",
          "tinyrainbow": "^3.1.0"
        },
-@@ -15647,9 +15648,9 @@
+@@ -15647,9 +15635,9 @@
        "license": "MIT"
      },
      "node_modules/body-parser": {
@@ -744,7 +765,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "dependencies": {
          "bytes": "~3.1.2",
-@@ -15705,22 +15706,6 @@
+@@ -15705,22 +15693,6 @@
        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==",
        "license": "MIT"
      },
@@ -767,7 +788,7 @@ index b999c2b..92d6da6 100644
      "node_modules/body-parser/node_modules/statuses": {
        "version": "2.0.2",
        "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.2.tgz",
-@@ -16092,9 +16077,9 @@
+@@ -16092,9 +16064,9 @@
        }
      },
      "node_modules/chai": {
@@ -780,7 +801,30 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "license": "MIT",
        "engines": {
-@@ -18058,9 +18043,9 @@
+@@ -17851,9 +17823,19 @@
+       }
+     },
+     "node_modules/deepmerge-ts": {
+-      "version": "7.1.5",
+-      "resolved": "https://registry.npmjs.org/deepmerge-ts/-/deepmerge-ts-7.1.5.tgz",
+-      "integrity": "sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==",
++      "version": "8.0.0",
++      "resolved": "https://registry.npmjs.org/deepmerge-ts/-/deepmerge-ts-8.0.0.tgz",
++      "integrity": "sha512-ICNjaP0ML+eSdEpJYQC46XiAn/UjAdwbEl0dE8p85ZTeNDinN4Kd4+9jS4OSAuH7st6eC7rQhsqTF5zIDaUm2g==",
++      "funding": [
++        {
++          "type": "ko-fi",
++          "url": "https://ko-fi.com/rebeccastevens"
++        },
++        {
++          "type": "tidelift",
++          "url": "https://tidelift.com/funding/github/npm/deepmerge-ts"
++        }
++      ],
+       "license": "BSD-3-Clause",
+       "engines": {
+         "node": ">=16.0.0"
+@@ -18058,9 +18040,9 @@
        }
      },
      "node_modules/dompurify": {
@@ -793,7 +837,7 @@ index b999c2b..92d6da6 100644
        "license": "(MPL-2.0 OR Apache-2.0)",
        "optionalDependencies": {
          "@types/trusted-types": "^2.0.7"
-@@ -18968,9 +18953,9 @@
+@@ -18968,9 +18950,9 @@
        "license": "Unlicense"
      },
      "node_modules/fast-uri": {
@@ -806,7 +850,7 @@ index b999c2b..92d6da6 100644
        "funding": [
          {
            "type": "github",
-@@ -19199,9 +19184,9 @@
+@@ -19199,9 +19181,9 @@
        }
      },
      "node_modules/follow-redirects": {
@@ -819,7 +863,7 @@ index b999c2b..92d6da6 100644
        "funding": [
          {
            "type": "individual",
-@@ -19599,9 +19584,9 @@
+@@ -19599,9 +19581,9 @@
        }
      },
      "node_modules/fumadocs-mdx/node_modules/zod": {
@@ -832,7 +876,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "funding": {
          "url": "https://github.com/sponsors/colinhacks"
-@@ -20483,9 +20468,9 @@
+@@ -20483,9 +20465,9 @@
        }
      },
      "node_modules/hono": {
@@ -845,7 +889,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "engines": {
          "node": ">=16.9.0"
-@@ -20774,9 +20759,9 @@
+@@ -20774,9 +20756,9 @@
        "license": "MIT"
      },
      "node_modules/inngest": {
@@ -858,7 +902,7 @@ index b999c2b..92d6da6 100644
        "license": "Apache-2.0",
        "dependencies": {
          "@bufbuild/protobuf": "^2.2.3",
-@@ -20856,9 +20841,9 @@
+@@ -20856,9 +20838,9 @@
        }
      },
      "node_modules/inngest-cli": {
@@ -871,7 +915,7 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "hasInstallScript": true,
        "license": "SEE LICENSE IN LICENSE.md",
-@@ -24112,12 +24097,12 @@
+@@ -24112,12 +24094,12 @@
        }
      },
      "node_modules/next": {
@@ -888,7 +932,7 @@ index b999c2b..92d6da6 100644
          "@swc/helpers": "0.5.23",
          "baseline-browser-mapping": "^2.9.19",
          "caniuse-lite": "^1.0.30001579",
-@@ -24131,15 +24116,15 @@
+@@ -24131,15 +24113,15 @@
          "node": ">=20.9.0"
        },
        "optionalDependencies": {
@@ -913,7 +957,7 @@ index b999c2b..92d6da6 100644
        },
        "peerDependencies": {
          "@opentelemetry/api": "^1.1.0",
-@@ -24292,12 +24277,12 @@
+@@ -24292,12 +24274,12 @@
        }
      },
      "node_modules/nodemailer": {
@@ -930,7 +974,7 @@ index b999c2b..92d6da6 100644
        }
      },
      "node_modules/normalize-path": {
-@@ -25664,9 +25649,9 @@
+@@ -25664,9 +25646,9 @@
        }
      },
      "node_modules/postcss-selector-parser": {
@@ -943,7 +987,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "dependencies": {
          "cssesc": "^3.0.0",
-@@ -26113,12 +26098,13 @@
+@@ -26113,12 +26095,13 @@
        }
      },
      "node_modules/qs": {
@@ -961,7 +1005,7 @@ index b999c2b..92d6da6 100644
        },
        "engines": {
          "node": ">=0.6"
-@@ -27757,9 +27743,9 @@
+@@ -27757,9 +27740,9 @@
        "license": "ISC"
      },
      "node_modules/sharp": {
@@ -974,7 +1018,7 @@ index b999c2b..92d6da6 100644
        "license": "Apache-2.0",
        "dependencies": {
          "@img/colour": "^1.1.0",
-@@ -27773,31 +27759,31 @@
+@@ -27773,31 +27756,31 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -1031,7 +1075,7 @@ index b999c2b..92d6da6 100644
        },
        "peerDependenciesMeta": {
          "@types/node": {
-@@ -29108,9 +29094,9 @@
+@@ -29108,9 +29091,9 @@
        }
      },
      "node_modules/tinyrainbow": {
@@ -1044,7 +1088,20 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "license": "MIT",
        "engines": {
-@@ -29454,9 +29440,9 @@
+@@ -29234,9 +29217,9 @@
+       }
+     },
+     "node_modules/ts-deepmerge": {
+-      "version": "6.2.1",
+-      "resolved": "https://registry.npmjs.org/ts-deepmerge/-/ts-deepmerge-6.2.1.tgz",
+-      "integrity": "sha512-8CYSLazCyj0DJDpPIxOFzJG46r93uh6EynYjuey+bxcLltBeqZL7DMfaE5ZPzZNFlav7wx+2TDa/mBl8gkTYzw==",
++      "version": "8.0.0",
++      "resolved": "https://registry.npmjs.org/ts-deepmerge/-/ts-deepmerge-8.0.0.tgz",
++      "integrity": "sha512-133O+10nJmVI8w5xeVZPEv5PIrv7iaUae07wv1aH8XJH95Ur6YIhWAPhPyP1YPlbPS9fCVcNIZTu7m8urRVF0A==",
+       "license": "ISC",
+       "engines": {
+         "node": ">=14.13.1"
+@@ -29454,9 +29437,9 @@
        "license": "MIT"
      },
      "node_modules/undici": {
@@ -1057,7 +1114,7 @@ index b999c2b..92d6da6 100644
        "license": "MIT",
        "engines": {
          "node": ">=20.18.1"
-@@ -29821,9 +29807,9 @@
+@@ -29821,9 +29804,9 @@
        }
      },
      "node_modules/vite": {
@@ -1070,7 +1127,7 @@ index b999c2b..92d6da6 100644
        "dev": true,
        "license": "MIT",
        "dependencies": {
-@@ -30040,19 +30026,19 @@
+@@ -30040,19 +30023,19 @@
        }
      },
      "node_modules/vitest": {
@@ -1100,7 +1157,7 @@ index b999c2b..92d6da6 100644
          "es-module-lexer": "^2.0.0",
          "expect-type": "^1.3.0",
          "magic-string": "^0.30.21",
-@@ -30080,12 +30066,12 @@
+@@ -30080,12 +30063,12 @@
          "@edge-runtime/vm": "*",
          "@opentelemetry/api": "^1.9.0",
          "@types/node": "^20.0.0 || ^22.0.0 || >=24.0.0",
@@ -1119,7 +1176,7 @@ index b999c2b..92d6da6 100644
          "happy-dom": "*",
          "jsdom": "*",
          "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
-@@ -30727,7 +30713,7 @@
+@@ -30727,7 +30710,7 @@
          "@documenso/nodemailer-resend": "5.0.0",
          "@documenso/tailwind-config": "*",
          "@react-email/render": "2.1.0",
@@ -1128,7 +1185,7 @@ index b999c2b..92d6da6 100644
          "react-email": "^6.9.0",
          "resend": "^6.5.2"
        },
-@@ -30793,7 +30779,7 @@
+@@ -30793,7 +30776,7 @@
          "posthog-node": "4.18.0",
          "react": "^19.2.7",
          "remeda": "^2.32.0",
@@ -1138,7 +1195,7 @@ index b999c2b..92d6da6 100644
          "ts-pattern": "^5.9.0",
          "zod": "^3.25.76"
 diff --git a/package.json b/package.json
-index 6aef8ce..1f8a4b1 100644
+index 6aef8ce..839586f 100644
 --- a/package.json
 +++ b/package.json
 @@ -85,7 +85,7 @@
@@ -1150,7 +1207,7 @@ index 6aef8ce..1f8a4b1 100644
      "pdfjs-dist": "5.4.296",
      "pino": "^9.14.0",
      "pino-pretty": "^13.1.2",
-@@ -145,13 +145,14 @@
+@@ -145,13 +145,18 @@
      "posthog-node": "4.18.0",
      "react": "^19.2.7",
      "react-dom": "^19.2.7",
@@ -1162,12 +1219,16 @@ index 6aef8ce..1f8a4b1 100644
 +    "zod": "3.25.76"
    },
    "overrides": {
++    "deepmerge-ts": "8.0.0",
++    "ts-deepmerge": "8.0.0",
++    "postcss-selector-parser@6": "6.1.5",
++    "postcss-selector-parser@7": "7.1.6",
      "lodash": "4.18.1",
 +    "qs": "6.16.0",
      "brace-expansion@1": "^1.1.18",
      "pdfjs-dist": "5.4.296",
      "postcss": "^8.5.19",
-@@ -162,7 +163,7 @@
+@@ -162,7 +167,7 @@
      "typescript": "5.6.2",
      "zod": "$zod",
      "fumadocs-mdx": {
@@ -1194,9 +1255,9 @@ index 923346f..f8f0dd9 100644
 --- a/packages/email/transports/mailchannels.ts
 +++ b/packages/email/transports/mailchannels.ts
 @@ -7,8 +7,6 @@ import { normalizeMailHeaders } from './normalize-headers';
-
+ 
  const VERSION = '1.0.0';
-
+ 
 -type NodeMailerAddress = string | Address | Array<string | Address> | undefined;
 -
  interface MailChannelsAddress {
@@ -1205,14 +1266,14 @@ index 923346f..f8f0dd9 100644
 @@ -46,22 +44,25 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
      };
    }
-
+ 
 -  public send(mail: MailMessage, callback: (_err: Error | null, _info: SentMessageInfo) => void) {
 +  public send(mail: MailMessage, callback: (_err: Error | null, _info?: SentMessageInfo) => void) {
      if (!mail.data.to || !mail.data.from) {
 -      return callback(new Error('Missing required fields "to" or "from"'), null);
 +      return callback(new Error('Missing required fields "to" or "from"'));
      }
-
+ 
 -    const mailTo = this.toMailChannelsAddresses(mail.data.to);
 -    const mailCc = this.toMailChannelsAddresses(mail.data.cc);
 -    const mailBcc = this.toMailChannelsAddresses(mail.data.bcc);
@@ -1220,18 +1281,18 @@ index 923346f..f8f0dd9 100644
 +    const mailTo = this.toMailChannelsAddresses(addresses.to);
 +    const mailCc = this.toMailChannelsAddresses(addresses.cc);
 +    const mailBcc = this.toMailChannelsAddresses(addresses.bcc);
-
+ 
 -    const [from] = this.toMailChannelsAddresses(mail.data.from);
 -    const [replyTo] = this.toMailChannelsAddresses(mail.data.replyTo);
 +    const [from] = this.toMailChannelsAddresses(addresses.from);
 +    const [replyTo] = this.toMailChannelsAddresses(addresses['reply-to']);
-
+ 
 -    if (!from) {
 -      return callback(new Error('Missing required field "from"'), null);
 +    if (!from || mailTo.length === 0) {
 +      return callback(new Error('Missing required fields "to" or "from"'));
      }
-
+ 
 +    const envelope = mail.message.getEnvelope();
 +
      const requestHeaders: Record<string, string> = {
@@ -1254,7 +1315,7 @@ index 923346f..f8f0dd9 100644
              pending: [],
            });
 @@ -116,44 +114,24 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
-
+ 
          res
            .json()
 -          .then((data) => callback(new Error(`MailChannels error: ${data.message}`), null))
@@ -1267,7 +1328,7 @@ index 923346f..f8f0dd9 100644
 +        return callback(err);
        });
    }
-
+ 
    /**
     * Converts a nodemailer address(s) to an array of MailChannel compatible address.
     */
@@ -1534,6 +1595,158 @@ index 0000000..d1570a7
 + });
 + function handleSetResult(result, final) {
 +     if (result.issues.length) {
+diff --git a/patches/@anatine+zod-openapi+1.14.2.patch b/patches/@anatine+zod-openapi+1.14.2.patch
+new file mode 100644
+index 0000000..38c0016
+--- /dev/null
++++ b/patches/@anatine+zod-openapi+1.14.2.patch
+@@ -0,0 +1,146 @@
++diff --git a/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js b/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
++--- a/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
+++++ b/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
++@@ -38,7 +38,7 @@
++             }
++         }
++     }
++-    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
+++    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
++         ? {
++             type: output,
++         }
++@@ -81,7 +81,7 @@
++                 break;
++         }
++     });
++-    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNumber({ zodRef, schemas, }) {
++     const baseSchema = {
++@@ -108,7 +108,7 @@
++                 baseSchema.multipleOf = item.value;
++         }
++     });
++-    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseObject({ zodRef, schemas, useOutput, }) {
++     var _a;
++@@ -131,14 +131,14 @@
++             item._def.typeName === 'ZodDefault') && !(item instanceof zod_1.z.ZodNever || item._def.typeName === 'ZodDefault'));
++     });
++     const required = requiredProperties.length > 0 ? { required: requiredProperties } : {};
++-    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
+++    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
++             zodRef: zodRef,
++             schemas,
++             useOutput,
++         }) }, required), additionalProperties), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseRecord({ zodRef, schemas, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: 'object',
++         additionalProperties: zodRef._def.valueType instanceof zod_1.z.ZodUnknown
++             ? {}
++@@ -146,26 +146,26 @@
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBigInt({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBoolean({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDate({ zodRef, schemas }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNull({ zodRef, schemas }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: 'string',
++         format: 'null',
++         nullable: true,
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseOptionalNullable({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDefault({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseArray({ schemas, zodRef, useOutput, }) {
++     const constraints = {};
++@@ -177,22 +177,22 @@
++         constraints.minItems = zodRef._def.minLength.value;
++     if (zodRef._def.maxLength != null)
++         constraints.maxItems = zodRef._def.maxLength.value;
++-    return (0, ts_deepmerge_1.default)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseLiteral({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: typeof zodRef._def.value,
++         enum: [zodRef._def.value],
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseEnum({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: typeof Object.values(zodRef._def.values)[0],
++         enum: Object.values(zodRef._def.values),
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseIntersection({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         allOf: [
++             generateSchema(zodRef._def.left, useOutput),
++             generateSchema(zodRef._def.right, useOutput),
++@@ -209,18 +209,18 @@
++             typeof content._def.value :
++             null, null);
++         if (type) {
++-            return (0, ts_deepmerge_1.default)({
+++            return (0, ts_deepmerge_1.merge)({
++                 type: type,
++                 enum: literals.map((literal) => literal._def.value)
++             }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++         }
++     }
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDiscriminatedUnion({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         discriminator: {
++             propertyName: zodRef._def.discriminator,
++         },
++@@ -228,13 +228,13 @@
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNever({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBranded({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)(generateSchema(zodRef._def.type), ...schemas);
+++    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef._def.type), ...schemas);
++ }
++ function catchAllParser({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ const workerMap = {
++     ZodObject: parseObject,
 diff --git a/scripts/security/zod-size-gate-check.mjs b/scripts/security/zod-size-gate-check.mjs
 new file mode 100644
 index 0000000..24532f3
@@ -1654,3 +1867,82 @@ index 0000000..b360fd3
 +} finally {
 +  await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
 +}
+diff --git a/scripts/security/dependency-guards-check.mts b/scripts/security/dependency-guards-check.mts
+new file mode 100644
+index 0000000..9e1ea56
+--- /dev/null
++++ b/scripts/security/dependency-guards-check.mts
+@@ -0,0 +1,73 @@
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++import { deepmerge } from 'deepmerge-ts';
++import { generateSchema } from '@anatine/zod-openapi';
++import { z } from 'zod';
++
++const require = createRequire(import.meta.url);
++const prismaRequire = createRequire(require.resolve('@prisma/config'));
++const openApiRequire = createRequire(require.resolve('@anatine/zod-openapi'));
++const typographyRequire = createRequire(require.resolve('@tailwindcss/typography'));
++const failures: string[] = [];
++
++const check = (name: string, run: () => void) => {
++  try {
++    run();
++    console.log(JSON.stringify({ name, passed: true }));
++  } catch (error) {
++    failures.push(name);
++    console.error(JSON.stringify({ name, passed: false, error: error instanceof Error ? error.name : 'Error' }));
++  }
++};
++
++for (const [name, merge] of [
++  ['deepmerge-ts ESM', deepmerge],
++  ['deepmerge-ts CJS', prismaRequire('deepmerge-ts').deepmerge],
++] as const) {
++  check(name, () => {
++    const left: Record<string, unknown> = { schema: './schema.prisma' };
++    const right: Record<string, unknown> = { migrations: { path: './migrations' } };
++    left.self = left;
++    right.self = right;
++    const merged = merge(left, right);
++    assert.equal(merged.schema, './schema.prisma');
++    assert.deepEqual(merged.migrations, { path: './migrations' });
++    assert.equal(merged.self, merged);
++  });
++}
++
++check('OpenAPI merge prototype methods', () => {
++  const { merge } = openApiRequire('ts-deepmerge');
++  const merged = merge({ nested: { left: 1 } }, JSON.parse('{"nested":{"right":2},"toString":"invalid","valueOf":"invalid"}'));
++  assert.deepEqual(merged.nested, { left: 1, right: 2 });
++  assert.equal(typeof merged.toString, 'function');
++  assert.equal(typeof merged.valueOf, 'function');
++  assert.equal(merged.toString(), '[object Object]');
++});
++
++check('OpenAPI schema consumer', () => {
++  assert.deepEqual(generateSchema(z.object({
++    name: z.string().min(2).describe('Name'),
++    active: z.boolean().default(true),
++  })), {
++    type: 'object',
++    properties: {
++      name: { type: 'string', minLength: 2, description: 'Name' },
++      active: { default: true, type: 'boolean' },
++    },
++    required: ['name'],
++  });
++});
++
++check('Typography selector parser patch', () => {
++  const parser = typographyRequire('postcss-selector-parser');
++  const [major, minor, patch] = typographyRequire('postcss-selector-parser/package.json').version.split('.').map(Number);
++  assert.ok((major === 6 && (minor > 1 || (minor === 1 && patch >= 5))) ||
++    (major === 7 && (minor > 1 || (minor === 1 && patch >= 6))) || major > 7);
++  const count = 12_000;
++  const parsed = parser().astSync('.a'.repeat(count));
++  assert.equal(parsed.nodes[0].nodes.length, count);
++  assert.equal(parsed.toString(), '.a'.repeat(count));
++});
++
++assert.deepEqual(failures, [], `Dependency guards failed: ${failures.join(', ')}`);
