@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -91,6 +91,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
     t.index ["company_id"], name: "index_agents_on_company_id"
     t.index ["default_project_id"], name: "index_agents_on_default_project_id"
     t.index ["user_id"], name: "index_agents_on_user_id"
+  end
+
+  create_table "agreement_templates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.string "title", limit: 200, null: false
+    t.string "kind", null: false
+    t.text "document", null: false
+    t.text "fields", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_agreement_templates_on_company_id"
+    t.index ["created_by_id"], name: "index_agreement_templates_on_created_by_id"
+    t.check_constraint "kind::text = ANY (ARRAY['client'::character varying, 'consultant'::character varying]::text[])", name: "agreement_templates_kind"
+  end
+
+  create_table "agreements", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "agreement_template_id"
+    t.integer "source_template_version"
+    t.bigint "client_id"
+    t.bigint "employment_id"
+    t.string "title", limit: 200, null: false
+    t.string "kind", null: false
+    t.string "status", default: "draft", null: false
+    t.text "document", null: false
+    t.text "fields", null: false
+    t.text "field_values", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["agreement_template_id"], name: "index_agreements_on_agreement_template_id"
+    t.index ["client_id"], name: "index_agreements_on_client_id"
+    t.index ["company_id"], name: "index_agreements_on_company_id"
+    t.index ["created_by_id"], name: "index_agreements_on_created_by_id"
+    t.index ["employment_id"], name: "index_agreements_on_employment_id"
+    t.check_constraint "agreement_template_id IS NULL AND source_template_version IS NULL OR agreement_template_id IS NOT NULL AND source_template_version IS NOT NULL AND source_template_version >= 0", name: "agreements_source_version"
+    t.check_constraint "kind::text = 'client'::text AND client_id IS NOT NULL AND employment_id IS NULL OR kind::text = 'consultant'::text AND employment_id IS NOT NULL AND client_id IS NULL", name: "agreements_counterparty"
+    t.check_constraint "status::text = 'draft'::text", name: "agreements_status"
   end
 
   create_table "ahoy_events", force: :cascade do |t|
@@ -1146,6 +1187,155 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
     t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
   end
 
+  create_table "signature_callbacks", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.string "digest", limit: 64, null: false
+    t.string "event", limit: 40, null: false
+    t.datetime "enqueued_at"
+    t.datetime "processed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["revision_id", "digest"], name: "index_signature_callbacks_on_revision_id_and_digest", unique: true
+    t.index ["revision_id"], name: "index_signature_callbacks_on_revision_id"
+  end
+
+  create_table "signature_connections", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "api_key", null: false
+    t.string "provider_origin", limit: 500, null: false
+    t.datetime "disabled_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_signature_connections_active_company", unique: true, where: "(disabled_at IS NULL)"
+    t.index ["company_id"], name: "index_signature_connections_on_company_id"
+    t.index ["created_by_id"], name: "index_signature_connections_on_created_by_id"
+  end
+
+  create_table "signature_operations", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "requested_by_id", null: false
+    t.string "key", limit: 36, null: false
+    t.string "kind", null: false
+    t.string "state", default: "queued", null: false
+    t.string "phase", default: "preparing", null: false
+    t.string "run_token", limit: 36
+    t.string "provider_candidate", limit: 200
+    t.string "error_code"
+    t.boolean "automatic", default: false, null: false
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_signature_operations_on_key", unique: true
+    t.index ["requested_by_id"], name: "index_signature_operations_on_requested_by_id"
+    t.index ["revision_id", "kind"], name: "index_signature_operations_single_send", unique: true, where: "((kind)::text = 'send'::text)"
+    t.index ["revision_id"], name: "index_signature_operations_on_revision_id"
+    t.check_constraint "kind::text = ANY (ARRAY['send'::character varying, 'cancel'::character varying, 'remind'::character varying, 'refresh'::character varying]::text[])", name: "signature_operations_kind"
+    t.check_constraint "phase::text = ANY (ARRAY['preparing'::character varying, 'creating'::character varying, 'verifying'::character varying, 'distributing'::character varying, 'cancelling'::character varying, 'reminding'::character varying, 'checking'::character varying]::text[])", name: "signature_operations_phase"
+    t.check_constraint "state::text = ANY (ARRAY['queued'::character varying, 'running'::character varying, 'waiting'::character varying, 'confirmed'::character varying, 'failed'::character varying, 'uncertain'::character varying]::text[])", name: "signature_operations_state"
+  end
+
+  create_table "signature_request_revisions", force: :cascade do |t|
+    t.bigint "signature_request_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "approved_by_id"
+    t.integer "number", null: false
+    t.string "title", limit: 200, null: false
+    t.text "documents", null: false
+    t.text "recipients", null: false
+    t.text "fields", null: false
+    t.string "content_digest", limit: 64, null: false
+    t.string "status", default: "draft", null: false
+    t.datetime "approved_at"
+    t.string "provider_envelope_id"
+    t.string "operation_id"
+    t.datetime "send_started_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "approval_digest", limit: 64
+    t.string "approval_source"
+    t.text "approval_note"
+    t.text "signing_options"
+    t.bigint "signature_connection_id"
+    t.string "provider_status"
+    t.datetime "provider_checked_at"
+    t.text "recipient_statuses"
+    t.datetime "cancel_requested_at"
+    t.datetime "last_reminder_at"
+    t.datetime "next_reminder_at"
+    t.integer "automatic_reminders_count", default: 0, null: false
+    t.text "artifact_manifest"
+    t.datetime "archived_at"
+    t.string "archive_error"
+    t.index ["approved_by_id"], name: "index_signature_request_revisions_on_approved_by_id"
+    t.index ["created_by_id"], name: "index_signature_request_revisions_on_created_by_id"
+    t.index ["next_reminder_at"], name: "index_signature_request_revisions_on_next_reminder_at", where: "(next_reminder_at IS NOT NULL)"
+    t.index ["operation_id"], name: "index_signature_request_revisions_on_operation_id", unique: true
+    t.index ["provider_envelope_id"], name: "index_signature_request_revisions_on_provider_envelope_id", unique: true
+    t.index ["signature_connection_id"], name: "index_signature_request_revisions_on_signature_connection_id"
+    t.index ["signature_request_id", "number"], name: "idx_on_signature_request_id_number_f9b90d1824", unique: true
+    t.index ["signature_request_id"], name: "index_signature_request_revisions_on_signature_request_id"
+    t.check_constraint "automatic_reminders_count >= 0 AND automatic_reminders_count <= 3", name: "signature_revisions_reminder_count"
+    t.check_constraint "number > 0", name: "signature_request_revisions_number"
+    t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'under_review'::character varying, 'changes_requested'::character varying, 'approved'::character varying, 'sending'::character varying, 'send_uncertain'::character varying, 'awaiting_signatures'::character varying, 'signed'::character varying, 'declined'::character varying, 'cancelled'::character varying, 'expired'::character varying]::text[])", name: "signature_request_revisions_status"
+  end
+
+  create_table "signature_requests", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "client_id"
+    t.bigint "employment_id"
+    t.string "title", limit: 200, null: false
+    t.string "creation_key", limit: 64, null: false
+    t.string "creation_digest", limit: 64, null: false
+    t.bigint "current_revision_id"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_signature_requests_on_client_id"
+    t.index ["company_id", "creation_key"], name: "index_signature_requests_on_company_id_and_creation_key", unique: true
+    t.index ["company_id"], name: "index_signature_requests_on_company_id"
+    t.index ["created_by_id"], name: "index_signature_requests_on_created_by_id"
+    t.index ["current_revision_id"], name: "index_signature_requests_on_current_revision_id"
+    t.index ["employment_id"], name: "index_signature_requests_on_employment_id"
+    t.check_constraint "client_id IS NULL OR employment_id IS NULL", name: "signature_requests_party"
+  end
+
+  create_table "signature_review_comments", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "author_user_id"
+    t.bigint "author_invitation_id"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_invitation_id"], name: "index_signature_review_comments_on_author_invitation_id"
+    t.index ["author_user_id"], name: "index_signature_review_comments_on_author_user_id"
+    t.index ["revision_id"], name: "index_signature_review_comments_on_revision_id"
+    t.check_constraint "(author_user_id IS NULL) <> (author_invitation_id IS NULL)", name: "signature_review_comments_author"
+  end
+
+  create_table "signature_review_invitations", force: :cascade do |t|
+    t.bigint "revision_id", null: false
+    t.bigint "invited_by_id", null: false
+    t.string "recipient_id", limit: 64, null: false
+    t.text "access_token", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.string "decision"
+    t.datetime "decided_at"
+    t.string "email_status", default: "queued", null: false
+    t.datetime "email_sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_signature_review_invitations_on_access_token", unique: true
+    t.index ["invited_by_id"], name: "index_signature_review_invitations_on_invited_by_id"
+    t.index ["revision_id", "recipient_id"], name: "signature_review_invitations_active_recipient", unique: true, where: "(revoked_at IS NULL)"
+    t.index ["revision_id"], name: "index_signature_review_invitations_on_revision_id"
+    t.check_constraint "decision IS NULL OR (decision::text = ANY (ARRAY['approved'::character varying, 'changes_requested'::character varying]::text[]))", name: "signature_review_invitations_decision"
+    t.check_constraint "email_status::text = ANY (ARRAY['queued'::character varying, 'sent'::character varying, 'failed'::character varying]::text[])", name: "signature_review_invitations_email_status"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -1482,6 +1672,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
   add_foreign_key "agents", "companies"
   add_foreign_key "agents", "projects", column: "default_project_id"
   add_foreign_key "agents", "users"
+  add_foreign_key "agreement_templates", "companies"
+  add_foreign_key "agreement_templates", "users", column: "created_by_id"
+  add_foreign_key "agreements", "agreement_templates"
+  add_foreign_key "agreements", "clients"
+  add_foreign_key "agreements", "companies"
+  add_foreign_key "agreements", "employments"
+  add_foreign_key "agreements", "users", column: "created_by_id"
   add_foreign_key "analytics_reports", "companies"
   add_foreign_key "analytics_reports", "users", column: "created_by_id"
   add_foreign_key "analytics_threshold_notification_logs", "companies"
@@ -1583,6 +1780,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
   add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
   add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
   add_foreign_key "second_factor_challenges", "users"
+  add_foreign_key "signature_callbacks", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_connections", "companies"
+  add_foreign_key "signature_connections", "users", column: "created_by_id"
+  add_foreign_key "signature_operations", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_operations", "users", column: "requested_by_id"
+  add_foreign_key "signature_request_revisions", "signature_connections"
+  add_foreign_key "signature_request_revisions", "signature_requests"
+  add_foreign_key "signature_request_revisions", "users", column: "approved_by_id"
+  add_foreign_key "signature_request_revisions", "users", column: "created_by_id"
+  add_foreign_key "signature_requests", "clients"
+  add_foreign_key "signature_requests", "companies"
+  add_foreign_key "signature_requests", "employments"
+  add_foreign_key "signature_requests", "signature_request_revisions", column: "current_revision_id"
+  add_foreign_key "signature_requests", "users", column: "created_by_id"
+  add_foreign_key "signature_review_comments", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_review_comments", "signature_review_invitations", column: "author_invitation_id"
+  add_foreign_key "signature_review_comments", "users", column: "author_user_id"
+  add_foreign_key "signature_review_invitations", "signature_request_revisions", column: "revision_id"
+  add_foreign_key "signature_review_invitations", "users", column: "invited_by_id"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade

@@ -23,7 +23,7 @@ RSpec.describe "India tax estimates", type: :system, js: true do
         window.addEventListener('unhandledrejection', event => window.__indiaTaxErrors.push(String(event.reason)));
       })();
     JS
-    sign_in employee
+    with_forgery_protection { sign_in employee }
   end
 
   def confirm_profile

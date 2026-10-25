@@ -1,0 +1,304 @@
+{
+  "tool": "rea-agents",
+  "version": "6.7.0",
+  "captured_date": "2026-10-24",
+  "scope": "Public landing HTML and three selected public JavaScript assets per vendor; static only",
+  "not_proven": [
+    "Authenticated product workflows",
+    "Business-rule correctness",
+    "Tax compliance",
+    "Runtime endpoint execution"
+  ],
+  "reports": [
+    {
+      "vendor": "zoho-books",
+      "evidence_id": "ev_1229265106af9c1c4d2e3662e85fe06c86662d23ef79e8b7a4b38be47ca10364",
+      "evidence_file_sha256": "8df7eb8620de4036cbfc10773e4fe936c9cfe76c8d686fd30a688f82cb4ce2e6",
+      "root_artifact_sha256": "c79d2aa2f3c3cba787dc1c35dab8113f2373f43df7b7a52cf4f05778e78fdda9",
+      "statistics": {
+        "relevant_files": 4,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 315477,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 3,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 3337,
+        "findings": 26,
+        "modules": 0,
+        "parse_failures": 0
+      },
+      "application_graph_coverage": {
+        "status": "partial",
+        "truncated": false,
+        "omitted_count": null,
+        "limits": []
+      },
+      "semantic_graph_coverage": {
+        "status": "partial",
+        "truncated": true,
+        "omitted_nodes": null,
+        "omitted_relations": null,
+        "limits": [
+          {
+            "name": "semantic_graph_file_node_ceiling",
+            "value": 500,
+            "unit": "items"
+          },
+          {
+            "name": "semantic_graph_node_ceiling",
+            "value": 1000,
+            "unit": "items"
+          }
+        ]
+      },
+      "node_kinds": {
+        "javascript-module": 3,
+        "javascript-asset": 3,
+        "electron-renderer": 1,
+        "artifact": 2,
+        "unknown": 1
+      },
+      "limitations": [
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.",
+        "public.html has 12 inline JavaScript bodies starting at lines 27, 62, 91, 123, 124, 133, 133, 137, 137, 137 and 2 more that were not analyzed; endpoints, storage, imports and other facts in them are absent from the evidence."
+      ]
+    },
+    {
+      "vendor": "rippling",
+      "evidence_id": "ev_e339ab9ce8a431f2aa6db4da078dba82d492be09fd7f63659f6dec0a6c745b77",
+      "evidence_file_sha256": "040665c18d56bfddbf1f48533280b41311ffac1951c4e466a8f4edbb0c44b8bf",
+      "root_artifact_sha256": "3f19396aad63d45ad3ce9977d7df493e88dee14176bbdcf431ce07b68c9edc24",
+      "statistics": {
+        "relevant_files": 4,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 1464033,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 3,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 59400,
+        "findings": 174,
+        "modules": 66,
+        "parse_failures": 0
+      },
+      "application_graph_coverage": {
+        "status": "partial",
+        "truncated": false,
+        "omitted_count": null,
+        "limits": []
+      },
+      "semantic_graph_coverage": {
+        "status": "partial",
+        "truncated": true,
+        "omitted_nodes": null,
+        "omitted_relations": null,
+        "limits": [
+          {
+            "name": "semantic_graph_file_node_ceiling",
+            "value": 500,
+            "unit": "items"
+          },
+          {
+            "name": "semantic_graph_node_ceiling",
+            "value": 1000,
+            "unit": "items"
+          }
+        ]
+      },
+      "node_kinds": {
+        "javascript-module": 76,
+        "javascript-chunk": 2,
+        "endpoint": 10,
+        "javascript-asset": 3,
+        "storage": 7,
+        "artifact": 2,
+        "unknown": 1,
+        "electron-renderer": 1
+      },
+      "limitations": [
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.",
+        "public.html has 11 inline JavaScript bodies starting at lines 5, 5, 32, 32, 38, 38, 38, 38, 45, 243 and 1 more that were not analyzed; endpoints, storage, imports and other facts in them are absent from the evidence."
+      ]
+    },
+    {
+      "vendor": "cleartax",
+      "evidence_id": "ev_57787eba60b8d1c53b275d872d75bdbc4978869486ab0496933d89eca863f574",
+      "evidence_file_sha256": "902ae2e9ea10b63692018b8280e4132417542d8fb25bfacf42346035654f52a9",
+      "root_artifact_sha256": "c0ed8c6645b6c79ddcb80b41e15ce850d7ed58a78d8a9256af218628b19aafa4",
+      "statistics": {
+        "relevant_files": 4,
+        "nested_asar_containers": 0,
+        "text_bytes_read": 782190,
+        "invalid_utf8_files": 0,
+        "parsed_javascript_files": 3,
+        "skipped_javascript_files": 0,
+        "visited_ast_nodes": 106919,
+        "findings": 370,
+        "modules": 109,
+        "parse_failures": 0
+      },
+      "application_graph_coverage": {
+        "status": "partial",
+        "truncated": false,
+        "omitted_count": null,
+        "limits": []
+      },
+      "semantic_graph_coverage": {
+        "status": "partial",
+        "truncated": true,
+        "omitted_nodes": null,
+        "omitted_relations": null,
+        "limits": [
+          {
+            "name": "semantic_graph_file_node_ceiling",
+            "value": 500,
+            "unit": "items"
+          },
+          {
+            "name": "semantic_graph_node_ceiling",
+            "value": 1000,
+            "unit": "items"
+          }
+        ]
+      },
+      "node_kinds": {
+        "javascript-module": 150,
+        "endpoint": 33,
+        "unknown": 1,
+        "worker": 1,
+        "javascript-chunk": 12,
+        "storage": 7,
+        "javascript-asset": 3,
+        "artifact": 2,
+        "electron-renderer": 1
+      },
+      "limitations": [
+        "CommonJS and ESM binding relationships were recovered from inert syntax and resolved only within the inventoried artifact container.",
+        "Graph coverage is incomplete; unavailable facts remain explicit and must not be read as absence.",
+        "JavaScript and HTML were parsed as inert text; bundle bootstrap code was never executed.",
+        "Static imports, entrypoints, workers, endpoints, and storage relationships do not prove runtime execution.",
+        "Static paths and relationships may remain unresolved when expressions are dynamic or obfuscated.",
+        "Webpack/Rspack factories were recovered from AST literals; REA did not invoke push handlers or bundle bootstrap code.",
+        "public.html has 1 inline JavaScript body starting at line 1 that was not analyzed; endpoints, storage, imports and other facts in it are absent from the evidence."
+      ]
+    }
+  ],
+  "package_integrity": "sha512-yhIx2ioJYYT1C/tONfYeitC6LhnKmCh+ZwRUOgYuhSc733lGhkkt73zhug9WmLgxoMdKuqIYGCoBfD4fXkOhFw==",
+  "license": "MIT",
+  "runtime": "Node.js 24.22.1",
+  "sources": [
+    {
+      "vendor": "zoho-books",
+      "requested_url": "https://www.zoho.com/in/books/",
+      "assets": [
+        {
+          "file": "public-0.js",
+          "url": "https://www.zoho.com/books/js/home-page.js",
+          "bytes": 1307,
+          "sha256": "be1635b0ba6abc9274110122e36265d33dac6e3e52634c990e259b7adfe0a091"
+        },
+        {
+          "file": "public-1.js",
+          "url": "https://www.zoho.com/books/js/index.js",
+          "bytes": 14961,
+          "sha256": "448e98089b26fa395cba6c449f25954cf45b7204ab778902539c6ab7db83204a"
+        },
+        {
+          "file": "public-2.js",
+          "url": "https://www.zoho.com/books/js/product-header.js?v=sha256-TohYkUncxwXnU3V8jo9ehenj5/R74dcPBxBWfQjmKFQ=",
+          "bytes": 3111,
+          "sha256": "ce095d5534a9e5356d4d5de99360b7e3725a288feb8c958f42b2978a9100106f"
+        }
+      ],
+      "limitations": [],
+      "url": "https://www.zoho.com/in/books/",
+      "html_sha256": "16d55f90a214d12fdfbe13997e64107dbdbfc12117c9bb93f2684ec72913c6d3"
+    },
+    {
+      "vendor": "rippling",
+      "requested_url": "https://www.rippling.com/platform",
+      "assets": [
+        {
+          "file": "public-0.js",
+          "url": "https://www.rippling.com/_next/static/chunks/pages/%5B...slugs%5D-22c0a6c74ddb98fa.js",
+          "bytes": 419,
+          "sha256": "e9784e7a12adeb97e24452eb5830fc0a50e9eef508ee9bc709acc0c84d4ef901"
+        },
+        {
+          "file": "public-1.js",
+          "url": "https://www.rippling.com/_next/static/chunks/pages/_app-95a77578023feca6.js",
+          "bytes": 261517,
+          "sha256": "5943f36272d75a6ac47545050bfd2d094b88222a2d323926cadcf5250fc420ea"
+        },
+        {
+          "file": "public-2.js",
+          "url": "https://www.rippling.com/_next/static/izq2d0EbsiBg9r98IdM4y/_buildManifest.js",
+          "bytes": 9329,
+          "sha256": "8deb69ef8e2a53d69cb671b69981037ce4115c302ccda47c019c18c03c3c276a"
+        }
+      ],
+      "limitations": [],
+      "url": "https://www.rippling.com/platform",
+      "html_sha256": "f995d457032cdcc74a308407e60a9aad7711f8642d7376f8a295dd2032ecf485"
+    },
+    {
+      "vendor": "cleartax",
+      "requested_url": "https://cleartax.in/",
+      "assets": [
+        {
+          "file": "public-0.js",
+          "url": "https://assets1.cleartax-cdn.com/content-prod/_next/static/chunks/pages/cleartax.in-5b4748a82857dc56.js",
+          "bytes": 1156,
+          "sha256": "52e7375f019b3738103913b50d810d15a6e6780b0a51e56ee6604e92bbe3996e"
+        },
+        {
+          "file": "public-1.js",
+          "url": "https://assets1.cleartax-cdn.com/content-prod/_next/static/chunks/pages/_app-39e7f3be5dbc5c1a.js",
+          "bytes": 117160,
+          "sha256": "71c0a02bbddbc779c9cb8178a045e631ba474cccf08a2e0b534d3904e2123fa4"
+        },
+        {
+          "file": "public-2.js",
+          "url": "https://assets1.cleartax-cdn.com/content-prod/_next/static/FZD0D5Q3CVfHnuyoHwKkT/_buildManifest.js",
+          "bytes": 2885,
+          "sha256": "76b79e4e482e1ceed6adc0fce6b96bc2052d88a73a3bf60aaba7c19a978dee54"
+        }
+      ],
+      "limitations": [],
+      "url": "https://cleartax.in/",
+      "html_sha256": "3485ae7572bad5581c10ac5483268c84721f1f536d6acc50bd2c5f38fedf78de"
+    }
+  ],
+  "cleartax_retained_gzip_decoding": [
+    {
+      "file": "public-0.js",
+      "wire_sha256": "52e7375f019b3738103913b50d810d15a6e6780b0a51e56ee6604e92bbe3996e",
+      "decoded_sha256": "067a61472181bf3bc7756e44cafb0bab133ccfdc6d73b8ebaf28afa256622b8f",
+      "wire_bytes": 1156,
+      "decoded_bytes": 2016
+    },
+    {
+      "file": "public-1.js",
+      "wire_sha256": "71c0a02bbddbc779c9cb8178a045e631ba474cccf08a2e0b534d3904e2123fa4",
+      "decoded_sha256": "2395fd8c5374e2487888935c0b0f5fcf121eebeb7ada84516b998f7a21fb6099",
+      "wire_bytes": 117160,
+      "decoded_bytes": 364581
+    },
+    {
+      "file": "public-2.js",
+      "wire_sha256": "76b79e4e482e1ceed6adc0fce6b96bc2052d88a73a3bf60aaba7c19a978dee54",
+      "decoded_sha256": "c3c0860c5853ab0422c94fe4400a3fb2da2fc03700db74b54a3960baa68551f4",
+      "wire_bytes": 2885,
+      "decoded_bytes": 13332
+    }
+  ]
+}

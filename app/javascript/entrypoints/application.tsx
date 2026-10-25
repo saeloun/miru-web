@@ -3,7 +3,7 @@ import * as ActiveStorage from "@rails/activestorage";
 import Rails from "@rails/ujs";
 import { createRoot } from "react-dom/client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AuthProvider } from "../src/context/auth";
 import { Toaster } from "sonner";
 import queryClient from "../src/lib/queryClient";
@@ -43,38 +43,45 @@ const applyInitialTheme = () => {
   if (themeMeta) themeMeta.setAttribute("content", themeColor);
 };
 
-const App = (props: any) => (
+const AppContents = (props: any) => (
   <AppErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <AuthProvider>
-          <Toaster
-            richColors
-            closeButton
-            duration={5000}
-            position="top-right"
-            toastOptions={{
-              classNames: {
-                toast:
-                  "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
-                title: "text-sm font-medium",
-                description: "text-xs text-muted-foreground",
-                success: "border-border bg-card text-card-foreground",
-                error:
-                  "border-destructive/40 bg-destructive/10 text-destructive",
-                warning: "border-border bg-card text-card-foreground",
-                info: "border-border bg-card text-card-foreground",
-                closeButton:
-                  "!left-auto !right-2 !top-1/2 !-translate-y-1/2 !translate-x-0",
-              },
-            }}
-          />
-          <AppWithUserData {...props} />
-        </AuthProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+    <AuthProvider>
+      <Toaster
+        richColors
+        closeButton
+        duration={5000}
+        position="top-right"
+        toastOptions={{
+          classNames: {
+            toast:
+              "rounded-xl border border-border bg-card text-card-foreground shadow-lg",
+            title: "text-sm font-medium",
+            description: "text-xs text-muted-foreground",
+            success: "border-border bg-card text-card-foreground",
+            error: "border-destructive/40 bg-destructive/10 text-destructive",
+            warning: "border-border bg-card text-card-foreground",
+            info: "border-border bg-card text-card-foreground",
+            closeButton:
+              "!left-auto !right-2 !top-1/2 !-translate-y-1/2 !translate-x-0",
+          },
+        }}
+      />
+      <AppWithUserData {...props} />
+    </AuthProvider>
   </AppErrorBoundary>
 );
+
+const App = (props: any) => {
+  const [router] = React.useState(() =>
+    createBrowserRouter([{ path: "*", element: <AppContents {...props} /> }])
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
+};
 
 // React mounting function
 const mountReactApp = () => {

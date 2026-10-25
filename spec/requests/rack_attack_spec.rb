@@ -52,4 +52,17 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
 
     expect(response).to have_http_status(:too_many_requests)
   end
+
+  it "limits the combined public document-review surface without blocking another IP" do
+    paths = %w[/document-review/open /document-review/comments /document-review/original]
+    60.times do |attempt|
+      post paths[attempt % paths.size], params: { signature_review: { token: "x" * 32 } }.to_json, headers: headers
+      expect(response).to have_http_status(:gone)
+    end
+    post paths.first, params: { signature_review: { token: "x" * 32 } }.to_json, headers: headers
+    expect(response).to have_http_status(:too_many_requests)
+    post paths.first, params: { signature_review: { token: "x" * 32 } }.to_json,
+      headers: headers.merge("REMOTE_ADDR" => "203.0.113.11")
+    expect(response).to have_http_status(:gone)
+  end
 end

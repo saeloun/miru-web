@@ -826,8 +826,14 @@ export const desktopCurrentTimerApi = {
 };
 
 // Workspaces
+export const BEFORE_WORKSPACE_CHANGE = "miru:before-workspace-change";
 export const workspacesApi = {
   get: () => http.get(`/workspaces`),
-  update: (id: any) => http.put(`/workspaces/${id}`),
+  update: (id: any) =>
+    window.dispatchEvent(
+      new Event(BEFORE_WORKSPACE_CHANGE, { cancelable: true })
+    )
+      ? http.put(`/workspaces/${id}`)
+      : Promise.resolve(null),
 };
 export const WorkspaceApi = workspacesApi;
