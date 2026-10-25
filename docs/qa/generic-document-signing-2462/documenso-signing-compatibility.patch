@@ -1,0 +1,134 @@
+diff --git a/apps/remix/app/components/general/document-signing/access-auth-2fa-form.tsx b/apps/remix/app/components/general/document-signing/access-auth-2fa-form.tsx
+index 8aed125..551aecf 100644
+--- a/apps/remix/app/components/general/document-signing/access-auth-2fa-form.tsx
++++ b/apps/remix/app/components/general/document-signing/access-auth-2fa-form.tsx
+@@ -4,14 +4,14 @@ import { cn } from '@documenso/ui/lib/utils';
+ import { Alert } from '@documenso/ui/primitives/alert';
+ import { Button } from '@documenso/ui/primitives/button';
+ import { Form, FormField, FormItem } from '@documenso/ui/primitives/form/form';
+-import { PinInput, PinInputGroup, PinInputSlot } from '@documenso/ui/primitives/pin-input';
++import { Input } from '@documenso/ui/primitives/input';
+ import { useToast } from '@documenso/ui/primitives/use-toast';
+ import { zodResolver } from '@hookform/resolvers/zod';
+ import { msg } from '@lingui/core/macro';
+ import { useLingui } from '@lingui/react';
+ import { Trans } from '@lingui/react/macro';
+ import { ArrowLeftIcon, KeyIcon, MailIcon } from 'lucide-react';
+-import { DateTime } from 'luxon';
++import { Duration } from 'luxon';
+ import { useEffect, useState } from 'react';
+ import { useForm } from 'react-hook-form';
+ import { z } from 'zod';
+@@ -232,24 +232,16 @@ export const AccessAuth2FAForm = ({ onSubmit, token, error }: AccessAuth2FAFormP
+                   name="token"
+                   render={({ field }) => (
+                     <FormItem className="flex-1 items-center justify-center">
+-                      <PinInput
++                      <Input
+                         {...field}
+                         maxLength={6}
+                         autoFocus
++                        autoComplete="one-time-code"
+                         inputMode="numeric"
+                         pattern="^\d+$"
+                         aria-label="2FA code"
+-                        containerClassName="h-12 justify-center"
+-                      >
+-                        <PinInputGroup>
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={0} />
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={1} />
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={2} />
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={3} />
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={4} />
+-                          <PinInputSlot className="h-12 w-12 text-lg" index={5} />
+-                        </PinInputGroup>
+-                      </PinInput>
++                        className="h-12 max-w-64 text-center font-mono text-lg tracking-widest"
++                      />
+ 
+                       {expiresAt && millisecondsRemaining !== null && (
+                         <div
+@@ -258,7 +250,7 @@ export const AccessAuth2FAForm = ({ onSubmit, token, error }: AccessAuth2FAFormP
+                           })}
+                         >
+                           <Trans>
+-                            Expires in {DateTime.fromMillis(Math.max(millisecondsRemaining, 0)).toFormat('mm:ss')}
++                            Expires in {Duration.fromMillis(Math.max(millisecondsRemaining, 0)).toFormat('mm:ss')}
+                           </Trans>
+                         </div>
+                       )}
+diff --git a/apps/remix/app/components/general/envelope-signing/envelope-signer-page-renderer.tsx b/apps/remix/app/components/general/envelope-signing/envelope-signer-page-renderer.tsx
+index 4c76a5a..ccf2f42 100644
+--- a/apps/remix/app/components/general/envelope-signing/envelope-signer-page-renderer.tsx
++++ b/apps/remix/app/components/general/envelope-signing/envelope-signer-page-renderer.tsx
+@@ -613,6 +613,49 @@ export const EnvelopeSignerPageRenderer = ({ pageData }: { pageData: PageRenderD
+ 
+       {/* The element Konva will inject it's canvas into. */}
+       <div className="konva-container absolute inset-0 z-10 w-full" ref={konvaContainer}></div>
++
++      {/* DOM controls support keyboards and browsers that protect canvas pixel reads. */}
++      {localPageFields.filter((field) => !field.fieldMeta?.readOnly).map((field) => {
++        const choices =
++          field.fieldMeta?.type === 'checkbox' || field.fieldMeta?.type === 'radio' ? field.fieldMeta : null;
++        const label = field.fieldMeta?.label || field.type;
++
++        return (
++          <div
++            key={field.id}
++            className="pointer-events-none absolute z-20 flex"
++            style={{
++              left: `${field.positionX}%`,
++              top: `${field.positionY}%`,
++              width: `${field.width}%`,
++              height: `${field.height}%`,
++              flexDirection: choices?.direction === 'horizontal' ? 'row' : 'column',
++            }}
++          >
++            {(choices?.values ?? [{ value: '' }]).map((option, index) => (
++              <button
++                key={index}
++                type="button"
++                aria-label={t`${label} ${option.value} on page ${pageNumber}`}
++                className="pointer-events-auto min-h-0 min-w-0 flex-1 bg-transparent focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
++                onClick={() => {
++                  const group = pageLayer.current?.findOne<Konva.Group>(`#${field.id}`);
++                  const target = choices
++                    ? group?.findOne(
++                        (node: Konva.Node) =>
++                          node.getAttr(choices.type === 'checkbox' ? 'internalCheckboxIndex' : 'internalRadioIndex') === index,
++                      )
++                    : group?.findOne('.field-rect');
++
++                  if (group && target) {
++                    group.fire('pointerdown', { target });
++                  }
++                }}
++              />
++            ))}
++          </div>
++        );
++      })}
+     </>
+   );
+ };
+diff --git a/packages/ui/primitives/signature-pad/signature-pad-dialog.tsx b/packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
+index fcc225d..c255d84 100644
+--- a/packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
++++ b/packages/ui/primitives/signature-pad/signature-pad-dialog.tsx
+@@ -36,7 +36,7 @@ export const SignaturePadDialog = ({
+   drawSignatureEnabled,
+   dialogConfirmText,
+ }: SignaturePadDialogProps) => {
+-  const { i18n } = useLingui();
++  const { i18n, t } = useLingui();
+ 
+   const [showSignatureModal, setShowSignatureModal] = useState(false);
+   const [signature, setSignature] = useState<string>(value ?? '');
+@@ -68,6 +68,7 @@ export const SignaturePadDialog = ({
+ 
+       <motion.button
+         data-testid="signature-pad-dialog-button"
++        aria-label={t`Edit signature`}
+         type="button"
+         disabled={disabled}
+         className="absolute inset-0 flex items-center justify-center bg-transparent"

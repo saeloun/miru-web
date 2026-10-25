@@ -72,6 +72,9 @@ RSpec.describe "Signed document archives", type: :system, js: true do
     expect(page).to have_link("Signed documents", href: "/signed-documents")
     [1440, 375].each do |width|
       page.current_window.resize_to(width, 1000)
+      expect(page).to have_css("article[data-signature-archive]") do |card|
+        card.evaluate_script("this.getBoundingClientRect().width >= 280")
+      end
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
       own.artifact_manifest.each { |entry| download_artifact(entry) }
       expect(@console_errors).to be_empty

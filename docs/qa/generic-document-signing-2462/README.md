@@ -126,6 +126,10 @@ Settled active-page desktop/mobile checks recorded zero new browser exceptions, 
 
 ![Authoritative cancellation and delivery history, mobile](miru-delivery-cancelled-mobile.png)
 
+## Actual completion and archives
+
+The [actual signing and archive report](actual-signing-and-archive.md) records two completed Miru/provider journeys, nine field types, separate signers/reviewer, private immutable artifacts, actual downloads, the consultant profile, native PDF checks and the current source-build compatibility patch. It also records the failed checks and their repairs. Final release gates remain open.
+
 ## Environment and isolation
 
 Initial local provider: Documenso **2.21.1**, Node 24.22.1, Linux arm64 on Docker 29.5.2, pinned to `ghcr.io/documenso/documenso@sha256:41a69062febc915d1508b87be8c5bbe72ecd3c49232ddcd983490f5f7832f053`. The countdown retest uses the source-built image identified above. PostgreSQL 15, local Mailpit SMTP capture, internal Docker network, localhost-only proxy on ports 3318/3319. No licence key, subscription, production credentials, real contract or external SMTP delivery. The certificate was disposable, self-signed and explicitly named Synthetic QA ONLY.
