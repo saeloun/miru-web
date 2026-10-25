@@ -1,6 +1,6 @@
 # Documenso local validation, 2026-10-24
 
-**Production HOLD; PR #2475 stays a draft.** The upload, field-placement, version-bound review, signing and private-archive workflow is implemented and verified locally. Provider dependency repairs and final release checks remain. The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional.
+**Production HOLD; PR #2475 is open for review.** The upload, field-placement, version-bound review, signing and private-archive workflow is implemented and verified locally. Provider dependency repairs and final release checks remain. The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional.
 
 The [actual signing report and inspected screenshots](actual-signing-and-archive.md) cover two completed packages, all nine field types, email-code verification, partial completion, automatic archives, profile downloads, expiry and rejection. These use a real local provider, persistent worker and fictional recipients; no external signature email or production deployment is claimed. Earlier feasibility results below retain their original scope.
 
@@ -9,6 +9,8 @@ The [provider security/runtime checks](provider-security-checks.md) include the 
 The first pushed-head CI identified skipped CSRF protection on the private review endpoints and repeated workspace lookups in the archive policy. Review requests now require Rails CSRF protection alongside the invitation capability, using the existing frontend token helper and same-origin cookies. A regression first received 200 without a CSRF token, then correctly received 422; an anonymous request with both tokens approved the version. The review/archive request gate passed **28 examples**, and **two real-Brave review/revocation cases** passed with no failures or console errors. The full CI Reek command, Ruby/JS lint and both asset builds passed locally; the new commit still requires its remote checks.
 
 Two further CI failures came from test setup. The unchanged base currency-report spec reproduced USD 3520 instead of 3540 when its random invoice date selected the historical exchange rate; explicit issue dates passed that same forced-date probe. The mobile drag test targeted a control above the viewport; it now fixes the viewport and scrolls both controls into view before pointer interaction. The complete currency-report and document-browser files passed **42 examples, zero failures**. Production currency and drag behavior were unchanged by these fixture repairs.
+
+Remote CI on `da2eadeff` passed **4520 backend examples, zero failures, 80 expected pending**, **106 responsive browser examples, zero failures**, Reek, CodeQL and the Docker image build. An additional forced-date audit exposed the same setup issue in the project-profitability fixture; pinning that invoice date changed **23 examples with two failures** to **23 examples with zero failures**, preserving the revenue and hourly-rate expectations. This later fixture/documentation commit needs its own remote checks. CodeRabbit could not recover its earlier incremental checkpoint and skipped automatic review; a full review remains outstanding despite its green status.
 
 ## Verified archive and private download checks
 

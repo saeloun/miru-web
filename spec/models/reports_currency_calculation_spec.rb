@@ -298,7 +298,7 @@ RSpec.describe "Reports Currency Calculations", type: :model do
     end
 
     let!(:project_invoice) do
-      invoice = create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid)
+      invoice = create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid, issue_date: Date.current)
       invoice.invoice_line_items.create!(
         name: "Development Work",
         description: "14 hours of development",
