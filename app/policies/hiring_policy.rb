@@ -13,4 +13,9 @@ class HiringPolicy < ApplicationPolicy
       .where("employments.joined_at IS NULL OR employments.joined_at <= ?", Date.current)
       .where("employments.resigned_at IS NULL OR employments.resigned_at >= ?", Date.current)
   end
+
+  def self.administrators(company)
+    users = Role.joins(:users).where(resource: company, name: %w[owner admin]).select("users.id")
+    staff_members(company).where(user_id: users)
+  end
 end

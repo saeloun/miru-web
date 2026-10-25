@@ -148,6 +148,8 @@ For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`
 
 For dependency audit commands, runtime pins, and reviewed CVE exceptions, see [`docs/ai/dependency-security.md`](docs/ai/dependency-security.md).
 
+For hiring email setup, approval and delivery recovery, see [`docs/hiring-email.md`](docs/hiring-email.md) and the [ATS verification record](docs/qa/hiring-2463/README.md).
+
 ## MCP + CLI (Agent And Automation Ready)
 
 Miru ships first-party MCP support (Ruby SDK based) and a CLI token flow for agent clients.

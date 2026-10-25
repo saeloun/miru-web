@@ -3,7 +3,7 @@
 class HiringApplication < ApplicationRecord
   STAGES = %w[received information_pending screening shortlisted assignment_assigned assignment_review interview
     final_decision offer hired on_hold rejection_pending rejected withdrawn no_show].freeze
-  CREATION_FIELDS = %w[company_id hiring_candidate_id request_key creation_details source received_at created_by_id].freeze
+  CREATION_FIELDS = %w[company_id hiring_candidate_id request_key creation_details source received_at created_by_id email_key].freeze
 
   belongs_to :company
   belongs_to :hiring_candidate
@@ -16,7 +16,7 @@ class HiringApplication < ApplicationRecord
 
   validates :request_key, :received_at, presence: true
   validates :stage, inclusion: { in: STAGES }
-  validates :source, inclusion: { in: ["manual"] }
+  validates :source, inclusion: { in: %w[manual email] }
   validates :notes, length: { maximum: 10_000 }, allow_nil: true
   validate :matching_tenant
   validate :immutable_creation, on: :update

@@ -42,3 +42,52 @@ Set `DATABASE_URL` to the isolated database before running these commands. The s
 | Additional Playwright pass | [Light desktop](playwright-detail-desktop-light.png), [light mobile](playwright-detail-mobile-light.png) |
 
 CI, deployed browser behavior and production mail configuration are separate release gates; local verification does not establish them.
+
+## Email intake and acknowledgements
+
+This record covers local verification of Task 2. Production deployment, external mailbox connection and current-head CI require separate evidence. The remaining applicant-tracking milestones stay required.
+
+| Check | Current evidence |
+| --- | --- |
+| Targeted backend and company lifecycle | 210 examples, 0 failures |
+| Hiring browser flows | 19 actual Brave examples, 0 failures |
+| Frontend | Required Vite build and changed JavaScript lint/format checks pass |
+| Ruby | Changed Ruby lint passes |
+| Real relay, queue and SMTP | Duplicate authenticated intake, separate workers, provider evidence review and approved retry verified locally |
+
+Backend coverage includes bounded authenticated RFC822 intake, private retained source and downloads, MIME/date/conflict review, tenant identity and concurrency, approval/revocation, reviewed applicant linking, stale versions, CSRF, permission/recipient changes, queue interruption, SMTP ambiguity and late results. Evidence and message bodies stay out of audit changes and request traces. Conservative parser limits can hold separator-heavy text for review; the source remains retained.
+
+Real loopback Mail/Net::SMTP checks reproduced DATA acceptance followed by QUIT replies 451, 500, 535 or 550. Every such exception now leaves delivery unknown and prevents retry without reconciliation; an SMTP authentication exception also lacks a reliable protocol phase. Disabled delivery never appears accepted. Company teardown with reconciled retries removes its records without purging another tenant's shared source, including after native transport deletion. The email application's detail page displays its actual intake source.
+
+Communication settings support incomplete drafts, an explicit nullable client count, saved preview and explicit approval. The preview and queued snapshot share the server renderer. Editing revokes approval; approval alone does not acknowledge the old backlog.
+
+Inbox management supports active routes, preserved drafts, stale-save recovery, paginated search, retained uploads and review/link/dismiss workflows. Forwarded applicant fields start blank. A pending receipt can request processing against its retained source after native transport deletion; HTTP acceptance is labelled as a request until the actual outcome is reloaded.
+
+One acknowledgement root owns immutable numbered attempts. A new retry confirms the current recipient and approved wording/version and leaves older snapshots unchanged. Unknown delivery requires an evidenced operator report; non-acceptance also requires confirmation that the original worker cannot resume. Recording a review does not send an email or invent an SMTP acceptance timestamp. A later provider result remains separate and can block a queued retry. Incorrect external confirmation can still duplicate email; SMTP cannot guarantee exactly-once delivery after ambiguity.
+
+The attempt migration passed up/down/up on the owned empty-message database. A rollback with recorded attempt/review history is refused before destructive DDL. Tenant/application root references and unique root/attempt identities are enforced in the database. Optional encrypted review evidence remains nil until recorded.
+
+A fresh real integration again sent duplicate authenticated requests through the relay controller, persisted SolidQueue work and booted separate workers. Mailpit captured one acknowledgement. A loopback SMTP server then rejected a second application's first attempt with 550 before accepting message data; Miru conservatively retained an unknown result. After that worker exited, a fresh process recorded the observed non-acceptance evidence without queuing mail, approved revised wording, and separately queued a new attempt that was accepted once. Totals were two applications/receipts/roots, three attempts and two accepted messages, one per applicant; the original snapshot stayed unchanged. No external email was delivered. An earlier combined harness hit a Rails runner execution-context error; request ingestion and follow-up were separated into fresh processes.
+
+Existing-profile Playwright checks established real synthetic login with cookie CSRF enabled, saved settings/revocation, blank forwarded identity fields, verified-recipient queuing, keyboard activation and 375px layouts without horizontal overflow or captured console warnings/errors. The manual upload helper lacked an extension permission and its download watcher produced no saved-path proof; isolated Brave system checks instead verified the upload and actual byte-equal source/attachment downloads. No browser permissions changed. The attempt-history pass also verified required worker confirmation, stale-review rejection with evidence preserved, explicit reload, recording a review without another attempt and a separate action queuing attempt 3. Those UI states used synthetic fixtures and test-only queue/mail adapters; the real SMTP proof above is separate.
+
+| Surface | Screenshots |
+| --- | --- |
+| Captured SMTP acknowledgement | [Desktop](16-acknowledgement-desktop.jpg), [mobile](17-acknowledgement-mobile.jpg) |
+| Communication settings | [Approved desktop](communications-approved-desktop.png), [edited mobile draft](communications-draft-mobile.png) |
+| Existing-profile settings checks | [Approved desktop](communications-playwright-approved-desktop.jpg), [mobile draft](communications-playwright-draft-mobile.jpg) |
+| Inbox and review | [Inbox management](inbox-management-desktop.png), [reviewed mobile](inbox-reviewed-mobile.png) |
+| Email application provenance | [Linked detail on mobile](email-application-detail-mobile.png) |
+| Existing-profile receipt checks | [Desktop review](inbox-playwright-review-desktop.jpg), [verified recipient](inbox-playwright-reviewed-mobile.jpg) |
+| First acknowledgement | [Approved preview](recovery-approved-preview-desktop.jpg), [queued status](recovery-queued-desktop.jpg), [system queued view](inbox-queued-existing-desktop.png) |
+| Retained-source recovery | [Processing requested](recovery-pending-mobile.jpg), [reloaded outcome](recovery-reviewed-mobile.jpg) |
+| Retried acknowledgement | [Original and current wording](attempt-retry-preview-desktop.jpg), [retained desktop snapshots](attempt-history-desktop.jpg), [mobile system check](inbox-attempt-history-mobile.png) |
+| Unknown-delivery review | [Required confirmation](inbox-unknown-review-mobile.png), [stale evidence preserved](inbox-stale-delivery-review-mobile.png) |
+| Recorded review and separate retry | [Mobile Playwright pass](attempt-reviewed-history-mobile.jpg) |
+| Actual SMTP retry | [Captured message and recipients](attempt-smtp-capture-desktop.jpg) |
+
+An earlier cookie/CSRF positive check returned 401 once. Isolation and subsequent wider reruns passed; its cause remains unproven. Authentication protections were not relaxed.
+
+A broad 4650-example run overlapped source changes and used an obsolete SMTP expectation, so its single failure and mixed inputs do not establish current full-suite status. Exact frozen-source checks and CI are reported separately; no broad pass is inferred from the focused results above.
+
+Operator setup, delivery-state meanings and the current retention limit are documented in [Hiring email intake](../../hiring-email.md). Local evidence does not replace independent review, publication checks or current CI.

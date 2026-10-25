@@ -35,6 +35,10 @@ class Company < ApplicationRecord
 
   # Associations
   has_many :compensation_report_runs, dependent: :destroy
+  has_many :hiring_messages, dependent: :delete_all
+  has_many :hiring_receipts, dependent: :destroy
+  has_one :hiring_setting, dependent: :destroy
+  has_many :hiring_mailboxes, dependent: :destroy
   has_many :hiring_applications, dependent: :destroy
   has_many :hiring_candidates, dependent: :destroy
   has_many :hiring_roles, dependent: :destroy

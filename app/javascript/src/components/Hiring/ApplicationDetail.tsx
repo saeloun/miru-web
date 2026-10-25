@@ -101,7 +101,7 @@ export default function ApplicationDetail({
           </div>
           <div>
             <dt className="text-muted-foreground">Source</dt>
-            <dd className="mt-1">Manual intake</dd>
+            <dd className="mt-1">{stageLabel(application.source)} intake</dd>
           </div>
           <div>
             <dt className="text-muted-foreground">Submitted name</dt>

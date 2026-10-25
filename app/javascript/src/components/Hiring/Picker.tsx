@@ -5,11 +5,21 @@ import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
 import { failureMessage, read } from "./api";
-import type { Choice, Pagination, Role } from "./types";
+import {
+  receiptLabel,
+  type Application,
+  type Choice,
+  type Mailbox,
+  type Pagination,
+  type Role,
+} from "./types";
 
 type Choices = {
   company_id: number;
   roles?: Role[];
+  mailboxes?: Mailbox[];
+  applications?: Application[];
+  time_zone?: string;
   owners?: {
     id: number;
     full_name: string;
@@ -32,7 +42,7 @@ export default function Picker({
   id: string;
   label: string;
   companyId: number;
-  kind: "roles" | "owners";
+  kind: "roles" | "owners" | "mailboxes" | "applications";
   value: Choice | null;
   change: (value: Choice | null) => void;
   emptyLabel: string;
@@ -66,25 +76,46 @@ export default function Picker({
           status: kind === "roles" && purpose === "intake" ? "open" : undefined,
           include_history:
             kind === "owners" && purpose === "history" ? true : undefined,
+          active:
+            kind === "mailboxes" && purpose === "intake" ? true : undefined,
         },
         controller.signal
       )
         .then(data => {
           if (!active) return;
-          const choices =
-            kind === "roles"
-              ? (data.roles || []).map(role => ({
-                  id: role.id,
-                  label: `${role.title}${
-                    role.status === "closed" ? " (closed)" : ""
-                  }`,
-                }))
-              : (data.owners || []).map(owner => ({
-                  id: owner.id,
-                  label: `${owner.full_name}${
-                    owner.employee_id ? ` · ${owner.employee_id}` : ""
-                  }${owner.active ? "" : " (former)"}`,
-                }));
+          let choices: Choice[];
+          if (kind === "roles") {
+            choices = (data.roles || []).map(role => ({
+              id: role.id,
+              label: `${role.title}${
+                role.status === "closed" ? " (closed)" : ""
+              }`,
+            }));
+          } else if (kind === "owners") {
+            choices = (data.owners || []).map(owner => ({
+              id: owner.id,
+              label: `${owner.full_name}${
+                owner.employee_id ? ` · ${owner.employee_id}` : ""
+              }${owner.active ? "" : " (former)"}`,
+            }));
+          } else if (kind === "mailboxes") {
+            choices = (data.mailboxes || []).map(mailbox => ({
+              id: mailbox.id,
+              label: `${mailbox.name} · ${mailbox.source_email}${
+                mailbox.active ? "" : " (disabled)"
+              }`,
+            }));
+          } else {
+            choices = (data.applications || []).map(application => ({
+              id: application.id,
+              label: `${application.candidate.full_name} · ${
+                application.candidate.email
+              } · ${application.role?.title || "No role"} · ${receiptLabel(
+                application.received_at,
+                data.time_zone || "UTC"
+              )}`,
+            }));
+          }
 
           setOptions(previous =>
             page === 1 ? choices : [...previous, ...choices]

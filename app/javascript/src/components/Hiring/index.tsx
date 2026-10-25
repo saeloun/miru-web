@@ -8,6 +8,10 @@ import { Badge } from "../ui/badge";
 import ApplicationForm from "./ApplicationForm";
 import ApplicationDetail from "./ApplicationDetail";
 import Roles from "./Roles";
+import Settings from "./Settings";
+import Inbox from "./Inbox";
+import Mailboxes from "./Mailboxes";
+import ReceiptDetail from "./ReceiptDetail";
 import Picker from "./Picker";
 import { failureMessage, read } from "./api";
 import {
@@ -294,10 +298,13 @@ function Applications({ companyId }: { companyId: number }) {
 }
 
 function Workspace({ companyId }: { companyId: number }) {
-  const { applicationId } = useParams();
+  const { applicationId, receiptId } = useParams();
   const location = useLocation();
   const newApplication = location.pathname.endsWith("/new");
   const roles = location.pathname.endsWith("/roles");
+  const settings = location.pathname.endsWith("/communications");
+  const inbox = location.pathname.endsWith("/inbox");
+  const mailboxes = location.pathname.endsWith("/mailboxes");
 
   return (
     <div
@@ -312,7 +319,7 @@ function Workspace({ companyId }: { companyId: number }) {
           </p>
         </div>
         <nav aria-label="Hiring navigation" className="flex flex-wrap gap-3">
-          {roles && (
+          {(roles || settings || inbox || mailboxes || receiptId) && (
             <Button asChild variant="outline" className="min-h-11">
               <Link to="/hiring">All applications</Link>
             </Button>
@@ -322,6 +329,16 @@ function Workspace({ companyId }: { companyId: number }) {
               <Link to="/hiring/roles">Manage roles</Link>
             </Button>
           )}
+          {!settings && (
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/hiring/communications">Communication settings</Link>
+            </Button>
+          )}
+          {!inbox && (
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/hiring/inbox">Email inbox</Link>
+            </Button>
+          )}
           {!newApplication && (
             <Button asChild className="min-h-11">
               <Link to="/hiring/new">Add application</Link>
@@ -329,7 +346,15 @@ function Workspace({ companyId }: { companyId: number }) {
           )}
         </nav>
       </header>
-      {applicationId ? (
+      {receiptId ? (
+        <ReceiptDetail key={receiptId} companyId={companyId} id={receiptId} />
+      ) : inbox ? (
+        <Inbox companyId={companyId} />
+      ) : mailboxes ? (
+        <Mailboxes companyId={companyId} />
+      ) : settings ? (
+        <Settings companyId={companyId} />
+      ) : applicationId ? (
         <ApplicationDetail
           key={applicationId}
           companyId={companyId}

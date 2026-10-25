@@ -42,7 +42,7 @@ For each task: write the named failing checks, run them and retain the actual fa
 
 ### Task 2: Forwarded email, receipts and acknowledged delivery
 
-**Files:** `app/mailboxes/{application_mailbox,hiring_mailbox}.rb`, `app/models/hiring_{mailbox,receipt,message,setting}.rb`, `app/services/hiring/{email_intake,delivery}.rb`, mailer/job, ingress/storage limits and migrations; settings/review/history UI and specs.
+**Files:** `app/mailboxes/{application_mailbox,hiring_inbound_mailbox}.rb`, `app/models/hiring_{mailbox,receipt,message,setting}.rb`, `app/services/hiring/{email_intake,delivery}.rb`, mailer/job, ingress/storage limits and migrations; settings/review/history UI and specs.
 
 **Interface:** authenticated relay → unique mailbox route → `Hiring::EmailIntake` → Task 1 identity/application; per-mailbox receipt history and message event key. Settings freeze approved intro/client count/employment wording and templates. Communication states distinguish queued, sending, sent, failed and uncertain.
 

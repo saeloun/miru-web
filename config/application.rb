@@ -83,6 +83,8 @@ module MiruWeb
 
     # Use a real queuing backend for Active Job (and separate queues per environment).
     config.active_job.queue_adapter = :solid_queue
+    config.action_mailbox.ingress = :hiring
+    config.action_mailbox.queues = { routing: :default, incineration: :default }
     config.mission_control.jobs.base_controller_class = "MissionControlController"
     config.middleware.use Rack::Attack
 

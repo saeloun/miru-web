@@ -304,6 +304,24 @@ namespace :api, defaults: { format: "json" } do
     end
 
     namespace :hiring do
+      resource :settings, only: [:show, :update] do
+        post :approve
+      end
+      resources :mailboxes, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+      resources :receipts, only: [:index, :show, :create] do
+        member do
+          post :accept
+          post :dismiss
+          post :reprocess
+          post :acknowledgement
+          post "messages/:message_id/retry", action: :retry_acknowledgement
+          post "messages/:message_id/reconcile", action: :reconcile_acknowledgement
+          get :source
+          get "attachments/:attachment_index", action: :attachment
+        end
+      end
       resources :applications, only: [:index, :show, :create] do
         post :search, on: :collection
       end

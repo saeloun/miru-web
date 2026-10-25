@@ -7,6 +7,7 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  post "/hiring/inbound/:routing_key", to: "hiring/inbound_emails#create"
   # Health check endpoint
   get "/health", to: "health#index"
   get "/document-review", to: "document_reviews#show", as: :document_review

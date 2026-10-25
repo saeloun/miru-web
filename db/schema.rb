@@ -10,12 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "unaccent"
+
+  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "message_id", null: false
+    t.string "message_checksum", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
@@ -646,12 +655,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email_key", limit: 64
+    t.index ["company_id", "email_key"], name: "index_hiring_applications_on_company_id_and_email_key", unique: true, where: "(email_key IS NOT NULL)"
+    t.index ["company_id", "id"], name: "index_hiring_applications_on_company_id_and_id", unique: true
     t.index ["company_id", "received_at", "id"], name: "index_hiring_applications_for_pipeline"
     t.index ["company_id", "request_key"], name: "index_hiring_applications_on_company_id_and_request_key", unique: true
     t.index ["created_by_id"], name: "index_hiring_applications_on_created_by_id"
     t.index ["hiring_candidate_id", "received_at", "id"], name: "index_hiring_applications_for_candidate"
     t.index ["owner_employment_id"], name: "index_hiring_applications_on_owner_employment_id"
-    t.check_constraint "source::text = 'manual'::text", name: "hiring_application_source"
+    t.check_constraint "source::text = 'manual'::text AND email_key IS NULL OR source::text = 'email'::text AND email_key::text ~ '^[a-f0-9]{64}$'::text", name: "hiring_application_supported_source"
     t.check_constraint "stage::text = ANY (ARRAY['received'::character varying, 'information_pending'::character varying, 'screening'::character varying, 'shortlisted'::character varying, 'assignment_assigned'::character varying, 'assignment_review'::character varying, 'interview'::character varying, 'final_decision'::character varying, 'offer'::character varying, 'hired'::character varying, 'on_hold'::character varying, 'rejection_pending'::character varying, 'rejected'::character varying, 'withdrawn'::character varying, 'no_show'::character varying]::text[])", name: "hiring_application_stage"
   end
 
@@ -666,6 +678,81 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
     t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
   end
 
+  create_table "hiring_mailboxes", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "source_email", limit: 254, null: false
+    t.uuid "routing_key", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_mailboxes_on_company_id_and_id", unique: true
+    t.index ["company_id", "source_email"], name: "index_hiring_mailboxes_on_company_id_and_source_email", unique: true
+    t.index ["routing_key"], name: "index_hiring_mailboxes_on_routing_key", unique: true
+    t.check_constraint "source_email::text = lower(btrim(source_email::text))", name: "hiring_mailbox_normalized_email"
+  end
+
+  create_table "hiring_messages", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_setting_id", null: false
+    t.bigint "queued_by_id"
+    t.integer "approved_setting_version", null: false
+    t.string "kind", default: "acknowledgement", null: false
+    t.string "state", default: "queued", null: false
+    t.string "error_code", limit: 64
+    t.text "content", null: false
+    t.datetime "enqueued_at"
+    t.datetime "started_at"
+    t.datetime "sent_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "original_message_id"
+    t.integer "attempt_number", default: 1, null: false
+    t.string "resolution", limit: 32
+    t.text "resolution_details"
+    t.bigint "resolved_by_id"
+    t.datetime "resolved_at"
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_messages_on_tenant_application_id", unique: true
+    t.index ["company_id", "hiring_application_id", "kind"], name: "index_hiring_messages_on_original_event", unique: true, where: "(original_message_id IS NULL)"
+    t.index ["company_id", "original_message_id", "attempt_number"], name: "index_hiring_messages_on_retry_attempt", unique: true, where: "(original_message_id IS NOT NULL)"
+    t.index ["hiring_setting_id"], name: "index_hiring_messages_on_hiring_setting_id"
+    t.index ["queued_by_id"], name: "index_hiring_messages_on_queued_by_id"
+    t.index ["resolved_by_id"], name: "index_hiring_messages_on_resolved_by_id"
+    t.index ["state", "enqueued_at"], name: "index_hiring_messages_on_state_and_enqueued_at"
+    t.check_constraint "kind::text = 'acknowledgement'::text", name: "hiring_message_kind"
+    t.check_constraint "original_message_id IS NULL AND attempt_number = 1 OR original_message_id IS NOT NULL AND original_message_id <> id AND attempt_number > 1", name: "hiring_message_attempt"
+    t.check_constraint "resolution IS NULL AND resolved_at IS NULL AND resolved_by_id IS NULL AND resolution_details IS NULL OR resolution IS NOT NULL AND (resolution::text = ANY (ARRAY['accepted'::character varying, 'not_accepted'::character varying]::text[])) AND resolved_at IS NOT NULL AND resolution_details IS NOT NULL", name: "hiring_message_resolution"
+    t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
+  end
+
+  create_table "hiring_receipts", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_mailbox_id", null: false
+    t.bigint "inbound_email_id"
+    t.bigint "hiring_application_id"
+    t.bigint "reviewed_by_id"
+    t.datetime "reviewed_at"
+    t.datetime "received_at", null: false
+    t.string "source_checksum", limit: 64, null: false
+    t.string "message_key", limit: 64
+    t.string "state", default: "pending", null: false
+    t.string "review_reason", limit: 64
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_mailbox_id", "source_checksum"], name: "index_hiring_receipts_on_mailbox_and_source", unique: true
+    t.index ["company_id", "message_key"], name: "index_hiring_receipts_on_company_id_and_message_key"
+    t.index ["company_id", "state", "received_at"], name: "index_hiring_receipts_on_company_id_and_state_and_received_at"
+    t.index ["hiring_application_id"], name: "index_hiring_receipts_on_hiring_application_id"
+    t.index ["inbound_email_id"], name: "index_hiring_receipts_on_inbound_email_id"
+    t.index ["reviewed_by_id"], name: "index_hiring_receipts_on_reviewed_by_id"
+    t.check_constraint "state::text = ANY (ARRAY['pending'::character varying::text, 'review'::character varying::text, 'accepted'::character varying::text, 'dismissed'::character varying::text])", name: "hiring_receipt_state"
+  end
+
   create_table "hiring_roles", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.string "title", limit: 200, null: false
@@ -675,6 +762,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "id"], name: "index_hiring_roles_on_company_id_and_id", unique: true
     t.check_constraint "status::text = ANY (ARRAY['open'::character varying, 'closed'::character varying]::text[])", name: "hiring_role_status"
+  end
+
+  create_table "hiring_settings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_hiring_settings_on_approved_by_id"
+    t.index ["company_id", "id"], name: "index_hiring_settings_on_company_id_and_id", unique: true
+    t.index ["company_id"], name: "index_hiring_settings_on_company_id", unique: true
   end
 
   create_table "holiday_infos", force: :cascade do |t|
@@ -1776,7 +1876,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
   add_foreign_key "hiring_applications", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_applications", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_mailboxes", "companies"
+  add_foreign_key "hiring_messages", "companies"
+  add_foreign_key "hiring_messages", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_messages", "hiring_messages", column: ["company_id", "hiring_application_id", "original_message_id"], primary_key: ["company_id", "hiring_application_id", "id"], name: "hiring_message_original", on_delete: :cascade
+  add_foreign_key "hiring_messages", "hiring_settings"
+  add_foreign_key "hiring_messages", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
+  add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_receipts", "action_mailbox_inbound_emails", column: "inbound_email_id", on_delete: :nullify
+  add_foreign_key "hiring_receipts", "companies"
+  add_foreign_key "hiring_receipts", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_receipts", "hiring_mailboxes", column: ["company_id", "hiring_mailbox_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_receipts", "users", column: "reviewed_by_id", on_delete: :nullify
   add_foreign_key "hiring_roles", "companies"
+  add_foreign_key "hiring_settings", "companies"
+  add_foreign_key "hiring_settings", "users", column: "approved_by_id", on_delete: :nullify
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
