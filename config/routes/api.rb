@@ -303,6 +303,17 @@ namespace :api, defaults: { format: "json" } do
       resources :devices, only: [:create, :index, :show, :update, :destroy], controller: "users/devices"
     end
 
+    namespace :hiring do
+      resources :applications, only: [:index, :show, :create] do
+        post :search, on: :collection
+      end
+      get "owners", to: "applications#owners"
+      post "owners/search", to: "applications#search_owners"
+      resources :roles, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+    end
+
     resource :profile, only: [:update], controller: "profile"
 
     resources :payroll_runs, only: [:index, :show] do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_25_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_25_085700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -629,6 +629,52 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_010000) do
     t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
     t.check_constraint "currency IS NOT NULL AND currency::text ~ '^[A-Z]{3}$'::text", name: "expenses_currency_iso_code"
+  end
+
+  create_table "hiring_applications", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_candidate_id", null: false
+    t.bigint "hiring_role_id"
+    t.bigint "owner_employment_id"
+    t.bigint "created_by_id"
+    t.uuid "request_key", null: false
+    t.text "creation_details", null: false
+    t.text "notes"
+    t.string "source", default: "manual", null: false
+    t.string "stage", default: "received", null: false
+    t.datetime "received_at", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "received_at", "id"], name: "index_hiring_applications_for_pipeline"
+    t.index ["company_id", "request_key"], name: "index_hiring_applications_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_applications_on_created_by_id"
+    t.index ["hiring_candidate_id", "received_at", "id"], name: "index_hiring_applications_for_candidate"
+    t.index ["owner_employment_id"], name: "index_hiring_applications_on_owner_employment_id"
+    t.check_constraint "source::text = 'manual'::text", name: "hiring_application_source"
+    t.check_constraint "stage::text = ANY (ARRAY['received'::character varying, 'information_pending'::character varying, 'screening'::character varying, 'shortlisted'::character varying, 'assignment_assigned'::character varying, 'assignment_review'::character varying, 'interview'::character varying, 'final_decision'::character varying, 'offer'::character varying, 'hired'::character varying, 'on_hold'::character varying, 'rejection_pending'::character varying, 'rejected'::character varying, 'withdrawn'::character varying, 'no_show'::character varying]::text[])", name: "hiring_application_stage"
+  end
+
+  create_table "hiring_candidates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "full_name", limit: 200, null: false
+    t.string "email", limit: 254, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "email"], name: "index_hiring_candidates_on_company_id_and_email", unique: true
+    t.index ["company_id", "id"], name: "index_hiring_candidates_on_company_id_and_id", unique: true
+    t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
+  end
+
+  create_table "hiring_roles", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "title", limit: 200, null: false
+    t.string "status", default: "open", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_roles_on_company_id_and_id", unique: true
+    t.check_constraint "status::text = ANY (ARRAY['open'::character varying, 'closed'::character varying]::text[])", name: "hiring_role_status"
   end
 
   create_table "holiday_infos", force: :cascade do |t|
@@ -1724,6 +1770,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_010000) do
   add_foreign_key "expenses", "projects"
   add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "hiring_applications", "companies"
+  add_foreign_key "hiring_applications", "employments", column: "owner_employment_id", on_delete: :nullify
+  add_foreign_key "hiring_applications", "hiring_candidates", column: ["company_id", "hiring_candidate_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_applications", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_applications", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_roles", "companies"
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
