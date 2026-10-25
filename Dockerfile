@@ -8,19 +8,38 @@
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
 ARG RUBY_VERSION=4.0.9
-# Build from the verified release until Docker Hub publishes the security patch.
-FROM debian:trixie-slim AS ruby-build
-ARG RUBY_VERSION
-ARG RUBY_SHA256=a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4
+FROM ruby:${RUBY_VERSION}-slim@sha256:88f0d8f1f2f7829c8c85c5cfee774f7ac936a7ba460e904e8c873b6a7f96c311 AS ruby-build
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential ca-certificates curl \
-    libffi-dev libgmp-dev libreadline-dev libssl-dev libyaml-dev ruby rustc xz-utils zlib1g-dev && \
-    curl -fsSL "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-${RUBY_VERSION}.tar.xz" -o /tmp/ruby.tar.xz && \
-    echo "${RUBY_SHA256}  /tmp/ruby.tar.xz" | sha256sum -c - && \
-    mkdir /tmp/ruby && tar -xJf /tmp/ruby.tar.xz -C /tmp/ruby --strip-components=1 && \
-    cd /tmp/ruby && \
-    LDFLAGS="-Wl,-z,relro -Wl,-z,now" ./configure --enable-shared --enable-yjit --disable-install-doc && \
-    make -j 4 && make install
+    apt-get install --no-install-recommends -y build-essential curl
+
+# Replace the obsolete default JSON code as well as the application's bundled gem.
+RUN curl -fsSL https://rubygems.org/downloads/json-2.21.2.gem -o /tmp/json.gem && \
+    echo "1f1d3b7cf2b3ba1a69beca0bb6db13d5438b80bff3cd54cdaaa620b9b07c1c6a  /tmp/json.gem" | sha256sum -c - && \
+    /usr/local/bin/gem install --local --no-document /tmp/json.gem && rm /tmp/json.gem
+RUN /usr/local/bin/ruby -rjson -rrbconfig -rfileutils <<'RUBY'
+abort "Patched JSON is required" unless JSON::VERSION == "2.21.2" && !Gem.loaded_specs.fetch("json").default_gem?
+legacy = Gem::Specification.find_all_by_name("json").select do |spec|
+  spec.default_gem? && spec.version < Gem::Version.new("2.19.9")
+end
+if legacy.any?
+  paths = [File.join(RbConfig::CONFIG.fetch("rubylibdir"), "json.rb"),
+    File.join(RbConfig::CONFIG.fetch("rubylibdir"), "json"),
+    File.join(RbConfig::CONFIG.fetch("rubyarchdir"), "json"),
+    *legacy.map(&:loaded_from), *legacy.map(&:full_gem_path)]
+  abort "Unexpected Ruby installation" unless paths.all? { |path| path.start_with?("/usr/local/lib/ruby/") }
+  paths.each { |path| FileUtils.rm_rf(path) }
+  abort "Legacy JSON files remain" if paths.any? { |path| File.exist?(path) || File.symlink?(path) }
+end
+RUBY
+RUN /usr/local/bin/ruby -rjson <<'RUBY'
+abort "Unexpected JSON" unless JSON::VERSION == "2.21.2"
+begin
+  JSON.parse('{"%s":1,"%s":2}', allow_duplicate_key: false)
+  abort "Duplicate key accepted"
+rescue JSON::ParserError => error
+  abort "Duplicate key was formatted" unless error.message.include?("%s")
+end
+RUBY
 
 FROM debian:trixie-slim AS base
 ARG RUBY_VERSION
@@ -135,7 +154,7 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Also build Vite assets
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile && \
     if [ -f "bin/vite" ]; then SECRET_KEY_BASE=DUMMY bin/vite build; fi && \
-    rm -rf tmp/cache tmp/pids node_modules/.cache
+    rm -rf tmp/cache tmp/pids node_modules
 
 
 # Final stage for production app image
@@ -153,7 +172,9 @@ COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
 # Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
+RUN test ! -e node_modules && \
+    bundle exec ruby -rjson -e 'abort "Patched JSON is required" if Gem::Version.new(JSON::VERSION) < Gem::Version.new("2.19.9")' && \
+    groupadd --system --gid 1000 rails && \
     useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
     chown -R 1000:1000 db log storage tmp
 USER 1000:1000
@@ -161,6 +182,8 @@ USER 1000:1000
 # Deployment options
 ENV GROVER_NO_SANDBOX="true" \
     PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
+
+RUN --network=none bundle exec ruby scripts/ci/verify_runtime_image.rb
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
