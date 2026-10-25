@@ -64,13 +64,17 @@
   cursor: move;
 }
 .signature-workspace .signature-resize {
+  /* Keep the visible 24px corner inside a 44px hit area. */
   position: absolute;
-  right: -2px;
-  bottom: -2px;
-  width: 24px;
-  height: 24px;
-  min-height: 24px;
+  right: -12px;
+  bottom: -12px;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 10px;
+  box-sizing: border-box;
   background: hsl(var(--primary));
+  background-clip: content-box;
   color: hsl(var(--primary-foreground));
   touch-action: none;
   cursor: nwse-resize;

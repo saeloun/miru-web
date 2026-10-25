@@ -94,6 +94,17 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
       hash_including("label" => "Statement of work signature", "page" => 2, "x" => 21))
     [375, 1440].each do |width|
       page.current_window.resize_to(width, 900)
+      page.document.synchronize(Capybara.default_max_wait_time) do
+        handle_size = page.evaluate_script(<<~JS)
+          (() => {
+            const box = document.querySelector(".signature-resize")?.getBoundingClientRect();
+            return box ? [box.width, box.height] : [];
+          })()
+        JS
+        unless handle_size.size == 2 && handle_size.min >= 44
+          raise Capybara::ExpectationNotMet, "Resize handle needs a 44px target; observed #{handle_size.inspect}"
+        end
+      end
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
     end
     select "150%", from: "Preview zoom"
