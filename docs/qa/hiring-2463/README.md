@@ -6,6 +6,7 @@ This is Task 1 of [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues
 
 - 28 focused backend and existing permission-policy examples pass. They cover normalized tenant-specific identity, immutable/encrypted submission details and notes, idempotent retries, conflict recovery, filtering/pagination/timezone boundaries, owner/role validity, active access, CSRF and database uniqueness/tenant constraints.
 - Eight system examples pass in the installed Brave executable. They cover manual intake/history, mobile validation recovery, employee denial, closed-role filtering, draft preservation, picker pagination/keyboard focus, delayed role saves during filtering and recovery after a committed POST loses its response.
+- The picker focus regression was reproduced locally after CI caught it. Selection and Escape now restore the trigger explicitly; outside clicks retain their destination. The focused flow passed five consecutive repetitions while retaining the original assertion.
 - Migration rollback and reapply pass on the empty, isolated test database. No existing table is changed.
 - Changed Ruby and frontend files pass RuboCop, ESLint and Prettier checks; the required Vite command and a forced build pass. Existing dependency directive/chunk-size and Prettier configuration warnings remain.
 - Additional Playwright CLI passes used Brave and a real synthetic local login: create application with role, owner and note, inspect its saved history, resize to 375px, check page overflow, and edit a role and verify it survives a full reload. There were no console errors or warnings in those passes.
@@ -34,6 +35,7 @@ Set `DATABASE_URL` to the isolated database before running these commands. The s
 | Roles and preserved drafts | [Roles](roles-desktop.png), [drafts after another role is saved and added](preserved-role-drafts-desktop.png) |
 | Search recovery and pipeline | [Invalid range recovery](filter-recovery-mobile.png), [mobile pipeline](pipeline-mobile.png) |
 | Delayed role save | [Save completes after its row is filtered away](asynchronous-role-save-desktop.png) |
+| Picker keyboard focus | [Escape restores the trigger after the final page](picker-keyboard-focus-desktop.png) |
 | Lost application response | [Open the already saved application](application-recovery-action-desktop.png), [recovered original](recovered-application-desktop.png) |
 | Additional Playwright pass | [Light desktop](playwright-detail-desktop-light.png), [light mobile](playwright-detail-mobile-light.png) |
 

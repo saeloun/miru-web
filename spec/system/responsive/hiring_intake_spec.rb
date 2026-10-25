@@ -159,9 +159,14 @@ RSpec.describe "Hiring intake", type: :system, js: true do
     expect(page.all("[cmdk-item]").map(&:text).uniq.length).to eq(21)
     page.driver.browser.keyboard.type(:escape)
     expect(page).to have_css("#application-role:focus[aria-expanded='false']")
+    expect(page).to have_no_css("[cmdk-root]", visible: :all)
+    capture("picker-keyboard-focus-desktop.png")
     find("#application-role").send_keys(:down)
     expect(page).to have_css("#application-role[aria-expanded='true']")
     expect(page).to have_css("[cmdk-item]", count: 20)
+    find("#candidate-name").click
+    expect(page).to have_css("#candidate-name:focus")
+    expect(page).to have_css("#application-role[aria-expanded='false']")
     expect(@console_errors).to eq([])
   end
 

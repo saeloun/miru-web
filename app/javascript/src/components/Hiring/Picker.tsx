@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { CaretDown } from "phosphor-react";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
@@ -46,6 +46,7 @@ export default function Picker({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
+  const trigger = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -110,9 +111,14 @@ export default function Picker({
     setOpen(next);
   };
 
+  const close = () => {
+    setOpen(false);
+    trigger.current?.focus();
+  };
+
   const choose = (choice: Choice | null) => {
     change(choice);
-    setOpen(false);
+    close();
   };
 
   return (
@@ -121,6 +127,7 @@ export default function Picker({
       <Popover open={open} onOpenChange={changeOpen}>
         <PopoverTrigger asChild>
           <Button
+            ref={trigger}
             id={id}
             type="button"
             variant="outline"
@@ -144,19 +151,11 @@ export default function Picker({
         <PopoverContent
           className="w-[min(22rem,calc(100vw-2rem))] p-0"
           align="start"
-          onCloseAutoFocus={event => {
-            const active = document.activeElement;
-            // Preserve focus moved to another field while this picker closes.
-            if (
-              active &&
-              active !== document.body &&
-              active !== document.documentElement &&
-              event.target instanceof HTMLElement &&
-              !event.target.contains(active)
-            ) {
-              event.preventDefault();
-            }
+          onEscapeKeyDown={event => {
+            event.preventDefault();
+            close();
           }}
+          onCloseAutoFocus={event => event.preventDefault()}
         >
           <Command shouldFilter={false}>
             <CommandInput
