@@ -1,4 +1,7 @@
 en:
+  passkeys:
+    renamed: Passkey name updated
+    invalid_name: Enter a passkey name between 1 and 80 characters.
   totp:
     already_enabled: Authenticator verification is already enabled. Disable it before starting a new setup.
     trusted_browsers_revoked: All trusted browsers have been revoked. Your next sign in will require two-factor verification.

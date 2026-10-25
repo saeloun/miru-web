@@ -14,7 +14,7 @@ namespace :api, defaults: { format: "json" } do
         post "resend_confirmation_email", to: "confirmations#create", as: "resend_confirmation_email"
       end
 
-      resources :passkeys, only: [:index, :create, :destroy] do
+      resources :passkeys, only: [:index, :create, :update, :destroy] do
         collection do
           post :registration_options
           post :authenticate

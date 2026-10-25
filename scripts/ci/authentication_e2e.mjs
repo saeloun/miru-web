@@ -26,6 +26,7 @@ try {
   const page = await browser.newPage({
     viewport: { width: 1280, height: 800 },
   });
+  page.setDefaultTimeout(15000);
   console.log(
     JSON.stringify(
       await runAuthenticationE2E(page, { baseURL, email, password, prefix })

@@ -20,8 +20,6 @@ import { CustomReactSelect } from "common/CustomReactSelect";
 import { Divider } from "common/Divider";
 import { ErrorSpan } from "common/ErrorSpan";
 import { LANGUAGE_OPTIONS, i18n, t } from "../../../../../i18n";
-import PasskeysPanel from "./PasskeysPanel";
-import TotpPanel from "./TotpPanel";
 
 const inputClass =
   "form__input block h-12 w-full appearance-none bg-background p-4 text-sm text-foreground focus-within:border-primary";
@@ -59,26 +57,6 @@ const MobileProfileEditor = ({
   setErrDetails,
   handleCurrentPasswordChange,
   currentPassword,
-  canManagePasskeys,
-  onRegisterPasskey,
-  onRemovePasskey,
-  onTogglePasskeyRequirement,
-  passkeyRequiredForLogin,
-  passkeys,
-  passkeysBusy,
-  onConfirmTotp,
-  onDisableTotp,
-  onGenerateRecoveryCodes,
-  onSetupTotp,
-  recoveryCodes,
-  recoveryCodesCount,
-  setTotpVerificationCode,
-  totpBusy,
-  totpEnabled,
-  totpProvisioningUri,
-  totpQrCode,
-  totpSecret,
-  totpVerificationCode,
 }) => {
   const handlePasswordChange = () => {
     if (changePassword) {
@@ -652,33 +630,6 @@ const MobileProfileEditor = ({
             )}
           </div>
         </div>
-      </div>
-      <PasskeysPanel
-        busy={passkeysBusy}
-        canManage={canManagePasskeys}
-        onRegister={onRegisterPasskey}
-        onRemove={onRemovePasskey}
-        onToggleRequirement={onTogglePasskeyRequirement}
-        passkeyRequiredForLogin={passkeyRequiredForLogin}
-        passkeys={passkeys}
-      />
-      <div className="mt-6">
-        <TotpPanel
-          busy={totpBusy}
-          canManage={canManagePasskeys}
-          enabled={totpEnabled}
-          onConfirm={onConfirmTotp}
-          onDisable={onDisableTotp}
-          onGenerateRecoveryCodes={onGenerateRecoveryCodes}
-          onSetup={onSetupTotp}
-          provisioningUri={totpProvisioningUri}
-          qrCode={totpQrCode}
-          recoveryCodes={recoveryCodes}
-          recoveryCodesCount={recoveryCodesCount}
-          secret={totpSecret}
-          setVerificationCode={setTotpVerificationCode}
-          verificationCode={totpVerificationCode}
-        />
       </div>
       <Divider />
       <div className="flex flex-row gap-3 py-4">

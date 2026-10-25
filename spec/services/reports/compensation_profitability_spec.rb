@@ -70,6 +70,86 @@ RSpec.describe Reports::CompensationProfitability do
     expect(row(client_id: client.id)[:revenue]).to eq(256_000.to_d)
   end
 
+  it "summarizes data-quality flags per person after filters, including an empty result" do
+    create(:employment, company:, user: person, joined_at: "2026-01-01", resigned_at: nil)
+    result = report(person_id: person.id)
+    expect(result[:data_quality]).to include(people: 1, complete_people: 0, flagged_people: 1)
+    expect(result[:data_quality][:flags]).to include("missing_timesheets" => 1, "multiple_employment_records_require_review" => 1)
+    expect(result[:comparison][:data_quality][:flags]).to include("missing_timesheets" => 1)
+    expect(report(person_id: person.id, department: "Absent")[:data_quality]).to eq(
+      people: 0, complete_people: 0, flagged_people: 0, flags: {})
+  end
+
+  it "marks complete approved records as ready without concealing incomplete comparison data" do
+    rate
+    entry
+    result = report
+    expect(result[:data_quality]).to eq(people: 1, complete_people: 1, flagged_people: 0, flags: {})
+    expect(result[:comparison][:data_quality][:flagged_people]).to eq(1)
+  end
+
+  it "keeps a deduplicated period-specific person selector when filters narrow the report" do
+    create(:employment, company:, user: person, joined_at: "2026-01-01", resigned_at: nil)
+    client_user = create(:user, current_workspace: company)
+    client_user.add_role(:client, company)
+    create(:employment, company:, user: client_user, joined_at: "2026-01-01", resigned_at: nil)
+    result = report(person_id: person.id, department: "Absent")
+    expect(result[:people]).to be_empty
+    expect(result[:available_people]).to eq([{ id: person.id, name: person.full_name }])
+  end
+
+  it "matches filters against every employment while preserving the person's reconciliation warning" do
+    profile.update!(department: "Engineering", primary_project: project)
+    employment.update!(resigned_at: "2026-07-15")
+    create(:employment, company:, user: person, joined_at: "2026-07-16", resigned_at: nil)
+
+    [{ department: "Engineering" }, { primary_project_id: project.id }, { status: "exited" }].each do |filter|
+      result = report(**filter)
+      expect(result[:people].size).to eq(1)
+      expect(result[:people].first).to include(person_id: person.id, compensation_cost: nil, revenue: nil)
+      expect(result[:data_quality][:flags]).to include("multiple_employment_records_require_review" => 1)
+    end
+  end
+
+  it "converts each day's cost at its applicable FX rate instead of converting the whole period at its final rate" do
+    ExchangeRate.set_rate("USD", "INR", 40, Date.new(2026, 7, 16), "synthetic later rate")
+    result = row(currency: "USD")
+    expect(result[:salary_inr]).to eq(3100.to_d)
+    expect(result[:salary_usd]).to be_within(0.000001).of(58.75.to_d)
+    expect(result[:compensation_cost]).to eq(result[:salary_usd])
+  end
+
+  it "reconciles a compensation currency change during a month in both reporting currencies" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "62.00", "salary_currency" => "USD",
+      "salary_effective_on" => "2026-07-16"))
+    result = row
+    expect(result).to include(annual_compensation: 744.to_d, compensation_currency: "USD", compensation_cost: 4060.to_d,
+      salary_inr: 4060.to_d, salary_usd: 50.75.to_d)
+    expect(row(currency: "USD")[:compensation_cost]).to eq(50.75.to_d)
+  end
+
+  it "uses leap-day proration and compares a single day with the immediately preceding day" do
+    employment.update!(joined_at: "2024-01-01")
+    record.update!(private_details: record.private_details.merge("salary_amount" => "2900.00", "salary_effective_on" => "2024-01-01"))
+    result = report(from: "2024-02-29", to: "2024-02-29")
+    expect(result[:people].first).to include(compensation_cost: 100.to_d, available_hours: 8.to_d)
+    expect(result[:comparison]).to include(from: "2024-02-28", to: "2024-02-28")
+    expect(result[:comparison][:people].first[:compensation_cost]).to eq(100.to_d)
+  end
+
+  it "keeps utilization above 100 percent for approved overtime and excludes rejected hours" do
+    rate
+    entry(duration: 720)
+    entry(duration: 60, review_status: "rejected")
+    expect(row(from: "2026-07-01", to: "2026-07-01")).to include(total_hours: 12.to_d, billable_hours: 12.to_d,
+      available_hours: 8.to_d, utilization: 150.to_d, revenue: 96_000.to_d)
+  end
+
+  it "accepts 366 inclusive days and rejects 367 days at the custom-range boundary" do
+    expect(report(from: "2026-01-01", to: "2027-01-01")[:to]).to eq("2027-01-01")
+    expect { report(from: "2026-01-01", to: "2027-01-02") }.to raise_error(described_class::InvalidFilters)
+  end
+
   it "preserves salary changes and prorates each dated amount, joining and exit inclusively" do
     record.update!(private_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-16"))
     expect(employment.compensation_versions.count).to eq(2)
@@ -208,11 +288,22 @@ RSpec.describe Reports::CompensationProfitability do
     expect(row[:compensation_cost]).to be_within(0.0001).of(3100)
   end
 
-  it "adjusts for holidays without double subtracting a recorded holiday" do
-    holiday = create(:holiday, company:, year: 2026, holiday_types: ["national"])
-    create(:holiday_info, holiday:, category: :national, date: "2026-07-01")
-    expect(row[:available_hours]).to eq(176.to_d)
-    expect(row[:compensation_cost]).to eq(3100.to_d)
+  %w[calendar_days working_days].each do |proration|
+    it "keeps paid holidays and counts duplicate holiday sources once under #{proration}" do
+      company.update!(compensation_proration: proration)
+      holiday = create(:holiday, company:, year: 2026, holiday_types: ["national"])
+      info = create(:holiday_info, holiday:, category: :national, date: "2026-07-01")
+      create(:timeoff_entry, user: person, leave_type: nil, holiday_info: info, leave_date: info.date)
+      expect(row[:available_hours]).to eq(176.to_d)
+      expect(row[:compensation_cost]).to be_within(0.0001).of(3100.to_d)
+    end
+
+    it "handles a weekend-only period without dividing by zero under #{proration}" do
+      company.update!(compensation_proration: proration)
+      cost = proration == "calendar_days" ? 100.to_d : 0.to_d
+      expect(row(from: "2026-07-04", to: "2026-07-04")).to include(compensation_cost: cost, available_hours: 0.to_d,
+        utilization: nil, days_to_yearly_salary: nil, margin: -cost, margin_percentage: nil)
+    end
   end
 
   it "flags recorded leave without an approval state and withholds finalized utilization" do
