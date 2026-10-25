@@ -293,6 +293,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
 
   it "drags and resizes fields assigned to different signers and persists their exact positions" do
     company.update!(timezone: "Mumbai")
+    page.current_window.resize_to(375, 900)
     open_documents
     add_signer
     add_signer(index: 2, name: "Synthetic Company Signer", email: "company@example.test")
@@ -303,10 +304,15 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     select "Synthetic Company Signer — company@example.test", from: "Assigned recipient"
     fill_in "Left (%)", with: "20"
     fill_in "Top (%)", with: "30"
-    find('button[aria-label="Move Company signature"]').native.drag_by(40, 30, steps: 5, scroll: false)
+    move_button = find('button[aria-label="Move Company signature"]')
+    move_button.execute_script("this.scrollIntoView({ block: 'center' })")
+    move_button.native.drag_by(40, 30, steps: 5, scroll: false)
+    expect(page).not_to have_field("Left (%)", with: "20")
     left = find_field("Left (%)").value.to_f
     expect(left).to be > 20
-    find('button[aria-label="Resize Company signature"]').native.drag_by(40, 20, steps: 5, scroll: false)
+    resize_button = find('button[aria-label="Resize Company signature"]')
+    resize_button.execute_script("this.scrollIntoView({ block: 'center' })")
+    resize_button.native.drag_by(40, 20, steps: 5, scroll: false)
     expect(page).not_to have_field("Width (%)", with: "30")
     width = find_field("Width (%)").value.to_f
     expect(width).to be > 30
