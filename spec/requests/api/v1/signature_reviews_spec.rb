@@ -297,6 +297,35 @@ RSpec.describe "Version-bound signature reviews", type: :request do
     controller.allow_forgery_protection = original if controller
   end
 
+  it "requires the review page CSRF token as well as its private invitation" do
+    invitation = invite
+    sign_out admin
+    controller = DocumentReviewsController
+    original = controller.allow_forgery_protection
+    controller.allow_forgery_protection = true
+    {
+      "/open" => {},
+      "/comments" => { body: "Forged approval", decision: "approved" },
+      "/original" => { document_key: invitation.revision.documents.first.fetch("key") }
+    }.each do |path, attributes|
+      public_review(invitation, path, **attributes)
+      expect(response).to have_http_status(422)
+      expect(response.parsed_body.fetch("errors")).to include("Open your original email link")
+    end
+    expect(invitation.reload.decision).to be_nil
+    expect(invitation.revision.review_comments).to be_empty
+
+    get "/document-review"
+    csrf_token = Nokogiri::HTML(response.body).at_css('meta[name="csrf-token"]')["content"]
+    post "/document-review/comments", params: { signature_review: {
+      token: invitation.access_token, body: "Reviewed this version", decision: "approved"
+    } }, headers: { "X-CSRF-TOKEN" => csrf_token }, as: :json
+    expect(response).to have_http_status(:ok)
+    expect(invitation.reload.decision).to eq("approved")
+  ensure
+    controller.allow_forgery_protection = original if controller
+  end
+
   it "preserves a review decision made before its access link expired" do
     invitation = invite
     sign_out admin

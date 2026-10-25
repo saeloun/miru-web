@@ -6,6 +6,8 @@ The [actual signing report and inspected screenshots](actual-signing-and-archive
 
 The [provider security/runtime checks](provider-security-checks.md) include the reproducible hardening patch, final-image version checks, remaining scanner findings and actual signing/outage-recovery evidence.
 
+The first pushed-head CI identified skipped CSRF protection on the private review endpoints and repeated workspace lookups in the archive policy. Review requests now require Rails CSRF protection alongside the invitation capability, using the existing frontend token helper and same-origin cookies. A regression first received 200 without a CSRF token, then correctly received 422; an anonymous request with both tokens approved the version. The review/archive request gate passed **28 examples**, and **two real-Brave review/revocation cases** passed with no failures or console errors. The full CI Reek command, Ruby/JS lint and both asset builds passed locally; the new commit still requires its remote checks.
+
 ## Verified archive and private download checks
 
 The archive implementation verifies authoritative provider state, the approved configuration, original hashes, every actionable recipient and required field, then each final PDF's detached CMS service seal and complete-file byte coverage. It saves all signed PDFs, the completion certificate and audit log privately before marking a version signed. Callback receipts store metadata digests, not bodies or signing links. Retries cannot replace an existing archive. Provider completion and archival failure are separate visible states.

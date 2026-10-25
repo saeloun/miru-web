@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 class DocumentReviewsController < ActionController::Base
-  # These JSON requests authenticate with a body-only capability, never a user session.
-  skip_forgery_protection only: [:open, :comment, :original]
+  protect_from_forgery with: :exception
   before_action :private_headers
   before_action :find_invitation, except: :show
+  rescue_from ActionController::InvalidAuthenticityToken do
+    render json: { errors: "The review page expired. Open your original email link to try again." }, status: 422
+  end
   rescue_from SignatureReviewInvitation::Unavailable do
     render json: { errors: "This review link is unavailable. Ask the sender for a new link." }, status: 410
   end

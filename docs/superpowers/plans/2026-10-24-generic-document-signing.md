@@ -81,8 +81,8 @@
 **Files:** provider webhook controller; sync/artifact services/jobs; `pdfsig` verification; signed downloads, profile links and archive UI; service/request/browser specs and QA docs.
 **Interfaces:** configured nonempty webhook shared secret, constant-time verification, bound connection/envelope IDs and idempotent state transitions. Fetch authoritative provider state. Require all required signers complete, original SHA-256 matches, unchanged expected signing configuration and valid whole-document cryptographic seals under the configured service-certificate trust policy. Preserve artifacts privately before exposing signed downloads; keep failed archival distinguishable from provider completion.
 
-- [ ] Write RED for missing/replayed/reordered/foreign callbacks, wrong originals/fields, pending unsigned-download fallback, invalid/truncated/tampered artifacts, retention/download isolation and profile authorization.
-- [ ] Implement GREEN; run the complete Miru upload→place→review→approve→two-signers→archive journey, including replacement, cancellation, rejection/expiry and addenda in the owned local provider stack.
+- [x] Write RED for missing/replayed/reordered/foreign callbacks, wrong originals/fields, pending unsigned-download fallback, invalid/truncated/tampered artifacts, retention/download isolation and profile authorization.
+- [x] Implement GREEN; run the complete Miru upload→place→review→approve→two-signers→archive journey, including replacement, cancellation, rejection/expiry and addenda in the owned local provider stack.
 - [ ] Finish actual PDF/font/layout, mobile/keyboard, performance and failure QA; required Vite build; focused and related suites; one fresh review of the corrected runtime branch; address actionable CodeRabbit feedback; exact-head CI.
 - [ ] Recalibrate PR title/body around implemented behavior with synthetic screenshots/PDFs. Integrate private production differences, verify the immutable image and deploy only when this corrected workflow meets release checks. Keep #2462 open until all requested review/signing/profile controls have evidence.
 

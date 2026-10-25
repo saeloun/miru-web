@@ -1,6 +1,7 @@
 /* global BeforeUnloadEvent */
 import React, { useCallback, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { getCsrfToken } from "utils/authHeaders";
 import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
@@ -52,11 +53,12 @@ function Review({ token }: { token: string }) {
     ) => {
       const response = await window.fetch(`/document-review/${path}`, {
         method: "POST",
-        credentials: "omit",
+        credentials: "same-origin",
         cache: "no-store",
         referrerPolicy: "no-referrer",
         signal,
         headers: {
+          "X-CSRF-TOKEN": getCsrfToken(),
           "Content-Type": "application/json",
           Accept: path === "original" ? "application/pdf" : "application/json",
         },
