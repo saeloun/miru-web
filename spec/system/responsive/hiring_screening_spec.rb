@@ -35,12 +35,20 @@ RSpec.describe "Admin application screening", type: :system, js: true do
   it "shortlists on mobile and retains the role, owner and private reason without mailing the candidate" do
     role = company.hiring_roles.create!(title: "Senior Rails consultant")
     open_screening(width: 375)
+    # Hold the previous panel in its exit state while selecting the next field.
+    page.execute_script(<<~JS)
+      const style = document.createElement("style");
+      style.id = "picker-exit-probe";
+      style.textContent = '[role="dialog"][data-state="closed"] { animation-play-state: paused !important; }';
+      document.head.appendChild(style);
+    JS
     within('section[aria-label="Screening"]') do
       find("#screening-role").click
     end
     find("[cmdk-item]", text: role.title).click
     within('section[aria-label="Screening"]') { find("#screening-owner").click }
     find("[cmdk-item]", text: admin.full_name).click
+    page.execute_script('document.getElementById("picker-exit-probe").remove()')
     within('section[aria-label="Screening"]') do
       select "Shortlist", from: "Screening action"
       fill_in "Screening reason", with: "Synthetic Rails contribution meets the role"

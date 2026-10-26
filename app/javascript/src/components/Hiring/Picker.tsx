@@ -181,7 +181,7 @@ export default function Picker({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          className="w-[min(22rem,calc(100vw-2rem))] p-0"
+          className="w-[min(22rem,calc(100vw-2rem))] p-0 data-[state=closed]:hidden"
           align="start"
           onEscapeKeyDown={event => {
             event.preventDefault();
