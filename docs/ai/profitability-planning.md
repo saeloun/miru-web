@@ -12,6 +12,7 @@ One server calculator powers automatic previews, validation, saved results and C
 withhold stale results while preserving edits. Save to keep a scenario; the first saved assumptions remain its
 baseline. Updates use optimistic locking and reject stale workspace submissions. Source report dates, FX and
 original person warnings remain immutable and visible separately from planning-input flags.
+Shared plans belong to the company and survive permanent deletion of their original creator.
 
 Revenue = monthly capacity × utilization / 100 × hourly rate. Costs = monthly compensation + entered overhead.
 Margins and overall utilization use aggregate values. Inputs are in one fixed scenario currency; create a new

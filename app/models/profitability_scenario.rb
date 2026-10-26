@@ -2,11 +2,12 @@
 
 class ProfitabilityScenario < ApplicationRecord
   belongs_to :company
-  belongs_to :created_by, class_name: "User", inverse_of: :profitability_scenarios
+  belongs_to :created_by, class_name: "User", inverse_of: :profitability_scenarios, optional: true
   serialize :worksheet, coder: JSON, type: Hash
   encrypts :worksheet, :name
   audited associated_with: :company, only: [:company_id, :created_by_id]
   validates :name, presence: true, length: { maximum: 100 }
+  validates :created_by, presence: true, on: :create
   validate :valid_worksheet
 
   private

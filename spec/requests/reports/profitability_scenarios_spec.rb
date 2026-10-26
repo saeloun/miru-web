@@ -172,4 +172,26 @@ RSpec.describe "Organization profitability planning", type: :request do
     expect(response).to have_http_status(:not_found)
     expect(ProfitabilityScenario.count).to eq(1)
   end
+
+  it "rejects unsupported seed currencies without raising an unhandled report error" do
+    ["EUR", ["USD"]].each do |currency|
+      get "#{path}/new", params: { currency: }
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.body).to include("Unsupported currency")
+    end
+  end
+
+  it "preserves company-shared plans when their creator is permanently deleted" do
+    plan = create_plan
+    viewer = create(:user, confirmed_at: Time.current, current_workspace: company)
+    viewer.add_role(:owner, company)
+    create(:employment, user: viewer, company:, joined_at: Date.current, resigned_at: nil)
+    admin.destroy!
+    expect(ProfitabilityScenario.exists?(plan.id)).to be(true)
+    expect(plan.reload.created_by).to be_nil
+    sign_in viewer
+    get "#{path}/#{plan.id}"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to include("Baseline plan")
+  end
 end

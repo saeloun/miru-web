@@ -4,7 +4,8 @@ class Reports::ProfitabilityScenariosController < ApplicationController
   before_action :authorize_planning
   before_action :verify_workspace, only: [:create, :update, :preview]
   before_action :set_scenario, only: [:show, :update]
-  rescue_from Reports::ProfitabilityProjection::InvalidAssumptions, ActionController::ParameterMissing do |error|
+  rescue_from Reports::ProfitabilityProjection::InvalidAssumptions, Reports::CompensationProfitability::InvalidFilters,
+    ActionController::ParameterMissing do |error|
     render json: { error: error.message }, status: :unprocessable_entity
   end
   rescue_from ActiveSupport::MessageVerifier::InvalidSignature do

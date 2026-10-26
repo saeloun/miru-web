@@ -26,6 +26,11 @@ RSpec.describe "Profitability planning", type: :system do
       fill_in "Expected monthly cash collections", with: "4000"
       expect(page).to have_css('[data-summary="revenue"]', text: "USD 6,400.00")
       expect(page).to have_css('[data-summary="margin"]', text: "USD 2,900.00")
+      page.execute_script("document.querySelector('#planning-form').addEventListener('submit', event => event.preventDefault(), { once: true })")
+      click_on "Save plan"
+      expect(page).to have_button("Save plan", disabled: true)
+      page.execute_script("window.dispatchEvent(new Event('pageshow'))")
+      expect(page).to have_button("Save plan", disabled: false)
       click_on "Save plan"
       expect(page).to have_content("First saved baseline")
       expect(page).to have_css('[data-summary="revenue"]', text: "USD 6,400.00")

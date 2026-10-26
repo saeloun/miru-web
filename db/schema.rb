@@ -953,7 +953,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
 
   create_table "profitability_scenarios", force: :cascade do |t|
     t.bigint "company_id", null: false
-    t.bigint "created_by_id", null: false
+    t.bigint "created_by_id"
     t.text "name", null: false
     t.text "worksheet", null: false
     t.integer "lock_version", default: 0, null: false
@@ -1573,7 +1573,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   add_foreign_key "profitability_profiles", "employments"
   add_foreign_key "profitability_profiles", "projects", column: "primary_project_id"
   add_foreign_key "profitability_scenarios", "companies"
-  add_foreign_key "profitability_scenarios", "users", column: "created_by_id"
+  add_foreign_key "profitability_scenarios", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"

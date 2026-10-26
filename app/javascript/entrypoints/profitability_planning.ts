@@ -7,6 +7,7 @@ if (form) {
   const currency = form.dataset.currency!;
   let revision = 0;
   let timer: ReturnType<typeof setTimeout>;
+  let saving = false;
 
   const format = (value: string | null, kind = "currency") => {
     if (value === null || value === undefined) return "N/A";
@@ -112,6 +113,26 @@ if (form) {
   };
 
   form.addEventListener("input", schedulePreview);
+  form.addEventListener("submit", () => {
+    saving = true;
+    revision += 1;
+    clearTimeout(timer);
+    form.querySelectorAll('button[type="submit"]').forEach(button => {
+      button.setAttribute("disabled", "");
+    });
+    status.textContent = "Saving…";
+  });
+
+  window.addEventListener("pageshow", () => {
+    form.querySelectorAll('button[type="submit"]').forEach(button => {
+      button.removeAttribute("disabled");
+    });
+    if (saving) {
+      saving = false;
+      status.textContent = "Preview — save to keep changes";
+    }
+  });
+
   form.addEventListener("click", event => {
     const target = (event.target as Element).closest("button");
     if (!target) return;
