@@ -93,12 +93,15 @@ if (form) {
       error.hidden = false;
       document
         .querySelectorAll<HTMLElement>(
-          "[data-summary], [data-total], [data-person-revenue], [data-person-margin]"
+          "[data-summary], [data-total], [data-person-revenue], [data-person-margin], [data-person-flags]"
         )
         .forEach(node => {
           node.textContent = "N/A";
         });
       document.querySelector("#planning-months")!.replaceChildren();
+      document.querySelector<HTMLElement>("#planning-incomplete")!.hidden =
+        true;
+
       status.textContent =
         "Preview out of date — fix inputs or retry. Your edits are still here.";
     }

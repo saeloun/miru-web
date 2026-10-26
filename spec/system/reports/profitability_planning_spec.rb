@@ -42,9 +42,14 @@ RSpec.describe "Profitability planning", type: :system do
       expect(page).to have_field("Hourly billing rate", with: "60")
       expect(page).to have_css('[data-summary="margin"]', text: "USD 4,180.00")
       expect(page).to have_link("Export saved plan CSV")
+      fill_in "Monthly compensation", with: ""
+      expect(page).to have_css("[data-person-flags]", text: "Missing monthly compensation")
       fill_in "Target utilization %", with: "101"
       expect(page).to have_css("#planning-error", text: "between 0 and 100")
       expect(page).to have_css('[data-summary="revenue"]', text: "N/A")
+      expect(page).to have_css("[data-person-flags]", text: "N/A")
+      expect(page).not_to have_css("#planning-incomplete", visible: true)
+      fill_in "Monthly compensation", with: "3000"
       fill_in "Target utilization %", with: "80"
       expect(page).to have_css('[data-summary="revenue"]', text: "USD 7,680.00")
       page.save_screenshot(Rails.root.join("tmp", "profitability-planning-verified.png"))
