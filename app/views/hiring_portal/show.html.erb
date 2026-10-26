@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="referrer" content="no-referrer">
+    <%= csrf_meta_tags %>
+    <title>Private application | Miru</title>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag "hiring_form.ts" %>
+  </head>
+  <body class="bg-background text-foreground">
+    <main id="hiring-form-root"><p class="p-6">Loading application…</p></main>
+    <noscript>Enable JavaScript and open your original link to complete the application.</noscript>
+  </body>
+</html>

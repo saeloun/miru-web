@@ -7,6 +7,18 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/hiring-assignment", to: "hiring_assignment_portal#show", as: :hiring_assignment
+  post "/hiring-assignment/open", to: "hiring_assignment_portal#open"
+  post "/hiring-assignment/submit", to: "hiring_assignment_portal#submit"
+  post "/hiring-assignment/files", to: "hiring_assignment_portal#upload"
+  post "/hiring-assignment/files/remove", to: "hiring_assignment_portal#remove_file"
+  post "/hiring-assignment/files/download", to: "hiring_assignment_portal#download"
+  get "/hiring-form", to: "hiring_portal#show", as: :hiring_form
+  post "/hiring-form/open", to: "hiring_portal#open"
+  post "/hiring-form/submit", to: "hiring_portal#submit"
+  post "/hiring-form/resume", to: "hiring_portal#resume"
+  post "/hiring-form/resume/download", to: "hiring_portal#resume_download"
+  post "/hiring/inbound/:routing_key", to: "hiring/inbound_emails#create"
   # Health check endpoint
   get "/health", to: "health#index"
   get "/document-review", to: "document_reviews#show", as: :document_review

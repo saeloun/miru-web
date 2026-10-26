@@ -303,6 +303,53 @@ namespace :api, defaults: { format: "json" } do
       resources :devices, only: [:create, :index, :show, :update, :destroy], controller: "users/devices"
     end
 
+    namespace :hiring do
+      resources :assignment_reviews, only: [:index, :show] do
+        post :reviews, on: :member, action: :create
+        get "files/:attachment_id", on: :member, action: :download
+      end
+      resources :assignment_templates, only: [:index, :show, :create, :update] do
+        post :search, on: :collection
+        post :approve, on: :member
+        post :archive, on: :member
+      end
+      resource :settings, only: [:show, :update] do
+        post :approve
+      end
+      resources :mailboxes, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+      resources :receipts, only: [:index, :show, :create] do
+        member do
+          post :accept
+          post :dismiss
+          post :reprocess
+          post :acknowledgement
+          post "messages/:message_id/retry", action: :retry_acknowledgement
+          post "messages/:message_id/reconcile", action: :reconcile_acknowledgement
+          get :source
+          get "attachments/:attachment_index", action: :attachment
+        end
+      end
+      resources :applications, only: [:index, :show, :create] do
+        post :search, on: :collection
+        resources :assignments, only: [:index, :create] do
+          post :reassign, on: :member
+          post :decision, on: :member
+          get "files/:attachment_id", on: :member, action: :download
+        end
+        resources :screenings, only: [:index, :create]
+        resources :forms, only: [:index, :create, :destroy] do
+          get :resume, on: :member
+        end
+      end
+      get "owners", to: "applications#owners"
+      post "owners/search", to: "applications#search_owners"
+      resources :roles, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+    end
+
     resource :profile, only: [:update], controller: "profile"
 
     resources :payroll_runs, only: [:index, :show] do
