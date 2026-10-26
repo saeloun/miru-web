@@ -9,7 +9,7 @@ RSpec.describe Reports::ProfitabilityPlanSeed do
       user = create(:user, current_workspace: company)
       user.add_role(:owner, company)
       employment = create(:employment, user:, company:, joined_at: "2026-07-16", resigned_at: nil)
-      EmployeeRecord.create!(employment:, private_details: { "salary_amount" => "3100", "salary_currency" => "INR",
+      create(:employee_record, employment:, private_details: { "salary_amount" => "3100", "salary_currency" => "INR",
         "salary_frequency" => "monthly", "salary_effective_on" => "2026-07-16" })
       ExchangeRate.set_rate("USD", "INR", 80, Date.new(2026, 7, 1), "synthetic")
       seed = described_class.process(user:, company:, currency: "INR")
