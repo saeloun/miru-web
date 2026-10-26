@@ -27,6 +27,12 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
   rescue_from ActionController::InvalidAuthenticityToken do
     render json: { errors: "Your session changed. Reload before saving." }, status: 422
   end
+  rescue_from ActiveStorage::FileNotFoundError do
+    render json: { errors: "File unavailable." }, status: 404
+  end
+  rescue_from HiringSubmission::StorageUnavailable, IOError, SystemCallError do
+    render json: { errors: "Private hiring storage is unavailable. Please try again." }, status: 503
+  end
 
   private
 

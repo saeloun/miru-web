@@ -10,6 +10,7 @@ class HiringApplication < ApplicationRecord
   belongs_to :hiring_role, optional: true
   belongs_to :owner_employment, class_name: "Employment", optional: true
   belongs_to :created_by, class_name: "User", optional: true
+  has_many :hiring_assignments, dependent: :destroy
   has_many :hiring_portal_accesses, dependent: :destroy
   has_many :hiring_submissions, dependent: :destroy
   has_many :hiring_screenings, dependent: :destroy

@@ -366,6 +366,7 @@ RSpec.describe "Private candidate forms", type: :request do
     sign_out admin
     portal("submit", answers:, lock_version: 0)
     expect(response).to have_http_status(:ok)
+    expect(HiringAssignment.where(hiring_application_id: access.hiring_application_id)).not_to exist
     original = access.reload.hiring_submission
     timestamp = original.submitted_at
     portal("submit", answers:, lock_version: 0)

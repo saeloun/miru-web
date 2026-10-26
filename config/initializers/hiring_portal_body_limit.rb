@@ -9,9 +9,9 @@ class HiringPortalBodyLimit
 
   def call(env)
     path = env["PATH_INFO"].to_s
-    return @app.call(env) unless env["REQUEST_METHOD"] == "POST" && path.start_with?("/hiring-form/")
+    return @app.call(env) unless env["REQUEST_METHOD"] == "POST" && path.start_with?("/hiring-form/", "/hiring-assignment/")
 
-    maximum = path.match?(%r{\A/hiring-form/resume(?:\.[^/]+)?\z}) ? 6 * 1024 * 1024 : 128 * 1024
+    maximum = path.match?(%r{\A/(?:hiring-form/resume|hiring-assignment/files)(?:\.[^/]+)?\z}) ? 6 * 1024 * 1024 : 128 * 1024
     return too_large if env["CONTENT_LENGTH"].to_i > maximum
 
     input = env["rack.input"]

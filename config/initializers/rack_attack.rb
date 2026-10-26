@@ -23,7 +23,7 @@ class Rack::Attack
   end
 
   throttle("hiring/forms/ip", limit: 60, period: 1.minute) do |req|
-    req.ip if req.post? && req.path.start_with?("/hiring-form/")
+    req.ip if req.post? && req.path.start_with?("/hiring-form/", "/hiring-assignment/")
   end
 
   throttle("analytics/pdf/ip", limit: 5, period: 1.minute) do |req|

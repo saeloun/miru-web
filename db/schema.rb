@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_090500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -667,6 +667,46 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
     t.check_constraint "stage::text = ANY (ARRAY['received'::character varying, 'information_pending'::character varying, 'screening'::character varying, 'shortlisted'::character varying, 'assignment_assigned'::character varying, 'assignment_review'::character varying, 'interview'::character varying, 'final_decision'::character varying, 'offer'::character varying, 'hired'::character varying, 'on_hold'::character varying, 'rejection_pending'::character varying, 'rejected'::character varying, 'withdrawn'::character varying, 'no_show'::character varying]::text[])", name: "hiring_application_stage"
   end
 
+  create_table "hiring_assignment_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.bigint "created_by_id"
+    t.integer "assignment_version", null: false
+    t.string "action", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_assignment_events_on_created_by_id"
+    t.index ["hiring_assignment_id", "assignment_version"], name: "index_hiring_assignment_events_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.bigint "submission_id", null: false
+    t.bigint "created_by_id"
+    t.integer "assignment_version", null: false
+    t.integer "review_round", null: false
+    t.string "outcome", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_assignment_reviews_on_created_by_id"
+    t.index ["hiring_assignment_id", "assignment_version"], name: "index_hiring_assessment_reviews_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.text "answers", null: false
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_assignment_id", "id"], name: "index_hiring_work_for_tenant_assignment", unique: true
+    t.index ["hiring_assignment_id"], name: "index_hiring_assignment_submissions_on_hiring_assignment_id", unique: true
+  end
+
   create_table "hiring_assignment_template_revisions", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "hiring_assignment_template_id", null: false
@@ -675,6 +715,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
     t.text "snapshot", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_task_revisions_for_tenant", unique: true
     t.index ["created_by_id"], name: "index_hiring_assignment_template_revisions_on_created_by_id"
     t.index ["hiring_assignment_template_id", "template_version"], name: "index_hiring_task_revisions_per_version", unique: true
   end
@@ -693,6 +734,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
     t.index ["company_id", "id"], name: "index_hiring_assignment_templates_on_company_id_and_id", unique: true
     t.index ["company_id", "title", "id"], name: "index_hiring_assignment_templates_for_library"
     t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'approved'::character varying, 'archived'::character varying]::text[])", name: "hiring_assignment_template_status"
+  end
+
+  create_table "hiring_assignments", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "template_revision_id", null: false
+    t.bigint "reviewer_employment_id"
+    t.bigint "issued_by_id"
+    t.bigint "previous_assignment_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "terms", null: false
+    t.text "candidate_note"
+    t.text "access_token", null: false
+    t.datetime "due_at", null: false
+    t.datetime "ended_at"
+    t.string "status", default: "issued", null: false
+    t.integer "review_round", default: 0, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_hiring_assignments_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_assignments_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_assignments_one_active", unique: true, where: "(ended_at IS NULL)"
+    t.index ["company_id", "id"], name: "index_hiring_assignments_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_assignments_on_company_id_and_request_key", unique: true
+    t.index ["issued_by_id"], name: "index_hiring_assignments_on_issued_by_id"
+    t.index ["previous_assignment_id"], name: "index_hiring_assignments_on_previous_assignment_id"
+    t.index ["reviewer_employment_id"], name: "index_hiring_assignments_on_reviewer_employment_id"
+    t.check_constraint "(status::text = ANY (ARRAY['issued'::character varying, 'submitted'::character varying, 'reviewed'::character varying]::text[])) AND ended_at IS NULL OR (status::text = ANY (ARRAY['completed'::character varying, 'cancelled'::character varying, 'superseded'::character varying]::text[])) AND ended_at IS NOT NULL", name: "hiring_assignment_status"
   end
 
   create_table "hiring_candidates", force: :cascade do |t|
@@ -1953,11 +2024,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
   add_foreign_key "hiring_applications", "hiring_candidates", column: ["company_id", "hiring_candidate_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_applications", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_applications", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_events", "companies"
+  add_foreign_key "hiring_assignment_events", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_events", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_reviews", "companies"
+  add_foreign_key "hiring_assignment_reviews", "hiring_assignment_submissions", column: ["company_id", "hiring_assignment_id", "submission_id"], primary_key: ["company_id", "hiring_assignment_id", "id"]
+  add_foreign_key "hiring_assignment_reviews", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_reviews", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_submissions", "companies"
+  add_foreign_key "hiring_assignment_submissions", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_assignment_template_revisions", "companies"
   add_foreign_key "hiring_assignment_template_revisions", "hiring_assignment_templates", column: ["company_id", "hiring_assignment_template_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_assignment_template_revisions", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_assignment_templates", "companies"
   add_foreign_key "hiring_assignment_templates", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "companies"
+  add_foreign_key "hiring_assignments", "employments", column: "reviewer_employment_id", on_delete: :nullify
+  add_foreign_key "hiring_assignments", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "hiring_assignment_template_revisions", column: ["company_id", "template_revision_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
+  add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
   add_foreign_key "hiring_mailboxes", "companies"
   add_foreign_key "hiring_messages", "companies"

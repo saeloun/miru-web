@@ -66,6 +66,8 @@ For each task: write the named failing checks, run them and retain the actual fa
 
 - [ ] RED→GREEN no task on application submission, unauthorized reviewer, stale revision/deadline, missing disclosure, untrusted file/link safety and advance/reject/revise decisions; actual portal/reviewer browser flow; commit.
 
+Assignment domain, Admin/reviewer APIs and the standalone candidate portal are implemented and locally verified. The related hiring suite passed 242 examples; a subsequent two-example candidate browser run also verifies lost-response recovery. Admin issuance/decision screens and the designated-reviewer UI, their browser journey and Task 4's final publication/review gates remain required. [Evidence](../../qa/hiring-2463/README.md).
+
 ### Task 5: Hiring panel and configurable rounds
 
 **Files:** `app/models/hiring_{interview,feedback,access_grant}.rb`, `app/services/hiring/interviews.rb`, panel/round UI, migration and policy/request/browser specs.

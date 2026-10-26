@@ -28,6 +28,9 @@ module Hiring
             Audited.audit_class.as_user(@actor) { @application.save! }
             # Repeated requests at the same stage still need a new optimistic version.
             @application.touch if @application.saved_changes.empty?
+            unless HiringAssignment::ACTIVE_STAGES.include?(stage)
+              @application.hiring_assignments.where(ended_at: nil).find_each { |assignment| assignment.cancel_for_stage!(actor: @actor) }
+            end
             @application.hiring_screenings.create!(company: @company, created_by: @actor,
               action: @attributes["action"], from_stage: before.fetch("stage"), to_stage: stage,
               application_version: @application.lock_version,
