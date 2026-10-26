@@ -111,6 +111,7 @@ RSpec.describe "Hiring inbox", type: :system, js: true do
     expect(@console_errors).to eq([])
     capture("inbox-reviewed-mobile.png")
     click_link "Synthetic Jaya Rao", exact: true
+    expect(page).to have_css("h2", text: "Synthetic Jaya Rao", exact_text: true)
     expect(page).to have_css("dt", text: "Source", exact_text: true)
     expect(page).to have_css("dd", text: "Email intake", exact_text: true)
     expect(page).not_to have_css("dd", text: "Manual intake", exact_text: true)
