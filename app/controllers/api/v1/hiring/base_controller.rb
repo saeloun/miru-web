@@ -55,7 +55,8 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
     end
 
     def query_text(key = :query)
-      value = search_filters[key] || ""
+      value = search_filters[key]
+      value = "" if value.nil?
       raise ActionController::BadRequest unless value.is_a?(String) && value.length <= 200 && !value.include?("\0")
 
       value.strip

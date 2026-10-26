@@ -154,6 +154,18 @@ RSpec.describe "Hiring assignment library", type: :request do
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
   end
 
+  it "rejects explicit boolean search values rather than silently removing a filter" do
+    original = template
+    aggregate_failures do
+      %w[query role_id status].each do |key|
+        post "/api/v1/hiring/assignment_templates/search", params: {
+          hiring_search: { company_id: company.id, key => false } }, as: :json
+        expect(response).to have_http_status(:bad_request)
+      end
+    end
+    expect(original.reload.lock_version).to eq(0)
+  end
+
   it "paginates the library and revision history without omitting or mixing records" do
     original = template
     21.times do |index|

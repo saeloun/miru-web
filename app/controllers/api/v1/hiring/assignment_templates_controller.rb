@@ -8,8 +8,8 @@ class Api::V1::Hiring::AssignmentTemplatesController < Api::V1::Hiring::BaseCont
       pattern = "%#{HiringAssignmentTemplate.sanitize_sql_like(query)}%"
       records = records.where("title ILIKE :query OR skills ILIKE :query OR experience ILIKE :query", query: pattern)
     end
-    records = records.where(hiring_role_id: optional_id(:role_id)) if search_filters[:role_id]
-    if search_filters[:status]
+    records = records.where(hiring_role_id: optional_id(:role_id)) unless search_filters[:role_id].nil?
+    unless search_filters[:status].nil?
       raise ActionController::BadRequest unless %w[draft approved archived].include?(search_filters[:status])
 
       records = records.where(status: search_filters[:status])
