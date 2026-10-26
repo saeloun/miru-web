@@ -55,8 +55,8 @@ For each task: write the named failing checks, run them and retain the actual fa
 
 **Interface:** fragment capability → CSRF-protected POSTs scoped to one application. Versioned schemas contain all fields in design area 2; sensitive answers are encrypted and excluded from reviewer projections. Public metadata/assignment/offer serializers are explicit allowlists.
 
-- [ ] RED→GREEN expired/revoked/cross-application capability, CSRF, private uploads, response validation/currency/period/missing values, config-required/custom fields, sensitive-field reclassification and no internal feedback/telemetry.
-- [ ] Browser synthetic acknowledgement→form→resume→submit; require Admin config approval; commit.
+- [x] RED→GREEN expired/revoked/cross-application capability, CSRF, private uploads, response validation/currency/period/missing values, config-required/custom fields, sensitive-field reclassification and no internal feedback/telemetry.
+- [x] Browser synthetic acknowledgement→form→resume→submit; require Admin config approval; commit. Published through `7ad5abcf667bf32bbd54418996c154b42251fd15`; combined completion check 205/0, CI 4695 backend / 23 CLI / 132 browser examples with 0 failures and 80 backend pending. [Evidence](../../qa/hiring-2463/README.md).
 
 ### Task 4: Screening and assignment review
 

@@ -4,10 +4,12 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { failureMessage, read } from "./api";
 import ApplicationForms from "./ApplicationForms";
+import ApplicationScreening from "./ApplicationScreening";
 import {
   receiptLabel,
   stageLabel,
   type ApplicationDetail as Detail,
+  type ApplicationChange,
 } from "./types";
 
 export default function ApplicationDetail({
@@ -21,12 +23,13 @@ export default function ApplicationDetail({
   const [page, setPage] = useState(1);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
-  const formChanged = useCallback(
-    (attributes: { stage: string; lock_version: number }) => {
+  const applicationChanged = useCallback(
+    (attributes: ApplicationChange) => {
       setData(current =>
         current &&
         current.company_id === companyId &&
-        String(current.application.id) === id
+        String(current.application.id) === id &&
+        attributes.lock_version >= current.application.lock_version
           ? {
               ...current,
               application: { ...current.application, ...attributes },
@@ -134,12 +137,19 @@ export default function ApplicationDetail({
           </p>
         </div>
       </section>
+      <ApplicationScreening
+        key={`screening:${companyId}:${application.id}`}
+        companyId={companyId}
+        application={application}
+        timeZone={data.time_zone}
+        changed={applicationChanged}
+      />
       <ApplicationForms
         key={`${companyId}:${application.id}`}
         companyId={companyId}
         applicationId={application.id}
         timeZone={data.time_zone}
-        changed={formChanged}
+        changed={applicationChanged}
       />
       <section
         className="rounded-lg border bg-card p-4 sm:p-6"

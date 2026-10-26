@@ -12,6 +12,7 @@ class HiringApplication < ApplicationRecord
   belongs_to :created_by, class_name: "User", optional: true
   has_many :hiring_portal_accesses, dependent: :destroy
   has_many :hiring_submissions, dependent: :destroy
+  has_many :hiring_screenings, dependent: :destroy
   serialize :creation_details, coder: JSON, type: Hash
   encrypts :creation_details, :notes
   audited associated_with: :company, on: :update, only: [:stage, :hiring_role_id, :owner_employment_id]

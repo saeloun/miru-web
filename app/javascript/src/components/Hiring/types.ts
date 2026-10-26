@@ -60,6 +60,8 @@ export type Application = {
   lock_version: number;
   notes?: string | null;
 };
+export type ApplicationChange = Pick<Application, "stage" | "lock_version"> &
+  Partial<Pick<Application, "role" | "owner">>;
 export type ApplicationPage = {
   company_id: number;
   applications: Application[];

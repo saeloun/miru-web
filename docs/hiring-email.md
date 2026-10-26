@@ -1,6 +1,6 @@
 # Hiring email intake
 
-Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants and approve acknowledgements and private candidate forms. Assessments, interviews, offers and retention remain later milestones of the applicant-tracking plan.
+Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions and approve acknowledgements and private candidate forms. Assessments, interviews, offers and retention remain later milestones of the applicant-tracking plan.
 
 ## Configure an inbox
 
@@ -41,6 +41,16 @@ Candidates may provide exact compensation amounts with a currency and monthly or
 After an interrupted request, **Refresh form** retrieves the current form status while preserving unsent answers. If submission already succeeded, it shows the accepted answers as read-only. Expired or revoked links clear the displayed personal information. Errors and submission confirmation receive focus so they remain visible on long mobile forms.
 
 Authorized hiring administrators can expand submitted answers, download the private resume and page through previous forms. Submitted contact details do not overwrite the verified candidate profile, and submission does not issue an assessment. Default reviewer data excludes originally restricted, currently restricted and removed questions, including restricted resume metadata. Stale changes require an explicit refresh; settings drafts remain available until discarded.
+
+## Record application screening
+
+The application's **Screening** panel lets an active owner or admin assign an open role and active hiring owner, shortlist, record a request for information, move directly to interview, or prepare a rejection. Existing closed-role or former-owner history is preserved until explicitly changed. Information requests and rejections require a reason. Rejection remains **Rejection pending**; recording a decision does not send an email or issue a coding assignment.
+
+Each decision retains its actor, previous and resulting stage, role/owner snapshots and private reason. History is encrypted, paginated and unavailable to ordinary employees. Submitted candidate identity and original intake details are unchanged. Closed applications cannot be screened again.
+
+If another action changes the application while you edit, saving fails without losing your choices or reason. Use **Reload screening**, review the retained draft against the current application, then save separately. Browsing history pages does not rebase an unsaved decision. Older form-history responses cannot reset a newer displayed stage. A lost save response does not authorize an automatic duplicate decision: reload the retained history first.
+
+Assignment issuance/review and candidate information-request/rejection communications remain required work in the full ATS plan. The screening history in this increment is internal only.
 
 ## Understand attempts and delivery reviews
 

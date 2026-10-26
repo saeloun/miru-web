@@ -39,6 +39,7 @@ class Company < ApplicationRecord
   has_many :hiring_receipts, dependent: :destroy
   has_many :hiring_portal_accesses, dependent: :destroy
   has_many :hiring_submissions, dependent: :destroy
+  has_many :hiring_screenings, dependent: :destroy
   has_one :hiring_setting, dependent: :destroy
   has_many :hiring_mailboxes, dependent: :destroy
   has_many :hiring_applications, dependent: :destroy

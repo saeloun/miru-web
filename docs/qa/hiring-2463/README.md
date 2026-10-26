@@ -1,6 +1,24 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements and candidate forms from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assessments, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms and an internal screening increment from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assignments, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Screening increment — Task 4 remains in progress
+
+Screening adds explicit owner/admin decisions, open-role/active-owner selection, encrypted immutable decision history and stale-edit recovery. Information requests and rejections are internal records in this increment; no candidate message or assignment is sent. The rest of Task 4, including assignment issuance/submission and designated-reviewer assessment, is still required.
+
+- Initial request checks failed 5/5 at the missing endpoint, then passed. Expanded coverage now passes 10/0: stale/workspace/membership rejection, exact IDs, input boundaries, pending rejection, repeated information requests, encrypted reasons, immutable history, tenant foreign keys, company deletion and actual request-instrumentation filtering. The malformed-ID and private-logging cases each failed before their fix.
+- Four actual Brave system scenarios pass. The delayed-response probe first reproduced a newer Shortlisted stage reverting to Received when an old form response arrived last; the shared detail update now rejects older versions. A second valid regression reproduced history pagination silently rebasing an unsaved role choice; the draft's write version now changes only on explicit reload or successful save. Mobile role/owner selection, paginated history and a separate save after stale reload pass with real CSRF enabled. The first pagination probe incorrectly applied exact text to the entire panel and is excluded from RED evidence; the corrected paragraph assertion reached the intended stale-save failure.
+- The final combined hiring run passes 219 examples with 0 failures, including request privacy, both asynchronous-state regressions and the existing intake/acknowledgement/form cases. Earlier 217/218-example results precede those final checks.
+- Required production Vite build, test assets, changed Ruby/JavaScript lint and migration up/down/up checks pass. No schema normalization of unrelated constraints is included.
+- Existing-profile Brave Playwright verifies desktop shortlist, updated header/history, 375px stale rejection preserving the draft, reload and explicit successful save. The final compiled build also supports a separate direct move to interview with retained prior history. No horizontal overflow or console errors were observed. All data is synthetic; mail/job test adapters are guarded, delivery is disabled, and no worker was started.
+
+| Surface | Evidence |
+| --- | --- |
+| Updated role/owner and private history | [Existing-profile desktop](screening-shortlisted-desktop.jpg), [actual Brave mobile](screening-shortlisted-mobile.png) |
+| Stale mobile recovery | [Draft retained after conflict](screening-stale-draft-mobile.jpg), [separate successful save](screening-recovered-mobile.jpg) |
+| Direct interview progression | [Final-build desktop history](screening-interview-desktop.jpg) |
+
+Task 3's published checkpoint is `7ad5abcf667bf32bbd54418996c154b42251fd15`: [CI](https://github.com/saeloun/miru-web/actions/runs/40255715196) passed 4695 backend, 23 CLI and 132 browser examples with 0 failures and 80 backend pending. [Image build](https://github.com/saeloun/miru-web/actions/runs/40255717452) passed; revision verified, with its unchanged runtime layer cached from the earlier non-cached PDF/Unicode/logo proof. That historical checkpoint does not certify the new screening increment. No production deployment or external provider activation occurred.
 
 ## Verified locally on 25 October 2026
 

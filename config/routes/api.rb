@@ -324,6 +324,7 @@ namespace :api, defaults: { format: "json" } do
       end
       resources :applications, only: [:index, :show, :create] do
         post :search, on: :collection
+        resources :screenings, only: [:index, :create]
         resources :forms, only: [:index, :create, :destroy] do
           get :resume, on: :member
         end

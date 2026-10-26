@@ -148,7 +148,7 @@ For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`
 
 For dependency audit commands, runtime pins, and reviewed CVE exceptions, see [`docs/ai/dependency-security.md`](docs/ai/dependency-security.md).
 
-For hiring email and private candidate form setup, approval and recovery, see [`docs/hiring-email.md`](docs/hiring-email.md) and the [ATS verification record](docs/qa/hiring-2463/README.md).
+For hiring email, private candidate forms, screening decisions, approval and recovery, see [`docs/hiring-email.md`](docs/hiring-email.md) and the [ATS verification record](docs/qa/hiring-2463/README.md).
 
 ## MCP + CLI (Agent And Automation Ready)
 

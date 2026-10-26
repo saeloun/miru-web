@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_26_090100) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_090200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -782,6 +782,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090100) do
     t.datetime "updated_at", null: false
     t.index ["company_id", "id"], name: "index_hiring_roles_on_company_id_and_id", unique: true
     t.check_constraint "status::text = ANY (ARRAY['open'::character varying, 'closed'::character varying]::text[])", name: "hiring_role_status"
+  end
+
+  create_table "hiring_screenings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.string "action", null: false
+    t.string "from_stage", null: false
+    t.string "to_stage", null: false
+    t.integer "application_version", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_application_id", "application_version"], name: "index_hiring_screenings_per_version", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "idx_on_company_id_hiring_application_id_id_d076a476bc"
+    t.index ["created_by_id"], name: "index_hiring_screenings_on_created_by_id"
   end
 
   create_table "hiring_settings", force: :cascade do |t|
@@ -1929,6 +1945,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090100) do
   add_foreign_key "hiring_receipts", "hiring_mailboxes", column: ["company_id", "hiring_mailbox_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_receipts", "users", column: "reviewed_by_id", on_delete: :nullify
   add_foreign_key "hiring_roles", "companies"
+  add_foreign_key "hiring_screenings", "companies"
+  add_foreign_key "hiring_screenings", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_screenings", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_settings", "companies"
   add_foreign_key "hiring_settings", "users", column: "approved_by_id", on_delete: :nullify
   add_foreign_key "hiring_submissions", "companies"
