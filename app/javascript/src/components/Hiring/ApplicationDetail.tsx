@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import { failureMessage, read } from "./api";
 import ApplicationForms from "./ApplicationForms";
 import ApplicationScreening from "./ApplicationScreening";
+import ApplicationAssignments from "./ApplicationAssignments";
 import {
   receiptLabel,
   stageLabel,
@@ -142,6 +143,12 @@ export default function ApplicationDetail({
         companyId={companyId}
         application={application}
         timeZone={data.time_zone}
+        changed={applicationChanged}
+      />
+      <ApplicationAssignments
+        key={`assignments:${companyId}:${application.id}`}
+        companyId={companyId}
+        application={application}
         changed={applicationChanged}
       />
       <ApplicationForms

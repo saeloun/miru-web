@@ -17,6 +17,7 @@ import {
 type Choices = {
   company_id: number;
   roles?: Role[];
+  templates?: { id: number; title: string }[];
   mailboxes?: Mailbox[];
   applications?: Application[];
   time_zone?: string;
@@ -42,7 +43,12 @@ export default function Picker({
   id: string;
   label: string;
   companyId: number;
-  kind: "roles" | "owners" | "mailboxes" | "applications";
+  kind:
+    | "roles"
+    | "owners"
+    | "mailboxes"
+    | "applications"
+    | "assignment_templates";
   value: Choice | null;
   change: (value: Choice | null) => void;
   emptyLabel: string;
@@ -58,6 +64,10 @@ export default function Picker({
   const [retry, setRetry] = useState(0);
   const trigger = useRef<HTMLButtonElement>(null);
   const search = useRef<HTMLInputElement>(null);
+  const searchLabel =
+    kind === "assignment_templates"
+      ? "Search approved tasks"
+      : `Search ${kind}`;
 
   useEffect(() => {
     if (!open) return;
@@ -73,7 +83,12 @@ export default function Picker({
         {
           query,
           page,
-          status: kind === "roles" && purpose === "intake" ? "open" : undefined,
+          status:
+            kind === "assignment_templates"
+              ? "approved"
+              : kind === "roles" && purpose === "intake"
+              ? "open"
+              : undefined,
           include_history:
             kind === "owners" && purpose === "history" ? true : undefined,
           active:
@@ -84,7 +99,12 @@ export default function Picker({
         .then(data => {
           if (!active) return;
           let choices: Choice[];
-          if (kind === "roles") {
+          if (kind === "assignment_templates") {
+            choices = (data.templates || []).map(task => ({
+              id: task.id,
+              label: task.title,
+            }));
+          } else if (kind === "roles") {
             choices = (data.roles || []).map(role => ({
               id: role.id,
               label: `${role.title}${
@@ -192,8 +212,8 @@ export default function Picker({
           <Command shouldFilter={false}>
             <CommandInput
               ref={search}
-              aria-label={`Search ${kind}`}
-              placeholder={`Search ${kind}`}
+              aria-label={searchLabel}
+              placeholder={searchLabel}
               value={query}
               onValueChange={next => {
                 setQuery(next);

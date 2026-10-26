@@ -64,9 +64,9 @@ For each task: write the named failing checks, run them and retain the actual fa
 
 **Interface:** explicit Admin action issues a versioned task; candidate submits files/links/setup/explanation, own-contribution statement and AI-use disclosure. Assigned reviewer records all six assessment dimensions and Pass/Fail/Clarification Required. Revisions and walkthrough/follow-up requests preserve history.
 
-- [ ] RED→GREEN no task on application submission, unauthorized reviewer, stale revision/deadline, missing disclosure, untrusted file/link safety and advance/reject/revise decisions; actual portal/reviewer browser flow; commit.
+- [x] RED→GREEN no task on application submission, unauthorized reviewer, stale revision/deadline, missing disclosure, untrusted file/link safety and advance/reject/revise decisions; actual portal/reviewer browser flow; commit.
 
-Assignment domain, Admin/reviewer APIs and the standalone candidate portal are implemented and locally verified. The related hiring suite passed 242 examples; a subsequent two-example candidate browser run also verifies lost-response recovery. Admin issuance/decision screens and the designated-reviewer UI, their browser journey and Task 4's final publication/review gates remain required. [Evidence](../../qa/hiring-2463/README.md).
+Assignment domain, Admin/reviewer APIs, candidate portal, Admin issuance/decision screens and designated-reviewer UI are implemented. Final local related suite:254/0; focused API/browser:15/0. Actual Brave covers clarification/revision/resubmission, stale/lost-response recovery, reviewer reassignment/revocation, explicit advance, pending rejection and cancellation. Existing-profile desktop/mobile screenshots are retained. Exact-head CI/image checks remain publication gates; whole-branch review and full release verification remain Task10. [Evidence](../../qa/hiring-2463/README.md).
 
 ### Task 5: Hiring panel and configurable rounds
 

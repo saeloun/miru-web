@@ -1,6 +1,26 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening and the assignment library from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assignment issuance/submission/review, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening and assignment issuance/submission/review from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Task 4 Admin and designated-reviewer interfaces
+
+Owners/admins can issue approved task versions with an explicit deadline and active reviewer, reassign, request revised work, cancel, or explicitly advance/prepare rejection after a recorded review. The separate staff review queue exposes only current designated assignments and submitted work. Reviewers record all six dimensions and Pass/Fail/Clarification Required; clarification requires a walkthrough, follow-up change or revision request. No candidate email is sent by these actions.
+
+- Current related hiring suite: **254 examples, 0 failures**, after the final mutation/history race fix. The focused API/browser run passes **15/0**, including six actual Brave journeys. These cover Admin issuance→candidate submission→clarification→revision→resubmission→Pass→explicit Admin interview; reviewer reassignment and membership revocation; Fail→pending rejection; and cancellation without review. Existing portal cases cover private upload/download bytes and AI disclosure.
+- Unsaved Admin/reviewer drafts keep their original write versions through stale writes, failed reads and reloads; explicit discard starts from the current saved state. A lost accepted issue response can be recovered by the original request UUID and safely retried. A held history response reproduced a revoked link remaining visible after revision; the shared successful-mutation path now clears the old history before refreshing, and the browser test verifies the replacement capability after release.
+- The designated reviewer loses loaded work on a denied refresh after reassignment or membership revocation. Employee projections exclude Admin notes and compensation. The server remains authoritative for every mutation and private file request; adding review navigation does not grant hiring administration.
+- Existing-profile Brave independently verified Admin issuance, candidate repository submission/read-only confirmation, the employee's designated queue, submitted work and a saved six-dimension Pass recommendation. At 375px, document width and scrollWidth both measured375; no Admin-only note appeared in the employee DOM and the reviewer console returned no warnings/errors. The viewport override was reset. The tabs disappeared during the later Admin sign-in check; no native final-stage success is inferred. The isolated Brave full journey verifies that decision.
+- Required Vite and explicit production/test builds pass after the race fix. Final four-file RuboCop, eight-file ESLint and formatting checks pass. The existing Prettier tailwindConfig warnings remain. Earlier 242/250-example runs are historical; this section records the final local inputs. Exact-head CI/image results remain a separate publication gate recorded on the PR.
+
+All records and credentials used here are synthetic, in isolated test databases with test jobs and delivery disabled. No real candidate was assessed, no repository was fetched/executed, and no employee/candidate email or production mutation occurred. This completes the local Task4 interfaces; Tasks5–10 and the full release review remain required. The PR stays a draft.
+
+| Surface | Evidence |
+| --- | --- |
+| Admin issuance, approved terms and saved history | [Desktop](assessment-admin-issued-desktop.jpg) |
+| Designated employee's submitted work and saved review | [Desktop](assessment-reviewer-recorded-desktop.jpg) |
+| Six-dimension review history on a narrow screen | [375px mobile](assessment-reviewer-recorded-mobile.jpg) |
+
+Earlier sections below describe the scope and evidence at each preceding checkpoint.
 
 ## Assignment library increment — Task 4 remains in progress
 

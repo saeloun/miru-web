@@ -53,6 +53,8 @@ RSpec.describe "Hiring assessment HTTP boundaries", type: :request do
     post "/api/v1/hiring/applications/#{application.id}/assignments", params: { hiring_assignment: issue_attributes }, as: :json
     expect(response).to have_http_status(:created)
     data = response.parsed_body.fetch("assignment")
+    expect(data.fetch("application_stage")).to eq("assignment_assigned")
+    expect(data.fetch("request_key")).to eq(issue_attributes.fetch(:request_key))
     @token = URI(data.fetch("url")).fragment
     expect(URI(data.fetch("url")).query).to be_nil
     HiringAssignment.find(data.fetch("id"))
@@ -74,6 +76,10 @@ RSpec.describe "Hiring assessment HTTP boundaries", type: :request do
     expect(response).to have_http_status(:created)
     expect(response.parsed_body.fetch("assignment").fetch("id")).to eq(@assignment.id)
     expect(HiringAssignment.count).to eq(1)
+    get "/api/v1/hiring/applications/#{application.id}/assignments", params: { company_id: company.id }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("active_assignment_id")).to eq(@assignment.id)
+    expect(response.parsed_body.fetch("can_issue")).to be(false)
     sign_out admin
     portal
     expect(response).to have_http_status(:ok)
@@ -117,6 +123,7 @@ RSpec.describe "Hiring assessment HTTP boundaries", type: :request do
     get "/api/v1/hiring/assignment_reviews/#{assignment.id}", params: { company_id: company.id }
     expect(response).to have_http_status(:ok)
     expect(response.body).not_to include("Private administrative notes", "access_token", "events", admin.email)
+    expect(response.body).not_to include("request_key", "/hiring-assignment#")
     attributes = { company_id: company.id, application_version: application.reload.lock_version,
       assignment_version: assignment.reload.lock_version, submission_id: assignment.submission.id,
       outcome: "clarification_required", request_kind: "walkthrough", notes: "Please explain the query design",
@@ -184,6 +191,7 @@ RSpec.describe "Hiring assessment HTTP boundaries", type: :request do
           assignment_version: assignment.reload.lock_version, action: "cancel", reason: "Assessment no longer required", review_id: nil }
       }, as: :json
       expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("assignment", "application_stage")).to eq("screening")
       get "/api/v1/hiring/applications/#{application.id}/assignments/#{assignment.id}/files/#{metadata.fetch('id')}", params: { company_id: company.id }
       expect(response).to have_http_status(:ok)
       sign_out admin

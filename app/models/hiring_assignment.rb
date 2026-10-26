@@ -52,6 +52,7 @@ class HiringAssignment < ApplicationRecord
 
   def review_details
     candidate_details.except(:submission).merge(id:, application_version: hiring_application.lock_version,
+      application_stage: hiring_application.stage,
       candidate_name: hiring_application.submitted_name,
       submission: submission.submitted_at? ? submission.candidate_details.merge(id: submission.id) : nil,
       current_review_id: current_review&.id,

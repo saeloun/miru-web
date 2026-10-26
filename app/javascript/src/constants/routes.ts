@@ -27,6 +27,9 @@ const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
 const Agreements = lazy(() => import("components/Agreements"));
 const DocumentSignatures = lazy(() => import("components/DocumentSignatures"));
 const Hiring = lazy(() => import("components/Hiring"));
+const AssignmentReviews = lazy(
+  () => import("components/Hiring/AssignmentReviews")
+);
 const SignedDocuments = lazy(() => import("components/SignedDocuments"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
@@ -258,6 +261,14 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/assignment-reviews",
+    subRoutes: [
+      { path: "", Component: AssignmentReviews },
+      { path: ":assignmentId", Component: AssignmentReviews },
+    ],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, Roles.MANAGER],
+  },
   {
     path: "/hiring",
     subRoutes: [

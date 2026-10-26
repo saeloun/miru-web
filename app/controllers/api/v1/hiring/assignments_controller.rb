@@ -4,8 +4,11 @@ class Api::V1::Hiring::AssignmentsController < Api::V1::Hiring::BaseController
   def index
     with_application do |application|
       rows, pagination = page_records(application.hiring_assignments.order(id: :desc))
+      active_id = application.hiring_assignments.where(ended_at: nil).pick(:id)
       render json: { company_id: current_company.id, application_version: application.lock_version,
-        application_stage: application.stage, assignments: rows.map { |record| assignment_details(record) }, pagination: }
+        application_stage: application.stage, active_assignment_id: active_id,
+        can_issue: active_id.nil? && !HiringPortalAccess::CLOSED_STAGES.include?(application.stage),
+        assignments: rows.map { |record| assignment_details(record) }, pagination: }
     end
   end
 
@@ -61,7 +64,7 @@ class Api::V1::Hiring::AssignmentsController < Api::V1::Hiring::BaseController
     def assignment_details(record)
       record.reload
       reviewer = record.reviewer_employment
-      record.review_details.merge(ended_at: record.ended_at, previous_assignment_id: record.previous_assignment_id,
+      record.review_details.merge(ended_at: record.ended_at, previous_assignment_id: record.previous_assignment_id, request_key: record.request_key,
         reviewer: reviewer && { id: reviewer.id, full_name: reviewer.user.full_name },
         url: record.active? && record.due_at > Time.current ? hiring_assignment_url(anchor: record.access_token) : nil,
         events: record.events.order(id: :desc).map do |event|
