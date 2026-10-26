@@ -35,6 +35,7 @@ class Company < ApplicationRecord
 
   # Associations
   has_many :compensation_report_runs, dependent: :destroy
+  has_many :profitability_scenarios, dependent: :destroy
   has_many :employments, dependent: :destroy
   has_many :employee_reports, dependent: :destroy
   has_one :employee_record_setting, dependent: :destroy

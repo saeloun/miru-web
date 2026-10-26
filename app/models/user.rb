@@ -39,6 +39,7 @@ class User < ApplicationRecord
   has_many :project_members, dependent: :destroy
   has_many :profitability_billing_rates, dependent: :destroy
   has_many :compensation_report_runs, foreign_key: :created_by_id, inverse_of: :created_by, dependent: :destroy
+  has_many :profitability_scenarios, foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
   has_many :timesheet_entries
   has_many :agents, dependent: :destroy
   has_many :identities, dependent: :delete_all

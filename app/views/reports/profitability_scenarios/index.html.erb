@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Profitability Planning | Miru</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow"><%= render "styles" %></head>
+<body><main>
+  <a href="<%= compensation_profitability_path %>">← Compensation actuals</a>
+  <p><%= current_company.name %> · Confidential · Organization owners and admins only</p>
+  <h1>Profitability Planning</h1>
+  <p>Build editable scenarios for capacity, billing rates, compensation and overhead. Forecasts use your assumptions; they do not change payroll, time or billing records.</p>
+  <div class="actions"><a class="button" href="<%= new_profitability_scenario_path(currency: "INR") %>">New INR plan</a><a class="button" href="<%= new_profitability_scenario_path(currency: "USD") %>">New USD plan</a></div>
+  <section class="panel"><h2>Saved plans</h2>
+    <% if @scenarios.empty? %><p>No saved plans yet. Start with the current-month report, then fill in or adjust the planning assumptions.</p><% end %>
+    <ul><% @scenarios.each do |scenario| %><li><a href="<%= profitability_scenario_path(scenario) %>"><%= scenario.name %></a> · Saved <%= scenario.updated_at.strftime("%d %b %Y %H:%M UTC") %></li><% end %></ul>
+    <% if @scenarios.size == 100 %><p>Showing the 100 most recently saved plans.</p><% end %>
+  </section>
+</main></body></html>
