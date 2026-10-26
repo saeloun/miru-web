@@ -8,19 +8,25 @@ class HiringSetting < ApplicationRecord
   belongs_to :approved_by, class_name: "User", optional: true
   has_many :hiring_messages, dependent: :restrict_with_exception
   serialize :details, coder: JSON, type: Hash
+  serialize :form_schema, coder: JSON
   encrypts :details
+  encrypts :form_schema
   audited associated_with: :company, on: [:create, :update], only: [:approved_by_id, :approved_at]
   validate :valid_details
-  before_save :clear_approval, if: :will_save_change_to_details?
+  validate :valid_form
+  before_save :clear_approval, if: -> { will_save_change_to_details? || will_save_change_to_form_schema? }
 
   def complete?
-    valid? && details["client_count"].is_a?(Integer) && TEXT_FIELDS.all? { |field| details[field].is_a?(String) && details[field].present? }
+    valid? && Hiring::Form.new(form).complete? && details["client_count"].is_a?(Integer) &&
+      TEXT_FIELDS.all? { |field| details[field].is_a?(String) && details[field].present? }
   end
 
   def approved?
-    !will_save_change_to_details? && approved_at.present? && approved_by_id.present? && complete? &&
+    !will_save_change_to_details? && !will_save_change_to_form_schema? && approved_at.present? && approved_by_id.present? && complete? &&
       HiringPolicy.administrators(company).where(user_id: approved_by_id).exists?
   end
+
+  def form = form_schema || Hiring::Form.default_schema
 
   def acknowledgement_text
     body = [details.fetch("acknowledgement_body"), details.fetch("company_intro"), "Clients: #{details.fetch('client_count')}"]
@@ -31,6 +37,10 @@ class HiringSetting < ApplicationRecord
   end
 
   private
+
+    def valid_form
+      errors.add(:form_schema, "contains invalid application fields") unless Hiring::Form.new(form).valid?
+    end
 
     def valid_details
       allowed = TEXT_FIELDS + ["client_count"]

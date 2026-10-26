@@ -6,8 +6,10 @@ class Api::V1::Hiring::SettingsController < Api::V1::Hiring::BaseController
   end
 
   def update
-    attributes = mutation_attributes(:hiring_setting, %w[company_id details lock_version])
-    setting = configuration.save_draft!(details: attributes["details"], lock_version: attributes["lock_version"])
+    attributes = mutation_attributes(:hiring_setting, %w[company_id details form lock_version])
+    raise ActionController::BadRequest if attributes.key?("form") && !attributes["form"].is_a?(Hash)
+
+    setting = configuration.save_draft!(details: attributes["details"], lock_version: attributes["lock_version"], form: attributes["form"])
     render_settings(setting)
   end
 
@@ -25,6 +27,7 @@ class Api::V1::Hiring::SettingsController < Api::V1::Hiring::BaseController
       complete = setting&.complete? || false
       render json: { company_id: current_company.id, settings: {
         details: setting&.details || fields.index_with(nil), lock_version: setting&.lock_version,
+        form: setting&.form || ::Hiring::Form.default_schema,
         approved: setting&.approved? || false, approved_at: setting&.approved_at, complete:,
         preview: complete ? { subject: setting.details.fetch("acknowledgement_subject"), body: setting.acknowledgement_text } : nil } }
     end

@@ -6,16 +6,19 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import FormSettings from "./FormSettings";
 import {
   hiringTextFields,
   type HiringSettings,
   type HiringSettingsDetails,
   type HiringSettingsPage,
+  type FormSchema,
 } from "./types";
 
 export default function Settings({ companyId }: { companyId: number }) {
   const [saved, setSaved] = useState<HiringSettings | null>(null);
   const [draft, setDraft] = useState<HiringSettingsDetails | null>(null);
+  const [draftForm, setDraftForm] = useState<FormSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -40,6 +43,7 @@ export default function Settings({ companyId }: { companyId: number }) {
         if (active) {
           setSaved(result.settings);
           setDraft(result.settings.details);
+          setDraftForm(result.settings.form);
           setNotice("");
         }
       })
@@ -57,11 +61,15 @@ export default function Settings({ companyId }: { companyId: number }) {
   }, [companyId, refresh]);
 
   const dirty = Boolean(
-    saved && draft && JSON.stringify(saved.details) !== JSON.stringify(draft)
+    saved &&
+      draft &&
+      draftForm &&
+      (JSON.stringify(saved.details) !== JSON.stringify(draft) ||
+        JSON.stringify(saved.form) !== JSON.stringify(draftForm))
   );
 
   const mutate = async (approve: boolean) => {
-    if (!saved || !draft || busy || loading) return;
+    if (!saved || !draft || !draftForm || busy || loading) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -78,7 +86,25 @@ export default function Settings({ companyId }: { companyId: number }) {
           )
         : await Api.put<HiringSettingsPage>(
             "/hiring/settings",
-            { hiring_setting: { ...attributes, details: draft } },
+            {
+              hiring_setting: {
+                ...attributes,
+                details: draft,
+                form: {
+                  ...draftForm,
+                  fields: draftForm.fields.map(field =>
+                    field.type === "select"
+                      ? {
+                          ...field,
+                          choices: field.choices
+                            ?.map(choice => choice.trim())
+                            .filter(Boolean),
+                        }
+                      : field
+                  ),
+                },
+              },
+            },
             quiet
           );
       verifyWorkspace(data, companyId);
@@ -86,9 +112,10 @@ export default function Settings({ companyId }: { companyId: number }) {
 
       setSaved(data.settings);
       setDraft(data.settings.details);
+      setDraftForm(data.settings.form);
       setNotice(
         approve
-          ? "Approved. New applications can receive this acknowledgement."
+          ? "Approved. New applications can receive this acknowledgement and any enabled form link."
           : "Draft saved. Outgoing acknowledgements require approval."
       );
     } catch (failure) {
@@ -136,7 +163,7 @@ export default function Settings({ companyId }: { companyId: number }) {
           Loading communication settings…
         </p>
       )}
-      {saved && draft && (
+      {saved && draft && draftForm && (
         <>
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="secondary">
@@ -217,6 +244,7 @@ export default function Settings({ companyId }: { companyId: number }) {
                   Leave blank until confirmed. Zero is an explicit value.
                 </p>
               </div>
+              <FormSettings value={draftForm} change={setDraftForm} />
             </fieldset>
             <div className="flex flex-wrap gap-3">
               <Button
@@ -237,7 +265,9 @@ export default function Settings({ companyId }: { companyId: number }) {
                 }
                 onClick={() => void mutate(true)}
               >
-                Approve acknowledgement
+                {draftForm.enabled
+                  ? "Approve communications and form"
+                  : "Approve acknowledgement"}
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -252,7 +282,7 @@ export default function Settings({ companyId }: { companyId: number }) {
             <h3 className="font-semibold">Saved acknowledgement preview</h3>
             {dirty ? (
               <p className="text-sm text-muted-foreground">
-                Save your edits to preview the exact acknowledgement.
+                Save your edits to preview the saved acknowledgement text.
               </p>
             ) : saved.preview ? (
               <>
@@ -265,6 +295,12 @@ export default function Settings({ companyId }: { companyId: number }) {
                 >
                   {saved.preview.body}
                 </pre>
+                {saved.form.enabled && (
+                  <p className="text-sm text-muted-foreground">
+                    A private application link is added for each recipient when
+                    the acknowledgement is queued.
+                  </p>
+                )}
               </>
             ) : (
               <p className="text-sm text-muted-foreground">

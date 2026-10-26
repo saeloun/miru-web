@@ -166,6 +166,33 @@ RSpec.describe "Hiring email receipts", type: :request do
     expect(HiringMessage.count).to eq(0)
   end
 
+  it "removes uploaded source bytes after the admin upload's enclosing transaction rolls back" do
+    destination_id = mailbox.id
+    storage = ActiveStorage::Blob.service
+    keys = []
+    allow(storage).to receive(:upload).and_wrap_original do |upload, key, *arguments, **options|
+      keys << key
+      upload.call(key, *arguments, **options)
+    end
+    failure = -> { raise Hiring::ReceiveEmail::Unavailable, "Synthetic receipt failure" if hiring_mailbox_id == destination_id }
+    HiringReceipt.set_callback(:create, :before, failure)
+    Tempfile.create(["application", ".eml"]) do |file|
+      file.binmode
+      file.write(source)
+      file.flush
+      upload = Rack::Test::UploadedFile.new(file.path, "message/rfc822")
+      post "/api/v1/hiring/receipts", params: { hiring_receipt: { company_id: company.id, mailbox_id: mailbox.id, file: upload } }
+    end
+    expect(response).to have_http_status(:service_unavailable)
+    expect(keys.size).to eq(1)
+    expect(keys.any? { |key| storage.exist?(key) }).to be(false)
+    expect(ActiveStorage::Blob.where(key: keys)).not_to exist
+    expect(ActionMailbox::InboundEmail.count).to eq(0)
+    expect(HiringReceipt.count).to eq(0)
+  ensure
+    HiringReceipt.skip_callback(:create, :before, failure) if failure
+  end
+
   it "rejects malformed uploads and inactive or foreign inboxes without retaining files" do
     Tempfile.create(["application", ".eml"]) do |file|
       file.write("not a valid email")

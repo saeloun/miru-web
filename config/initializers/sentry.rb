@@ -14,7 +14,7 @@ Sentry.init do |config|
 
   config.before_send_transaction = lambda do |event, _hint|
     event.spans.each do |span|
-      next unless span[:description].to_s.start_with?("Api::V1::Hiring::", "Hiring::InboundEmailsController")
+      next unless span[:description].to_s.start_with?("Api::V1::Hiring::", "Hiring::InboundEmailsController", "HiringPortalController")
 
       data = span[:data]
       next unless data && data[:params].is_a?(Hash)

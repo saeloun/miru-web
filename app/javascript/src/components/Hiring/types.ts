@@ -1,4 +1,45 @@
 export type Choice = { id: number; label: string };
+export type FormField = {
+  id: string;
+  label: string;
+  type: string;
+  required: boolean;
+  sensitive: boolean;
+  choices?: string[];
+};
+export type FormSchema = { enabled: boolean; fields: FormField[] };
+export type CompensationAnswer = {
+  amount: string;
+  currency: string;
+  period: string;
+};
+export type FormAnswer =
+  | string
+  | boolean
+  | string[]
+  | CompensationAnswer
+  | null;
+export type CandidateFormReview = {
+  id: number;
+  access_id: number;
+  issued_at: string;
+  approved_setting_version: number;
+  submitted_at: string | null;
+  expires_at: string;
+  revoked_at: string | null;
+  fields: FormField[];
+  answers: Record<string, FormAnswer>;
+  resume: { filename: string; byte_size: number } | null;
+};
+export type CandidateFormsPage = {
+  company_id: number;
+  forms: CandidateFormReview[];
+  pagination: Pagination;
+  application_lock_version: number;
+  application_stage: string;
+  approved_setting_version: number | null;
+  active_access_id: number | null;
+};
 export type Role = {
   id: number;
   title: string;
@@ -54,6 +95,7 @@ export type HiringSettingsDetails = Record<
 > & { client_count: number | null };
 export type HiringSettings = {
   details: HiringSettingsDetails;
+  form: FormSchema;
   lock_version: number | null;
   approved: boolean;
   approved_at: string | null;

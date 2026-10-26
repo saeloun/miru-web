@@ -324,6 +324,9 @@ namespace :api, defaults: { format: "json" } do
       end
       resources :applications, only: [:index, :show, :create] do
         post :search, on: :collection
+        resources :forms, only: [:index, :create, :destroy] do
+          get :resume, on: :member
+        end
       end
       get "owners", to: "applications#owners"
       post "owners/search", to: "applications#search_owners"

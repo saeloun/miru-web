@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { failureMessage, read } from "./api";
+import ApplicationForms from "./ApplicationForms";
 import {
   receiptLabel,
   stageLabel,
@@ -20,6 +21,24 @@ export default function ApplicationDetail({
   const [page, setPage] = useState(1);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
+  const formChanged = useCallback(
+    (attributes: { stage: string; lock_version: number }) => {
+      setData(current =>
+        current &&
+        current.company_id === companyId &&
+        String(current.application.id) === id
+          ? {
+              ...current,
+              application: { ...current.application, ...attributes },
+              history: current.history.map(item =>
+                String(item.id) === id ? { ...item, ...attributes } : item
+              ),
+            }
+          : current
+      );
+    },
+    [companyId, id]
+  );
 
   useEffect(() => {
     let active = true;
@@ -115,6 +134,13 @@ export default function ApplicationDetail({
           </p>
         </div>
       </section>
+      <ApplicationForms
+        key={`${companyId}:${application.id}`}
+        companyId={companyId}
+        applicationId={application.id}
+        timeZone={data.time_zone}
+        changed={formChanged}
+      />
       <section
         className="rounded-lg border bg-card p-4 sm:p-6"
         aria-labelledby="application-history-title"

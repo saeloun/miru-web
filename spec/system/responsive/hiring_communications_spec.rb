@@ -91,4 +91,64 @@ RSpec.describe "Hiring communications", type: :system, js: true do
     expect(@console_errors).to eq([])
     capture("communications-draft-mobile.png")
   end
+
+  it "requires approval for enabled forms and retains custom field identities across edits" do
+    open_communications
+    expect(page).to have_css("h3", text: "Candidate application form")
+    fill_settings
+    find('[aria-label="Enable candidate forms"]').click
+    within('[data-field-id="phone"]') { find("label", exact_text: "Required").click }
+    click_button "Add custom field"
+    within('[data-custom-field="true"]') do
+      fill_in "Field label", with: "Private portfolio explanation"
+    end
+    select_radix "Answer type", "Long text"
+    within('[data-custom-field="true"]') do
+      find("label", exact_text: "Required").click
+      find("label", exact_text: "Restricted answer").click
+    end
+    expect(page).to have_button("Approve communications and form", disabled: true)
+    click_button "Save draft"
+    expect(page).to have_text("Draft saved")
+    saved = company.reload.hiring_setting
+    fields = saved.form.fetch("fields")
+    custom = fields.find { |field| field["label"] == "Private portfolio explanation" }
+    expect(custom).to include("type" => "textarea", "required" => true, "sensitive" => true)
+    expect(fields.find { |field| field["id"] == "phone" }.fetch("required")).to be(true)
+    expect(saved.form.fetch("enabled")).to be(true)
+    expect(saved.approved?).to be(false)
+    click_button "Approve communications and form"
+    expect(page).to have_text("Approved for new applications")
+    expect(saved.reload.approved?).to be(true)
+    capture("candidate-form-settings-desktop.png")
+    within('[data-custom-field="true"]') { fill_in "Field label", with: "Updated portfolio explanation" }
+    click_button "Save draft"
+    expect(page).to have_text("Unapproved draft")
+    expect(saved.reload.form.fetch("fields").find { |field| field["id"] == custom["id"] })
+      .to include("label" => "Updated portfolio explanation")
+    expect(saved.approved_at).to be_nil
+    expect(@console_errors).to eq([])
+  end
+
+  it "keeps a mobile custom-field draft after a stale save until the admin explicitly discards it" do
+    configuration = Hiring::Configure.new(company:, actor: admin)
+    details = HiringSetting::TEXT_FIELDS.index_with { |field| "Synthetic approved #{field}" }.merge("client_count" => 0)
+    saved = configuration.save_draft!(details:, form: Hiring::Form.default_schema, lock_version: nil)
+    configuration.approve!(lock_version: saved.lock_version)
+    open_communications(width: 375)
+    expect(page).to have_css("h3", text: "Candidate application form")
+    click_button "Add custom field"
+    within('[data-custom-field="true"]') { fill_in "Field label", with: "My unsaved field" }
+    configuration.save_draft!(details: details.merge("client_count" => 7), lock_version: saved.reload.lock_version)
+    click_button "Save draft"
+    expect(page).to have_css('[role="alert"]', text: "settings changed")
+    expect(page).to have_field("Field label", with: "My unsaved field")
+    expect(page).to have_button("Approve acknowledgement", disabled: true)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to eq(true)
+    capture("candidate-form-settings-stale-mobile.png")
+    click_button "Discard edits and reload"
+    expect(page).to have_field("Client count", with: "7")
+    expect(page).not_to have_field("Field label", with: "My unsaved field")
+    expect(@console_errors).to eq([])
+  end
 end

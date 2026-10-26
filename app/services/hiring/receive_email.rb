@@ -39,8 +39,11 @@ module Hiring
 
           schedule_existing(inbound)
         else
-          blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new(@source), filename: "message.eml",
-            content_type: "message/rfc822", service_name: ActionMailbox.storage_service)
+          blob = ActiveStorage::Blob.create_before_direct_upload!(filename: "message.eml", byte_size: @source.bytesize,
+            checksum: Digest::MD5.base64digest(@source), content_type: "message/rfc822", metadata: { identified: true },
+            service_name: ActionMailbox.storage_service)
+          ApplicationRecord.current_transaction.after_rollback { blob.delete }
+          blob.upload(StringIO.new(@source), identify: false)
           # Content-derived transport IDs keep original Message-IDs out of framework logs.
           inbound = ActionMailbox::InboundEmail.create!(message_id: transport_id,
             message_checksum: OpenSSL::Digest::SHA1.hexdigest(@source), raw_email: blob)

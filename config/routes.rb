@@ -7,6 +7,11 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/hiring-form", to: "hiring_portal#show", as: :hiring_form
+  post "/hiring-form/open", to: "hiring_portal#open"
+  post "/hiring-form/submit", to: "hiring_portal#submit"
+  post "/hiring-form/resume", to: "hiring_portal#resume"
+  post "/hiring-form/resume/download", to: "hiring_portal#resume_download"
   post "/hiring/inbound/:routing_key", to: "hiring/inbound_emails#create"
   # Health check endpoint
   get "/health", to: "health#index"

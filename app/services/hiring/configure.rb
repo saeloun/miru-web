@@ -6,26 +6,27 @@ module Hiring
       @company, @actor = company, actor
     end
 
-    def save_draft!(details:, lock_version:)
+    def save_draft!(details:, lock_version:, form: nil)
       raise Intake::InvalidInput, "Enter valid hiring email settings." unless details.is_a?(Hash)
 
       with_setting(lock_version:) do |setting|
         fields = HiringSetting::TEXT_FIELDS + ["client_count"]
         values = fields.index_with(nil).merge(details.transform_keys(&:to_s))
         setting.details = values.transform_values { |value| value.is_a?(String) ? value.strip : value }
+        setting.form_schema = form unless form.nil?
         if setting.changed?
           setting.audit_comment = "Saved hiring email configuration."
           Audited.audit_class.as_user(@actor) { setting.save! }
         end
       end
     rescue ActiveRecord::RecordInvalid
-      raise Intake::InvalidInput, "Use text fields, a non-negative client count and a subject without control characters."
+      raise Intake::InvalidInput, "Use valid application fields, text settings, a non-negative client count and a subject without control characters."
     end
 
     def approve!(lock_version:)
       with_setting(lock_version:) do |setting|
         unless setting.persisted? && setting.complete?
-          raise Intake::InvalidInput, "Complete the company introduction, client count and hiring terms before approving."
+          raise Intake::InvalidInput, "Complete the company introduction, client count, hiring terms and enabled application form before approving."
         end
 
         setting.assign_attributes(approved_at: Time.current, approved_by: @actor)

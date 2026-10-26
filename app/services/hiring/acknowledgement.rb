@@ -120,14 +120,14 @@ module Hiring
           end
 
           attributes = { hiring_setting: setting, approved_setting_version: setting.lock_version,
-            queued_by: @actor, content: snapshot(setting, application, mailbox) }
+            queued_by: @actor }
           message = Audited.audit_class.as_user(@actor) do
             if retry_of
-              @company.hiring_messages.create!(**attributes, hiring_application: application, kind: "acknowledgement",
+              @company.hiring_messages.create!(**attributes, content: snapshot(setting, application, mailbox), hiring_application: application, kind: "acknowledgement",
                 original_message_id: retry_of.original_message_id || retry_of.id, attempt_number: retry_of.attempt_number + 1)
             else
               @company.hiring_messages.operations.find_or_create_by!(hiring_application: application, kind: "acknowledgement") do |record|
-                record.assign_attributes(attributes)
+                record.assign_attributes(attributes.merge(content: snapshot(setting, application, mailbox)))
               end
             end
           end
@@ -137,9 +137,18 @@ module Hiring
       end
 
       def snapshot(setting, application, mailbox)
-        { "to" => application.hiring_candidate.email, "reply_to" => mailbox.source_email,
+        content = { "to" => application.hiring_candidate.email, "reply_to" => mailbox.source_email,
           "mailbox_id" => mailbox.id, "actor_id" => @actor&.id,
           "subject" => setting.details.fetch("acknowledgement_subject"), "body" => setting.acknowledgement_text }
+        if setting.form["enabled"]
+          access = Form.issue!(application:, setting:, actor: @actor)
+          options = Rails.application.config.action_mailer.default_url_options
+          protocol = Rails.application.config.force_ssl ? "https" : options.fetch(:protocol, "http")
+          url = Rails.application.routes.url_helpers.hiring_form_url(**options, protocol:, anchor: access.access_token)
+          content["portal_access_id"] = access.id
+          content["body"] += "\n\nComplete your application: #{url}"
+        end
+        content
       end
   end
 end

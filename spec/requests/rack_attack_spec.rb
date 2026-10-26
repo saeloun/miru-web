@@ -65,4 +65,17 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
       headers: headers.merge("REMOTE_ADDR" => "203.0.113.11")
     expect(response).to have_http_status(:gone)
   end
+
+  it "limits the combined public hiring form surface without blocking another IP" do
+    paths = %w[/hiring-form/open /hiring-form/submit /hiring-form/resume /hiring-form/resume/download]
+    60.times do |attempt|
+      post paths[attempt % paths.size], params: { hiring_form: { token: "x" * 32 } }.to_json, headers: headers
+      expect(response).to have_http_status(:gone)
+    end
+    post paths.first, params: { hiring_form: { token: "x" * 32 } }.to_json, headers: headers
+    expect(response).to have_http_status(:too_many_requests)
+    post paths.first, params: { hiring_form: { token: "x" * 32 } }.to_json,
+      headers: headers.merge("REMOTE_ADDR" => "203.0.113.11")
+    expect(response).to have_http_status(:gone)
+  end
 end

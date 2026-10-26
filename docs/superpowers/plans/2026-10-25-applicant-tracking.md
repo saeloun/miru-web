@@ -46,8 +46,8 @@ For each task: write the named failing checks, run them and retain the actual fa
 
 **Interface:** authenticated relay → unique mailbox route → `Hiring::EmailIntake` → Task 1 identity/application; per-mailbox receipt history and message event key. Settings freeze approved intro/client count/employment wording and templates. Communication states distinguish queued, sending, sent, failed and uncertain.
 
-- [ ] RED→GREEN real MIME/attachments/forwarded source, duplicate/racing mailboxes/tenants, malformed/oversized/unauthenticated ingress, uncertain classification and no auto-ack before configuration approval.
-- [ ] Prove one acknowledgement operation, permission/template recheck, queue interruption and ambiguous SMTP no-retry behavior; actual local relay→queue→Mailpit receipt; commit.
+- [x] RED→GREEN real MIME/attachments/forwarded source, duplicate/racing mailboxes/tenants, malformed/oversized/unauthenticated ingress, uncertain classification and no auto-ack before configuration approval.
+- [x] Prove one acknowledgement operation, permission/template recheck, queue interruption and ambiguous SMTP no-retry behavior; actual local relay→queue→Mailpit receipt; commit. Published increment: `eb23142118aa69dc10ba9993e97bdf1beb3404fd`; [QA record](../../qa/hiring-2463/README.md).
 
 ### Task 3: Configurable secure candidate forms
 

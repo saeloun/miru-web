@@ -54,6 +54,56 @@ RSpec.describe "Hiring email intake" do
     expect(HiringApplication.count).to eq(0)
   end
 
+  it "removes newly uploaded source bytes when receipt persistence rolls back" do
+    destination_id = mailbox.id
+    storage = ActiveStorage::Blob.service
+    keys = []
+    allow(storage).to receive(:upload).and_wrap_original do |upload, key, *arguments, **options|
+      keys << key
+      upload.call(key, *arguments, **options)
+    end
+    failure = -> { raise ActiveRecord::RecordInvalid, self if hiring_mailbox_id == destination_id }
+    HiringReceipt.set_callback(:create, :before, failure)
+    expect { Hiring::ReceiveEmail.new(mailbox:, source:).process }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(keys.size).to eq(1)
+    expect(keys.any? { |key| storage.exist?(key) }).to be(false)
+    expect(ActiveStorage::Blob.where(key: keys)).not_to exist
+    expect(ActionMailbox::InboundEmail.count).to eq(0)
+    expect(HiringReceipt.count).to eq(0)
+  ensure
+    HiringReceipt.skip_callback(:create, :before, failure) if failure
+  end
+
+  it "preserves an existing shared source when another mailbox's receipt rolls back" do
+    first = Hiring::ReceiveEmail.new(mailbox:, source:).process
+    other = HiringMailbox.create!(company: create(:company), name: "Other", source_email: "other@example.test")
+    destination_id = other.id
+    failure = -> { raise ActiveRecord::RecordInvalid, self if hiring_mailbox_id == destination_id }
+    HiringReceipt.set_callback(:create, :before, failure)
+    expect { Hiring::ReceiveEmail.new(mailbox: other, source:).process }.to raise_error(ActiveRecord::RecordInvalid)
+    expect(first.reload.source).to eq(source)
+    expect(first.raw_email.blob.service.exist?(first.raw_email.blob.key)).to be(true)
+    expect(HiringReceipt.count).to eq(1)
+    expect(other.hiring_receipts).not_to exist
+  ensure
+    HiringReceipt.skip_callback(:create, :before, failure) if failure
+  end
+
+  it "removes source bytes when storage writes the object and then fails" do
+    storage = ActiveStorage::Blob.service
+    keys = []
+    allow(storage).to receive(:upload).and_wrap_original do |upload, key, *arguments, **options|
+      keys << key
+      upload.call(key, *arguments, **options)
+      raise IOError, "Synthetic interrupted source upload"
+    end
+    expect { Hiring::ReceiveEmail.new(mailbox:, source:).process }.to raise_error(IOError, "Synthetic interrupted source upload")
+    expect(keys.size).to eq(1)
+    expect(keys.any? { |key| storage.exist?(key) }).to be(false)
+    expect(ActiveStorage::Blob.where(key: keys)).not_to exist
+    expect(HiringReceipt.count).to eq(0)
+  end
+
   it "does not reuse a public transport blob when the selected ingress storage is private" do
     record = Hiring::ReceiveEmail.new(mailbox:, source:).process
     public_service = instance_double(ActiveStorage::Service::DiskService, public?: true)

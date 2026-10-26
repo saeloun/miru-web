@@ -1,6 +1,6 @@
 # Hiring email intake
 
-Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants and approve acknowledgements. This is the email-intake milestone of the applicant-tracking plan; candidate forms, assessments, interviews, offers and retention remain later work.
+Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants and approve acknowledgements and private candidate forms. Assessments, interviews, offers and retention remain later milestones of the applicant-tracking plan.
 
 ## Configure an inbox
 
@@ -28,6 +28,20 @@ In **Communication settings**, save the company introduction, client count, work
 
 Review the saved preview and explicitly approve its version. Editing the wording revokes approval. Approval alone does not send acknowledgements to the previous backlog. For an accepted receipt with no acknowledgement, the explicit queue action shows the current recipient, original reply address, approved wording and version before requesting a send.
 
+## Configure and request a candidate form
+
+Candidate forms start disabled. In **Communication settings → Candidate application form**, enable forms, edit question labels and requiredness, and add custom questions as needed. Custom answers support short or long text, email, URL, number, date, choices and yes/no. Mark private questions restricted; compensation is always restricted. Save and review the configuration, then explicitly approve communications and the form. Any change removes the shared approval. Already issued forms retain their original questions and introduction.
+
+Approved new acknowledgements include a recipient-specific private link. On an application's **Candidate forms** panel, **Create private form link** creates a link for copying; it does not email the candidate. Copy it before leaving the page. Replacing an active link requires confirmation and stops the previous link. **Revoke link** stops access while preserving submitted answers and the resume for authorized hiring administrators. Links expire after 14 days and stop working when the application is hired, rejected or withdrawn.
+
+Anyone holding a link can access that application form; share it privately. The URL token uses a fragment, which the standalone form removes before loading its application. Requests use cookie CSRF protection and do not expose internal notes, feedback or other applications. The candidate page does not load the authenticated app's analytics or replay entrypoint.
+
+Candidates may provide exact compensation amounts with a currency and monthly or annual period. Missing compensation remains missing. Optional choices and compensation can be cleared back to unanswered. A candidate who is not currently employed may omit current role, company and compensation. Resume uploads accept private PDF, DOC and DOCX files up to 5 MiB. Uploads save immediately; answers save on submission. Files are untrusted attachments, not scanned or executed by Miru. Submitted answers cannot be edited; request a new form when a correction is needed.
+
+After an interrupted request, **Refresh form** retrieves the current form status while preserving unsent answers. If submission already succeeded, it shows the accepted answers as read-only. Expired or revoked links clear the displayed personal information. Errors and submission confirmation receive focus so they remain visible on long mobile forms.
+
+Authorized hiring administrators can expand submitted answers, download the private resume and page through previous forms. Submitted contact details do not overwrite the verified candidate profile, and submission does not issue an assessment. Default reviewer data excludes originally restricted, currently restricted and removed questions, including restricted resume metadata. Stale changes require an explicit refresh; settings drafts remain available until discarded.
+
 ## Understand attempts and delivery reviews
 
 | State | Meaning |
@@ -49,3 +63,5 @@ Generic SMTP errors also remain unknown: an error while closing the connection c
 Recording a delivery review does not send an email or invent a mail-server acceptance timestamp. Operator reports are labelled separately from Miru's observed result, including a later conflicting result. A recorded review and its evidence are final and cannot be edited in this milestone. An operator-confirmed non-acceptance permits a separate retry request with fresh approval and recipient confirmation. SMTP cannot guarantee exactly-once delivery after an ambiguous failure: an incorrect external confirmation can cause a duplicate email.
 
 Source retention has no automatic expiry policy in this milestone. Review the complete applicant-tracking retention work before broad production use.
+
+Newly uploaded email objects are removed if intake rolls back, including failures inside an enclosing admin transaction. Reused transport objects remain available to their existing receipts.

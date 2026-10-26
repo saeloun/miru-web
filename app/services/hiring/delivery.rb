@@ -52,6 +52,11 @@ module Hiring
         return "application_closed" if %w[withdrawn rejected hired].include?(application.stage)
         return "recipient_changed" unless application.hiring_candidate.reload.email == @message.content["to"]
 
+        if (access_id = @message.content["portal_access_id"])
+          access = application.hiring_portal_accesses.find_by(id: access_id)
+          return "portal_unavailable" unless access&.active?
+        end
+
         nil
       end
 

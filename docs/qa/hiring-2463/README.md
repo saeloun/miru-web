@@ -1,6 +1,6 @@
 # Hiring intake verification
 
-This is Task 1 of [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). It adds private manual applications, candidate history and hiring roles. Forwarded email, candidate forms, assessments, interviews, offers, automated communications, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements and candidate forms from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assessments, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
 
 ## Verified locally on 25 October 2026
 
@@ -91,3 +91,30 @@ An earlier cookie/CSRF positive check returned 401 once. Isolation and subsequen
 A broad 4650-example run overlapped source changes and used an obsolete SMTP expectation, so its single failure and mixed inputs do not establish current full-suite status. Exact frozen-source checks and CI are reported separately; no broad pass is inferred from the focused results above.
 
 Operator setup, delivery-state meanings and the current retention limit are documented in [Hiring email intake](../../hiring-email.md). Local evidence does not replace independent review, publication checks or current CI.
+
+## Private candidate forms
+
+Local verification on 26 October 2026 covers Task 3, including the admin settings and application review screens. The full ATS plan and release gates remain required; these results do not establish deployment or current-head CI.
+
+- 179 focused hiring backend examples pass, including 21 private-form request examples. Coverage includes configuration approval, immutable encrypted snapshots, capability expiry/revocation, CSRF, typed answers, private uploads, stale/submitted upload refusal, byte-integrity checks, tenant foreign keys, restricted-field projections, acknowledgement links and shared-resume workspace teardown. Format-suffixed requests and understated content lengths are rejected before parsing.
+- All 26 hiring system examples pass in Brave. The new flows cover configuration and stale-draft recovery, private-link creation/replacement/revocation, submitted-answer review, exact-byte resume download and the complete synthetic acknowledgement-to-form-to-resume-to-submission journey. Optional choices, including a false yes/no answer, and compensation can be cleared. Lost upload responses preserve unsent drafts through refresh; an already accepted submission is reconciled to its read-only answers.
+- A further review reproduced same-file retry failure after a temporary upload rejection. The input now clears after capturing its File; the test verifies no initial attachment, an empty input, retrying that exact PDF, lost-response recovery and final submission. The existing-profile file chooser could not upload because its extension lacks file-URL access. No permission was changed; the isolated Brave upload and retry checks pass.
+- Separate existing-profile Brave checks verify the setup link, mobile saving and approval, keyboard toggling/cancellation, replacement confirmation, revocation and rejected reopening. A long custom label fits at 375px without horizontal overflow; the capability fragment is removed, and no console warnings or errors were captured during the successful checks. One automation checkbox action did not toggle after resizing; keyboard activation worked. No browser permissions were changed.
+- Browser review found an incorrect setup route; a valid failing browser assertion preceded its one-line fix. The first test used the wrong heading level and is excluded from regression proof. Review also reproduced restricted resume metadata leaking through the default projection; the corrected projection hides the filename and size while preserving authorized Admin access.
+- Fresh native Brave mobile checks confirm that errors and submission confirmation receive focus and remain visible without overflow. Refresh preserves the entered name, work summary and invalid amount; a corrected or cleared optional amount can then be submitted. A textarea value-attribute check was unsuitable; the actual submitted DOM confirmed its retained text.
+- The required Vite build, test asset build, all eight changed frontend files' ESLint and format checks pass. A broader frozen snapshot passed 4690 examples with zero failures and 80 existing pending examples before the later review fixes; it is historical evidence, not the final candidate's broad pass. Current-head CI and final review remain separate gates.
+
+A further existing-profile submission succeeded, but its CDP network buffer contained no request events and reported truncation. That attempt remains invalid network evidence. The current system journey instead requires positive open/upload/submit request observations and verifies local HTTP origins, no analytics/replay requests and no capability token in request URLs. Brakeman completed without scan errors and reported two weak warnings in unchanged `pg_searchable.rb` and `signature_request_reviews_controller.rb`; this is not a clean security-review approval.
+
+A fresh native source review identified lost-upload recovery and untracked raw email bytes after rollback. Both were reproduced before fixing. Cleanup follows the full transaction and preserves reused/shared objects; four new checks cover direct and enclosing admin rollback, interrupted storage upload and shared-source preservation. A browser locator was updated to target the new contextual ARIA label. Another first-load run timed out because formatting after the test build caused an on-request Vite rebuild; its first page took 11.6 seconds versus 17 ms for the next. No timeout or retry policy was changed. The unchanged rerun and final combined browser run pass.
+
+Manual QA used a separate guarded synthetic database, test jobs and disabled mail delivery. No real candidate or employment data was used. Old Task 2 screenshots are preserved; the new captures below record local Task 3 verification. Publication, current-head CI and deployment status are reported separately on the PR.
+
+| Surface | Evidence |
+| --- | --- |
+| Submitted answers and private resume | [Desktop Brave review](candidate-admin-review-playwright-desktop.jpg) |
+| Form configuration | [375px full configuration](candidate-form-settings-playwright-mobile.jpg), [approval controls](candidate-form-settings-playwright-mobile-approval.jpg) |
+| Long custom question | [375px candidate form](candidate-form-long-label-playwright-mobile.jpg) |
+| Visible validation and confirmation | [Focused mobile error](candidate-validation-focused-mobile.jpg), [focused read-only confirmation](candidate-submission-confirmed-mobile.jpg) |
+| Submitted form | [Desktop](candidate-submitted-playwright-desktop.jpg), [mobile after draft refresh](candidate-refreshed-submission-mobile.jpg) |
+| Upload retry and complete application | [Same PDF after temporary failure and refresh](candidate-resume-retry-mobile.png), [submitted mobile form with private resume](candidate-submitted-mobile.png) |

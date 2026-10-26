@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_090100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -728,6 +728,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
     t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
   end
 
+  create_table "hiring_portal_accesses", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_setting_id", null: false
+    t.bigint "issued_by_id"
+    t.integer "approved_setting_version", null: false
+    t.text "access_token", null: false
+    t.text "form_schema", null: false
+    t.text "introduction", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_hiring_portal_accesses_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_portal_accesses_for_submission", unique: true
+    t.index ["company_id", "hiring_application_id"], name: "idx_on_company_id_hiring_application_id_8e04c271d1"
+    t.index ["hiring_setting_id"], name: "index_hiring_portal_accesses_on_hiring_setting_id"
+    t.index ["issued_by_id"], name: "index_hiring_portal_accesses_on_issued_by_id"
+  end
+
   create_table "hiring_receipts", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "hiring_mailbox_id", null: false
@@ -772,9 +792,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "form_schema"
     t.index ["approved_by_id"], name: "index_hiring_settings_on_approved_by_id"
     t.index ["company_id", "id"], name: "index_hiring_settings_on_company_id_and_id", unique: true
     t.index ["company_id"], name: "index_hiring_settings_on_company_id", unique: true
+  end
+
+  create_table "hiring_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_portal_access_id", null: false
+    t.text "answers", null: false
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_application_id"], name: "idx_on_company_id_hiring_application_id_bcbb7e18bf"
+    t.index ["hiring_portal_access_id"], name: "index_hiring_submissions_on_hiring_portal_access_id", unique: true
   end
 
   create_table "holiday_infos", force: :cascade do |t|
@@ -1884,6 +1918,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
   add_foreign_key "hiring_messages", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
   add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_portal_accesses", "companies"
+  add_foreign_key "hiring_portal_accesses", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_portal_accesses", "hiring_settings"
+  add_foreign_key "hiring_portal_accesses", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_portal_accesses", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_receipts", "action_mailbox_inbound_emails", column: "inbound_email_id", on_delete: :nullify
   add_foreign_key "hiring_receipts", "companies"
   add_foreign_key "hiring_receipts", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
@@ -1892,6 +1931,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_25_133300) do
   add_foreign_key "hiring_roles", "companies"
   add_foreign_key "hiring_settings", "companies"
   add_foreign_key "hiring_settings", "users", column: "approved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_submissions", "companies"
+  add_foreign_key "hiring_submissions", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_submissions", "hiring_portal_accesses", column: ["company_id", "hiring_application_id", "hiring_portal_access_id"], primary_key: ["company_id", "hiring_application_id", "id"], name: "fk_hiring_submission_application_access"
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
