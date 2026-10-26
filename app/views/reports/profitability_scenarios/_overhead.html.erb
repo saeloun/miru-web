@@ -1,0 +1,5 @@
+<div class="overhead" data-overhead-row>
+  <label>Overhead name<input name="profitability_scenario[assumptions][overheads][][name]" value="<%= overhead['name'] %>" maxlength="100" required></label>
+  <label>Monthly amount (<%= @assumptions['currency'] %>)<input type="number" min="0" max="1000000000000" step="0.0001" name="profitability_scenario[assumptions][overheads][][monthly_amount]" value="<%= overhead['monthly_amount'] %>"></label>
+  <button type="button" data-remove-row aria-label="Remove overhead row">Remove</button>
+</div>

@@ -21,6 +21,12 @@ Rails.application.routes.draw do
   get "/reports/compensation-profitability", to: "reports/compensation_profitability#show", as: :compensation_profitability
   post "/reports/compensation-profitability/configure", to: "reports/compensation_profitability#configure", as: :compensation_profitability_configure
   get "/reports/compensation-profitability/exports/:token", to: "reports/compensation_profitability#download", as: :compensation_profitability_export
+  scope "/reports", module: :reports do
+    get "profitability-planning/exports/:token", to: "profitability_scenarios#download", as: :profitability_scenario_export
+    resources :profitability_scenarios, path: "profitability-planning", only: [:index, :new, :create, :show, :update] do
+      post :preview, on: :collection
+    end
+  end
 
   # Preserve existing bookmarks and signed exports with the same organization authorization.
   get "/admin/compensation-profitability", to: "reports/compensation_profitability#show"

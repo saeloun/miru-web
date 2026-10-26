@@ -4,6 +4,7 @@
 
 ### Added
 
+- Editable organization profitability plans with saved baselines, monthly capacity/rate/compensation and overhead assumptions, cash/runway scenarios, original source warnings, and authorized expiring CSV exports
 - Organization Compensation Burn and Profitability reports for active owners and admins with Pro access, including dated compensation and billing rates, INR/USD conversion, utilization and margin breakdowns, period comparisons, data-readiness counts, and audited expiring CSV downloads
 - Private approved-provider salary-slip imports and publication, employee tax-evidence review, consultant payment previews, and a bounded India annual salary/interest tax comparison
 - Encrypted employee records, private PAN/contracts, manually recorded payment history, customizable CSV reports, and opt-in birthday/work-anniversary reminders

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -951,6 +951,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
     t.index ["primary_project_id"], name: "index_profitability_profiles_on_primary_project_id"
   end
 
+  create_table "profitability_scenarios", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "name", null: false
+    t.text "worksheet", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_profitability_scenarios_on_company_id"
+    t.index ["created_by_id"], name: "index_profitability_scenarios_on_created_by_id"
+  end
+
   create_table "project_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
@@ -1560,6 +1572,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_24_000000) do
   add_foreign_key "profitability_billing_rates", "users"
   add_foreign_key "profitability_profiles", "employments"
   add_foreign_key "profitability_profiles", "projects", column: "primary_project_id"
+  add_foreign_key "profitability_scenarios", "companies"
+  add_foreign_key "profitability_scenarios", "users", column: "created_by_id"
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
