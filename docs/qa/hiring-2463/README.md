@@ -1,6 +1,23 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms and an internal screening increment from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assignments, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening and the assignment library from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Assignment issuance/submission/review, interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Assignment library increment — Task 4 remains in progress
+
+Active owners/admins can create incomplete drafts, categorize tasks by role/skills/experience, edit instructions/criteria/expected effort/submission method/AI policy, explicitly approve saved complete versions and archive tasks. Every version has an immutable encrypted snapshot. Later edits require fresh approval. This increment sends no mail and issues no candidate assignment; the rest of Task 4 remains required.
+
+- Eight request examples pass: approval/completeness and stale writes, historical role titles, strict scalar/detail types and IDs, literal search, library/revision pagination, tenant isolation (including skill searches), ended membership and actual request-log filtering. The first missing-route check failed before implementation; a later boundary check reproduced Rails coercing an array into a skills string. An empty draft also exposed the typed JSON serializer storing a default empty hash as SQL NULL; untyped JSON plus explicit hash validation preserves the empty draft.
+- Three actual Brave system scenarios pass with CSRF enabled: mobile approval and preserved historical effort, stale draft retention with separate discard confirmation, and recovery after an injected 503. The last scenario failed because the reload control was disabled after a failed read; it passes after the recovery fix. The first browser attempt failed on an overlong synthetic company name and is excluded. The corrected missing-navigation check ran against the prior UI wiring before the library was connected.
+- Combined hiring backend/browser run: 230 examples, 0 failures. The final strengthened cross-tenant skill-search request check also passes. Required Vite command, explicit production and test builds, 10 changed Ruby files and four frontend lint/format checks pass. Migration up/down/up passes on the isolated test DB; unrelated constraint normalization is excluded from the schema diff.
+- Existing-profile Brave verifies create → role-specific draft → approve → edit effort → inspect old approved terms → archive → filter/search. At 375px, the current draft shows 45 minutes while the approved snapshot retains 90. No horizontal overflow or console errors were observed. All data is synthetic; the separate manual DB uses guarded test mail/jobs, delivery is disabled, no worker is started, and the owned tab/server are closed.
+
+| Surface | Evidence |
+| --- | --- |
+| Explicitly approved task terms | [Desktop](assignment-library-approved-desktop.jpg) |
+| Prior approved effort after a later edit | [375px mobile history](assignment-library-history-mobile.jpg) |
+| Archived role/skill/experience task search | [Filtered library](assignment-library-filtered-desktop.jpg) |
+
+Exact-head publication/CI/image results are recorded on the PR. The preceding `0b1770f` checkpoint passed 4,705 backend, 23 CLI and 136 browser examples, with 80 backend pending, and a fresh network-disabled runtime/PDF/Unicode/logo image check. Those historical checks do not certify this library increment. No production deployment or Hatchbox cutover is claimed.
 
 ## Screening increment — Task 4 remains in progress
 

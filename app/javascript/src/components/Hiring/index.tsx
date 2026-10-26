@@ -13,6 +13,8 @@ import Inbox from "./Inbox";
 import Mailboxes from "./Mailboxes";
 import ReceiptDetail from "./ReceiptDetail";
 import Picker from "./Picker";
+import AssignmentLibrary from "./AssignmentLibrary";
+import AssignmentTemplateEditor from "./AssignmentTemplateEditor";
 import { failureMessage, read } from "./api";
 import {
   receiptLabel,
@@ -298,13 +300,15 @@ function Applications({ companyId }: { companyId: number }) {
 }
 
 function Workspace({ companyId }: { companyId: number }) {
-  const { applicationId, receiptId } = useParams();
+  const { applicationId, receiptId, templateId } = useParams();
   const location = useLocation();
   const newApplication = location.pathname.endsWith("/new");
   const roles = location.pathname.endsWith("/roles");
   const settings = location.pathname.endsWith("/communications");
   const inbox = location.pathname.endsWith("/inbox");
   const mailboxes = location.pathname.endsWith("/mailboxes");
+  const library =
+    location.pathname.endsWith("/assignment-library") || !!templateId;
 
   return (
     <div
@@ -319,7 +323,12 @@ function Workspace({ companyId }: { companyId: number }) {
           </p>
         </div>
         <nav aria-label="Hiring navigation" className="flex flex-wrap gap-3">
-          {(roles || settings || inbox || mailboxes || receiptId) && (
+          {(roles ||
+            settings ||
+            inbox ||
+            mailboxes ||
+            receiptId ||
+            library) && (
             <Button asChild variant="outline" className="min-h-11">
               <Link to="/hiring">All applications</Link>
             </Button>
@@ -344,9 +353,22 @@ function Workspace({ companyId }: { companyId: number }) {
               <Link to="/hiring/new">Add application</Link>
             </Button>
           )}
+          {!library && (
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/hiring/assignment-library">Assignment library</Link>
+            </Button>
+          )}
         </nav>
       </header>
-      {receiptId ? (
+      {templateId ? (
+        <AssignmentTemplateEditor
+          key={templateId}
+          companyId={companyId}
+          id={templateId}
+        />
+      ) : library ? (
+        <AssignmentLibrary companyId={companyId} />
+      ) : receiptId ? (
         <ReceiptDetail key={receiptId} companyId={companyId} id={receiptId} />
       ) : inbox ? (
         <Inbox companyId={companyId} />

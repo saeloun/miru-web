@@ -304,6 +304,11 @@ namespace :api, defaults: { format: "json" } do
     end
 
     namespace :hiring do
+      resources :assignment_templates, only: [:index, :show, :create, :update] do
+        post :search, on: :collection
+        post :approve, on: :member
+        post :archive, on: :member
+      end
       resource :settings, only: [:show, :update] do
         post :approve
       end

@@ -264,6 +264,8 @@ export const ROUTES = [
       { path: "", Component: Hiring },
       { path: "new", Component: Hiring },
       { path: "roles", Component: Hiring },
+      { path: "assignment-library", Component: Hiring },
+      { path: "assignment-library/:templateId", Component: Hiring },
       { path: "communications", Component: Hiring },
       { path: "inbox", Component: Hiring },
       { path: "inbox/:receiptId", Component: Hiring },

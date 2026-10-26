@@ -1,6 +1,6 @@
 # Hiring email intake
 
-Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions and approve acknowledgements and private candidate forms. Assessments, interviews, offers and retention remain later milestones of the applicant-tracking plan.
+Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions, maintain an assignment library and approve acknowledgements and private candidate forms. Assignment issuance/submission/review, interviews, offers and retention remain later milestones of the applicant-tracking plan.
 
 ## Configure an inbox
 
@@ -51,6 +51,16 @@ Each decision retains its actor, previous and resulting stage, role/owner snapsh
 If another action changes the application while you edit, saving fails without losing your choices or reason. Use **Reload screening**, review the retained draft against the current application, then save separately. Browsing history pages does not rebase an unsaved decision. Older form-history responses cannot reset a newer displayed stage. A lost save response does not authorize an automatic duplicate decision: reload the retained history first.
 
 Assignment issuance/review and candidate information-request/rejection communications remain required work in the full ATS plan. The screening history in this increment is internal only.
+
+## Maintain the assignment library
+
+Open **Hiring → Assignment library**, enter a task title and choose **Create task draft**. Set its open role (or any role), skills, experience, instructions, assessment criteria, expected effort in whole minutes, submission method and AI-use policy. Incomplete drafts are allowed. **Save draft** saves a new version; **Approve saved version** is a separate action and requires complete terms. This is approval of the task wording, not an assignment or candidate decision.
+
+Any later edit returns the task to draft. **Task revision history** retains the earlier wording, effort, policy, role title, status and actor in encrypted snapshots. **Archive saved task** removes its approved status while keeping that history. Search by title, skills or experience, filter by role/status and page through the library and revisions.
+
+Stale saves retain your draft. **Reload saved task** asks for explicit discard when you have unsaved changes. A failed read can be retried without leaving the editor. Browsing history does not adopt a newer write version for an unsaved edit. After a connection failure during creation, check the library before creating another draft.
+
+This increment does not issue tasks, send candidate messages, accept assignment uploads or grant reviewers access. Those workflows, mandatory contribution/AI disclosures, assessment dimensions and progression controls remain required in Task 4.
 
 ## Understand attempts and delivery reviews
 

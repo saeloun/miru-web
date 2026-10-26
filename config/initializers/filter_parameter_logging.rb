@@ -12,5 +12,5 @@ Rails.application.config.filter_parameters += [
   :payroll_payload, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
   :salary_details, :profitability_billing_rate, :agreement, :agreement_template, :signature_request, :signature_review,
   :signature_connection, :files, :payload, :webhookEndpoint, /\Aapplication\z/, /\Ahiring_search\z/, /\Aquery\z/,
-  :hiring_setting, :hiring_mailbox, :hiring_receipt, :hiring_message, :hiring_form, :screening
+  :hiring_setting, :hiring_mailbox, :hiring_receipt, :hiring_message, :hiring_form, :screening, :hiring_assignment_template
 ]

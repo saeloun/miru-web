@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_26_090200) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_090300) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -665,6 +665,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090200) do
     t.index ["owner_employment_id"], name: "index_hiring_applications_on_owner_employment_id"
     t.check_constraint "source::text = 'manual'::text AND email_key IS NULL OR source::text = 'email'::text AND email_key::text ~ '^[a-f0-9]{64}$'::text", name: "hiring_application_supported_source"
     t.check_constraint "stage::text = ANY (ARRAY['received'::character varying, 'information_pending'::character varying, 'screening'::character varying, 'shortlisted'::character varying, 'assignment_assigned'::character varying, 'assignment_review'::character varying, 'interview'::character varying, 'final_decision'::character varying, 'offer'::character varying, 'hired'::character varying, 'on_hold'::character varying, 'rejection_pending'::character varying, 'rejected'::character varying, 'withdrawn'::character varying, 'no_show'::character varying]::text[])", name: "hiring_application_stage"
+  end
+
+  create_table "hiring_assignment_template_revisions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_template_id", null: false
+    t.bigint "created_by_id"
+    t.integer "template_version", null: false
+    t.text "snapshot", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_assignment_template_revisions_on_created_by_id"
+    t.index ["hiring_assignment_template_id", "template_version"], name: "index_hiring_task_revisions_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_templates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_role_id"
+    t.string "title", null: false
+    t.string "skills", default: "", null: false
+    t.string "experience", default: "", null: false
+    t.string "status", default: "draft", null: false
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_assignment_templates_on_company_id_and_id", unique: true
+    t.index ["company_id", "title", "id"], name: "index_hiring_assignment_templates_for_library"
+    t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'approved'::character varying, 'archived'::character varying]::text[])", name: "hiring_assignment_template_status"
   end
 
   create_table "hiring_candidates", force: :cascade do |t|
@@ -1925,6 +1953,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_090200) do
   add_foreign_key "hiring_applications", "hiring_candidates", column: ["company_id", "hiring_candidate_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_applications", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_applications", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_template_revisions", "companies"
+  add_foreign_key "hiring_assignment_template_revisions", "hiring_assignment_templates", column: ["company_id", "hiring_assignment_template_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_template_revisions", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_templates", "companies"
+  add_foreign_key "hiring_assignment_templates", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_candidates", "companies"
   add_foreign_key "hiring_mailboxes", "companies"
   add_foreign_key "hiring_messages", "companies"
