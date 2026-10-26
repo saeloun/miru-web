@@ -64,6 +64,7 @@ RSpec.describe "Organization profitability planning", type: :request do
     expect(response).to have_http_status(:conflict)
     expect(plan.reload.name).to eq("Another admin saved this")
     expect(response.body).to include("Stale changes", "Another edit was saved")
+    expect(response.body).not_to include("Export saved plan CSV")
     patch "#{path}/#{plan.id}", params: { profitability_scenario: { company_id: company.id, name: plan.name, lock_version: plan.lock_version,
       assumptions: assumptions.merge(currency: "INR") } }
     expect(response).to have_http_status(:unprocessable_entity)

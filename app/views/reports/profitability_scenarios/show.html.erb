@@ -58,7 +58,9 @@
       <% { revenue: 'Revenue', cost: 'Costs', margin: 'Margin' }.each do |key, label| %><tr><td><%= label %></td><td><%= profitability_number(@baseline[:summary][key], currency: @baseline[:currency]) %></td><td data-summary="<%= key %>" data-format="currency"><%= profitability_number(@projection&.dig(:summary, key), currency: @assumptions['currency']) %></td></tr><% end %>
       </tbody></table>
     </section>
-    <p>Saved <%= @scenario.updated_at.iso8601 %>. <a data-planning-export href="<%= @export_url %>">Export saved plan CSV</a>. Authorized link expires in <%= Rails.configuration.x.compensation_report_export_ttl / 60 %> minutes; save edits before exporting.</p>
+    <% if @error.blank? %>
+      <p>Saved <%= @scenario.updated_at.iso8601 %>. <a data-planning-export href="<%= @export_url %>">Export saved plan CSV</a>. Authorized link expires in <%= Rails.configuration.x.compensation_report_export_ttl / 60 %> minutes; save edits before exporting.</p>
+    <% else %><p>These edits have not been saved. Reload the saved plan before exporting.</p><% end %>
   <% else %><p>The first save establishes the baseline. Save now, then adjust assumptions to compare scenarios.</p><% end %>
   <% if (source = @scenario.worksheet['source']) %>
     <details class="panel"><summary>Source history and original data-quality warnings</summary>

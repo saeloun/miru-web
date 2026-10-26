@@ -128,7 +128,7 @@ class Reports::ProfitabilityScenariosController < ApplicationController
         @error ||= error.message
       end
       @baseline = Reports::ProfitabilityProjection.new(@scenario.worksheet.fetch("baseline")).process if @scenario.persisted?
-      if @scenario.persisted?
+      if @scenario.persisted? && @error.blank?
         token = export_verifier.generate({ "id" => @scenario.id, "company_id" => current_company.id, "version" => @scenario.lock_version },
           expires_in: Rails.configuration.x.compensation_report_export_ttl, purpose: :planning_export)
         @export_url = profitability_scenario_export_path(token:)
