@@ -187,33 +187,22 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
   end
 
   describe "POST /api/v1/subscription/checkout" do
-    it "returns stripe plan page url when configured" do
+    before do
+      allow(Stripe::Subscription).to receive(:list).and_return(Stripe::ListObject.construct_from(data: [], has_more: false))
+      allow(Stripe::Checkout::Session).to receive(:list).and_return(Stripe::ListObject.construct_from(data: [], has_more: false))
+    end
+
+    it "does not bypass managed checkout with a reusable plan page" do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return("https://buy.stripe.com/test_plan")
-      extra_user = create(:user, current_workspace_id: company.id)
-      create(:employment, company:, user: extra_user)
+      %w[STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID].each do |key|
+        allow(ENV).to receive(:[]).with(key).and_return(nil)
+      end
 
       post "/api/v1/subscription/checkout", params: { interval: "yearly" }, headers: headers
 
-      expect(response).to have_http_status(:ok)
-      url = JSON.parse(response.body)["url"]
-      expect(url).to include("https://buy.stripe.com/test_plan")
-      expect(url).to include("prefilled_email=#{CGI.escape(user.email)}")
-      expect(url).to include("client_reference_id=#{company.id}")
-      expect(url).to include("billing_interval=yearly")
-      expect(url).to include("quantity=2")
-      expect(JSON.parse(response.body).dig("agent_payment_options", "stripe_link_cli")).to include(
-        "provider" => "stripe_link_cli",
-        "supported" => true,
-        "credential_type" => "virtual_card"
-      )
-      expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
-        "company_id" => company.id,
-        "user_id" => user.id,
-        "billing_interval" => "yearly",
-        "seat_quantity" => 2,
-        "provider" => "stripe_plan_page"
-      )
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(JSON.parse(response.body)).not_to have_key("url")
     end
 
     it "returns 422 when stripe price is not configured" do
@@ -249,7 +238,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_render_monthly", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_render_monthly", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -270,7 +259,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_render_yearly", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_render_yearly", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -291,7 +280,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_shared", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_shared", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -334,7 +323,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
             billing_interval: "monthly",
             seat_quantity: 1
           )
-        )
+        ), hash_including(:idempotency_key)
       )
     end
 
@@ -367,7 +356,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
             billing_interval: "yearly",
             seat_quantity: 2
           )
-        )
+        ), hash_including(:idempotency_key)
       )
     end
   end

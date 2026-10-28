@@ -98,7 +98,7 @@ class HandleStripeCheckoutEventService
         end
 
         success =
-          Subscriptions::StripeSyncService.process(
+          Subscriptions::StripeSyncService.reconcile(
             company:,
             stripe_customer_id: checkout_session.customer,
             stripe_subscription_id: checkout_session.subscription,
@@ -120,10 +120,9 @@ class HandleStripeCheckoutEventService
     def handle_subscription_event
       subscription = event.data.object
       success =
-        Subscriptions::StripeSyncService.process(
+        Subscriptions::StripeSyncService.reconcile(
           stripe_customer_id: subscription.customer,
-          stripe_subscription_id: subscription.id,
-          subscription:
+          stripe_subscription_id: subscription.id
         )
 
       set_response(success ? { success: true } : { message: "Invalid payload!" }, success ? :ok : 400)
@@ -135,7 +134,7 @@ class HandleStripeCheckoutEventService
       return if subscription_id.blank?
 
       success =
-        Subscriptions::StripeSyncService.process(
+        Subscriptions::StripeSyncService.reconcile(
           stripe_customer_id: invoice.customer,
           stripe_subscription_id: subscription_id
         )

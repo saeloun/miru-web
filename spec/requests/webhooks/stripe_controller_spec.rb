@@ -30,12 +30,12 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
 
     allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
-    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
+    allow(Subscriptions::StripeSyncService).to receive(:reconcile).and_return(true)
 
     post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
 
     expect(response).to have_http_status(:ok)
-    expect(Subscriptions::StripeSyncService).to have_received(:process).with(
+    expect(Subscriptions::StripeSyncService).to have_received(:reconcile).with(
       company:,
       stripe_customer_id: "cus_123",
       stripe_subscription_id: "sub_123",
@@ -58,12 +58,12 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
 
     allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
-    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
+    allow(Subscriptions::StripeSyncService).to receive(:reconcile).and_return(true)
 
     post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
 
     expect(response).to have_http_status(:ok)
-    expect(Subscriptions::StripeSyncService).to have_received(:process).with(
+    expect(Subscriptions::StripeSyncService).to have_received(:reconcile).with(
       company:,
       stripe_customer_id: "cus_123",
       stripe_subscription_id: "sub_123",
@@ -88,12 +88,12 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
 
     allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
-    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
+    allow(Subscriptions::StripeSyncService).to receive(:reconcile).and_return(true)
 
     post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
 
     expect(response).to have_http_status(:bad_request)
-    expect(Subscriptions::StripeSyncService).not_to have_received(:process)
+    expect(Subscriptions::StripeSyncService).not_to have_received(:reconcile)
   end
 
   it "enqueues a plan purchase alert when checkout upgrades a free workspace" do
@@ -129,7 +129,8 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
 
     allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
-    allow(Stripe::Subscription).to receive(:retrieve).with("sub_123").and_return(subscription)
+    allow(Stripe::Subscription).to receive(:list).with(customer: "cus_123", status: "all", limit: 100)
+      .and_return(Stripe::ListObject.construct_from(data: [subscription], has_more: false))
 
     expect do
       post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
@@ -151,15 +152,14 @@ RSpec.describe "Stripe webhooks", type: :request do
     )
 
     allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
-    allow(Subscriptions::StripeSyncService).to receive(:process).and_return(true)
+    allow(Subscriptions::StripeSyncService).to receive(:reconcile).and_return(true)
 
     post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
 
     expect(response).to have_http_status(:ok)
-    expect(Subscriptions::StripeSyncService).to have_received(:process).with(
+    expect(Subscriptions::StripeSyncService).to have_received(:reconcile).with(
       stripe_customer_id: "cus_123",
-      stripe_subscription_id: "sub_123",
-      subscription:
+      stripe_subscription_id: "sub_123"
     )
   end
 
