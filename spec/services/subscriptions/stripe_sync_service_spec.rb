@@ -244,7 +244,7 @@ RSpec.describe Subscriptions::StripeSyncService do
         Stripe::ListObject.construct_from(data: [canceled_subscription, active_subscription], has_more: false)
       )
       2.times do
-        expect(described_class.process(company:, subscription: canceled_subscription, reconcile: true)).to be(true)
+        expect(described_class.reconcile(company:, subscription: canceled_subscription)).to be(true)
       end
       expect(company.reload).to have_attributes(plan_tier: "paid", stripe_subscription_id: "sub_active", billing_exempt: true)
     end
@@ -265,7 +265,7 @@ RSpec.describe Subscriptions::StripeSyncService do
       allow(Stripe::Subscription).to receive(:list).and_return(
         Stripe::ListObject.construct_from(data: [canceled_subscription], has_more: false)
       )
-      expect(described_class.process(company:, subscription: active_subscription, reconcile: true)).to be(true)
+      expect(described_class.reconcile(company:, subscription: active_subscription)).to be(true)
       expect(company.reload.plan_tier).to eq("free")
       expect(company.pro_access?).to be(true)
       expect(company.current_plan_label).to eq("free_pro")
@@ -273,7 +273,7 @@ RSpec.describe Subscriptions::StripeSyncService do
 
     it "rejects mismatched customer input before reading or projecting another customer" do
       allow(Stripe::Subscription).to receive(:list)
-      expect(described_class.process(company:, stripe_customer_id: "cus_other", reconcile: true)).to be(false)
+      expect(described_class.reconcile(company:, stripe_customer_id: "cus_other")).to be(false)
       expect(Stripe::Subscription).not_to have_received(:list)
       expect(company.reload.stripe_customer_id).to eq("cus_current")
     end

@@ -5,7 +5,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
     authorize current_company, policy_class: CompanyPolicy
 
     if current_company.plan_tier != "paid" && current_company.stripe_customer_id.present?
-      Subscriptions::StripeSyncService.process(company: current_company, reconcile: true)
+      Subscriptions::StripeSyncService.reconcile(company: current_company)
     end
     render_summary
   end

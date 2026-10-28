@@ -6,21 +6,24 @@ module Subscriptions
       new(...).process
     end
 
-    def initialize(company: nil, stripe_customer_id: nil, stripe_subscription_id: nil, subscription: nil, notify_plan_purchase: false, reconcile: false)
+    def self.reconcile(...)
+      new(...).process(reconcile: true)
+    end
+
+    def initialize(company: nil, stripe_customer_id: nil, stripe_subscription_id: nil, subscription: nil, notify_plan_purchase: false)
       @company = company
       @stripe_customer_id = stripe_customer_id
       @stripe_subscription_id = stripe_subscription_id
       @subscription = subscription
       @notify_plan_purchase = notify_plan_purchase
-      @reconcile = reconcile
     end
 
-    def process
+    def process(reconcile: false)
       target_company = company || find_company
       return false if target_company.blank?
 
       target_company.with_lock do
-        reconcile = @reconcile || (subscription.nil? && stripe_subscription_id.blank? && target_company.stripe_customer_id.present?)
+        reconcile ||= subscription.nil? && stripe_subscription_id.blank? && target_company.stripe_customer_id.present?
         stripe_subscription = reconcile ? fetch_current_subscription(target_company) : subscription || fetch_subscription(target_company)
         if stripe_subscription.blank?
           disable_company!(target_company)
