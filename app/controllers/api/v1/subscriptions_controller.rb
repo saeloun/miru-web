@@ -4,21 +4,17 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
   def show
     authorize current_company, policy_class: CompanyPolicy
 
+    if current_company.plan_tier != "paid" && current_company.stripe_customer_id.present?
+      Subscriptions::StripeSyncService.process(company: current_company, reconcile: true)
+    end
     render_summary
   end
 
   def checkout
     authorize current_company, policy_class: CompanyPolicy
 
-    if current_company.plan_tier == "paid"
+    if current_company.billing_exempt? || current_company.plan_tier == "paid"
       render json: { errors: I18n.t("subscriptions.already_subscribed") }, status: 422
-      return
-    end
-
-    plan_page_url = checkout_plan_page_url
-    if plan_page_url.present?
-      track_checkout_started("stripe_plan_page")
-      render json: checkout_payload(plan_page_url), status: 200
       return
     end
 
@@ -28,19 +24,14 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       return
     end
 
-    customer_id = ensure_stripe_customer_id
-    session = Stripe::Checkout::Session.create(
-      mode: "subscription",
-      customer: customer_id,
-      line_items: [{ price: price_id, quantity: checkout_seat_quantity }],
-      success_url: "#{request.base_url}/settings/billing?billing=success",
-      cancel_url: "#{request.base_url}/settings/billing?billing=cancelled",
-      metadata: {
-        company_id: current_company.id,
-        billing_interval: billing_interval,
-        seat_quantity: checkout_seat_quantity
-      }
-    )
+    session = Subscriptions::CheckoutService.new(
+      company: current_company, user: current_user, price_id:, interval: billing_interval,
+      base_url: request.base_url
+    ).process
+    unless session
+      render json: { errors: I18n.t("subscriptions.already_subscribed") }, status: 422
+      return
+    end
 
     track_checkout_started("stripe_checkout")
     render json: checkout_payload(session.url), status: 200
@@ -107,22 +98,6 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       }
     end
 
-    def checkout_plan_page_url
-      url = ENV["STRIPE_PLAN_PAGE_URL"].to_s
-      return if url.blank?
-
-      uri = URI.parse(url)
-      params = Rack::Utils.parse_nested_query(uri.query)
-      params["prefilled_email"] ||= current_user.email
-      params["client_reference_id"] ||= current_company.id.to_s
-      params["billing_interval"] ||= billing_interval
-      params["quantity"] ||= checkout_seat_quantity.to_s
-      uri.query = params.to_query
-      uri.to_s
-    rescue URI::InvalidURIError
-      url
-    end
-
     def checkout_payload(url)
       {
         url:,
@@ -154,18 +129,6 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       candidates << "STRIPE_SUBSCRIPTION_PRICE_ID"
 
       candidates.filter_map { |name| ENV[name].presence }.first.to_s
-    end
-
-    def ensure_stripe_customer_id
-      return current_company.stripe_customer_id if current_company.stripe_customer_id.present?
-
-      customer = Stripe::Customer.create(
-        name: current_company.name,
-        email: current_user.email,
-        metadata: { company_id: current_company.id }
-      )
-      current_company.update!(stripe_customer_id: customer.id)
-      customer.id
     end
 
     def checkout_seat_quantity

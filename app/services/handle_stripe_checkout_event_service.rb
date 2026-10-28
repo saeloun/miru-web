@@ -102,7 +102,8 @@ class HandleStripeCheckoutEventService
             company:,
             stripe_customer_id: checkout_session.customer,
             stripe_subscription_id: checkout_session.subscription,
-            notify_plan_purchase: true
+            notify_plan_purchase: true,
+            reconcile: true
           )
 
         if success
@@ -123,7 +124,7 @@ class HandleStripeCheckoutEventService
         Subscriptions::StripeSyncService.process(
           stripe_customer_id: subscription.customer,
           stripe_subscription_id: subscription.id,
-          subscription:
+          reconcile: true
         )
 
       set_response(success ? { success: true } : { message: "Invalid payload!" }, success ? :ok : 400)
@@ -137,7 +138,8 @@ class HandleStripeCheckoutEventService
       success =
         Subscriptions::StripeSyncService.process(
           stripe_customer_id: invoice.customer,
-          stripe_subscription_id: subscription_id
+          stripe_subscription_id: subscription_id,
+          reconcile: true
         )
 
       set_response(success ? { success: true } : { message: "Invalid payload!" }, success ? :ok : 400)
