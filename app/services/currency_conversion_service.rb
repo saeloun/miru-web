@@ -25,6 +25,7 @@ class CurrencyConversionService
         rate =
           fetch_from_exchangerate_api(from_currency, to_currency, date) ||
           fetch_from_ecb(from_currency, to_currency, date) ||
+          fetch_from_allratestoday(from_currency, to_currency, date) ||
           fetch_from_fixer_io(from_currency, to_currency, date)
 
         return nil if rate.blank?
@@ -43,6 +44,15 @@ class CurrencyConversionService
       def fetch_from_ecb(from_currency, to_currency, date)
         response = request_json("https://api.frankfurter.app/#{date.to_date}?from=#{from_currency}&to=#{to_currency}")
         response&.dig("rates", to_currency)&.to_f
+      end
+
+      def fetch_from_allratestoday(from_currency, to_currency, date)
+        return nil unless current_date?(date)
+
+        response = request_json("https://allratestoday.com/api/open/latest/#{from_currency}")
+        return nil unless response&.dig("result") == "success"
+
+        response.dig("rates", to_currency)&.to_f
       end
 
       def fetch_from_fixer_io(from_currency, to_currency, date)

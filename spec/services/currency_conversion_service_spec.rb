@@ -109,11 +109,32 @@ RSpec.describe CurrencyConversionService do
       end
     end
 
+    context "with AllRatesToday" do
+      before do
+        stub_request(:get, /allratestoday\.com/)
+          .to_return(
+            status: 200,
+            body: {
+              result: "success",
+              base_code: "EUR",
+              date: date.to_s,
+              rates: { "USD" => 1.21 }
+            }.to_json
+          )
+      end
+
+      it "fetches rate successfully" do
+        rate = described_class.send(:fetch_from_allratestoday, from_currency, to_currency, date)
+        expect(rate).to eq(1.21)
+      end
+    end
+
     context "with Fixer.io fallback" do
       before do
-        # First two APIs fail
+        # First three APIs fail
         allow(described_class).to receive(:fetch_from_exchangerate_api).and_return(nil)
         allow(described_class).to receive(:fetch_from_ecb).and_return(nil)
+        allow(described_class).to receive(:fetch_from_allratestoday).and_return(nil)
 
         # Fixer succeeds
         allow(described_class).to receive(:fetch_from_fixer_io).and_return(1.17)
@@ -129,6 +150,7 @@ RSpec.describe CurrencyConversionService do
       before do
         allow(described_class).to receive(:fetch_from_exchangerate_api).and_return(nil)
         allow(described_class).to receive(:fetch_from_ecb).and_return(nil)
+        allow(described_class).to receive(:fetch_from_allratestoday).and_return(nil)
         allow(described_class).to receive(:fetch_from_fixer_io).and_return(nil)
       end
 
@@ -148,6 +170,16 @@ RSpec.describe CurrencyConversionService do
       rate = described_class.send(:fetch_from_exchangerate_api, from_currency, to_currency, historical_date)
 
       expect(rate).to be_nil
+    end
+
+    it "does not query the latest-only allratestoday for a past date" do
+      stub = stub_request(:get, /allratestoday\.com/)
+        .to_return(status: 200, body: { result: "success", rates: { "USD" => 1.25 } }.to_json)
+
+      rate = described_class.send(:fetch_from_allratestoday, from_currency, to_currency, historical_date)
+
+      expect(rate).to be_nil
+      expect(stub).not_to have_been_requested
     end
 
     it "does not query the latest-only fixer.io for a past date" do
