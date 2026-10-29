@@ -139,6 +139,88 @@ RSpec.describe CurrencyConversionService do
     end
   end
 
+  describe "AllRatesToday fallback" do
+    let(:url) { "https://allratestoday.com/api/v1/rates?source=EUR&target=USD" }
+    let(:payload) { [{ source: "EUR", target: "USD", rate: 1.21, time: Time.current.iso8601 }] }
+    let!(:provider_request) do
+      stub_request(:get, url).with(headers: { "Authorization" => "Bearer test-key" })
+        .to_return(status: 200, body: payload.to_json)
+    end
+
+    before do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("ALLRATESTODAY_API_KEY").and_return("test-key")
+      allow(ENV).to receive(:[]).with("FIXER_API_KEY").and_return("fixer-key")
+      stub_request(:get, /api\.exchangerate-api\.com/).to_return(status: 503)
+      stub_request(:get, /api\.frankfurter\.app/).to_return(status: 503)
+      stub_request(:get, /data\.fixer\.io/).to_return(status: 503)
+    end
+
+    it "converts using the final fallback and caches the rate" do
+      expect(described_class.convert(100, "eur", "usd")).to eq(121.0)
+      expect(ExchangeRate.rate_for("EUR", "USD")).to eq(1.21)
+      expect(described_class.get_exchange_rate("EUR", "USD")).to eq(1.21)
+      expect(provider_request).to have_been_requested.once
+    end
+
+    [nil, "", " "].each do |key|
+      it "skips the provider when its API key is #{key.inspect}" do
+        allow(ENV).to receive(:[]).with("ALLRATESTODAY_API_KEY").and_return(key)
+
+        expect(described_class.get_exchange_rate("EUR", "USD")).to be_nil
+        expect(provider_request).not_to have_been_requested
+      end
+    end
+
+    {
+      "https://api.exchangerate-api.com/v4/latest/EUR" => { rates: { USD: 1.18 } },
+      "https://api.frankfurter.app/#{Date.current}?from=EUR&to=USD" => { rates: { USD: 1.18 } },
+      "https://data.fixer.io/api/latest?access_key=fixer-key&base=EUR&symbols=USD" =>
+        { success: true, rates: { USD: 1.18 } }
+    }.each do |earlier_url, body|
+      it "prefers the existing provider at #{URI(earlier_url).host}" do
+        stub_request(:get, earlier_url).to_return(status: 200, body: body.to_json)
+
+        expect(described_class.get_exchange_rate("EUR", "USD")).to eq(1.18)
+        expect(provider_request).not_to have_been_requested
+      end
+    end
+
+    it "does not use latest rates for a historical date" do
+      expect(described_class.get_exchange_rate("EUR", "USD", 30.days.ago.to_date)).to be_nil
+      expect(provider_request).not_to have_been_requested
+      expect(ExchangeRate.count).to eq(0)
+    end
+
+    [401, 429, 500].each do |status|
+      it "does not cache an HTTP #{status} failure" do
+        stub_request(:get, url).to_return(status: status)
+
+        expect(described_class.get_exchange_rate("EUR", "USD")).to be_nil
+        expect(ExchangeRate.count).to eq(0)
+      end
+    end
+
+    it "handles a timeout without caching a rate" do
+      stub_request(:get, url).to_timeout
+
+      expect(described_class.get_exchange_rate("EUR", "USD")).to be_nil
+      expect(ExchangeRate.count).to eq(0)
+    end
+
+    ["not json", "null", "{}", "[]", "[null]",
+     [{ source: "GBP", target: "USD", rate: 1.21 }].to_json,
+     [{ source: "EUR", target: "GBP", rate: 1.21 }].to_json,
+     *[nil, 0, -1, "invalid", "1.21"].map { |rate| [{ source: "EUR", target: "USD", rate: rate }].to_json }].each do |body|
+      it "rejects an invalid response: #{body}" do
+        stub_request(:get, url).to_return(status: 200, body: body)
+
+        expect(described_class.get_exchange_rate("EUR", "USD")).to be_nil
+        expect(ExchangeRate.count).to eq(0)
+      end
+    end
+  end
+
   describe "historical rate accuracy" do
     let(:from_currency) { "EUR" }
     let(:to_currency) { "USD" }
