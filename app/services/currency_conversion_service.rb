@@ -25,8 +25,8 @@ class CurrencyConversionService
         rate =
           fetch_from_exchangerate_api(from_currency, to_currency, date) ||
           fetch_from_ecb(from_currency, to_currency, date) ||
-          fetch_from_allratestoday(from_currency, to_currency, date) ||
-          fetch_from_fixer_io(from_currency, to_currency, date)
+          fetch_from_fixer_io(from_currency, to_currency, date) ||
+          fetch_from_allratestoday(from_currency, to_currency, date)
 
         return nil if rate.blank?
 
@@ -49,10 +49,20 @@ class CurrencyConversionService
       def fetch_from_allratestoday(from_currency, to_currency, date)
         return nil unless current_date?(date)
 
-        response = request_json("https://allratestoday.com/api/open/latest/#{from_currency}")
-        return nil unless response&.dig("result") == "success"
+        api_key = ENV["ALLRATESTODAY_API_KEY"]
+        return nil if api_key.blank?
 
-        response.dig("rates", to_currency)&.to_f
+        response = request_json(
+          "https://allratestoday.com/api/v1/rates?source=#{from_currency}&target=#{to_currency}",
+          "Authorization" => "Bearer #{api_key}"
+        )
+        return nil unless response.is_a?(Array)
+
+        entry = response.find do |item|
+          item.is_a?(Hash) && item["source"] == from_currency && item["target"] == to_currency
+        end
+        rate = entry&.[]("rate")
+        rate if rate.is_a?(Numeric) && rate.finite? && rate.positive?
       end
 
       def fetch_from_fixer_io(from_currency, to_currency, date)
@@ -69,14 +79,14 @@ class CurrencyConversionService
         response.dig("rates", to_currency)&.to_f
       end
 
-      def request_json(url)
+      def request_json(url, headers = {})
         uri = URI.parse(url)
         http = Net::HTTP.new(uri.host, uri.port)
         http.use_ssl = uri.scheme == "https"
         http.open_timeout = REQUEST_TIMEOUT_SECONDS
         http.read_timeout = REQUEST_TIMEOUT_SECONDS
 
-        response = http.get(uri.request_uri)
+        response = http.get(uri.request_uri, headers)
         return nil unless response.is_a?(Net::HTTPSuccess)
 
         JSON.parse(response.body)
