@@ -3,6 +3,39 @@
 require "rails_helper"
 
 RSpec.describe MCP::Miru::Client do
+  describe "HTTP SDK compatibility" do
+    it "lists and calls tools through the real SDK transport" do
+      endpoint = "https://mcp.example.test/mcp"
+      requests = []
+      stub_request(:post, endpoint).with(headers: { "Authorization" => "Bearer test-token" }).to_return do |request|
+        payload = JSON.parse(request.body)
+        requests << payload
+        result = if payload.fetch("method") == "tools/list"
+          { tools: [{ name: "miru.project.list", inputSchema: { type: "object" } }] }
+        else
+          { content: [{ type: "text", text: "projects returned" }], isError: false }
+        end
+        {
+          status: 200,
+          headers: { "Content-Type" => "application/json" },
+          body: { jsonrpc: "2.0", id: payload.fetch("id"), result: result }.to_json
+        }
+      end
+
+      client = described_class.http(url: endpoint, headers: { "Authorization" => "Bearer test-token" })
+      expect(client.tools.map(&:name)).to eq(["miru.project.list"])
+      result = client.call_tool(name: "miru.project.list", arguments: { query: "acme" })
+
+      expect(result.fetch("result").fetch("content")).to eq([{ "type" => "text", "text" => "projects returned" }])
+      expect(requests.last).to include(
+        "method" => "tools/call",
+        "params" => { "name" => "miru.project.list", "arguments" => { "query" => "acme" } }
+      )
+    ensure
+      client&.close
+    end
+  end
+
   describe ".http" do
     it "builds an MCP client with HTTP transport" do
       transport = instance_double(MCP::Client::HTTP)

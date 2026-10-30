@@ -489,7 +489,7 @@ GEM
     mapping (1.1.3)
     marcel (1.2.1)
     matrix (0.4.2)
-    mcp (0.25.0)
+    mcp (1.2.0)
       json_schemer (>= 2.4)
     metrics (0.15.0)
     mini_magick (4.12.0)
@@ -529,7 +529,8 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (7.3.0)
+    net-ssh (7.3.8)
+      logger
     netrc (0.11.0)
     nio4r (2.7.5)
     nkf (0.2.0)
@@ -1025,7 +1026,7 @@ DEPENDENCIES
   kamal
   letter_opener
   letter_opener_web
-  mcp (~> 0.25.0)
+  mcp (~> 1.2.0)
   mission_control-jobs
   money
   nkf
