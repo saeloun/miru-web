@@ -6,10 +6,12 @@ on:
     branches: [develop, main, production]
     types: [labeled, opened, synchronize, reopened]
   workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * *"
 
 # Cancel in-progress runs on same branch
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}-${{ github.event_name == 'schedule' && 'security' || 'ci' }}
   cancel-in-progress: true
 
 jobs:
@@ -19,7 +21,7 @@ jobs:
     timeout-minutes: 45
     permissions:
       contents: read
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    if: github.event_name != 'schedule' && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci'))
     env:
       RAILS_ENV: test
       DB_HOST: localhost
@@ -152,7 +154,7 @@ jobs:
     timeout-minutes: 30
     permissions:
       contents: read
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci')
+    if: github.event_name != 'schedule' && (github.event_name != 'push' || !contains(github.event.head_commit.message, 'skip ci'))
     env:
       RAILS_ENV: test
       DB_HOST: localhost
@@ -243,10 +245,6 @@ jobs:
           bundler-cache: true
           bundler: latest
 
-      - name: Run bundler-audit
-        run: |
-          bundle exec bundler-audit check --update
-
       - name: Setup Node
         uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
@@ -257,15 +255,27 @@ jobs:
         with:
           run_install: false
 
-      - name: Audit web, docs, and mobile packages
-        run: |
-          pnpm audit
-          pnpm --dir docs audit
-          pnpm --dir apps/mobile audit
+      - name: Run bundler-audit
+        if: ${{ !cancelled() }}
+        run: bundle exec bundler-audit check --update
+
+      - name: Audit web packages
+        if: ${{ !cancelled() }}
+        run: pnpm audit
+
+      - name: Audit docs packages
+        if: ${{ !cancelled() }}
+        run: pnpm --dir docs audit
+
+      - name: Audit mobile packages
+        if: ${{ !cancelled() }}
+        run: pnpm --dir apps/mobile audit
 
       - name: Run Ruby runtime audit
+        if: ${{ !cancelled() }}
         run: bundle exec ruby-audit check
 
       - name: Run brakeman
+        if: ${{ !cancelled() }}
         run: |
           bundle exec brakeman -q -w2
