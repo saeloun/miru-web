@@ -32,7 +32,10 @@ module Subscriptions
             company,
             subscription_id: event.stripe_subscription_id,
             subscription_status: event.subscription_status,
-            purchase_event_id: event.id
+            purchase_event_id: event.id,
+            interval: event.subscription_interval,
+            seat_quantity: event.seat_quantity,
+            converted_at: event.created_at
           )
           raise AnalyticsNotRecorded, "Purchase event #{event.id} was not recorded" unless analytics_recorded?
 
@@ -51,7 +54,7 @@ module Subscriptions
 
           alert_email = ENV["PLAN_PURCHASE_ALERT_EMAIL"].to_s.presence
           if alert_email
-            alert_mail(alert_email).deliver_now
+            alert_mail(alert_email).message.deliver
             event.update!(notified_at: Time.current)
           else
             Rails.logger.warn("PLAN_PURCHASE_ALERT_EMAIL is not configured; skipping plan purchase alert")

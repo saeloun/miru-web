@@ -113,14 +113,14 @@ Do not use:
 
 ## Purchase Announcements
 
-The transition to paid writes one `SubscriptionPurchaseEvent` for each company and Stripe subscription, in the same transaction as the plan change. The delivery job is queued only after every enclosing transaction commits. If queueing fails or the process dies first, `SubscriptionPurchaseDeliveryRecoveryJob` queues pending events again every 10 minutes, oldest first and at most 100 per run, once 15 minutes have passed since the last attempt.
+The transition to paid writes one `SubscriptionPurchaseEvent` for each company and Stripe subscription, in the same transaction as the plan change. The delivery job is queued only after every enclosing transaction commits. If queueing fails or the process dies first, `SubscriptionPurchaseDeliveryRecoveryJob` queues pending events again, oldest first and at most 100 per run, every 10 minutes. An event becomes due 15 minutes after its last queueing, doubling up to 16 hours while it keeps failing.
 
-- `subscription_purchased` analytics are recorded exactly once, because the Ahoy row and `tracked_at` commit together.
+- `subscription_purchased` analytics are recorded exactly once, because the Ahoy row and `tracked_at` commit together. The stored `converted_at`, interval and seats come from the purchase; the Ahoy `time` column is the delivery time.
 - The `PLAN_PURCHASE_ALERT_EMAIL` alert is sent at least once. A worker that dies after the mail provider accepts the message but before `notified_at` commits sends it again, because no provider idempotency key is used.
-- Recovering the same subscription from `unpaid` is not a new purchase. A new Stripe subscription after cancellation is.
-- A generic Stripe event that activates the plan records analytics only. A later `checkout.session.completed`, billing-summary reconciliation or repeated checkout for that subscription requests the alert.
-- If `PLAN_PURCHASE_ALERT_EMAIL` is unset at delivery, the alert is logged as skipped and no longer pending.
-- An event that keeps failing stays pending and is retried. Check for failed `SubscriptionPurchaseDeliveryJob` executions and reported errors.
+- A failed send stays pending, including a Postmark inactive recipient. Reactivate the address or change `PLAN_PURCHASE_ALERT_EMAIL`, and the next attempt delivers it. Check for failed `SubscriptionPurchaseDeliveryJob` executions and reported errors.
+- A subscription the company already had in a status other than `incomplete` or `incomplete_expired` is not a new purchase when it regains access. A new Stripe subscription after cancellation is. A first purchase that started `incomplete` is.
+- A generic Stripe event that activates the plan records analytics only. A later `checkout.session.completed` for that subscription, while it is still paid, requests the alert.
+- If `PLAN_PURCHASE_ALERT_EMAIL` is unset at delivery, the alert is logged as skipped and stops being pending. Only a later replayed `checkout.session.completed` can request it again.
 
 ## Local Webhook Setup (Stripe CLI)
 

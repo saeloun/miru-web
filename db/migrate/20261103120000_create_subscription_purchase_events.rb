@@ -10,6 +10,7 @@ class CreateSubscriptionPurchaseEvents < ActiveRecord::Migration[8.1]
       t.integer :seat_quantity
       t.string :plan_label
       t.boolean :notification_required, null: false, default: false
+      t.integer :enqueue_count, null: false, default: 0
       t.datetime :enqueued_at
       t.datetime :tracked_at
       t.datetime :notified_at

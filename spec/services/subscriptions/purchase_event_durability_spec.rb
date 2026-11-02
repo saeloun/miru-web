@@ -195,6 +195,25 @@ RSpec.describe "Durable subscription purchase announcements" do
       expect(event.reload.notified_at).to be_present
     end
 
+    it "backs off an event that keeps failing without abandoning it" do
+      event = SubscriptionPurchaseEvent.create!(company:, stripe_subscription_id: "sub_failing", created_at: 1.day.ago)
+      SubscriptionPurchaseDeliveryRecoveryJob.perform_now
+      expect(event.reload.enqueue_count).to eq(1)
+
+      travel(SubscriptionPurchaseEvent::REDELIVERY_DELAY + 1.minute) do
+        SubscriptionPurchaseDeliveryRecoveryJob.perform_now
+        expect(event.reload.enqueue_count).to eq(2)
+        SubscriptionPurchaseDeliveryRecoveryJob.perform_now
+        expect(event.reload.enqueue_count).to eq(2)
+      end
+
+      event.update!(enqueue_count: 5000, enqueued_at: 15.hours.ago)
+      expect(SubscriptionPurchaseEvent.due_for_delivery).not_to include(event)
+
+      event.update!(enqueued_at: 17.hours.ago)
+      expect(SubscriptionPurchaseEvent.due_for_delivery).to include(event)
+    end
+
     it "drains a bounded batch oldest first" do
       stub_const("SubscriptionPurchaseEvent::BATCH_SIZE", 2)
       events = 3.times.map do |index|
@@ -227,10 +246,7 @@ RSpec.describe "Durable subscription purchase announcements" do
 
     it "retries a transient mail failure without touching paid access or recording analytics twice" do
       clear_enqueued_jobs
-      mail = instance_double(ActionMailer::MessageDelivery)
-      mailer = double(plan_purchased: mail)
-      allow(SubscriptionMailer).to receive(:with).and_return(mailer)
-      allow(mail).to receive(:deliver_now).and_raise(Net::OpenTimeout, "mail provider unavailable")
+      allow_any_instance_of(Mail::Message).to receive(:deliver).and_raise(Net::OpenTimeout, "mail provider unavailable")
 
       SubscriptionPurchaseDeliveryJob.perform_now(event)
 
@@ -239,12 +255,51 @@ RSpec.describe "Durable subscription purchase announcements" do
       expect(SubscriptionPurchaseEvent.pending).to include(event)
       expect(delivery_jobs.size).to eq(1)
 
-      allow(SubscriptionMailer).to receive(:with).and_call_original
+      allow_any_instance_of(Mail::Message).to receive(:deliver).and_call_original
       perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob)
 
       expect(event.reload.notified_at).to be_present
       expect(purchase_analytics.count).to eq(1)
       expect(deliveries.size).to eq(1)
+    end
+
+    it "does not mark the alert sent when the mailer rescues a suppressed recipient" do
+      clear_enqueued_jobs
+      allow_any_instance_of(Mail::Message).to receive(:deliver)
+        .and_raise(Postmark::InactiveRecipientError.new(406, { "Message" => "Inactive recipient" }.to_json, {}))
+
+      SubscriptionPurchaseDeliveryJob.perform_now(event)
+
+      expect(event.reload.notified_at).to be_nil
+      expect(SubscriptionPurchaseEvent.pending).to include(event)
+      expect(delivery_jobs.size).to eq(1)
+    end
+
+    it "rolls back and retries when a failed analytics insert aborts the transaction" do
+      clear_enqueued_jobs
+      allow_any_instance_of(Ahoy::Tracker).to receive(:track) do
+        ActiveRecord::Base.connection.execute("SELECT 1 / 0")
+      rescue ActiveRecord::StatementInvalid
+        nil
+      end
+
+      SubscriptionPurchaseDeliveryJob.perform_now(event)
+
+      expect(event.reload).to have_attributes(tracked_at: nil, notified_at: be_present)
+      expect(purchase_analytics.count).to eq(0)
+      expect(delivery_jobs.size).to eq(1)
+    end
+
+    it "records the purchase values even if the company changes before delivery" do
+      event.update!(created_at: 1.hour.ago)
+      company.reload.revoke_stripe_subscription_access!
+
+      SubscriptionPurchaseDeliveryJob.perform_now(event)
+
+      expect(purchase_analytics.sole.properties).to include(
+        "billing_interval" => "monthly", "seat_quantity" => event.seat_quantity,
+        "converted_at" => event.created_at.as_json
+      )
     end
 
     it "does nothing further when a finished event is delivered again" do
@@ -320,6 +375,37 @@ RSpec.describe "Durable subscription purchase announcements" do
       expect(company.reload.plan_tier).to eq("paid")
       expect(company.subscription_purchase_events.count).to eq(1)
       expect(delivery_jobs.size).to eq(1)
+    end
+
+    it "does not announce a recovery of a subscription that predates these records" do
+      company.update!(plan_tier: "free", stripe_subscription_id: "sub_durable", subscription_status: "unpaid")
+
+      announce
+
+      expect(company.reload.plan_tier).to eq("paid")
+      expect(SubscriptionPurchaseEvent.count).to eq(0)
+      expect(delivery_jobs).to be_empty
+    end
+
+    it "announces a first purchase whose payment was incomplete when it was first seen" do
+      company.update!(plan_tier: "free", stripe_subscription_id: "sub_durable", subscription_status: "incomplete")
+
+      announce
+
+      expect(company.subscription_purchase_events.count).to eq(1)
+      expect(delivery_jobs.size).to eq(1)
+    end
+
+    it "does not request a late alert when a generically activated subscription recovers" do
+      announce(stripe_subscription, company, notify: false)
+      perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob)
+      announce(stripe_subscription(status: "unpaid"), company.reload, notify: false)
+
+      announce(stripe_subscription, company.reload, notify: true)
+
+      expect(delivery_jobs).to be_empty
+      expect(company.subscription_purchase_events.sole.notification_required).to eq(false)
+      expect(deliveries).to be_empty
     end
 
     it "does not treat a trial becoming active as another purchase" do

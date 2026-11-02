@@ -1522,6 +1522,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.integer "seat_quantity"
     t.string "plan_label"
     t.boolean "notification_required", default: false, null: false
+    t.integer "enqueue_count", default: 0, null: false
     t.datetime "enqueued_at"
     t.datetime "tracked_at"
     t.datetime "notified_at"

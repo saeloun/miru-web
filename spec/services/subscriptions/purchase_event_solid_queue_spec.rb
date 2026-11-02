@@ -12,13 +12,7 @@ RSpec.describe "Purchase delivery through Solid Queue" do
   end
   let(:queued) { SolidQueue::Job.where(class_name: "SubscriptionPurchaseDeliveryJob") }
 
-  around do |example|
-    adapter = SubscriptionPurchaseDeliveryJob.queue_adapter
-    SubscriptionPurchaseDeliveryJob.queue_adapter = :solid_queue
-    example.run
-  ensure
-    SubscriptionPurchaseDeliveryJob.queue_adapter = adapter
-  end
+  before { ActiveJob::Base.queue_adapter = :solid_queue }
 
   def announce
     Subscriptions::StripeSyncService.process(company:, subscription:, notify_plan_purchase: true)

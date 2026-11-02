@@ -47,12 +47,12 @@ module Analytics
       })
     end
 
-    def track_subscription_purchased(company, metadata = {})
+    def track_subscription_purchased(company, interval:, seat_quantity:, converted_at:, **metadata)
       track_event("subscription_purchased", metadata.merge(
         company_id: company.id,
-        billing_interval: normalized_billing_interval(company.subscription_interval),
-        seat_quantity: company.billable_team_seats,
-        converted_at: Time.current
+        billing_interval: normalized_billing_interval(interval),
+        seat_quantity:,
+        converted_at:
       ))
     end
 

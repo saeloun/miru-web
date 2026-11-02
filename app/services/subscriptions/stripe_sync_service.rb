@@ -80,6 +80,7 @@ module Subscriptions
       def sync_company!(target_company, stripe_subscription)
         target_company.with_lock do
           was_paid = target_company.plan_tier == "paid"
+          established = was_paid || established_subscription?(target_company, stripe_subscription)
           subscription_period_end = stripe_subscription_period_end(stripe_subscription)
 
           target_company.apply_stripe_subscription!(
@@ -91,17 +92,23 @@ module Subscriptions
             cancel_at_period_end: subscription_boolean_value(stripe_subscription, :cancel_at_period_end)
           )
 
-          event = purchase_event_to_deliver(target_company, stripe_subscription, was_paid)
+          event = purchase_event_to_deliver(target_company, stripe_subscription, established:, was_paid:)
           ActiveRecord.after_all_transactions_commit { event.enqueue_delivery } if event
         end
       end
 
-      def purchase_event_to_deliver(target_company, stripe_subscription, was_paid)
+      def established_subscription?(target_company, stripe_subscription)
+        status = target_company.subscription_status
+        target_company.stripe_subscription_id == subscription_value(stripe_subscription, :id) &&
+          status.present? && %w[incomplete incomplete_expired].exclude?(status)
+      end
+
+      def purchase_event_to_deliver(target_company, stripe_subscription, established:, was_paid:)
         return unless target_company.plan_tier == "paid"
 
         events = target_company.subscription_purchase_events
         subscription_id = subscription_value(stripe_subscription, :id)
-        event = if was_paid
+        event = if established
           events.find_by(stripe_subscription_id: subscription_id)
         else
           events.create_or_find_by!(stripe_subscription_id: subscription_id) do |record|
@@ -110,7 +117,7 @@ module Subscriptions
         end
         return unless event
 
-        newly_required = notify_plan_purchase && !event.notification_required?
+        newly_required = notify_plan_purchase && !event.notification_required? && (was_paid || event.previously_new_record?)
         event.update!(notification_required: true) if newly_required
         event if event.previously_new_record? || newly_required
       end
