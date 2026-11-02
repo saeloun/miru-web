@@ -90,11 +90,15 @@ module NativeGoogleAuth
 
       def create_user!
         email = auth.info.email.downcase
-        user = User.new(email:, first_name: auth.info.first_name.presence || email.split("@").first,
+        user = User.new(email:, first_name: auth.info.first_name.presence || name_from(email),
           last_name: auth.info.last_name, password: Devise.friendly_token(40))
         user.skip_confirmation!
         user.save!
         user
+      end
+
+      def name_from(email)
+        email.split("@").first.gsub(/[^a-z]+/, " ").first(20).strip
       end
 
       def accept_invitation!(user)

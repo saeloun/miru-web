@@ -134,7 +134,7 @@ RSpec.describe "Native Google authentication", type: :request do
     callback = browser_callback(started, identity)
 
     expect(exchange(started, callback)["status"]).to eq("needs_workspace")
-    expect(User.find_by!(email: "unnamed.native@example.invalid").first_name).to eq("unnamed.native")
+    expect(User.find_by!(email: "unnamed.native@example.invalid").first_name).to eq("unnamed native")
   end
 
   it "rejects unverified Google emails without linking or creating identities" do
