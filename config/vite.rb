@@ -9,7 +9,7 @@ module MiruViteExecutable
       if configured && File.exist?(configured) && !File.executable?(configured)
         raise ViteRuby::MissingExecutableError, "Check viteBinPath: the configured Vite file is not executable."
       end
-      unless File.executable?(configured.to_s) || File.executable?(config.root.join("node_modules/.bin/vite"))
+      unless File.executable?(configured.to_s) || File.executable?(File.expand_path("node_modules/.bin/vite"))
         raise ViteRuby::MissingExecutableError, "Run pnpm install --frozen-lockfile before building Vite assets."
       end
 

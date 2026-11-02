@@ -29,12 +29,12 @@ RSpec.describe "Vite executable resolution" do
     File.chmod(0o755, path)
   end
 
-  def run_vite(*arguments)
+  def run_vite(*arguments, vite_root: @project, directory: @project)
     Open3.capture3(
-      { "RACK_ENV" => "test", "VITE_RUBY_ROOT" => @project,
+      { "RACK_ENV" => "test", "VITE_RUBY_ROOT" => vite_root,
         "PATH" => "#{@project}/commands:#{ENV.fetch('PATH')}" },
       RbConfig.ruby, "-rvite_ruby", "-e", "ViteRuby.instance.run(ARGV, exec: true)", *arguments,
-      chdir: @project
+      chdir: directory
     )
   end
 
@@ -73,6 +73,18 @@ RSpec.describe "Vite executable resolution" do
     expect(status).to be_success, errors
     expect(File.readlines(File.join(@project, "custom-arguments"), chomp: true)).to eq(["build", "--mode", "test"])
     expect(File.exist?(File.join(@project, "pnpm-called"))).to be(false)
+  end
+
+  it "finds local dependencies when the project root is relative to the invoking directory" do
+    script = File.join(@project, "node_modules/.bin/vite")
+    FileUtils.mkdir_p(File.dirname(script))
+    File.write(script, "#!/bin/sh\nexit 0\n")
+    File.chmod(0o755, script)
+    write_command("pnpm", "exit 0\n")
+
+    _output, errors, status = run_vite("build", vite_root: File.basename(@project), directory: File.dirname(@project))
+
+    expect(status).to be_success, errors
   end
 
   it "loads production asset configuration without requiring frontend dependencies" do
