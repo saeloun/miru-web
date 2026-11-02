@@ -34,6 +34,8 @@ RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     libpq-dev \
     postgresql-client \
+    poppler-utils \
+    qpdf \
     curl \
     gnupg \
     ca-certificates \

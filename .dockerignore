@@ -38,6 +38,7 @@
 
 # Ignore CI service files.
 /.github
+/.superpowers
 docs/
 spec/
 playwright/

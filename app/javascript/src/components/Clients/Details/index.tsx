@@ -20,6 +20,7 @@ import { tableHeader, mobileTableHeader } from "./constants";
 import Header from "./Header";
 import TableData from "./TableData";
 import TotalHoursChart from "./TotalHoursChart";
+import { ArchiveList } from "../../SignedDocuments";
 
 import AddProject from "../Modals/AddProject";
 import PaymentReminder from "../Modals/PaymentReminder";
@@ -43,7 +44,7 @@ const ClientDetails = ({ isAdminUser }) => {
 
   const params = useParams();
   const navigate = useNavigate();
-  const { isDesktop } = useUserContext();
+  const { isDesktop, company } = useUserContext();
 
   const handleEditClick = id => {
     setShowEditDialog(true);
@@ -136,6 +137,21 @@ const ClientDetails = ({ isAdminUser }) => {
         setSendPaymentReminder={setSendPaymentReminder}
         setShowProjectModal={setShowProjectModal}
       />
+      {company?.id && params.clientId && (
+        <section
+          className="mb-6 space-y-4"
+          aria-labelledby="client-signed-documents"
+        >
+          <h2 id="client-signed-documents" className="text-lg font-semibold">
+            Signed documents
+          </h2>
+          <ArchiveList
+            key={`${company.id}:${params.clientId}`}
+            companyId={company.id}
+            clientId={params.clientId}
+          />
+        </section>
+      )}
       <div>
         {isAdminUser && isDesktop && (
           <TotalHoursChart
