@@ -10,7 +10,7 @@ RSpec.describe "Docker build workflow" do
 
   it "still builds images on pushes to production" do
     expect(workflow.fetch(true).fetch("push").fetch("branches")).to include("production")
-    expect(steps.map { |step| step["name"] }).to include("Build and push production image")
+    expect(steps.pluck("name")).to include("Build and push production image")
   end
 
   it "never asks Render to deploy" do
