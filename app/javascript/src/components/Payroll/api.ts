@@ -101,7 +101,178 @@ export interface RunPreflight {
   reconciliation: { reconciled: boolean; issues: string[] };
 }
 
+export interface ReviewerChoice {
+  id: string;
+  name: string;
+}
+
+export interface RunPreparationOptions {
+  can_create: boolean;
+  accounts_reviewers?: ReviewerChoice[];
+  final_reviewers?: ReviewerChoice[];
+}
+
+export interface PreparationClaim {
+  id: number;
+  date: string;
+  description: string;
+  currency: string;
+  amount: string;
+  receipt_count: number;
+}
+
+export interface PreparationConsultant {
+  employment_id: number;
+  consultant_name: string;
+  monthly_fee: string | null;
+  expected_hours: string | null;
+  recorded_hours: string | null;
+  fee_estimate: string | null;
+  payment_source: string | null;
+  warnings: string[];
+  eligible_expenses: PreparationClaim[];
+  excluded_expenses: Record<string, number>;
+  required_acknowledgements: string[];
+  not_ready_reasons: string[];
+  ready: boolean;
+}
+
+export interface RunPreparation {
+  can_prepare: boolean;
+  cutoff: string;
+  current_digest: string | null;
+  consultants: PreparationConsultant[];
+}
+
+export interface MercuryLeg {
+  id: string;
+  beneficiary: string;
+  display_state: string;
+  released: boolean;
+  frozen_digest: string;
+  entitlement_minor: string;
+  principal_minor: string;
+  fee_minor: string;
+  company_debit_minor: string;
+  charge_type: string;
+  reference_rate: string;
+  buffered_rate: string;
+  rate_source: string;
+  rate_mode: string;
+  rate_observed_at: string;
+  rate_valid_until: string;
+  quote_expired: boolean;
+  purpose_category: string;
+  purpose_info: string;
+  source_account_mask: string | null;
+  recipient: { name: string; account_mask: string; swift_code: string };
+  provider_request_id: string | null;
+  request_status: string | null;
+  requester_may_approve: boolean | null;
+  approvers_required: number | null;
+  provider_transaction_id: string | null;
+  transaction_status: string | null;
+  transaction_link_state: string;
+  transaction_failure_reason: string | null;
+  credit_state: string;
+  credited_minor: string;
+  shortfall_minor: string;
+  last_error_code: string | null;
+  last_checked_at: string | null;
+  absence_attested: boolean;
+  events: { kind: string; created_at: string }[];
+  actions: Record<
+    | "submit"
+    | "void"
+    | "refresh"
+    | "reconcile"
+    | "attest_absence"
+    | "record_credit"
+    | "resolve_shortfall",
+    boolean
+  >;
+}
+
+export interface MercurySplit {
+  id: string;
+  status: string;
+  allocation_kind: string;
+  allocation_value: string;
+  allocated_to: string;
+  remainder_to: string;
+  spouse: {
+    name: string;
+    bank_name: string;
+    account_mask: string;
+    swift_code: string;
+  };
+}
+
+export interface MercuryConsultant {
+  employment_id: string;
+  payee_name: string;
+  entitlement_minor: string;
+  reimbursement_minor: string;
+  currency: string;
+  blockers: string[];
+  allocations: { beneficiary: string; amount_minor: string }[];
+  split: MercurySplit | null;
+  recipients: {
+    beneficiary: string;
+    linked: boolean;
+    name: string | null;
+    account_mask: string | null;
+    swift_code: string | null;
+  }[];
+  fully_credited_at: string | null;
+  combined_company_debit_minor: string;
+  resolved_shortfall_minor: string;
+  settled_claims_need_review: boolean;
+  legs: MercuryLeg[];
+  can_prepare: boolean;
+}
+
+export interface MercuryPayments {
+  setup: {
+    configured: boolean;
+    verified: boolean;
+    writes_enabled: boolean;
+    environment?: string;
+    source_account_id?: string;
+    expected_legal_business_name?: string;
+    account_name?: string | null;
+    account_mask?: string | null;
+    verified_at?: string | null;
+    wire_fee_minor?: string;
+  };
+  rate: {
+    available: boolean;
+    reference_rate?: string;
+    buffered_rate?: string;
+    source?: string;
+    date?: string;
+    observed_at?: string;
+  };
+  run_status: string;
+  revision_digest: string | null;
+  permissions: {
+    manage: boolean;
+    accounts_review: boolean;
+    record_credit: boolean;
+  };
+  consultants: MercuryConsultant[];
+}
+
 type RequestSignal = InstanceType<typeof window.AbortController>["signal"];
+
+type Payload = Record<string, unknown>;
+
+const post = (path: string, companyId: string, payload: Payload = {}) =>
+  http.post(
+    path,
+    { company_id: companyId, ...payload },
+    { skipErrorToast: true }
+  );
 
 const get = (
   path: string,
@@ -123,4 +294,78 @@ export const payrollApi = {
     get(`/payroll_runs/${encodeURIComponent(id)}`, companyId, signal),
   preflight: (id: string, companyId: string, signal: RequestSignal) =>
     get(`/payroll_runs/${encodeURIComponent(id)}/preflight`, companyId, signal),
+  create: (companyId: string, payload: Payload) =>
+    post("/payroll_runs", companyId, payload),
+  preparation: (id: string, companyId: string, signal: RequestSignal) =>
+    get(
+      `/payroll_runs/${encodeURIComponent(id)}/preparation`,
+      companyId,
+      signal
+    ),
+  revise: (id: string, companyId: string, payload: Payload) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/revisions`,
+      companyId,
+      payload
+    ),
+  approve: (id: string, companyId: string, payload: Payload) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/approvals`,
+      companyId,
+      payload
+    ),
+  mercury: (id: string, companyId: string, signal: RequestSignal) =>
+    get(
+      `/payroll_runs/${encodeURIComponent(id)}/mercury_payments`,
+      companyId,
+      signal
+    ),
+  prepareMercury: (id: string, companyId: string, payload: Payload) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/mercury_payments`,
+      companyId,
+      payload
+    ),
+  legAction: (
+    id: string,
+    legId: string,
+    action: string,
+    companyId: string,
+    payload: Payload = {}
+  ) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(
+        id
+      )}/mercury_payments/${encodeURIComponent(legId)}/${action}`,
+      companyId,
+      { mercury_payment: payload }
+    ),
+  saveConnection: (companyId: string, payload: Payload) =>
+    http.patch(
+      "/payroll_mercury_connection",
+      { company_id: companyId, payroll_mercury_connection: payload },
+      { skipErrorToast: true }
+    ),
+  verifyConnection: (companyId: string) =>
+    post("/payroll_mercury_connection/verify", companyId),
+  linkRecipient: (companyId: string, payload: Payload) =>
+    post("/payroll_mercury_connection/recipients", companyId, payload),
+  requestSplit: (id: string, companyId: string, payload: Payload) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/split_arrangements`,
+      companyId,
+      { payroll_split_arrangement: payload }
+    ),
+  splitAction: (
+    id: string,
+    splitId: string,
+    action: string,
+    companyId: string
+  ) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(
+        id
+      )}/split_arrangements/${encodeURIComponent(splitId)}/${action}`,
+      companyId
+    ),
 };

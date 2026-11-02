@@ -72,6 +72,14 @@ Mercury's client-side multi-recipient workflow sends separate sequential request
 - Establish receiving-bank credit evidence and remittance-document workflow, including spouse split acceptance. No API permission or sender status removes those gaps.
 - gbrain retrieval was attempted but unavailable: installed Bun 1.3.14; gbrain requires >=1.4.0. Continued from live issue and official public sources; no runtime upgrade attempted.
 
+## Recheck on 3 November 2026
+
+Official reference pages were reread for the [Mercury approval request design](../superpowers/specs/2026-11-03-mercury-payroll-approval-requests-design.md). Still public documentation only: no credential, account or provider call.
+
+- `GET /account/{id}/transactions` documents `requestId` as "ID returned from /account/:id/request-send-money", and `start` defaults to 30 days back, so lookups pass it explicitly.
+- Documented for `request-send-money`: `400` "Invalid `body`" and `404` "`accountId` not found". The direct-send guide says a duplicate returns `400`, so `400` here is not proof that no request exists.
+- Not documented: idempotency retention and conflicts on approval requests, whether response `memo` echoes `note`, the sign of transaction `amount`, the `kind` of a wire, whether a fee transaction carries `requestId`, read scope names, and error bodies.
+
 ## Source freshness
 
 All links were retrieved on 2026-10-19. Mercury markdown front matter reports: Send Money 2026-09-29; international-wire recipe 2026-09-15; request-send-money 2026-10-02; Getting Started 2026-06-12; sandbox 2026-06-04; invites 2026-06-26; webhooks 2026-04-28; recipient/transaction/approval references 2026-04-22; token security 2025-11-03; OAuth 2025-11-20. Dates are provider metadata, not proof the account supports every documented feature. The public help pages did not expose a reliable update date in the retrieved content.

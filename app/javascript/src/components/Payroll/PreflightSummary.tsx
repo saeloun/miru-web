@@ -24,7 +24,7 @@ interface Props {
 const blockerLabels: Readonly<Record<string, string>> = {
   provider_setup_required: "Provider connection has not been verified.",
   roster_binding_required: "The complete payroll roster has not been verified.",
-  dry_run_only: "This dry run cannot send payments.",
+  dry_run_only: "This run record never sends money itself.",
   invalid_expected_binding:
     "Confirm the company, currency and provider account.",
   balance_binding_mismatch: "The balance does not match the selected account.",
@@ -128,7 +128,7 @@ const PreflightSummary = ({
           </div>
           <p className="text-sm text-muted-foreground">
             {payrollOnly
-              ? "Recorded payroll totals are shown below. Provider balance, fees and reserve are unavailable until the connection is verified. Payments remain blocked."
+              ? "Recorded payroll totals are shown below. This summary never sends money. Mercury requests have their own checks in the payment section."
               : "This preview compares the recorded balance with payroll, fees and reserve. It does not authorize or send payments."}
           </p>
         </CardHeader>

@@ -11,8 +11,16 @@ import {
   RunSummary,
   ReviewLine,
   Approval,
+  RunPreparationOptions,
 } from "./api";
+import { exactAmount } from "./amount";
+import MercuryPaymentsPanel from "./MercuryPayments";
 import PreflightSummary from "./PreflightSummary";
+import {
+  CreateRunForm,
+  PrepareRevisionPanel,
+  ApprovalPanel,
+} from "./RunPreparation";
 import PayrollAccessGate from "./AccessGate";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
@@ -24,7 +32,7 @@ export const label = (code: string): string => {
     capabilities_unverified: "Provider capabilities need verification",
     recipients_unverified: "Recipient mapping needs verification",
     roster_binding_required: "The complete payroll roster needs verification",
-    dry_run_only: "Dry run only; payments are unavailable",
+    dry_run_only: "This run record never sends money itself",
     source_missing_or_changed:
       "Source records are missing or have changed; review a new revision",
     calculation_missing_or_inconsistent:
@@ -42,32 +50,7 @@ export const label = (code: string): string => {
     : code.replace(/^source_exception:/, "Source: ").replace(/[_:]/g, " ");
 };
 
-export const exactAmount = (
-  value: unknown,
-  currency: string,
-  minor = true
-): string => {
-  if (typeof value !== "string" || !["INR", "USD"].includes(currency)) {
-    return "Unavailable";
-  }
-
-  if (!(minor ? /^-?\d{1,80}$/ : /^-?\d{1,80}(\.\d{1,40})?$/).test(value)) {
-    return "Unavailable";
-  }
-  const negative = value.startsWith("-");
-  const digits = value.replace(/^-/, "");
-  const [whole, fraction] = minor
-    ? [digits.padStart(3, "0").slice(0, -2), digits.padStart(3, "0").slice(-2)]
-    : digits.split(".");
-
-  const grouped = whole
-    .replace(/^0+(?=\d)/, "")
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-  return `${negative ? "−" : ""}${currency} ${grouped}.${(
-    fraction || ""
-  ).padEnd(2, "0")}`;
-};
+export { exactAmount };
 
 const text = (value: unknown): string =>
   typeof value === "string" || typeof value === "number"
@@ -379,6 +362,13 @@ const Line = ({ line }: { line: ReviewLine }) => {
   );
 };
 
+const paymentSectionBlockers = [
+  "provider_setup_required",
+  "capabilities_unverified",
+  "recipients_unverified",
+  "dry_run_only",
+];
+
 interface ReviewState {
   scope: string;
   loading: boolean;
@@ -387,6 +377,7 @@ interface ReviewState {
   hasMore: boolean;
   run: RunDetail | null;
   preflight: RunPreflight | null;
+  options: RunPreparationOptions | null;
 }
 
 const Review = () => {
@@ -415,6 +406,7 @@ const Review = () => {
       hasMore: false,
       run: null,
       preflight: null,
+      options: null,
     };
     setState(empty);
     if (!companyId || !payrollEnabled) return () => controller.abort();
@@ -460,6 +452,7 @@ const Review = () => {
               loading: false,
               runs,
               hasMore: response.data.pagination.has_more === true,
+              options: response.data.preparation || null,
             });
           }
         }
@@ -491,12 +484,12 @@ const Review = () => {
       <header className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-semibold">Payroll review</h1>
-          <Badge variant="outline">Read-only dry run</Badge>
+          <Badge variant="outline">Review before payment</Badge>
         </div>
         <p className="max-w-3xl text-sm text-muted-foreground">
-          Review saved monthly calculations, source records and approval
-          history. Changes, approvals, payslip delivery and payments are
-          unavailable here.
+          Prepare and approve monthly consultant payroll. Mercury payments are
+          created as approval requests only: a separate bank approver releases
+          them in Mercury, and credit is confirmed afterwards.
         </p>
         {runId && (
           <Link
@@ -525,6 +518,13 @@ const Review = () => {
       )}
       {current && !current.loading && !current.error && !runId && (
         <>
+          {current.options?.can_create && (
+            <CreateRunForm
+              companyId={companyId}
+              options={current.options}
+              onCreated={() => setRefresh(value => value + 1)}
+            />
+          )}
           <p className="text-sm text-muted-foreground">
             {company?.name || "Current workspace"} · Page {page}
           </p>
@@ -612,6 +612,20 @@ const Review = () => {
               <Issues issues={run.review_issues} />
             </CardContent>
           </Card>
+          <PrepareRevisionPanel
+            companyId={companyId}
+            runId={run.id}
+            onChanged={() => setRefresh(value => value + 1)}
+          />
+          {run.revision && (
+            <ApprovalPanel
+              companyId={companyId}
+              run={run}
+              currentUserId={String(user?.id || "")}
+              onChanged={() => setRefresh(value => value + 1)}
+            />
+          )}
+          <MercuryPaymentsPanel companyId={companyId} runId={run.id} />
           {preflight && (
             <>
               <PreflightSummary
@@ -620,7 +634,9 @@ const Review = () => {
                 month={run.period.slice(0, 7)}
                 result={{
                   status: "blocked",
-                  blockers: preflight.blockers,
+                  blockers: preflight.blockers.filter(
+                    code => !paymentSectionBlockers.includes(code)
+                  ),
                   required_minor_units: preflight.total_net_minor,
                   available_minor_units: null,
                   currency: preflight.currency,

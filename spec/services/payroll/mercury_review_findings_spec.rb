@@ -1,0 +1,355 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe "Mercury payroll review findings" do
+  include_context "approved mercury consultant payroll"
+
+  let(:payment) { Payroll::MercuryPayment.new(run) }
+  let(:service) { Payroll::MercuryReconciliation.new(run) }
+  let(:write_url) { "#{mercury_base}/account/#{account_id}/request-send-money" }
+  let(:transactions_url) { %r{#{Regexp.escape(mercury_base)}/account/#{account_id}/transactions} }
+  let(:spouse_recipient_id) { "66666666-6666-4666-8666-666666666666" }
+  let(:split_service) { Payroll::SplitArrangements.new(run) }
+  let(:spouse_details) do
+    { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_number" => "222233334444",
+      "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
+  end
+
+  def blocked_codes
+    yield
+    []
+  rescue Payroll::MercuryPayment::Blocked => error
+    error.codes
+  end
+
+  def stub_status(request: mercury_request("status" => "approved"), transactions: [])
+    stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(request))
+    stub_request(:get, transactions_url).to_return(mercury_json({ "total" => transactions.size, "transactions" => transactions }))
+  end
+
+  def stub_listing(requests)
+    stub_request(:get, %r{#{Regexp.escape(mercury_base)}/request-send-money\?})
+      .to_return(mercury_json({ "requests" => requests, "page" => { "nextPage" => nil, "previousPage" => nil } }))
+  end
+
+  def refresh(leg)
+    service.refresh!(actor: owner, instruction_id: leg.id)
+  end
+
+  def uncertain_instruction
+    instruction = prepared_instruction
+    stub_mercury_reads
+    stub_request(:post, write_url).to_timeout
+    payment.submit!(actor: owner, instruction_id: instruction.id, expected_digest: instruction.frozen_digest)
+  end
+
+  def request_split(value: "50")
+    split_service.request!(actor: accounts, employment_id: employment.id,
+      attributes: { allocation_kind: "percentage", allocation_value: value, allocated_to: "spouse", remainder_to: "consultant" },
+      details: spouse_details, account_number_confirmation: spouse_details["bank_account_number"])
+  end
+
+  def approved_split(value: "50")
+    arrangement = request_split(value:)
+    split_service.verify!(actor: accounts, arrangement_id: arrangement.id)
+    split_service.approve!(actor: owner, arrangement_id: arrangement.id)
+  end
+
+  def link_spouse
+    recipient = mercury_recipient("id" => spouse_recipient_id, "name" => "Synthetic Spouse",
+      "internationalWireRoutingInfo" => { "iban" => "222233334444", "swiftCode" => "SPOUINBBXXX",
+                                          "countrySpecific" => { "india" => { "ifscCode" => "SPOU0000002" } } })
+    stub_request(:get, "#{mercury_base}/recipient/#{spouse_recipient_id}").to_return(mercury_json(recipient))
+    linked_recipient(beneficiary: "spouse", id: spouse_recipient_id)
+  end
+
+  describe "finding 1: terms corrected after approval" do
+    it "returns the run to draft when the fee changes for the approved month" do
+      revision = approve_revision
+      expect(workflow.status).to eq("approved")
+      ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 50_000,
+        hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: legal_name, change_reason: "Correction")
+      expect(workflow.status).to eq("draft")
+      expect(revision.approval_issues).to include("terms_changed")
+      expect(blocked_codes do
+        ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      end).to include("run_not_approved")
+    end
+
+    it "does not disturb an approved month when terms start later" do
+      approve_revision
+      ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 12, 1), monthly_fee: 50_000,
+        hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: legal_name, change_reason: "Next month")
+      expect(workflow.status).to eq("approved")
+    end
+  end
+
+  describe "finding 2: stale prepared leg after a split change" do
+    it "refuses to create legs that would exceed the entitlement" do
+      revision = approve_revision
+      approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      legs = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      payment.void!(actor: owner, instruction_id: legs.last.id)
+      split_service.withdraw!(actor: owner, arrangement_id: PayrollSplitArrangement.current_for(employment).id)
+      approved_split(value: "80")
+      link_spouse
+      expect(blocked_codes do
+        Payroll::MercuryPayment.new(run).prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      end).to eq(["void_stale_transfer_first"])
+      expect(legs.first.reload.payroll_payment_group.split_arrangement_id).not_to eq(PayrollSplitArrangement.current_for(employment).id)
+    end
+
+    it "blocks submitting a leg whose allocation no longer matches" do
+      revision = approve_revision
+      approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:).first
+      group = leg.payroll_payment_group
+      split_service.withdraw!(actor: owner, arrangement_id: PayrollSplitArrangement.current_for(employment).id)
+      group.update!(split_arrangement: nil)
+      stub_mercury_reads
+      stub = stub_mercury_write
+      expect(blocked_codes { Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest) })
+        .to include("allocation_changed")
+      expect(stub).not_to have_been_requested
+    end
+  end
+
+  describe "finding 3: recovery after attestation" do
+    let!(:leg) { uncertain_instruction }
+
+    before { stub_listing([]) }
+
+    it "does not let the attester void their own attestation" do
+      accounts.add_role(:owner, company)
+      service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
+      expect(blocked_codes { payment.void!(actor: accounts, instruction_id: leg.id) }).to eq(["attester_cannot_retry"])
+    end
+
+    it "refuses attestation while a candidate is listed" do
+      stub_listing([mercury_request])
+      expect(blocked_codes { service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1") }).to eq(["candidates_must_be_resolved"])
+      expect(leg.reload.retry_unlocked?).to be(false)
+    end
+
+    it "refuses retry or void if a candidate appears after attestation" do
+      service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
+      stub_listing([mercury_request])
+      stub_mercury_reads
+      stub_mercury_write
+      expect(blocked_codes { payment.submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest) }).to eq(["candidates_must_be_resolved"])
+      expect(blocked_codes { payment.void!(actor: owner, instruction_id: leg.id) }).to eq(["candidates_must_be_resolved"])
+      expect(a_request(:post, write_url)).to have_been_made.once
+    end
+  end
+
+  describe "finding 4: release needs proof that no money moved" do
+    it "does not release when a sent wire later fails" do
+      leg = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(leg)
+      stub_status(transactions: [mercury_transaction("status" => "failed")])
+      refreshed = refresh(leg)
+      expect(refreshed.released_at).to be_nil
+      expect(refreshed.transaction_link_state).to eq("reconciliation_required")
+    end
+
+    it "does not release when an approved request is later cancelled" do
+      leg = accepted_instruction
+      stub_status
+      refresh(leg)
+      stub_status(request: mercury_request("status" => "cancelled"))
+      refreshed = refresh(leg)
+      expect(refreshed.released_at).to be_nil
+      expect(refreshed.last_error_code).to eq("cancelled_after_approval")
+    end
+
+    it "reads transactions before releasing a terminal request" do
+      leg = accepted_instruction
+      stub_status(request: mercury_request("status" => "cancelled"), transactions: [mercury_transaction("status" => "pending")])
+      refreshed = refresh(leg)
+      expect(refreshed.released_at).to be_nil
+    end
+
+    it "does not release a terminal request when transactions cannot be read" do
+      leg = accepted_instruction
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("status" => "rejected")))
+      stub_request(:get, transactions_url).to_return(status: 503)
+      expect(blocked_codes { refresh(leg) }).to eq(["provider_status_unavailable"])
+      expect(leg.reload.released_at).to be_nil
+    end
+  end
+
+  describe "finding 5: reconciliation does not bypass transaction state" do
+    def credit(leg)
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: Date.current.iso8601, reference: "UTR1")
+    end
+
+    %w[failed reversed].each do |status|
+      it "stores an unlinkable #{status} status and bars credit" do
+        leg = accepted_instruction
+        stub_status(transactions: [mercury_transaction("status" => status, "kind" => "other")])
+        refreshed = refresh(leg)
+        expect(refreshed.transaction_status).to eq(status)
+        expect(refreshed.provider_transaction_id).to be_nil
+        expect(blocked_codes { credit(leg) }).to eq(["credit_not_recordable"])
+      end
+    end
+
+    it "bars credit on a request mismatch before approval" do
+      leg = accepted_instruction
+      stub_status(request: mercury_request("amount" => 1.00))
+      refresh(leg)
+      expect(blocked_codes { credit(leg) }).to eq(["credit_not_recordable"])
+    end
+
+    it "bars credit on a released leg" do
+      leg = accepted_instruction
+      stub_status(request: mercury_request("status" => "rejected"))
+      refresh(leg)
+      expect(blocked_codes { credit(leg) }).to eq(["credit_not_recordable"])
+    end
+
+    it "says a manual-proof credit still lacks a Mercury link" do
+      leg = accepted_instruction
+      stub_status(transactions: [mercury_transaction("kind" => "other", "status" => "sent")])
+      refresh(leg)
+      expect(credit(leg).display_state).to eq("credited_unlinked")
+    end
+  end
+
+  describe "finding 6: scan window and foreign keys" do
+    it "still finds the original request after a later attempt" do
+      leg = uncertain_instruction
+      original = mercury_request("createdAt" => 1.minute.ago.utc.iso8601, "memo" => leg.idempotency_key)
+      travel_to(3.days.from_now) do
+        stub_listing([])
+        stub_mercury_reads
+        PayrollPaymentInstruction.where(id: leg.id).update_all(submission_started_at: Time.current)
+        stub_listing([original])
+        expect(service.reconcile!(actor: owner, instruction_id: leg.id)[:outcome]).to eq("linked")
+      end
+    end
+
+    it "does not offer or link a request carrying another transfer's key" do
+      leg = uncertain_instruction
+      foreign = mercury_request("memo" => "miru-payroll-#{SecureRandom.uuid}")
+      stub_listing([foreign])
+      expect(service.reconcile!(actor: owner, instruction_id: leg.id)[:outcome]).to eq("none_found")
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(foreign))
+      expect(blocked_codes { service.confirm_request!(actor: owner, instruction_id: leg.id, request_id:) }).to eq(["request_does_not_match"])
+    end
+  end
+
+  describe "finding 8: settlement and failed legs" do
+    let!(:leg) do
+      accepted = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(accepted)
+    end
+
+    def credit(amount)
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount:, credited_on: Date.current.iso8601, reference: "UTR-#{amount}")
+    end
+
+    it "does not resolve a shortfall on a failed wire" do
+      credit("1.00")
+      stub_status(transactions: [mercury_transaction("status" => "failed")])
+      refresh(leg)
+      expect(blocked_codes { service.resolve_shortfall!(actor: accounts, instruction_id: leg.id, reason: "Accepted") }).to eq(["no_open_shortfall"])
+    end
+
+    %w[failed cancelled blocked reversed].each do |status|
+      it "reopens a fully credited group when the wire becomes #{status}" do
+        credit("62500.00")
+        expect(leg.payroll_payment_group.reload.fully_credited_at).to be_present
+        stub_status(transactions: [mercury_transaction("status" => status)])
+        refresh(leg)
+        expect(leg.payroll_payment_group.reload.fully_credited_at).to be_nil
+      end
+    end
+  end
+
+  describe "finding 9: guards under the lock" do
+    it "does not let a late acceptance overwrite a voided transfer" do
+      leg = prepared_instruction
+      payment.void!(actor: owner, instruction_id: leg.id)
+      parsed = PayrollProviders::MercuryContract.send_money_request(JSON.parse(JSON.generate(mercury_request), decimal_class: BigDecimal))
+      expect { Payroll::MercuryReconciliation.accept!(leg, parsed, actor: owner, event: "request_reconciled") }
+        .to raise_error(Payroll::MercuryPayment::Blocked)
+      expect(leg.reload.submission_state).to eq("voided")
+    end
+  end
+
+  describe "finding 10: rate freshness" do
+    it "refuses a recently written row for an old date" do
+      revision = approve_revision
+      ExchangeRate.set_rate("USD", "INR", BigDecimal("83.00"), 90.days.ago.to_date, "api")
+      expect(blocked_codes do
+        ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote: { mode: "exchange_rate" })
+      end).to eq(["rate_unavailable"])
+    end
+
+    it "refuses an implausible manual rate" do
+      revision = approve_revision
+      expect(blocked_codes do
+        ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote: quote.merge(reference_rate: "8.35"))
+      end).to eq(["rate_implausible"])
+    end
+  end
+
+  describe "finding 11: split authority" do
+    it "refuses a new split while a transfer is in flight, and withdrawal too" do
+      revision = approve_revision
+      arrangement = approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      legs = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => legs.first.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: legs.first.id, expected_digest: legs.first.frozen_digest)
+      expect(blocked_codes { request_split(value: "30") }).to eq(["split_locked_by_bank_activity"])
+      expect(blocked_codes { split_service.withdraw!(actor: owner, arrangement_id: arrangement.id) }).to eq(["split_locked_by_bank_activity"])
+    end
+
+    it "requires the assigned accounts reviewer to verify" do
+      approve_revision
+      arrangement = request_split
+      expect { split_service.verify!(actor: owner, arrangement_id: arrangement.id) }.to raise_error(Payroll::Workflow::NotAuthorized)
+    end
+
+    it "does not let one person verify and approve, even with both roles" do
+      accounts.add_role(:owner, company)
+      approve_revision
+      arrangement = request_split
+      split_service.verify!(actor: accounts, arrangement_id: arrangement.id)
+      expect(blocked_codes { split_service.approve!(actor: accounts, arrangement_id: arrangement.id) }).to eq(["split_approver_must_differ"])
+    end
+
+    it "does not take a split for someone outside the run" do
+      approve_revision
+      other = create(:employment, company:, resigned_at: nil)
+      expect do
+        split_service.request!(actor: accounts, employment_id: other.id,
+          attributes: { allocation_kind: "percentage", allocation_value: "10", allocated_to: "spouse", remainder_to: "consultant" },
+          details: spouse_details, account_number_confirmation: spouse_details["bank_account_number"])
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "finding 12: logging" do
+    it "filters revision inputs and credit details from logs" do
+      filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+      filtered = filter.filter("consultants" => [{ "withholding" => "100", "unpaid_reason" => "Synthetic" }],
+        "mercury_payment" => { "amount" => "1.00", "reference" => "UTR", "reason" => "Synthetic", "evidence_reference" => "Case" })
+      expect(filtered.to_s).not_to include("100", "Synthetic", "UTR", "Case")
+    end
+  end
+end

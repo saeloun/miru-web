@@ -280,8 +280,37 @@ namespace :api, defaults: { format: "json" } do
 
     resource :profile, only: [:update], controller: "profile"
 
-    resources :payroll_runs, only: [:index, :show] do
-      get :preflight, on: :member
+    resource :payroll_mercury_connection, only: [:update] do
+      post :verify
+      post :recipients
+    end
+
+    resources :payroll_runs, only: [:index, :show, :create] do
+      member do
+        get :preflight
+        get :preparation
+        post :revisions
+        post :approvals
+      end
+      resources :mercury_payments, only: [:index, :create], controller: "payroll_mercury_payments" do
+        member do
+          post :submit
+          post :void
+          post :refresh
+          post :reconcile
+          post :confirm_request
+          post :attest_absence
+          post :record_credit
+          post :resolve_shortfall
+        end
+      end
+      resources :split_arrangements, only: [:create], controller: "payroll_split_arrangements" do
+        member do
+          post :verify
+          post :approve
+          post :withdraw
+        end
+      end
     end
 
     resources :expenses, only: [:create, :index, :show, :update, :destroy] do

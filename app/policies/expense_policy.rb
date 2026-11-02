@@ -17,24 +17,24 @@ class ExpensePolicy < ApplicationPolicy
 
   def update?
     return false unless same_workspace?
-    return false if record.paid? || record.paid_at.present?
+    return false if record.paid? || record.paid_at.present? || record.payroll_reserved?
 
     elevated_access? || (own_submitted_expense? && (record.submitted? || record.rejected?))
   end
 
   def destroy?
     return false unless same_workspace?
-    return false if record.paid? || record.paid_at.present?
+    return false if record.paid? || record.paid_at.present? || record.payroll_reserved?
 
     user_owner_role? || user_admin_role? || own_submitted_expense?
   end
 
   def mark_paid?
-    same_workspace? && elevated_access?
+    same_workspace? && elevated_access? && !record.payroll_reserved?
   end
 
   def approve?
-    same_workspace? && elevated_access? && !record.paid? && record.paid_at.nil?
+    same_workspace? && elevated_access? && !record.paid? && record.paid_at.nil? && !record.payroll_reserved?
   end
 
   alias_method :reject?, :approve?

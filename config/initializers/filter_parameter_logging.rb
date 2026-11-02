@@ -10,5 +10,6 @@ Rails.application.config.filter_parameters += [
   /\A(code|recovery_code)\z/, /\Acredential\z/, :provisioning_uri,
   :tax_declaration, "review.approved_amount", "review.reason", :consultant_compensation, :payroll_preview,
   :payroll_payload, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
-  :salary_details, :profitability_billing_rate, :profitability_scenario
+  :salary_details, :profitability_billing_rate, :profitability_scenario, :payroll_mercury_connection,
+  :mercury_payment, :payroll_split_arrangement, :consultants
 ]
