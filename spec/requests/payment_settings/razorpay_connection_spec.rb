@@ -21,7 +21,7 @@ RSpec.describe "Razorpay merchant connection", type: :request do
   end
 
   prepend_before do
-    stub_request(:get, %r{\Ahttps://api.pwnedpasswords.com/range/}).to_return(status: 200, body: "")
+    stub_request(:get, %r{\Ahttps://api\.pwnedpasswords\.com/range/}).to_return(status: 200, body: "")
   end
 
   before do
@@ -304,7 +304,7 @@ RSpec.describe "Razorpay API key update concurrency", type: :request do
   before do
     DatabaseCleaner.clean
     DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
-    stub_request(:get, %r{\Ahttps://api.pwnedpasswords.com/range/}).to_return(status: 200, body: "")
+    stub_request(:get, %r{\Ahttps://api\.pwnedpasswords\.com/range/}).to_return(status: 200, body: "")
     @company = create(:company)
     @owner = create(:user, current_workspace: @company, token: "synthetic-auth-token")
     create(:employment, user: @owner, company: @company, resigned_at: nil)

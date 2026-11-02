@@ -23,7 +23,7 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
   end
 
   prepend_before do
-    stub_request(:get, %r{\Ahttps://api.pwnedpasswords.com/range/}).to_return(status: 200, body: "")
+    stub_request(:get, %r{\Ahttps://api\.pwnedpasswords\.com/range/}).to_return(status: 200, body: "")
   end
 
   before { actor.add_role(:admin, company) }
@@ -481,7 +481,7 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection, "concurrent operations
   end
 
   prepend_before do
-    stub_request(:get, %r{\Ahttps://api.pwnedpasswords.com/range/}).to_return(status: 200, body: "")
+    stub_request(:get, %r{\Ahttps://api\.pwnedpasswords\.com/range/}).to_return(status: 200, body: "")
   end
 
   before do

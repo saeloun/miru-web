@@ -16,19 +16,10 @@ module PaymentProviders
       @provider.with_lock do
         authorize!
         reject_legacy!
-        if @provider.settings.key?("razorpay_oauth_credentials") || @provider.settings.key?("razorpay_oauth_credentials_ciphertext") ||
-            @provider.settings["oauth_pending_digest"].present? || @provider.settings["oauth_refresh_uncertain"]
-          raise Error, "Disconnect the existing Razorpay account before reconnecting"
-        end
+        raise Error, "Disconnect the existing Razorpay account before reconnecting" if restart_blocked?
 
         invalidate!
-        @provider.settings["authentication_mode"] = "oauth"
-        @provider.settings["oauth_mode"] = identity.fetch("mode")
-        @provider.settings["oauth_status"] = "pending"
-        @provider.settings["oauth_state"] = {
-          "digest" => digest(state), "actor_id" => @actor.id, "company_id" => @provider.company_id, "identity" => identity,
-          "expires_at" => 10.minutes.from_now.to_i
-        }
+        record_consent_attempt!(state, identity)
         @provider.save!
       end
       state
@@ -37,162 +28,39 @@ module PaymentProviders
     end
 
     def complete!(state:, browser_state:, code: nil, error: nil)
-      identity = nil
-      pending = nil
-      outcome = @provider.with_lock do
-        authorize!
-        reject_legacy!
-        stored = @provider.settings["oauth_state"]
-        unless valid_state?(stored, state, browser_state)
-          raise Error, "Invalid or expired Razorpay connection state"
-        end
-
-        # Commit consumption before the external exchange; a failed response cannot be replayed.
-        @provider.settings.delete("oauth_state")
-        begin
-          identity = client.identity
-          configured = stored["identity"] == identity
-        rescue RazorpayOauthClient::Error
-          configured = false
-        end
-        if !configured || error.present? || !RazorpayOauthClient.usable_text?(code)
-          fail_closed!(error.present? ? "disconnected" : "reconnect_required")
-          @provider.save!
-          configured && error.present? ? :denied : :invalid
-        else
-          pending = [stored.fetch("digest"), @provider.settings.fetch("oauth_generation")]
-          @provider.settings["oauth_pending_digest"] = pending.first
-          @provider.settings["oauth_pending_generation"] = pending.last
-          @provider.save!
-          :exchange
-        end
-      end
+      outcome, pending, identity = reserve_exchange(state, browser_state, code, error)
       return :denied if outcome == :denied
       raise Error, "Razorpay account connection failed" if outcome == :invalid
 
-      begin
-        result = client.exchange(code)
-      rescue RazorpayOauthClient::Error => error
-        cleanup = error.__send__(:cleanup_grant)
-        if cleanup
-          reject_grant!(pending, cleanup, identity)
-        else
-          fail_pending!(pending)
-        end
-        raise Error, "Razorpay account connection failed", cause: nil
-      end
-      finish_connection!(pending, result, identity)
+      exchange_grant(code, pending, identity)
     rescue RazorpayOauthClient::Error
       raise Error, "Razorpay account connection is not configured", cause: nil
     end
 
     def access_token
-      token = nil
-      failure = false
-      pending = nil
-      result = identity = nil
-      refreshing = false
-      cleanup = nil
-      @provider.with_lock do
-        unless oauth? && @provider.connected? && @provider.settings["oauth_status"] == "connected"
-          raise Error, "Razorpay account connection failed"
-        end
-        pending = [@provider.settings["oauth_pending_digest"], @provider.settings["oauth_generation"]]
+      attempt = {}
+      token = locked_access_token(attempt)
+      return token if token
 
-        begin
-          credentials = @provider.razorpay_oauth_credentials
-          identity = client.identity
-          unless credentials.is_a?(Hash) && credentials["identity"] == identity &&
-              credentials["access_token"].is_a?(String) && credentials["access_token"].present? &&
-              credentials["refresh_token"].is_a?(String) && credentials["refresh_token"].present?
-            raise Error, "Razorpay account connection failed"
-          end
-
-          if credentials["expires_at"].to_i <= 1.minute.from_now.to_i
-            refreshing = true
-            result = client.refresh(credentials.fetch("refresh_token"), account_id: @provider.settings["oauth_account_id"])
-            raise Error, "Razorpay account connection failed" unless client.identity == identity
-
-            @provider.class.transaction(requires_new: true) do
-              store_credentials!(result, identity)
-              @provider.save!
-            end
-            credentials = @provider.razorpay_oauth_credentials
-          end
-          token = credentials.fetch("access_token")
-        rescue Error, RazorpayOauthClient::Error, KeyError, ActiveRecord::ActiveRecordError => error
-          result ||= error.__send__(:cleanup_grant) if error.is_a?(RazorpayOauthClient::Error)
-          @provider.reload
-          if result.is_a?(Hash) && result["refresh_token"].present?
-            @provider.razorpay_oauth_credentials = result.slice("refresh_token").merge("identity" => identity)
-          elsif refreshing
-            @provider.settings["oauth_refresh_uncertain"] = true
-          end
-          fail_closed!("reconnect_required")
-          cleanup = @provider.razorpay_oauth_credentials if result.is_a?(Hash) && result["refresh_token"].present?
-          @provider.save!
-          failure = true
-        end
-      end
-      if failure
-        if cleanup
-          @provider.with_lock do
-            revoke_cleanup!(cleanup)
-            @provider.save!
-          end
-        end
-        raise Error, "Razorpay account connection failed", cause: nil
-      end
-
-      token
+      revoke_rejected_refresh!(attempt)
+      raise Error, "Razorpay account connection failed", cause: nil
     rescue ActiveRecord::ActiveRecordError
-      if result
-        reject_grant!(pending, result, identity)
-      elsif pending
-        fail_pending!(pending)
-      end
+      recover_interrupted_access!(attempt)
       raise Error, "Razorpay account connection failed", cause: nil
     end
 
     def disconnect!
-      confirmed = false
-      authorization_lost = false
-      cleanup = nil
-      @provider.with_lock do
-        authorize!
-        reject_legacy!
-        raise Error, "No Razorpay account connection to disconnect" unless oauth?
-
-        invalidate!
-        @provider.settings["oauth_status"] = "disconnected"
-        cleanup = @provider.razorpay_oauth_credentials
-        @provider.save!
-      end
-      @provider.with_lock do
-        # Keep the row locked until revocation ends so reconnect cannot race an old revocation.
-        confirmed = revoke_cleanup!(cleanup)
-        @provider.save!
-        begin
-          authorize!
-        rescue Error
-          authorization_lost = true
-        end
-      end
-      raise Error, "Razorpay connection access denied" if authorization_lost
+      cleanup = disable_connection!
+      confirmed, authorized = revoke_after_disconnect!(cleanup)
+      raise Error, "Razorpay connection access denied" unless authorized
 
       { remote_revocation_confirmed: confirmed }
     end
 
     def status
-      state = @provider.settings&.fetch("oauth_status", "disconnected") || "disconnected"
-      if @provider.settings&.dig("oauth_refresh_uncertain") || (@provider.settings&.dig("oauth_pending_digest").present? && state != "pending")
-        state = "reconciliation_required"
-      elsif !@provider.connected? && @provider.settings&.key?("razorpay_oauth_credentials_ciphertext")
-        state = "revocation_pending"
-      end
       {
-        status: state,
-        account_id: @provider.settings&.dig("oauth_account_id"), mode: @provider.settings&.dig("oauth_mode"),
+        status: connection_state,
+        account_id: settings["oauth_account_id"], mode: settings["oauth_mode"],
         collections_ready: false, payouts_ready: false
       }
     end
@@ -202,6 +70,185 @@ module PaymentProviders
     end
 
     private
+
+      def settings
+        @provider.settings ||= {}
+      end
+
+      def restart_blocked?
+        settings.key?("razorpay_oauth_credentials") || settings.key?("razorpay_oauth_credentials_ciphertext") ||
+          settings["oauth_pending_digest"].present? || settings["oauth_refresh_uncertain"]
+      end
+
+      def record_consent_attempt!(state, identity)
+        settings.merge!(
+          "authentication_mode" => "oauth", "oauth_mode" => identity.fetch("mode"), "oauth_status" => "pending",
+          "oauth_state" => {
+            "digest" => digest(state), "actor_id" => @actor.id, "company_id" => @provider.company_id, "identity" => identity,
+            "expires_at" => 10.minutes.from_now.to_i
+          }
+        )
+      end
+
+      def reserve_exchange(state, browser_state, code, error)
+        @provider.with_lock do
+          authorize!
+          reject_legacy!
+          stored = settings["oauth_state"]
+          raise Error, "Invalid or expired Razorpay connection state" unless valid_state?(stored, state, browser_state)
+
+          # Commit consumption before the external exchange; a failed response cannot be replayed.
+          settings.delete("oauth_state")
+          identity = matching_identity(stored)
+          outcome = exchange_outcome(identity, code, error)
+          pending = outcome == :exchange ? mark_exchange_pending!(stored) : fail_attempt!(error)
+          @provider.save!
+          [outcome, pending, identity]
+        end
+      end
+
+      def matching_identity(stored)
+        identity = client.identity
+        identity if stored["identity"] == identity
+      rescue RazorpayOauthClient::Error
+        nil
+      end
+
+      def exchange_outcome(identity, code, error)
+        return :invalid if identity.nil?
+        return :denied if error.present?
+
+        RazorpayOauthClient.usable_text?(code) ? :exchange : :invalid
+      end
+
+      def mark_exchange_pending!(stored)
+        [stored.fetch("digest"), settings.fetch("oauth_generation")].tap do |digest, generation|
+          settings.merge!("oauth_pending_digest" => digest, "oauth_pending_generation" => generation)
+        end
+      end
+
+      def fail_attempt!(error)
+        fail_closed!(error.present? ? "disconnected" : "reconnect_required")
+        nil
+      end
+
+      def exchange_grant(code, pending, identity)
+        result = client.exchange(code)
+        finish_connection!(pending, result, identity)
+      rescue RazorpayOauthClient::Error => error
+        cleanup = error.__send__(:cleanup_grant)
+        cleanup ? reject_grant!(pending, cleanup, identity) : fail_pending!(pending)
+        raise Error, "Razorpay account connection failed", cause: nil
+      end
+
+      def locked_access_token(attempt)
+        @provider.with_lock do
+          unless oauth? && @provider.connected? && settings["oauth_status"] == "connected"
+            raise Error, "Razorpay account connection failed"
+          end
+          attempt[:pending] = [settings["oauth_pending_digest"], settings["oauth_generation"]]
+
+          begin
+            current_access_token(attempt)
+          rescue Error, RazorpayOauthClient::Error, KeyError, ActiveRecord::ActiveRecordError => error
+            record_access_failure!(attempt, error)
+            nil
+          end
+        end
+      end
+
+      def current_access_token(attempt)
+        credentials = @provider.razorpay_oauth_credentials
+        attempt[:identity] = client.identity
+        raise Error, "Razorpay account connection failed" unless usable_credentials?(credentials, attempt[:identity])
+
+        credentials = rotate_credentials!(credentials, attempt) if credentials["expires_at"].to_i <= 1.minute.from_now.to_i
+        credentials.fetch("access_token")
+      end
+
+      def usable_credentials?(credentials, identity)
+        credentials.is_a?(Hash) && credentials["identity"] == identity &&
+          %w[access_token refresh_token].all? { |key| credentials[key].is_a?(String) && credentials[key].present? }
+      end
+
+      def rotate_credentials!(credentials, attempt)
+        attempt[:refreshing] = true
+        attempt[:result] = client.refresh(credentials.fetch("refresh_token"), account_id: settings["oauth_account_id"])
+        raise Error, "Razorpay account connection failed" unless client.identity == attempt[:identity]
+
+        @provider.class.transaction(requires_new: true) do
+          store_credentials!(attempt[:result], attempt[:identity])
+          @provider.save!
+        end
+        @provider.razorpay_oauth_credentials
+      end
+
+      def record_access_failure!(attempt, error)
+        attempt[:result] ||= error.__send__(:cleanup_grant) if error.is_a?(RazorpayOauthClient::Error)
+        @provider.reload
+        returned_token = attempt[:result].is_a?(Hash) && attempt[:result]["refresh_token"].present?
+        if returned_token
+          @provider.razorpay_oauth_credentials = attempt[:result].slice("refresh_token").merge("identity" => attempt[:identity])
+        elsif attempt[:refreshing]
+          settings["oauth_refresh_uncertain"] = true
+        end
+        fail_closed!("reconnect_required")
+        attempt[:cleanup] = @provider.razorpay_oauth_credentials if returned_token
+        @provider.save!
+      end
+
+      def revoke_rejected_refresh!(attempt)
+        return unless attempt[:cleanup]
+
+        @provider.with_lock do
+          revoke_cleanup!(attempt[:cleanup])
+          @provider.save!
+        end
+      end
+
+      def recover_interrupted_access!(attempt)
+        if attempt[:result]
+          reject_grant!(attempt[:pending], attempt[:result], attempt[:identity])
+        elsif attempt[:pending]
+          fail_pending!(attempt[:pending])
+        end
+      end
+
+      def disable_connection!
+        @provider.with_lock do
+          authorize!
+          reject_legacy!
+          raise Error, "No Razorpay account connection to disconnect" unless oauth?
+
+          invalidate!
+          settings["oauth_status"] = "disconnected"
+          @provider.razorpay_oauth_credentials.tap { @provider.save! }
+        end
+      end
+
+      def revoke_after_disconnect!(cleanup)
+        @provider.with_lock do
+          # Keep the row locked until revocation ends so reconnect cannot race an old revocation.
+          confirmed = revoke_cleanup!(cleanup)
+          @provider.save!
+          [confirmed, still_authorized?]
+        end
+      end
+
+      def still_authorized?
+        authorize!
+        true
+      rescue Error
+        false
+      end
+
+      def connection_state
+        state = settings.fetch("oauth_status", "disconnected")
+        return "reconciliation_required" if settings["oauth_refresh_uncertain"] || (settings["oauth_pending_digest"].present? && state != "pending")
+        return "revocation_pending" if !@provider.connected? && settings.key?("razorpay_oauth_credentials_ciphertext")
+
+        state
+      end
 
       def client
         @client ||= RazorpayOauthClient.new
@@ -217,13 +264,13 @@ module PaymentProviders
       end
 
       def reject_legacy!
-        if @provider.key_id.present? || @provider.settings.values_at("key_secret", "key_secret_ciphertext").any?(&:present?)
+        if @provider.key_id.present? || settings.values_at("key_secret", "key_secret_ciphertext").any?(&:present?)
           raise Error, "Existing Razorpay API key connections cannot be replaced"
         end
       end
 
       def oauth?
-        @provider.settings["authentication_mode"] == "oauth"
+        settings["authentication_mode"] == "oauth"
       end
 
       def digest(value)
@@ -238,8 +285,8 @@ module PaymentProviders
       end
 
       def invalidate!
-        @provider.settings["oauth_generation"] = SecureRandom.hex(16)
-        @provider.settings.delete("oauth_state")
+        settings["oauth_generation"] = SecureRandom.hex(16)
+        settings.delete("oauth_state")
         fail_closed!("disconnected")
       end
 
@@ -250,23 +297,23 @@ module PaymentProviders
         if credentials.is_a?(Hash) && credentials["refresh_token"].present?
           @provider.razorpay_oauth_credentials = credentials.slice("refresh_token", "identity")
         end
-        @provider.settings["oauth_status"] = status
+        settings["oauth_status"] = status
       end
 
       def clear_credentials!
-        @provider.settings.delete("razorpay_oauth_credentials")
-        @provider.settings.delete("razorpay_oauth_credentials_ciphertext")
+        settings.delete("razorpay_oauth_credentials")
+        settings.delete("razorpay_oauth_credentials_ciphertext")
       end
 
       def clear_exchange!(pending)
         if exchange_pending?(pending)
-          @provider.settings.delete("oauth_pending_digest")
-          @provider.settings.delete("oauth_pending_generation")
+          settings.delete("oauth_pending_digest")
+          settings.delete("oauth_pending_generation")
         end
       end
 
       def exchange_pending?(pending)
-        pending == [@provider.settings["oauth_pending_digest"], @provider.settings["oauth_pending_generation"]]
+        pending == [settings["oauth_pending_digest"], settings["oauth_pending_generation"]]
       end
 
       def revoke_cleanup!(expected)
@@ -276,15 +323,15 @@ module PaymentProviders
         confirmed = credentials.is_a?(Hash) && credentials["refresh_token"].present? &&
           credentials["identity"] == client.identity && client.revoke(credentials["refresh_token"]) == true
         clear_credentials! if confirmed
-        @provider.settings["oauth_status"] = "revocation_pending" if @provider.settings.key?("razorpay_oauth_credentials_ciphertext")
-        confirmed == true && !@provider.settings["oauth_refresh_uncertain"]
+        settings["oauth_status"] = "revocation_pending" if settings.key?("razorpay_oauth_credentials_ciphertext")
+        confirmed == true && !settings["oauth_refresh_uncertain"]
       rescue RazorpayOauthClient::Error
-        @provider.settings["oauth_status"] = "revocation_pending"
+        settings["oauth_status"] = "revocation_pending"
         false
       end
 
       def pending?(pending)
-        pending == [@provider.settings["oauth_pending_digest"], @provider.settings["oauth_generation"]]
+        pending == [settings["oauth_pending_digest"], settings["oauth_generation"]]
       end
 
       def fail_pending!(pending)
@@ -299,26 +346,7 @@ module PaymentProviders
       end
 
       def finish_connection!(pending, result, identity)
-        failure = false
-        @provider.with_lock do
-          begin
-            raise Error, "Razorpay connection attempt was superseded" unless pending?(pending)
-
-            authorize!
-            reject_legacy!
-            raise Error, "Razorpay account connection failed" unless client.identity == identity
-
-            store_credentials!(result, identity)
-            @provider.connected = true
-            @provider.settings["oauth_status"] = "connected"
-            clear_exchange!(pending)
-          rescue Error, RazorpayOauthClient::Error
-            fail_closed!("reconnect_required")
-            failure = true
-          end
-          @provider.save!
-        end
-        if failure
+        unless attach_grant!(pending, result, identity)
           reject_grant!(pending, result, identity)
           raise Error, "Razorpay account connection failed", cause: nil
         end
@@ -327,6 +355,29 @@ module PaymentProviders
       rescue ActiveRecord::ActiveRecordError
         reject_grant!(pending, result, identity)
         raise Error, "Razorpay account connection failed", cause: nil
+      end
+
+      def attach_grant!(pending, result, identity)
+        @provider.with_lock do
+          attached = begin
+            raise Error, "Razorpay connection attempt was superseded" unless pending?(pending)
+
+            authorize!
+            reject_legacy!
+            raise Error, "Razorpay account connection failed" unless client.identity == identity
+
+            store_credentials!(result, identity)
+            @provider.connected = true
+            settings["oauth_status"] = "connected"
+            clear_exchange!(pending)
+            true
+          rescue Error, RazorpayOauthClient::Error
+            fail_closed!("reconnect_required")
+            false
+          end
+          @provider.save!
+          attached
+        end
       end
 
       def reject_grant!(pending, result, identity)
@@ -353,7 +404,7 @@ module PaymentProviders
       def store_credentials!(result, identity)
         account = result["razorpay_account_id"] if result.is_a?(Hash)
         expiry = result["expires_in"] if result.is_a?(Hash)
-        previous_account = @provider.settings["oauth_account_id"]
+        previous_account = settings["oauth_account_id"]
         unless result.is_a?(Hash) && %w[access_token refresh_token public_token].all? { |key| result[key].is_a?(String) && result[key].present? } &&
             account.is_a?(String) && account.match?(/\Aacc_[A-Za-z0-9]{1,116}\z/) &&
             (previous_account.blank? || previous_account == account) && expiry.is_a?(Integer) && expiry.positive?
@@ -362,8 +413,8 @@ module PaymentProviders
 
         @provider.razorpay_oauth_credentials = result.slice("access_token", "refresh_token", "public_token").merge(
           "identity" => identity, "expires_at" => Time.current.to_i + expiry)
-        @provider.settings["oauth_account_id"] = account
-        @provider.settings["oauth_mode"] = identity.fetch("mode")
+        settings["oauth_account_id"] = account
+        settings["oauth_mode"] = identity.fetch("mode")
       end
   end
 end

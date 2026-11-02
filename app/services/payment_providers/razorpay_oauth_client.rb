@@ -98,24 +98,7 @@ module PaymentProviders
       end
 
       def request(path, parameters)
-        uri = URI("https://auth.razorpay.com/#{path}")
-        body = +""
-        Timeout.timeout(15) do
-          http = Net::HTTP.new(uri.host, uri.port)
-          http.use_ssl = true
-          http.open_timeout = http.read_timeout = http.write_timeout = 5
-          request = Net::HTTP::Post.new(uri, "Content-Type" => "application/json", "Accept" => "application/json")
-          request.body = { client_id: @client_id, client_secret: @client_secret }.merge(parameters).to_json
-          http.request(request) do |response|
-            raise Error, "Razorpay OAuth request failed" unless response.is_a?(Net::HTTPSuccess)
-
-            response.read_body do |chunk|
-              body << chunk
-              raise Error, "Razorpay returned an invalid OAuth response" if body.bytesize > MAX_BODY_BYTES
-            end
-          end
-        end
-        result = JSON.parse(body, max_nesting: 20, allow_duplicate_key: false)
+        result = JSON.parse(post(path, parameters), max_nesting: 20, allow_duplicate_key: false)
         raise Error, "Razorpay returned an invalid OAuth response" unless result.is_a?(Hash) && !result.key?("error")
 
         result
@@ -123,6 +106,39 @@ module PaymentProviders
         raise Error, "Razorpay returned an invalid OAuth response", cause: nil
       rescue IOError, SystemCallError, SocketError, Timeout::Error, OpenSSL::SSL::SSLError, Net::HTTPBadResponse, Net::ProtocolError, Zlib::Error
         raise Error, "Razorpay OAuth request failed", cause: nil
+      end
+
+      def post(path, parameters)
+        uri = URI("https://auth.razorpay.com/#{path}")
+        body = +""
+        Timeout.timeout(15) do
+          http_client(uri).request(post_request(uri, parameters)) do |response|
+            raise Error, "Razorpay OAuth request failed" unless response.is_a?(Net::HTTPSuccess)
+
+            read_bounded_body(response, body)
+          end
+        end
+        body
+      end
+
+      def http_client(uri)
+        Net::HTTP.new(uri.host, uri.port).tap do |http|
+          http.use_ssl = true
+          http.open_timeout = http.read_timeout = http.write_timeout = 5
+        end
+      end
+
+      def post_request(uri, parameters)
+        Net::HTTP::Post.new(uri, "Content-Type" => "application/json", "Accept" => "application/json").tap do |request|
+          request.body = { client_id: @client_id, client_secret: @client_secret }.merge(parameters).to_json
+        end
+      end
+
+      def read_bounded_body(response, body)
+        response.read_body do |chunk|
+          body << chunk
+          raise Error, "Razorpay returned an invalid OAuth response" if body.bytesize > MAX_BODY_BYTES
+        end
       end
 
       def tokens(result, account_id: nil)
