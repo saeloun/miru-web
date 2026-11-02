@@ -47,6 +47,9 @@ page.on("console", message => {
 await context.route("**/*", async route => {
   const request = route.request();
   const url = new URL(request.url());
+  if (["fonts.googleapis.com", "fonts.gstatic.com"].includes(url.hostname)) {
+    return route.fulfill({ status: 200, contentType: "text/css", body: "" });
+  }
   if (url.origin !== base.origin) {
     unexpectedRequests.push(`${request.method()} ${url.origin}${url.pathname}`);
     return route.abort();
