@@ -200,7 +200,8 @@ jobs:
         run: PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
 
       - name: Install mobile packages
-        run: pnpm --dir apps/mobile install --frozen-lockfile
+        working-directory: apps/mobile
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck mobile app
         run: pnpm mobile:typecheck
@@ -259,17 +260,28 @@ jobs:
         if: ${{ !cancelled() }}
         run: bundle exec bundler-audit check --update
 
-      - name: Audit web packages
+      - name: Install audited packages
         if: ${{ !cancelled() }}
-        run: pnpm audit
+        run: |
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm --dir docs install --frozen-lockfile --ignore-scripts
+          (cd apps/mobile && pnpm install --frozen-lockfile --ignore-scripts)
 
-      - name: Audit docs packages
+      - name: Verify installed dependency remediation
         if: ${{ !cancelled() }}
-        run: pnpm --dir docs audit
+        run: node --test scripts/ci/dependency_security_test.mjs scripts/ci/dependency_audit_test.mjs
 
-      - name: Audit mobile packages
+      - name: Audit web, docs, and mobile packages
         if: ${{ !cancelled() }}
-        run: pnpm --dir apps/mobile audit
+        run: node scripts/ci/dependency_audit.mjs
+
+      - name: Preserve raw dependency audit reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: dependency-audit-reports
+          path: tmp/security-audit/*.json
+          if-no-files-found: warn
 
       - name: Run Ruby runtime audit
         if: ${{ !cancelled() }}
