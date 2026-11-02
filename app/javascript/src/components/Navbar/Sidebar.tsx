@@ -284,7 +284,8 @@ const Sidebar: React.FC = () => {
     if (workspace.id === currentWorkspace?.id) return;
 
     try {
-      await WorkspaceApi.update(workspace.id);
+      const response = await WorkspaceApi.update(workspace.id);
+      if (!response) return;
       window.location.href = "/";
     } catch (error) {
       reportClientError("workspaces:switch", error);

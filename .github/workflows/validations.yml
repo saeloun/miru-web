@@ -101,6 +101,9 @@ jobs:
       - name: Run Rubocop
         run: bundle exec rubocop
 
+      - name: Install document PDF tools
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y poppler-utils qpdf
+
       - name: Run ESLint
         run: pnpm lint
 
@@ -198,6 +201,9 @@ jobs:
 
       - name: Install web packages
         run: PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
+
+      - name: Install document PDF tools
+        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y poppler-utils qpdf
 
       - name: Install mobile packages
         working-directory: apps/mobile
