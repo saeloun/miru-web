@@ -182,6 +182,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       title: t("sidebar.organization"),
       items: [
         {
+          label: "Hiring",
+          href: "/hiring",
+          icon: UsersThree,
+          roles: ["admin", "owner"],
+        },
+        {
+          label: "Assignment reviews",
+          href: "/assignment-reviews",
+          icon: UsersThree,
+          roles: ["admin", "owner", "manager", "employee", "book_keeper"],
+        },
+        {
           label: t("sidebar.holidayCalendar"),
           href: "/settings/holidays",
           icon: Calendar,

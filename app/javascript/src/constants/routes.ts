@@ -26,6 +26,10 @@ const SalarySlips = lazy(() => import("components/SalarySlips"));
 const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
 const Agreements = lazy(() => import("components/Agreements"));
 const DocumentSignatures = lazy(() => import("components/DocumentSignatures"));
+const Hiring = lazy(() => import("components/Hiring"));
+const AssignmentReviews = lazy(
+  () => import("components/Hiring/AssignmentReviews")
+);
 const SignedDocuments = lazy(() => import("components/SignedDocuments"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
@@ -257,6 +261,30 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/assignment-reviews",
+    subRoutes: [
+      { path: "", Component: AssignmentReviews },
+      { path: ":assignmentId", Component: AssignmentReviews },
+    ],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, Roles.MANAGER],
+  },
+  {
+    path: "/hiring",
+    subRoutes: [
+      { path: "", Component: Hiring },
+      { path: "new", Component: Hiring },
+      { path: "roles", Component: Hiring },
+      { path: "assignment-library", Component: Hiring },
+      { path: "assignment-library/:templateId", Component: Hiring },
+      { path: "communications", Component: Hiring },
+      { path: "inbox", Component: Hiring },
+      { path: "inbox/:receiptId", Component: Hiring },
+      { path: "mailboxes", Component: Hiring },
+      { path: "applications/:applicationId", Component: Hiring },
+    ],
+    authorisedRoles: [ADMIN, OWNER],
+  },
   {
     path: "/settings/employee-records",
     subRoutes: [{ path: "", Component: EmployeeRecords }],

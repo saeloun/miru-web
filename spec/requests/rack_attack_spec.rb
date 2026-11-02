@@ -11,7 +11,7 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
     Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
-    example.run
+    freeze_time { example.run }
   ensure
     Rack::Attack.enabled = enabled
     Rack::Attack.cache.store = store
@@ -64,5 +64,39 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
     post paths.first, params: { signature_review: { token: "x" * 32 } }.to_json,
       headers: headers.merge("REMOTE_ADDR" => "203.0.113.11")
     expect(response).to have_http_status(:gone)
+  end
+
+  it "limits the combined public hiring form surface without blocking another IP" do
+    paths = %w[/hiring-form/open /hiring-form/submit /hiring-form/resume /hiring-form/resume/download
+               /hiring-assignment/open /hiring-assignment/submit /hiring-assignment/files
+               /hiring-assignment/files/remove /hiring-assignment/files/download]
+    60.times do |attempt|
+      path = paths[attempt % paths.size]
+      root = path.start_with?("/hiring-form/") ? :hiring_form : :hiring_assessment
+      post path, params: { root => { token: "x" * 32 } }.to_json, headers: headers
+      expect(response).to have_http_status(:gone)
+    end
+    post paths.first, params: { hiring_form: { token: "x" * 32 } }.to_json, headers: headers
+    expect(response).to have_http_status(:too_many_requests)
+    post paths.first, params: { hiring_form: { token: "x" * 32 } }.to_json,
+      headers: headers.merge("REMOTE_ADDR" => "203.0.113.11")
+    expect(response).to have_http_status(:gone)
+  end
+
+  it "limits authenticated hiring relay requests across routing keys without blocking another IP" do
+    allow_any_instance_of(Hiring::InboundEmailsController).to receive(:password).and_return("synthetic-relay")
+    relay_headers = headers.merge("CONTENT_TYPE" => "message/rfc822", "HTTP_AUTHORIZATION" =>
+      ActionController::HttpAuthentication::Basic.encode_credentials("actionmailbox", "synthetic-relay"))
+    paths = ["/hiring/inbound/#{SecureRandom.uuid}", "/hiring/inbound/#{SecureRandom.uuid}"]
+    120.times do |attempt|
+      post paths[attempt % paths.size], params: "Unparsed synthetic email", headers: relay_headers
+      expect(response).to have_http_status(:not_found)
+    end
+    post paths.last, params: "Unparsed synthetic email", headers: relay_headers
+    expect(response).to have_http_status(:too_many_requests)
+    post paths.first, params: "Unparsed synthetic email", headers: relay_headers.merge("REMOTE_ADDR" => "203.0.113.11")
+    expect(response).to have_http_status(:not_found)
+    expect(HiringReceipt.count).to eq(0)
+    expect(ActionMailbox::InboundEmail.count).to eq(0)
   end
 end
