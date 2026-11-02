@@ -89,7 +89,8 @@ module NativeGoogleAuth
       end
 
       def create_user!
-        user = User.new(email: auth.info.email.downcase, first_name: auth.info.first_name,
+        email = auth.info.email.downcase
+        user = User.new(email:, first_name: auth.info.first_name.presence || email.split("@").first,
           last_name: auth.info.last_name, password: Devise.friendly_token(40))
         user.skip_confirmation!
         user.save!

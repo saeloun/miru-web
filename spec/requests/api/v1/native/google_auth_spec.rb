@@ -127,6 +127,16 @@ RSpec.describe "Native Google authentication", type: :request do
     expect(User.find_by!(email: "new-native@example.invalid")).to be_confirmed
   end
 
+  it "names a new Google signup from the email when Google omits the first name" do
+    started = start_request(intent: "signup")
+    identity = OmniAuth::AuthHash.new(provider: "google_oauth2", uid: "unnamed-native-subject",
+      info: { email: "unnamed.native@example.invalid", email_verified: true, first_name: nil, last_name: "Tester" })
+    callback = browser_callback(started, identity)
+
+    expect(exchange(started, callback)["status"]).to eq("needs_workspace")
+    expect(User.find_by!(email: "unnamed.native@example.invalid").first_name).to eq("unnamed.native")
+  end
+
   it "rejects unverified Google emails without linking or creating identities" do
     grant_membership
     auth.info.email_verified = false
