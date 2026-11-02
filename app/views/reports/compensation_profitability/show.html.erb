@@ -36,6 +36,7 @@
       <a href="/reports">← Reports</a>
       <p><%= current_company.name %> · Confidential · Organization owners and admins only</p>
       <h1>Compensation Burn and Profitability</h1>
+      <p><a href="<%= profitability_scenarios_path %>">Plan and adjust profitability scenarios →</a></p>
       <p>Approved work and compensation costs across all applicable projects. Operating expenses are excluded. Client filters select people assigned to that client; their revenue still includes all projects.</p>
       <section class="panel" aria-label="Reporting controls">
         <%= form_with url: compensation_profitability_path, method: :get do |form| %>

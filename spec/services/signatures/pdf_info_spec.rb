@@ -170,7 +170,7 @@ RSpec.describe "Signing PDF source checks" do
                "<< /Type /Pages /Kids [#{Array.new(pages) { |i| "#{i + 3} 0 R" }.join(' ')}] /Count #{pages} #{inherit_media ? "/MediaBox [#{media}]" : ''} >>"]
     annotations = interactive ? "/Annots [#{field_id} 0 R]" : ""
     pages.times do
-      objects << "<< /Type /Page /Parent 2 0 R #{inherit_media ? '' : "/MediaBox [#{media}]"} /CropBox [#{crop}] /Rotate #{rotation} #{annotations} #{page_properties} >>"
+      objects << "<< /Type /Page /Parent 2 0 R #{inherit_media ? '' : "/MediaBox [#{media}]"} /CropBox [#{crop}] /Resources << >> /Rotate #{rotation} #{annotations} #{page_properties} >>"
     end
     objects << "<< /Title (#{title}) >>"
     info_id = objects.size

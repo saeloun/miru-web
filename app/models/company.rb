@@ -47,6 +47,7 @@ class Company < ApplicationRecord
   has_many :hiring_applications, dependent: :destroy
   has_many :hiring_candidates, dependent: :destroy
   has_many :hiring_roles, dependent: :destroy
+  has_many :profitability_scenarios, dependent: :destroy
   has_many :employments, dependent: :destroy
   has_many :employee_reports, dependent: :destroy
   has_one :employee_record_setting, dependent: :destroy

@@ -1,0 +1,17 @@
+<style>
+  :root { color-scheme: light dark; --background:#fafafb; --foreground:#27272a; --card:#fff; --border:#e4e4e7; --muted:#52525b; --primary:#5b34ea; }
+  * { box-sizing:border-box; } body { margin:0; background:var(--background); color:var(--foreground); font:14px/1.5 system-ui,sans-serif; }
+  main { max-width:1600px; margin:auto; padding:28px; } h1 { margin:8px 0; font-size:26px; } h2 { font-size:18px; }
+  a { color:var(--primary); } p, small { color:var(--muted); } .panel { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px; margin:20px 0; }
+  .controls,.summary { display:flex; flex-wrap:wrap; gap:16px; align-items:end; } label { display:flex; flex-direction:column; gap:6px; }
+  input,select,button,.button { font:inherit; padding:9px 12px; border:1px solid var(--border); border-radius:6px; background:var(--card); color:var(--foreground); }
+  button,.button { cursor:pointer; } button[type=submit],.button { background:var(--primary); color:white; text-decoration:none; }
+  :focus-visible { outline:3px solid #a78bfa; outline-offset:2px; } .summary>div { flex:1 1 180px; } .summary strong { display:block; font-size:21px; font-variant-numeric:tabular-nums; }
+  .table-scroll { overflow-x:auto; } table { width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums; } th,td { padding:10px; text-align:right; border-bottom:1px solid var(--border); vertical-align:top; }
+  th:first-child,td:first-child { text-align:left; } td input { width:130px; } td:first-child input { width:200px; } th { font-size:12px; color:var(--muted); }
+  .error { color:#b91c1c; } .flag { background:#fef3c7; color:#92400e; padding:4px 8px; border-radius:4px; } .overhead { display:flex; flex-wrap:wrap; gap:12px; margin:12px 0; }
+  .actions { display:flex; flex-wrap:wrap; align-items:center; gap:16px; margin:20px 0; } [hidden] { display:none!important; }
+  .visually-hidden { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  @media(prefers-color-scheme:dark) { :root { --background:#09090b; --foreground:#fafafa; --card:#18181b; --border:#3f3f46; --muted:#a1a1aa; --primary:#a78bfa; } button[type=submit],.button { color:#09090b; } .error { color:#fca5a5; } }
+  @media(max-width:700px) { main { padding:16px; } .controls label { width:100%; } }
+</style>
