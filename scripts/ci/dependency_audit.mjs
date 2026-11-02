@@ -29,6 +29,16 @@ const proofs = {
     "dist/esm/index.js":
       "b238ca70371b1f192817ae9516afaacb566d1df2a7a85e47c6c24f41f1707864",
   },
+  "deepmerge@2.2.1": {
+    "package.json":
+      "db1a2767e638e6461dd154da0aa04ea47c66305c597da4a11a46975bdc889cc5",
+    "dist/cjs.js":
+      "64c0872ac5c682f9e789026026128c0bf611bb66dbb45c1cfd36bde6a39f306e",
+    "dist/es.js":
+      "26f39d74daec089bcb7e7ddd947c55307d87e0a9415046275dead3099605f527",
+    "dist/umd.js":
+      "2f403d46484553737d75e5538d3b29e9d149c77306eafac13881be74629a28d8",
+  },
   "deepmerge@4.3.1": {
     "package.json":
       "f56978e7a6da1a3c6edee41abb54f98584a2fa2680458c48db820ae772fef0c9",

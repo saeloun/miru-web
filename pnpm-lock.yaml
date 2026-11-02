@@ -5,7 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  deepmerge@^2: 4.3.1
   follow-redirects: 1.16.2
   react: 19.1.10
   react-dom: 19.1.10
@@ -38,9 +37,9 @@ overrides:
   postcss-selector-parser: 7.1.7
 
 patchedDependencies:
-  deepmerge@4.3.1:
-    hash: 5r5cnxftlxyctbss2vcfjp7gjy
-    path: patches/deepmerge@4.3.1.patch
+  deepmerge@2.2.1:
+    hash: vfrhxpabrtrskwuajppzm6spxe
+    path: patches/deepmerge@2.2.1.patch
   minimatch@10.2.6:
     hash: duhxb5crl3ilfy5k6zuq3ckvp4
     path: patches/minimatch@10.2.6.patch
@@ -2538,8 +2537,8 @@ packages:
   deep-is@0.1.4:
     resolution: {integrity: sha512-oIPzksmTg4/MriiaYGO+okXDT7ztn/w3Eptv/+gSIdMdKsJo0u4CfYNFJPy+4SKMuCqGw2wxnA+URMg3t8a/bQ==}
 
-  deepmerge@4.3.1:
-    resolution: {integrity: sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==}
+  deepmerge@2.2.1:
+    resolution: {integrity: sha512-R9hc1Xa/NOBi9WRVUWg19rl1UB7Tt4kuPd+thNJgFZoxXsTz7ncaPaeIm+40oSGuP33DfMb4sZt1QIGiJzC4EA==}
     engines: {node: '>=0.10.0'}
 
   define-data-property@1.1.4:
@@ -6965,7 +6964,7 @@ snapshots:
 
   deep-is@0.1.4: {}
 
-  deepmerge@4.3.1(patch_hash=5r5cnxftlxyctbss2vcfjp7gjy): {}
+  deepmerge@2.2.1(patch_hash=vfrhxpabrtrskwuajppzm6spxe): {}
 
   define-data-property@1.1.4:
     dependencies:
@@ -7456,7 +7455,7 @@ snapshots:
   formik@2.4.9(@types/react@19.1.9)(react@19.1.10):
     dependencies:
       '@types/hoist-non-react-statics': 3.3.7(@types/react@19.1.9)
-      deepmerge: 4.3.1(patch_hash=5r5cnxftlxyctbss2vcfjp7gjy)
+      deepmerge: 2.2.1(patch_hash=vfrhxpabrtrskwuajppzm6spxe)
       hoist-non-react-statics: 3.3.2
       lodash: 4.18.1
       lodash-es: 4.18.1

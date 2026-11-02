@@ -23,8 +23,11 @@ fix releases or a claim of zero audit findings.
   This prevents returned-object prototype poisoning with null-prototype targets,
   null nested placeholders, and a malicious target. No upstream fixed release
   exists. Array merge, cloning, symbols and ordinary matching remain checked.
-  The web Formik dependency on deepmerge 2 is upgraded to this patched version
-  instead of retaining a separate unchecked implementation.
+- deepmerge 2.2.1 (web Formik dependency): apply the same unconditional
+  `__proto__` exclusion to its CJS, ES and UMD bundles. Formik requires `^2.1.1`,
+  and neither `pnpm audit` nor Snyk reports this version, but unpatched 2.2.1 still
+  returns an object with a poisoned prototype. Its exact source is attested and
+  exploit-tested like the other backports.
 
 Run hoisted mobile installs from `apps/mobile` itself. pnpm 9's `--dir` install
 can write a nested patched package into the caller's node_modules on a repeated

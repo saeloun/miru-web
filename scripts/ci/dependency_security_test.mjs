@@ -140,6 +140,45 @@ for (const pkg of copies.values()) {
       assert.equal(match.makeRe("*.js").test("file.js"), true);
     });
   }
+  if (pkg.name === "deepmerge" && pkg.version === "2.2.1") {
+    for (const format of ["cjs", "es", "umd"]) {
+      test(`${label} ${format} rejects prototype keys in target and source`, async () => {
+        const entry = resolve(pkg.path, `dist/${format}.js`);
+        let merge;
+        if (format === "cjs") {
+          merge = require(entry);
+        } else if (format === "es") {
+          const scratch = mkdtempSync(resolve(tmpdir(), "miru-deepmerge-"));
+          const copy = resolve(scratch, "es.mjs");
+          writeFileSync(copy, readFileSync(entry));
+          merge = (await import(pathToFileURL(copy))).default;
+          rmSync(scratch, { recursive: true, force: true });
+        } else {
+          const context = { module: { exports: {} }, exports: {} };
+          runInNewContext(readFileSync(entry, "utf8"), context);
+          merge = context.module.exports;
+        }
+        const payload = JSON.parse('{"__proto__":{"miruSyntheticAdmin":true}}');
+        for (const result of [
+          merge({}, payload),
+          merge(Object.create(null), payload),
+          merge({ session: null }, { session: payload }).session,
+          merge(payload, {}),
+        ]) {
+          assert.equal(result.miruSyntheticAdmin, undefined);
+          assert.equal(Object.hasOwn(result, "__proto__"), false);
+        }
+        assert.equal({}.miruSyntheticAdmin, undefined);
+        const merged = merge(
+          { values: [1], nested: { a: 1 } },
+          { values: [2], nested: { b: 2 } },
+          { arrayMerge: (target, source) => target.concat(source) }
+        );
+        assert.equal(JSON.stringify(merged.values), "[1,2]");
+        assert.equal(JSON.stringify(merged.nested), '{"a":1,"b":2}');
+      });
+    }
+  }
   if (pkg.name === "deepmerge" && pkg.version === "4.3.1") {
     for (const format of ["cjs", "umd"]) {
       test(`${label} ${format} rejects prototype keys in target and source`, () => {

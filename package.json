@@ -153,7 +153,6 @@
   ],
   "pnpm": {
     "overrides": {
-      "deepmerge@^2": "4.3.1",
       "follow-redirects": "1.16.2",
       "react": "19.1.10",
       "react-dom": "19.1.10",
@@ -186,7 +185,7 @@
       "postcss-selector-parser": "7.1.7"
     },
     "patchedDependencies": {
-      "deepmerge@4.3.1": "patches/deepmerge@4.3.1.patch",
+      "deepmerge@2.2.1": "patches/deepmerge@2.2.1.patch",
       "minimatch@10.2.6": "patches/minimatch@10.2.6.patch"
     }
   },

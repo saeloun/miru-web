@@ -284,8 +284,29 @@ RSpec.describe Reports::CompensationProfitability do
 
   it "uses working-day proration only with the configured policy" do
     company.update!(compensation_proration: "working_days")
-    expect(row(from: "2026-07-01", to: "2026-07-01")[:compensation_cost]).to be_within(0.0001).of(3100.to_d / 23)
-    expect(row[:compensation_cost]).to be_within(0.0001).of(3100)
+    expect(row(from: "2026-07-01", to: "2026-07-01")[:compensation_cost]).to eq("134.78".to_d)
+    expect(row[:compensation_cost]).to eq(3100.to_d)
+  end
+
+  it "returns exact currency totals for a full month with repeating daily compensation" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "6200.00"))
+
+    expect(row(from: "2026-11-01", to: "2026-11-30"))
+      .to include(compensation_cost: 6200.to_d, salary_inr: 6200.to_d, salary_usd: "77.50".to_d)
+  end
+
+  it "rounds the period total after accumulating daily compensation" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "100.00"))
+
+    expect(row(from: "2026-11-01", to: "2026-11-02"))
+      .to include(compensation_cost: "6.67".to_d, salary_inr: "6.67".to_d, salary_usd: "0.08".to_d)
+  end
+
+  it "rounds a converted half-cent upward in the report and salary currency totals" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "2412.00"))
+
+    expect(row(from: "2026-11-01", to: "2026-11-01", currency: "USD"))
+      .to include(compensation_cost: "1.01".to_d, salary_usd: "1.01".to_d, salary_inr: "80.40".to_d)
   end
 
   %w[calendar_days working_days].each do |proration|
