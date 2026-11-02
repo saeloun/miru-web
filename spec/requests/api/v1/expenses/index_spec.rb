@@ -52,6 +52,7 @@ RSpec.describe "Api::V1::Expense#index", type: :request do
                             "description" => expense.description,
                             "receipts" => [],
                             "status" => expense.status,
+                            "approvedAt" => expense.approved_at&.as_json,
                             "paidAt" => expense.paid_at,
                             "userId" => expense.user_id,
                             "submitterName" => expense.submitter_name

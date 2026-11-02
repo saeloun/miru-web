@@ -43,7 +43,7 @@ RSpec.describe "Profile Settings", type: :system, js: true do
 
       expect(page).to have_css("#react-root", wait: 10)
       within("header") do
-        expect(page).to have_button("Logout", wait: 10)
+        expect(page).to have_css('button[aria-label="Logout"]', wait: 10)
       end
 
       visit "/settings/profile"
@@ -252,9 +252,9 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Passkeys", wait: 10)
       expect(page).to have_content("Add a passkey for this account", wait: 10)
       expect(page).to have_button("Add passkey", wait: 10)
-      expect(page).to have_content("Require passkey on sign in", wait: 10)
-      expect(page).to have_content("Authenticator App 2FA", wait: 10)
-      expect(page).to have_button("Set up 2FA", wait: 10)
+      expect(page).to have_content("Use passkeys for two-factor verification", wait: 10)
+      expect(page).to have_content("Authenticator app", wait: 10)
+      expect(page).to have_button("Set up authenticator", wait: 10)
     end
   end
 

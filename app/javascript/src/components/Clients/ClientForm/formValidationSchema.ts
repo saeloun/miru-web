@@ -19,6 +19,23 @@ const clientSchema = Yup.object().shape({
     .required(i18n.t("auth.validation.nameRequired"))
     .max(30, i18n.t("auth.validation.max30")),
   email: Yup.string().email(i18n.t("auth.validation.invalidEmail")),
+  legal_name: Yup.string()
+    .trim()
+    .max(255, i18n.t("clients.agreement.maxLength", { count: 255 })),
+  finance_email: Yup.string()
+    .trim()
+    .email(i18n.t("auth.validation.invalidEmail"))
+    .max(254, i18n.t("clients.agreement.maxLength", { count: 254 })),
+  signatory_name: Yup.string()
+    .trim()
+    .max(255, i18n.t("clients.agreement.maxLength", { count: 255 })),
+  signatory_designation: Yup.string()
+    .trim()
+    .max(255, i18n.t("clients.agreement.maxLength", { count: 255 })),
+  signatory_email: Yup.string()
+    .trim()
+    .email(i18n.t("auth.validation.invalidEmail"))
+    .max(254, i18n.t("clients.agreement.maxLength", { count: 254 })),
   ein: Yup.string()
     .matches(/^\d{2}-\d{7}$/, {
       excludeEmptyString: true,
@@ -89,6 +106,11 @@ const getCurrencyLabel = (currency?: string): string => {
 const getInitialvalues = (client?: any) => ({
   name: client?.name || "",
   email: client?.email || "",
+  legal_name: client?.legal_name || "",
+  finance_email: client?.finance_email || "",
+  signatory_name: client?.signatory_name || "",
+  signatory_designation: client?.signatory_designation || "",
+  signatory_email: client?.signatory_email || "",
   ein: client?.ein || "",
   phone: client?.phone || "",
   address1: client?.address?.address_line_1 || "",

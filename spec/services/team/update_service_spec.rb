@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe Team::UpdateService do
   let(:company) { create(:company) }
-  let(:user) { create(:user, current_workspace_id: company.id) }
+  let(:user) { create(:user, first_name: "John", last_name: "Doe", current_workspace_id: company.id) }
   let(:employment) { create(:employment, company:, user:) }
   let(:actor) { create(:user, current_workspace_id: company.id) }
   let(:actor_role) { :admin }
@@ -29,6 +29,14 @@ RSpec.describe Team::UpdateService do
       expect { subject }.to change {
         employment.user.reload.primary_role(company)
       }.from("employee").to("admin")
+    end
+
+    it "rechecks the target role before authorizing a previously initialized update" do
+      service = described_class.new(actor:, user: employment.user, user_params:, current_company: company, new_role:)
+      user.add_role(:owner, company)
+
+      expect { service.process }.to raise_error(Pundit::NotAuthorizedError)
+      expect(user.reload.first_name).to eq("John")
     end
 
     it "audits a role change with the actor and workspace" do

@@ -9,6 +9,22 @@ class Api::V1::BulkPreviousEmploymentsController < Api::V1::ApplicationControlle
 
   private
 
+    def record_invalid(exception)
+      record = exception.record
+      render json: {
+        errors: record.errors.full_messages.first,
+        error_details: { model: record.model_name.name, attribute: record.errors.first&.attribute }
+      }, status: 422
+    end
+
+    def record_not_unique(exception)
+      raise exception unless Employment.employee_id_conflict?(exception)
+
+      record = Employment.new
+      record.errors.add(:employee_id, :taken)
+      record_invalid(ActiveRecord::RecordInvalid.new(record))
+    end
+
     def update_params
       params.require(:employments).permit(
         current_employment: [:designation, :employment_type, :joined_at, :resigned_at, :employee_id],
@@ -19,7 +35,7 @@ class Api::V1::BulkPreviousEmploymentsController < Api::V1::ApplicationControlle
     end
 
     def employment
-      @_employment ||= Employment.find_by!(user_id: params[:id], company_id: current_company.id)
+      @_employment ||= current_company.employments.kept.find_by!(user_id: params[:id])
     end
 
     def user

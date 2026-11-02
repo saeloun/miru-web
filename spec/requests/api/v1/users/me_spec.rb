@@ -51,6 +51,20 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["user"]).not_to have_key("token")
     end
 
+    it "derives records availability independently of payroll for an incomplete profile" do
+      user.employments.find_by!(company:).update_columns(joined_at: nil, resigned_at: nil)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+      allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
+      get api_v1_users_me_path, headers: auth_headers(user)
+      expect(response).to have_http_status(:ok)
+      expect(json_response.fetch("company"))
+        .to include("employee_records_available" => true, "payroll_review_enabled" => false)
+      user.employments.find_by!(company:).update_column(:joined_at, Date.tomorrow)
+      get api_v1_users_me_path, headers: auth_headers(user)
+      expect(json_response.dig("company", "employee_records_available")).to be(false)
+    end
+
     it "returns company info" do
       get api_v1_users_me_path, headers: auth_headers(user)
       expect(json_response["company"]["id"]).to eq(company.id)
@@ -86,6 +100,17 @@ RSpec.describe "Api::V1::Users#me", type: :request do
       expect(json_response["user"]["email"]).to eq(user.email)
       expect(json_response["company"]["id"]).to eq(company.id)
       expect(json_response["company_role"]).to eq("admin")
+    end
+
+    it "denies records availability when the captured CLI company differs from the current workspace" do
+      other = create(:company)
+      create(:employment, company: other, user:, joined_at: nil, resigned_at: nil)
+      user.add_role(:admin, other)
+      _, cli_token = CliSession.issue_for(user:, company:)
+      user.update!(current_workspace: other)
+      get api_v1_users_me_path, headers: cli_auth_headers(cli_token)
+      expect(response).to have_http_status(:ok)
+      expect(json_response.fetch("company")).to include("id" => company.id, "employee_records_available" => false)
     end
   end
 

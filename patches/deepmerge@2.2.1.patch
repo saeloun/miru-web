@@ -1,0 +1,51 @@
+diff --git a/dist/cjs.js b/dist/cjs.js
+index 537777a..906ed24 100644
+--- a/dist/cjs.js
++++ b/dist/cjs.js
+@@ -56,10 +56,12 @@ function mergeObject(target, source, optionsArgument) {
+ 	var destination = {};
+ 	if (isMergeableObject(target)) {
+ 		Object.keys(target).forEach(function(key) {
++			if (key === '__proto__') return
+ 			destination[key] = cloneUnlessOtherwiseSpecified(target[key], optionsArgument);
+ 		});
+ 	}
+ 	Object.keys(source).forEach(function(key) {
++		if (key === '__proto__') return
+ 		if (!isMergeableObject(source[key]) || !target[key]) {
+ 			destination[key] = cloneUnlessOtherwiseSpecified(source[key], optionsArgument);
+ 		} else {
+diff --git a/dist/es.js b/dist/es.js
+index c7c6225..38d7753 100644
+--- a/dist/es.js
++++ b/dist/es.js
+@@ -43,10 +43,12 @@ function mergeObject(target, source, options) {
+ 	var destination = {};
+ 	if (options.isMergeableObject(target)) {
+ 		Object.keys(target).forEach(function(key) {
++			if (key === '__proto__') return
+ 			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+ 		});
+ 	}
+ 	Object.keys(source).forEach(function(key) {
++		if (key === '__proto__') return
+ 		if (!options.isMergeableObject(source[key]) || !target[key]) {
+ 			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+ 		} else {
+diff --git a/dist/umd.js b/dist/umd.js
+index 172344d..57b5e71 100644
+--- a/dist/umd.js
++++ b/dist/umd.js
+@@ -49,10 +49,12 @@ function mergeObject(target, source, options) {
+ 	var destination = {};
+ 	if (options.isMergeableObject(target)) {
+ 		Object.keys(target).forEach(function(key) {
++			if (key === '__proto__') return
+ 			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
+ 		});
+ 	}
+ 	Object.keys(source).forEach(function(key) {
++		if (key === '__proto__') return
+ 		if (!options.isMergeableObject(source[key]) || !target[key]) {
+ 			destination[key] = cloneUnlessOtherwiseSpecified(source[key], options);
+ 		} else {

@@ -22,6 +22,7 @@ import { useUserContext } from "../../../context/UserContext";
 
 import { clientSchema, getInitialvalues } from "./formValidationSchema";
 import UploadLogo from "./UploadLogo";
+import AgreementDetailsFields from "./AgreementDetailsFields";
 import {
   disableBtn,
   formatFormData,
@@ -210,6 +211,7 @@ const ClientEditor = ({
                 <p className="text-xs text-red-600">{errors.phone}</p>
               )}
             </div>
+            <AgreementDetailsFields />
             {/* Address Line 1 */}
             <div className="space-y-2">
               <Label htmlFor="address1">

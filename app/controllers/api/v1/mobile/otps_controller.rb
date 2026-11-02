@@ -30,6 +30,15 @@ class Api::V1::Mobile::OtpsController < Api::V1::ApplicationController
     company = result.company
     return unless sso_sign_in_allowed?(user)
 
+    unless user.active_for_authentication? && user.confirmed? && !user.access_locked?
+      raise MobileOtp::ChallengeToken::InvalidTokenError
+    end
+
+    if user.has_second_factor_requirement?
+      render json: { error: "This account requires two-factor verification. Sign in from the web app to continue." }, status: 422
+      return
+    end
+
     sign_in user, store: false
     Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :mobile_otp))
 

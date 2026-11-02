@@ -10,7 +10,7 @@ class BulkPreviousEmploymentService
   end
 
   def process
-    ActiveRecord::Base.transaction do
+    employment.company.with_employee_number_lock do
       add_new_employments
       update_existing_employments
       remove_employments
@@ -54,6 +54,6 @@ class BulkPreviousEmploymentService
     def update_current_employment
       return if employments[:current_employment].blank?
 
-      employment.update!(employments[:current_employment])
+      employment.update_profile!(employments[:current_employment])
     end
 end

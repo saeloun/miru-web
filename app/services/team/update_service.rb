@@ -15,9 +15,10 @@ module Team
 
     def process
       validate_role!
-      authorize_role_change!
 
-      User.transaction do
+      current_company.with_employee_number_lock do
+        @current_role = user.roles.find_by(resource: current_company)&.name&.to_sym
+        authorize_role_change!
         # skip confirmation email as changes are made by admin and it dosen't change email
         user.skip_reconfirmation!
         user.update!(user_params)

@@ -82,6 +82,32 @@ RSpec.describe Api::V1::Users::SessionsController, type: :controller do
   end
 
   describe "GET #me" do
+    it "returns records availability for an incomplete profile with payroll disabled" do
+      user.employments.find_by!(company:).update_columns(joined_at: nil, resigned_at: nil)
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+      allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
+      request.headers["X-Auth-Email"] = user.email
+      request.headers["X-Auth-Token"] = user.token
+      get :me, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.fetch("company"))
+        .to include("employee_records_available" => true, "payroll_review_enabled" => false)
+    end
+
+    it "denies availability for a captured company outside the user's current workspace" do
+      other = create(:company)
+      create(:employment, company: other, user:, joined_at: nil, resigned_at: nil)
+      user.add_role(:admin, other)
+      allow(controller).to receive(:current_company).and_return(other)
+      request.headers["X-Auth-Email"] = user.email
+      request.headers["X-Auth-Token"] = user.token
+      get :me, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.fetch("company"))
+        .to include("id" => other.id, "employee_records_available" => false)
+    end
+
     context "when user is authenticated" do
       before do
         request.headers["X-Auth-Email"] = user.email

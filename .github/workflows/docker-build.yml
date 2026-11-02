@@ -84,8 +84,8 @@ jobs:
             type=gha,mode=max,scope=prod
           platforms: linux/amd64
           build-args: |
-            RUBY_VERSION=4.0.1
-            NODE_VERSION=22.11.0
+            RUBY_VERSION=4.0.9
+            NODE_VERSION=24.22.1
 
       - name: Build and push development image
         if: github.ref == 'refs/heads/develop'
@@ -106,8 +106,8 @@ jobs:
             type=gha,mode=max,scope=dev
           platforms: linux/amd64
           build-args: |
-            RUBY_VERSION=4.0.1
-            NODE_VERSION=22.11.0
+            RUBY_VERSION=4.0.9
+            NODE_VERSION=24.22.1
 
       - name: Generate devcontainer metadata
         if: success() && github.event_name != 'pull_request'

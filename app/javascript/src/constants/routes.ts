@@ -22,7 +22,15 @@ const ClientsTable = lazy(() => import("../components/Clients/ClientsTable"));
 const ClientDetails = lazy(() => import("../components/Clients/Details"));
 const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
+const SalarySlips = lazy(() => import("components/SalarySlips"));
+const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
+const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
+const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
 const PayrollReview = lazy(() => import("components/Payroll/Review"));
+const EmployeeRecords = lazy(
+  () => import("components/Profile/EmployeeRecords")
+);
+
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -246,6 +254,36 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/settings/employee-records",
+    subRoutes: [{ path: "", Component: EmployeeRecords }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/team/:memberId/employee-records",
+    subRoutes: [{ path: "", Component: EmployeeRecords }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/india-tax",
+    subRoutes: [{ path: "", Component: IndiaTaxEstimates }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/salary-slips",
+    subRoutes: [{ path: "", Component: SalarySlips }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/tax-declarations",
+    subRoutes: [{ path: "", Component: TaxDeclarations }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
+    path: "/consultant-payroll",
+    subRoutes: [{ path: "", Component: withPayrollGate(ConsultantPayroll) }],
+    authorisedRoles: [ADMIN, OWNER],
+  },
   {
     path: "/payroll",
     subRoutes: [

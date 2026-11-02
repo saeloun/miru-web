@@ -20,7 +20,7 @@ module AuthResponsePayload
       user.roles.find_by(resource: company)&.name
     end
 
-    def company_payload(company)
+    def company_payload(company, user:)
       return nil unless company
 
       company.attributes.slice(
@@ -36,6 +36,8 @@ module AuthResponsePayload
         "plan_tier"
       ).merge(
         "payroll_review_enabled" => Payroll::Entitlement.enabled?(company.id),
+        "employee_records_available" => company.id == user.current_workspace_id &&
+          EmployeeRecordPolicy.new(user, EmployeeRecord).index?,
         "address" => company.current_address,
         "logo" => company.company_logo,
         "pro_access" => company.pro_access?,
@@ -57,7 +59,7 @@ module AuthResponsePayload
         notice:,
         user: auth_user_payload(user, include_token:),
         company_role: company_role_payload(user, company),
-        company: company_payload(company)
+        company: company_payload(company, user:)
       }
     end
 
@@ -67,7 +69,7 @@ module AuthResponsePayload
         avatar_url: user.avatar_url,
         company_role: company_role_payload(user, company),
         confirmed_user: user.confirmed?,
-        company: company_payload(company),
+        company: company_payload(company, user:),
         google_oauth_success:
       }
     end
@@ -76,7 +78,7 @@ module AuthResponsePayload
       {
         user: auth_user_payload(user, include_token: true, include_avatar: true, include_confirmed: true),
         company_role: company_role_payload(user, company),
-        company: company_payload(company)
+        company: company_payload(company, user:)
       }
     end
 
@@ -84,7 +86,7 @@ module AuthResponsePayload
       {
         user: auth_user_payload(user, include_token: true, include_avatar: true, include_confirmed: true),
         company_role: company_role_payload(user, company),
-        company: company_payload(company)
+        company: company_payload(company, user:)
       }
     end
 end

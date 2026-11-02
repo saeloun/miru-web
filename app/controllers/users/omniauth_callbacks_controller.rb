@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  include SecondFactorAuthentication
+
   def google_oauth2
     handle_oauth_callback(
       provider: Authentication::Google,
@@ -31,9 +33,21 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       user = provider.new(request.env["omniauth.auth"]).user!
 
       if user&.persisted?
+        unless user.active_for_authentication? && user.confirmed? && !user.access_locked?
+          flash[:error] = I18n.t("devise.failure.unauthenticated")
+          redirect_to root_path
+          return
+        end
+
         if (error = SsoEnforcement.new(user).oauth_error)
           flash[:error] = error
           redirect_to root_path
+          return
+        end
+
+        if second_factor_required?(user) && !trusted_browser?(user)
+          session[:pending_second_factor] = second_factor_challenge_payload(user, sso_authenticated: true)
+          redirect_to "/login?verify=1"
           return
         end
 

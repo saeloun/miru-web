@@ -1,0 +1,11 @@
+Upcoming <%= @occasion %>
+
+<%= @employee_name %> has a <%= @occasion %> on <%= @event_date %>, in seven days.
+<% if @completed_years %>
+<%= @completed_years %> completed <%= "year".pluralize(@completed_years) %> at <%= @company.name %>.
+<% end %>
+
+This reminder is enabled by your workspace administrator.
+
+View employee record:
+<%= @profile_url %>

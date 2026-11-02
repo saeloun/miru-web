@@ -76,6 +76,33 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe "destroy boundary semantics" do
+    it "keeps dirty attributes while reserving historical employee numbers before deletion" do
+      company = create(:company)
+      user = create(:user, current_workspace: company)
+      employment = create(:employment, company:, user:, employee_id: "legacy")
+      employment.update_columns(employee_id: "SI063")
+      user.first_name = "Unsaved"
+
+      user.destroy!
+
+      expect(user.first_name).to eq("Unsaved")
+      expect(user).to be_destroyed
+      expect(user).to be_frozen
+      expect(Employment.exists?(employment.id)).to be(false)
+      expect(company.reload.last_employee_number).to eq(63)
+      expect { user.destroy! }.not_to raise_error
+    end
+
+    it "can destroy a new record and destroy it again without persisting it" do
+      user = build(:user)
+
+      expect { 2.times { user.destroy! } }.not_to change(User, :count)
+      expect(user).to be_destroyed
+      expect(user).to be_frozen
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to have_many(:companies).through(:employments) }
     it { is_expected.to have_many(:employments).dependent(:destroy) }

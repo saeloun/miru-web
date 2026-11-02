@@ -44,6 +44,18 @@ RSpec.describe "Api::V1::Mobile::Bootstrap", type: :request do
     )
   end
 
+  it "returns records availability independently of payroll for an incomplete profile" do
+    user.add_role(:employee, company)
+    user.employments.find_by!(company:).update_columns(joined_at: nil, resigned_at: nil)
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_ENABLED").and_return("false")
+    allow(ENV).to receive(:[]).with("MIRU_PAYROLL_SAELOUN_COMPANY_ID").and_return(nil)
+    send_request :get, api_v1_mobile_bootstrap_path, headers: auth_headers(user)
+    expect(response).to have_http_status(:ok)
+    expect(json_response.fetch("company"))
+      .to include("employee_records_available" => true, "payroll_review_enabled" => false)
+  end
+
   it "keeps employee capabilities focused on time tracking" do
     user.add_role :employee, company
 

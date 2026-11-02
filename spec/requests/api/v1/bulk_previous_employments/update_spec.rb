@@ -18,6 +18,74 @@ RSpec.describe "Api::V1::BulkPreviousEmployments#update", type: :request do
       sign_in user
     end
 
+    it "rolls history edits back on duplicate ID, then updates only the kept membership on retry" do
+      current = target_user.employments.kept.find_by!(company:)
+      historic = create(:employment, company:, user: target_user, employee_id: "reserved",
+        discarded_at: Time.current, designation: "Historical")
+      # Give history the lower primary key to catch an unscoped first-row lookup.
+      current.update_columns(discarded_at: Time.current)
+      historic.update_columns(discarded_at: nil)
+      current, historic = historic, current
+      payload = { employments: {
+        current_employment: { employee_id: historic.employee_id, designation: "Updated" },
+        added_employments: [{ company_name: "Past Company", role: "Developer" }]
+      } }
+      expect do
+        patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
+      end.not_to change { target_user.previous_employments.count }
+      expect(response).to have_http_status(422)
+      expect(json_response["errors"]).to eq("Employee ID has already been taken")
+      expect(json_response["error_details"]).to eq("model" => "Employment", "attribute" => "employee_id")
+      payload[:employments][:current_employment][:employee_id] = "SI070"
+      patch api_v1_bulk_previous_employment_path(target_user), params: payload, headers: auth_headers(user)
+      expect(response).to have_http_status(:ok)
+      expect(current.reload.employee_id).to eq("SI070")
+      expect(current.designation).to eq("Updated")
+      expect(historic.reload.designation).to eq("SDE")
+      expect(target_user.previous_employments.count).to eq(1)
+    end
+
+    it "identifies invalid historical fields without applying current or earlier history edits" do
+      previous = create(:previous_employment, user: target_user)
+      original_name = previous.company_name
+      current = target_user.employments.kept.find_by!(company:)
+      [[:company_name, "", "role"], [:role, "", "company_name"]].each do |attribute, value, other|
+        patch api_v1_bulk_previous_employment_path(target_user), params: { employments: {
+          current_employment: { designation: "Unsaved current" },
+          added_employments: [{ company_name: "Unsaved history", role: "Developer" }],
+          updated_employments: [{ id: previous.id, company_name: "Updated history", role: "Developer",
+            attribute => value }]
+        } }, headers: auth_headers(user)
+
+        expect(response).to have_http_status(422)
+        expect(json_response["error_details"]).to eq("model" => "PreviousEmployment", "attribute" => attribute.to_s)
+        expect(json_response["errors"]).to include("can't be blank")
+        expect(json_response["errors"]).not_to include(other.humanize)
+        expect(previous.reload.company_name).to eq(original_name)
+        expect(target_user.previous_employments.count).to eq(1)
+        expect(current.reload.designation).to eq("SDE")
+      end
+    end
+
+    it "identifies the real named employee ID constraint fallback" do
+      current = target_user.employments.kept.find_by!(company:)
+      create(:employment, company:, employee_id: "reserved")
+      conflict = begin
+        Employment.transaction(requires_new: true) { current.update_columns(employee_id: "reserved") }
+      rescue ActiveRecord::RecordNotUnique => exception
+        exception
+      end
+      allow_any_instance_of(Employment).to receive(:update_profile!).and_raise(conflict)
+
+      patch api_v1_bulk_previous_employment_path(target_user), params: {
+        employments: { current_employment: { employee_id: "reserved" } }
+      }, headers: auth_headers(user)
+
+      expect(response).to have_http_status(422)
+      expect(json_response["errors"]).to eq("Employee ID has already been taken")
+      expect(json_response["error_details"]).to eq("model" => "Employment", "attribute" => "employee_id")
+    end
+
     it "updates employment details" do
       patch api_v1_bulk_previous_employment_path(target_user),
         params: {

@@ -35,8 +35,8 @@ builder:
   arch: amd64
   dockerfile: Dockerfile.production
   args:
-    RUBY_VERSION: 4.0.1
-    NODE_VERSION: 20
+    RUBY_VERSION: 4.0.9
+    NODE_VERSION: 24
     RAILS_ENV: production
 
 # Environment variables

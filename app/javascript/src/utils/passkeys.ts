@@ -1,5 +1,3 @@
-const encoder = new globalThis.TextEncoder();
-
 const base64UrlToUint8Array = (value: string) => {
   const padding = "=".repeat((4 - (value.length % 4 || 4)) % 4);
   const base64 = `${value}${padding}`.replace(/-/g, "+").replace(/_/g, "/");
@@ -47,7 +45,7 @@ const prepareCreationOptions = (options: any) => {
         ...options.user,
         id:
           typeof options.user?.id === "string"
-            ? encoder.encode(options.user.id)
+            ? base64UrlToUint8Array(options.user.id)
             : options.user?.id,
       },
       excludeCredentials: (options.excludeCredentials || []).map(

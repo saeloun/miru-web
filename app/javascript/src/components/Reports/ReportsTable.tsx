@@ -26,6 +26,7 @@ import {
 } from "phosphor-react";
 import { cn } from "../../lib/utils";
 import { i18n } from "../../i18n";
+import { useUserContext } from "../../context/UserContext";
 
 interface ReportCard {
   id: string;
@@ -34,6 +35,8 @@ interface ReportCard {
   icon: React.ElementType;
   url: string;
   available: boolean;
+  serverRendered?: boolean;
+  roles?: string[];
   category: "time" | "financial" | "client" | "team";
 }
 
@@ -53,6 +56,17 @@ const getCategoryLabel = (category: ReportCard["category"]) => {
 };
 
 const getReportCards = (): ReportCard[] => [
+  {
+    id: "compensation-profitability",
+    title: i18n.t("reports.compensationProfitability"),
+    description: i18n.t("reports.compensationProfitabilityDesc"),
+    icon: ChartBar,
+    url: "/reports/compensation-profitability",
+    available: true,
+    category: "financial",
+    serverRendered: true,
+    roles: ["owner", "admin"],
+  },
   {
     id: "time-entry",
     title: i18n.t("reports.timeReports"),
@@ -129,19 +143,29 @@ const getReportCards = (): ReportCard[] => [
 
 const ReportsTable: React.FC = () => {
   const navigate = useNavigate();
+  const { companyRole } = useUserContext();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const reportCards = getReportCards();
+  const reportCards = getReportCards().filter(
+    report => !report.roles || report.roles.includes(companyRole)
+  );
+
+  const openReport = (report: ReportCard) => {
+    if (report.serverRendered) {
+      window.location.assign(report.url);
+    } else {
+      navigate(report.url);
+    }
+  };
 
   const handleReportKeyDown = (
     event: React.KeyboardEvent<HTMLDivElement>,
-    url: string,
-    available: boolean
+    report: ReportCard
   ) => {
-    if (!available) return;
+    if (!report.available) return;
 
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      navigate(url);
+      openReport(report);
     }
   };
 
@@ -276,10 +300,8 @@ const ReportsTable: React.FC = () => {
                 <Card
                   key={report.id}
                   className="group cursor-pointer border-border transition-all hover:shadow-lg"
-                  onClick={() => navigate(report.url)}
-                  onKeyDown={event =>
-                    handleReportKeyDown(event, report.url, report.available)
-                  }
+                  onClick={() => openReport(report)}
+                  onKeyDown={event => handleReportKeyDown(event, report)}
                   role="button"
                   tabIndex={0}
                   aria-label={i18n.t("reports.openReport", {

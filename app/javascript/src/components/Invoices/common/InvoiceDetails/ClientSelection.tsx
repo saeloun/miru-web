@@ -136,7 +136,7 @@ const ClientSelection = ({
             selectedClient && (
               <div className="h-full overflow-y-auto">
                 <p className="text-base font-bold text-foreground">
-                  {selectedClient.name}
+                  {selectedClient.legalName || selectedClient.name}
                 </p>
                 {selectedClient?.address ? (
                   <p className="w-full text-sm font-normal text-muted-foreground lg:w-52">

@@ -1,5 +1,13 @@
 import { i18n } from "../../../i18n";
 
+export const CLIENT_AGREEMENT_FIELDS = [
+  ["legal_name", "legalCompanyName"],
+  ["finance_email", "financeEmail"],
+  ["signatory_name", "signatoryName"],
+  ["signatory_designation", "signatoryDesignation"],
+  ["signatory_email", "signatoryEmail"],
+] as const;
+
 type SelectOption = { value?: string } | null | undefined;
 
 interface ClientRequiredValues {
@@ -48,6 +56,9 @@ export const formatFormData = (
 ) => {
   formData.append("client[name]", values.name);
   formData.append("client[email]", values.email || "");
+  CLIENT_AGREEMENT_FIELDS.forEach(([name]) => {
+    formData.append(`client[${name}]`, values[name] || "");
+  });
   formData.append("client[ein]", values.ein || "");
   formData.append("client[phone]", values.phone);
   formData.append("client[currency]", values.currency?.value);
@@ -83,16 +94,7 @@ export const formatFormData = (
 };
 
 export const disableBtn = (values, errors, submitting) => {
-  if (
-    errors.name ||
-    errors.address1 ||
-    errors.country ||
-    errors.state ||
-    errors.city ||
-    errors.zipcode ||
-    errors.currency ||
-    submitting
-  ) {
+  if (Object.keys(errors).length > 0 || submitting) {
     return true;
   }
 

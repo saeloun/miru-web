@@ -286,6 +286,11 @@ const AppWithUserData = (props: any) => {
     return editableCompany
       ? {
           ...editableCompany,
+          employee_records_available:
+            company?.employee_records_available === true &&
+            company?.id != null &&
+            editableCompany.id != null &&
+            String(company.id) === String(editableCompany.id),
           payroll_review_enabled:
             company?.payroll_review_enabled === true &&
             company?.id != null &&

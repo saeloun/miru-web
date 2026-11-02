@@ -35,7 +35,7 @@ class CreateInvitedUserService
   def process
     invitation_valid!
     user_valid!
-    ActiveRecord::Base.transaction do
+    invitation.company.with_employee_number_lock do
       update_invitation!
       ensure_seat_available!
       find_or_create_user!

@@ -45,7 +45,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     it "registers a passkey" do
       post "/api/v1/users/passkeys/registration_options", params: { current_password: "welcome12" }
 
-      credential = fake_client.create(challenge: json_response.dig("public_key", "challenge"), rp_id: "localhost")
+      credential = fake_client.create(challenge: json_response.dig("public_key", "challenge"), rp_id: "localhost", user_verified: true)
 
       post "/api/v1/users/passkeys", params: {
         challenge_token: json_response["challenge_token"],
@@ -65,6 +65,43 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(json_response["error"]).to eq("Add a passkey before requiring it for sign in.")
+    end
+  end
+
+  describe "PATCH /api/v1/users/passkeys/:id" do
+    it "renames an owned passkey without changing authentication or trust" do
+      passkey = register_passkey
+      token = user.reload.token
+      version = user.browser_trust_version
+
+      patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: "  Work Mac  " }
+
+      expect(response).to have_http_status(:ok)
+      expect(passkey.reload.nickname).to eq("Work Mac")
+      expect(user.reload.token).to eq(token)
+      expect(user.browser_trust_version).to eq(version)
+    end
+
+    ["", "x" * 81].each do |nickname|
+      it "rejects an invalid display name of length #{nickname.length}" do
+        passkey = register_passkey
+        original = passkey.nickname
+
+        patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: }
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(passkey.reload.nickname).to eq(original)
+      end
+    end
+
+    it "does not rename another user's passkey" do
+      passkey = register_passkey
+      sign_in create(:user)
+
+      patch "/api/v1/users/passkeys/#{passkey.id}", params: { nickname: "Changed" }
+
+      expect(response).to have_http_status(:not_found)
+      expect(passkey.reload.nickname).not_to eq("Changed")
     end
   end
 
@@ -93,24 +130,21 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
   it "rejects passkey sign-in for a member of an SSO-enforced workspace" do
     create(:employment, company:, user:)
     user.add_role :employee, company
-    company.update!(sso_enforced: true)
     passkey = user.passkeys.create!(external_id: "credential-id", public_key: "public-key", sign_count: 0)
+    user.update!(passkey_required_for_login: true)
     credential = OpenStruct.new(sign_count: 1)
     webauthn_credential = OpenStruct.new(id: passkey.external_id)
     sign_out user
-    allow(Passkeys::ChallengeToken).to receive(:verify).and_return(
-      "type" => "authentication",
-      "user_id" => user.id,
-      "company_id" => company.id,
-      "challenge" => "challenge"
-    )
+    post api_v1_users_login_path, params: { user: { email: user.email, password: "welcome12" } }
+    pending_token = json_response.fetch("pending_token")
+    company.update!(sso_enforced: true)
     allow(::WebAuthn::RelyingParty).to receive(:new).and_return(relying_party)
     allow(relying_party).to receive(:verify_authentication) do |_response, _challenge, **_options, &block|
       [credential, block.call(webauthn_credential)]
     end
 
     post "/api/v1/users/passkeys/authenticate", params: {
-      pending_token: "pending-token",
+      pending_token:,
       credential: { id: passkey.external_id }
     }
 
@@ -130,7 +164,7 @@ RSpec.describe "Api::V1::Users::Passkeys", type: :request do
     challenge_token = json_response["challenge_token"]
     challenge = json_response.dig("public_key", "challenge")
 
-    credential = fake_client.create(challenge:, rp_id: "localhost")
+    credential = fake_client.create(challenge:, rp_id: "localhost", user_verified: true)
 
     post "/api/v1/users/passkeys", params: {
       challenge_token:,

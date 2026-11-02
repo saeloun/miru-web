@@ -53,8 +53,7 @@ RSpec.describe TimeTrackingIndexService do
       expect(result[:projects][client.name].map(&:id)).to eq([project.id])
       expect(result[:entries].keys).to include(Date.current)
       expect(result[:employees].map(&:id)).to eq([employee.id])
-      expect(result[:leave_types].map(&:id)).to include(leave_type.id)
-      expect(result[:leave_types].map(&:id)).to include(custom_leave.id)
+      expect(result[:leave_types]).to include(leave_type, custom_leave)
     end
 
     it "excludes custom leaves that are not assigned to the user" do
@@ -72,7 +71,7 @@ RSpec.describe TimeTrackingIndexService do
         year: Date.current.year
       ).process
 
-      expect(result[:leave_types].map(&:id)).not_to include(other_custom_leave.id)
+      expect(result[:leave_types]).not_to include(other_custom_leave)
     end
   end
 
@@ -91,7 +90,7 @@ RSpec.describe TimeTrackingIndexService do
       expect(result[:entries].keys).to include(Date.current)
       entry_ids = result[:entries][Date.current].pluck(:id)
       expect(entry_ids).to include(timesheet_entry.id, timeoff_entry.id)
-      expect(result[:leave_types].map(&:id)).to include(leave_type.id, custom_leave.id)
+      expect(result[:leave_types]).to include(leave_type, custom_leave)
     end
   end
 end

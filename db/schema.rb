@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -262,6 +262,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.boolean "signature_enabled", default: false, null: false
     t.string "stripe_id"
     t.datetime "updated_at", null: false
+    t.string "legal_name", limit: 255
+    t.string "signatory_name", limit: 255
+    t.string "signatory_designation", limit: 255
+    t.string "finance_email", limit: 254
+    t.string "signatory_email", limit: 254
     t.index ["company_id"], name: "index_clients_on_company_id"
     t.index ["discarded_at"], name: "index_clients_on_discarded_at"
     t.index ["email", "company_id"], name: "index_clients_on_email_and_company_id", unique: true
@@ -309,8 +314,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.string "vat_number"
     t.string "working_days", default: "5"
     t.string "working_hours", default: "40"
+    t.bigint "last_employee_number", default: 0, null: false
+    t.string "compensation_proration"
     t.index ["stripe_customer_id"], name: "index_companies_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_companies_on_stripe_subscription_id"
+  end
+
+  create_table "compensation_report_runs", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "payload", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_compensation_report_runs_on_company_id"
+    t.index ["created_by_id"], name: "index_compensation_report_runs_on_created_by_id"
+  end
+
+  create_table "compensation_versions", force: :cascade do |t|
+    t.bigint "employment_id", null: false
+    t.date "effective_on", null: false
+    t.text "salary_details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id", "effective_on", "id"], name: "index_compensation_versions_effective"
+    t.index ["employment_id"], name: "index_compensation_versions_on_employment_id"
+  end
+
+  create_table "consultant_compensations", force: :cascade do |t|
+    t.text "change_reason", null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.date "effective_on", null: false
+    t.bigint "employment_id", null: false
+    t.decimal "hours_per_day", precision: 4, scale: 2, null: false
+    t.string "legal_entity_name", null: false
+    t.decimal "monthly_fee", precision: 12, scale: 2, null: false
+    t.string "payment_source", null: false
+    t.datetime "updated_at", null: false
+    t.integer "weekdays", null: false, array: true
+    t.index ["created_by_id"], name: "index_consultant_compensations_on_created_by_id"
+    t.index ["employment_id", "effective_on", "id"], name: "index_consultant_terms_effective_version"
+    t.index ["employment_id"], name: "index_consultant_compensations_on_employment_id"
+    t.check_constraint "monthly_fee > 0::numeric AND hours_per_day > 0::numeric AND hours_per_day <= 24::numeric", name: "consultant_compensations_positive_terms"
   end
 
   create_table "currency_pairs", force: :cascade do |t|
@@ -395,6 +441,70 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
+  create_table "employee_documents", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.string "kind", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "uploaded_by_id", null: false
+    t.index ["employment_id"], name: "index_employee_documents_on_employment_id"
+    t.index ["uploaded_by_id"], name: "index_employee_documents_on_uploaded_by_id"
+    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying, 'contract'::character varying]::text[])", name: "employee_documents_kind"
+  end
+
+  create_table "employee_occasion_deliveries", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.datetime "delivered_at", null: false
+    t.bigint "employment_id", null: false
+    t.date "event_on", null: false
+    t.string "kind", null: false
+    t.index ["admin_id"], name: "index_employee_occasion_deliveries_on_admin_id"
+    t.index ["employment_id", "admin_id", "kind", "event_on"], name: "index_employee_occasion_deliveries_unique_event", unique: true
+    t.index ["employment_id"], name: "index_employee_occasion_deliveries_on_employment_id"
+  end
+
+  create_table "employee_payments", force: :cascade do |t|
+    t.decimal "amount", precision: 12, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "created_by_id", null: false
+    t.string "currency", null: false
+    t.bigint "employment_id", null: false
+    t.text "note"
+    t.date "paid_on", null: false
+    t.string "reference", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_employee_payments_on_created_by_id"
+    t.index ["employment_id", "paid_on", "id"], name: "index_employee_payments_on_employment_id_and_paid_on_and_id"
+    t.index ["employment_id", "reference"], name: "index_employee_payments_on_employment_id_and_reference", unique: true
+    t.index ["employment_id"], name: "index_employee_payments_on_employment_id"
+    t.check_constraint "amount > 0::numeric", name: "employee_payments_positive_amount"
+  end
+
+  create_table "employee_record_settings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.boolean "occasion_reminders_enabled", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_employee_record_settings_on_company_id", unique: true
+  end
+
+  create_table "employee_records", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.text "private_details", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id"], name: "index_employee_records_on_employment_id", unique: true
+  end
+
+  create_table "employee_reports", force: :cascade do |t|
+    t.jsonb "columns", default: [], null: false
+    t.bigint "company_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_employee_reports_on_company_id"
+  end
+
   create_table "employments", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.datetime "created_at", null: false
@@ -406,6 +516,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.date "resigned_at"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["company_id", "employee_id"], name: "index_employments_on_company_employee_id", unique: true, where: "((employee_id IS NOT NULL) AND (btrim((employee_id)::text) <> ''::text))"
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
@@ -444,6 +555,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
 
   create_table "expenses", force: :cascade do |t|
     t.decimal "amount", precision: 20, scale: 2, default: "0.0", null: false
+    t.datetime "approved_at"
     t.decimal "base_currency_amount", precision: 20, scale: 2
     t.string "category_name"
     t.bigint "company_id", null: false
@@ -812,6 +924,45 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.index ["user_id"], name: "index_previous_employments_on_user_id"
   end
 
+  create_table "profitability_billing_rates", force: :cascade do |t|
+    t.bigint "project_id", null: false
+    t.bigint "user_id", null: false
+    t.date "effective_on", null: false
+    t.decimal "hourly_rate", precision: 14, scale: 4
+    t.string "currency", null: false
+    t.string "billing_method", default: "hourly", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "user_id", "effective_on"], name: "index_profitability_rates_effective"
+    t.index ["project_id"], name: "index_profitability_billing_rates_on_project_id"
+    t.index ["user_id"], name: "index_profitability_billing_rates_on_user_id"
+    t.check_constraint "billing_method::text = 'hourly'::text AND hourly_rate >= 0::numeric OR billing_method::text = 'fixed_fee'::text AND hourly_rate IS NULL", name: "profitability_valid_billing_rate"
+  end
+
+  create_table "profitability_profiles", force: :cascade do |t|
+    t.bigint "employment_id", null: false
+    t.bigint "primary_project_id"
+    t.string "department"
+    t.integer "weekdays", default: [], null: false, array: true
+    t.decimal "hours_per_day", precision: 4, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["employment_id"], name: "index_profitability_profiles_on_employment_id", unique: true
+    t.index ["primary_project_id"], name: "index_profitability_profiles_on_primary_project_id"
+  end
+
+  create_table "profitability_scenarios", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "created_by_id"
+    t.text "name", null: false
+    t.text "worksheet", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_profitability_scenarios_on_company_id"
+    t.index ["created_by_id"], name: "index_profitability_scenarios_on_created_by_id"
+  end
+
   create_table "project_members", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "discarded_at"
@@ -980,6 +1131,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "salary_slips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.date "pay_month", null: false
+    t.datetime "published_at"
+    t.bigint "published_by_id"
+    t.string "source", null: false
+    t.bigint "supersedes_id"
+    t.datetime "updated_at", null: false
+    t.bigint "uploaded_by_id", null: false
+    t.datetime "withdrawn_at"
+    t.bigint "withdrawn_by_id"
+    t.index ["employment_id", "pay_month"], name: "index_salary_slips_current_publication", unique: true, where: "((published_at IS NOT NULL) AND (withdrawn_at IS NULL))"
+    t.index ["employment_id"], name: "index_salary_slips_on_employment_id"
+    t.index ["published_by_id"], name: "index_salary_slips_on_published_by_id"
+    t.index ["supersedes_id"], name: "index_salary_slips_on_supersedes_id"
+    t.index ["uploaded_by_id"], name: "index_salary_slips_on_uploaded_by_id"
+    t.index ["withdrawn_by_id"], name: "index_salary_slips_on_withdrawn_by_id"
+    t.check_constraint "EXTRACT(day FROM pay_month) = 1::numeric", name: "salary_slips_month_start"
+  end
+
+  create_table "second_factor_challenges", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "expires_at", null: false
+    t.index ["user_id"], name: "index_second_factor_challenges_on_user_id"
+  end
+
   create_table "solid_cable_messages", force: :cascade do |t|
     t.binary "channel", null: false
     t.bigint "channel_hash", null: false
@@ -1133,6 +1311,32 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.index ["discarded_at"], name: "index_tax_configurations_on_discarded_at"
   end
 
+  create_table "tax_declarations", force: :cascade do |t|
+    t.decimal "approved_amount", precision: 12, scale: 2
+    t.string "category", null: false
+    t.decimal "claimed_amount", precision: 12, scale: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "employment_id", null: false
+    t.text "notes"
+    t.text "review_reason"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
+    t.string "status", default: "draft", null: false
+    t.datetime "submitted_at"
+    t.bigint "supersedes_id"
+    t.integer "tax_year", null: false
+    t.datetime "updated_at", null: false
+    t.datetime "withdrawn_at"
+    t.bigint "withdrawn_by_id"
+    t.index ["employment_id", "tax_year"], name: "index_tax_declarations_on_employment_id_and_tax_year"
+    t.index ["employment_id"], name: "index_tax_declarations_on_employment_id"
+    t.index ["reviewed_by_id"], name: "index_tax_declarations_on_reviewed_by_id"
+    t.index ["supersedes_id"], name: "index_tax_declarations_on_supersedes_id", unique: true
+    t.index ["withdrawn_by_id"], name: "index_tax_declarations_on_withdrawn_by_id"
+    t.check_constraint "approved_amount IS NULL OR approved_amount > 0::numeric AND approved_amount <= claimed_amount", name: "tax_declarations_approved_limit"
+    t.check_constraint "claimed_amount > 0::numeric", name: "tax_declarations_positive_claim"
+  end
+
   create_table "timeoff_entries", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "custom_leave_id"
@@ -1235,6 +1439,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
     t.string "unique_session_id", null: false
     t.datetime "updated_at", null: false
     t.string "webauthn_id"
+    t.integer "browser_trust_version", default: 0, null: false
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token"
     t.index ["current_workspace_id"], name: "index_users_on_current_workspace_id"
     t.index ["discarded_at"], name: "index_users_on_discarded_at"
@@ -1303,6 +1508,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   add_foreign_key "client_members", "companies"
   add_foreign_key "client_members", "users"
   add_foreign_key "clients", "companies"
+  add_foreign_key "compensation_report_runs", "companies"
+  add_foreign_key "compensation_report_runs", "users", column: "created_by_id"
+  add_foreign_key "compensation_versions", "employments"
+  add_foreign_key "consultant_compensations", "employments"
+  add_foreign_key "consultant_compensations", "users", column: "created_by_id"
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
@@ -1312,6 +1522,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   add_foreign_key "desktop_current_timers", "users"
   add_foreign_key "devices", "companies"
   add_foreign_key "devices", "users"
+  add_foreign_key "employee_documents", "employments"
+  add_foreign_key "employee_documents", "users", column: "uploaded_by_id"
+  add_foreign_key "employee_occasion_deliveries", "employments"
+  add_foreign_key "employee_occasion_deliveries", "users", column: "admin_id"
+  add_foreign_key "employee_payments", "employments"
+  add_foreign_key "employee_payments", "users", column: "created_by_id"
+  add_foreign_key "employee_record_settings", "companies"
+  add_foreign_key "employee_records", "employments"
+  add_foreign_key "employee_reports", "companies"
   add_foreign_key "employments", "companies"
   add_foreign_key "employments", "users"
   add_foreign_key "expense_categories", "companies"
@@ -1349,6 +1568,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   add_foreign_key "payroll_runs", "users", column: "accounts_reviewer_id"
   add_foreign_key "payroll_runs", "users", column: "final_reviewer_id"
   add_foreign_key "previous_employments", "users"
+  add_foreign_key "profitability_billing_rates", "projects"
+  add_foreign_key "profitability_billing_rates", "users"
+  add_foreign_key "profitability_profiles", "employments"
+  add_foreign_key "profitability_profiles", "projects", column: "primary_project_id"
+  add_foreign_key "profitability_scenarios", "companies"
+  add_foreign_key "profitability_scenarios", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "project_members", "projects"
   add_foreign_key "project_members", "users"
   add_foreign_key "projects", "clients"
@@ -1366,6 +1591,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   add_foreign_key "quickbooks_sync_runs", "quickbooks_connections", column: ["quickbooks_connection_id", "company_id"], primary_key: ["id", "company_id"], name: "fk_qbo_runs_connection_company"
   add_foreign_key "razorpay_payouts", "payments"
   add_foreign_key "razorpay_payouts", "users", column: "requested_by_id"
+  add_foreign_key "salary_slips", "employments"
+  add_foreign_key "salary_slips", "salary_slips", column: "supersedes_id"
+  add_foreign_key "salary_slips", "users", column: "published_by_id"
+  add_foreign_key "salary_slips", "users", column: "uploaded_by_id"
+  add_foreign_key "salary_slips", "users", column: "withdrawn_by_id"
+  add_foreign_key "second_factor_challenges", "users"
   add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
@@ -1374,6 +1605,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_17_150000) do
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
   add_foreign_key "tax_configurations", "companies"
+  add_foreign_key "tax_declarations", "employments"
+  add_foreign_key "tax_declarations", "tax_declarations", column: "supersedes_id"
+  add_foreign_key "tax_declarations", "users", column: "reviewed_by_id"
+  add_foreign_key "tax_declarations", "users", column: "withdrawn_by_id"
   add_foreign_key "timeoff_entries", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "timeoff_entries", "leave_types"
   add_foreign_key "timeoff_entries", "users"
