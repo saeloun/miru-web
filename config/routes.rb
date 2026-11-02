@@ -7,8 +7,14 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/native/auth/google/:request_id", to: "native_google_auth/browser#show",
+    as: :native_google_authorization
   # Health check endpoint
   get "/health", to: "health#index"
+  get "/document-review", to: "document_reviews#show", as: :document_review
+  post "/document-review/open", to: "document_reviews#open"
+  post "/document-review/comments", to: "document_reviews#comment"
+  post "/document-review/original", to: "document_reviews#original"
 
   if ENV["MISSION_CONTROL_ENABLED"] == "true"
     mount MissionControl::Jobs::Engine, at: "/jobs"
@@ -100,6 +106,7 @@ Rails.application.routes.draw do
   get "payments/settings", to: "payment_settings#index"
 
   namespace :webhooks do
+    post "documenso/:connection_id", to: "documenso#events", constraints: { connection_id: /[1-9]\d{0,17}/ }
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
     post "razorpay/payouts", to: "razorpay#payouts"

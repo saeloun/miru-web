@@ -10,6 +10,7 @@ import { hasEmployeeRecordsAccess } from "../../../lib/employeeRecordsAccess";
 import { downloadAttachment, employeeRecordsApi, errorMessage } from "./api";
 import { Fact, Field, Section, text } from "./Fields";
 import Reports from "./Reports";
+import { ArchiveList } from "../../SignedDocuments";
 
 const bankFields = [
   "bank_account_name",
@@ -509,6 +510,13 @@ const Records = ({ companyId, userId, self }) => {
                 )}
               </div>
             ))}
+          </Section>
+          <Section title="Signed documents">
+            <ArchiveList
+              key={`${companyId}:${userId}`}
+              companyId={companyId}
+              userId={userId}
+            />
           </Section>
           <Section title={text("payments")}>
             <p className="text-sm text-muted-foreground">

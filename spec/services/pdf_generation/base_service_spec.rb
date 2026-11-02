@@ -49,6 +49,18 @@ RSpec.describe PdfGeneration::BaseService do
     end
 
     context "with browser errors" do
+      it "removes contract data URLs from navigation failures and their causes" do
+        browser = instance_double(Ferrum::Browser, quit: true)
+        allow(Ferrum::Browser).to receive(:new).and_return(browser)
+        allow(browser).to receive(:go_to) { |url| raise Ferrum::StatusError.new(url) }
+
+        expect { service.process }.to raise_error(Ferrum::StatusError) do |error|
+          expect(error.message).to eq("PDF navigation failed")
+          expect(error.cause).to be_nil
+        end
+        expect(browser).to have_received(:quit)
+      end
+
       it "cleans up resources even on failure" do
         allow_any_instance_of(Ferrum::Browser).to receive(:go_to).and_raise(StandardError, "Browser error")
 

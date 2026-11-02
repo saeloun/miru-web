@@ -55,8 +55,9 @@ const UserActions = setVisiblity => {
   };
 
   const handleSwitch = async id => {
-    await WorkspaceApi.update(id);
+    const response = await WorkspaceApi.update(id);
     setShowWorkSpaceList(false);
+    if (!response) return;
     setTimeout(() => window.location.reload(), 600);
   };
 

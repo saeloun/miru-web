@@ -1,0 +1,1948 @@
+diff --git a/docker/Dockerfile b/docker/Dockerfile
+index 22cad2e..b3fb42c 100644
+--- a/docker/Dockerfile
++++ b/docker/Dockerfile
+@@ -81,13 +81,18 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
+ COPY --from=builder /app/lingui.config.ts ./lingui.config.ts
+ COPY --from=builder /app/patches ./patches
+ 
+-RUN npm ci
++RUN npm ci && npm cache clean --force
+ 
+ # Then copy all the source code (as it changes more often)
+ COPY --from=builder /app/out/full/ .
+ # Finally copy the turbo.json file so that we can run turbo commands
+ COPY turbo.json turbo.json
+ 
++COPY --from=builder /app/scripts/security ./scripts/security
++RUN node scripts/security/zod-size-gate-check.mjs \
++    && node --import tsx scripts/security/mailchannels-transport-check.mjs \
++    && node scripts/security/dependency-guards-check.mts
++
+ ENV NODE_OPTIONS="--max-old-space-size=8192"
+ 
+ RUN npx turbo run build --filter=@documenso/remix...
+@@ -145,6 +150,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
+ RUN npx prisma generate --schema ./packages/prisma/schema.prisma --generator client \
+     && npm cache clean --force
+ 
++USER root
++RUN rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
++USER nodejs
+ 
+ # Get the start script from docker/
+ COPY --chown=nodejs:nodejs ./docker/start.sh /app/apps/remix/start.sh
+diff --git a/docker/start.sh b/docker/start.sh
+index 7121790..81400c7 100755
+--- a/docker/start.sh
++++ b/docker/start.sh
+@@ -1,5 +1,7 @@
+ #!/bin/sh
+ 
++set -e
++
+ # 🚀 Starting Documenso...
+ printf "🚀 Starting Documenso...\n\n"
+ 
+@@ -28,7 +30,7 @@ printf "👥 Community: https://github.com/documenso/documenso\n\n"
+ export NEXT_PRIVATE_DIRECT_DATABASE_URL="${NEXT_PRIVATE_DIRECT_DATABASE_URL:-$NEXT_PRIVATE_DATABASE_URL}"
+ 
+ printf "🗄️  Running database migrations...\n"
+-npx prisma migrate deploy --schema ../../packages/prisma/schema.prisma
++node ../../node_modules/prisma/build/index.js migrate deploy --schema ../../packages/prisma/schema.prisma
+ 
+ printf "🌟 Starting Documenso server...\n"
+-HOSTNAME=0.0.0.0 node build/server/main.js
++HOSTNAME=0.0.0.0 exec node build/server/main.js
+diff --git a/package-lock.json b/package-lock.json
+index b999c2b..f01fba8 100644
+--- a/package-lock.json
++++ b/package-lock.json
+@@ -55,9 +55,9 @@
+         "posthog-node": "4.18.0",
+         "react": "^19.2.7",
+         "react-dom": "^19.2.7",
+-        "sharp": "0.35.4",
++        "sharp": "0.35.5",
+         "typescript": "5.6.2",
+-        "zod": "^3.25.76"
++        "zod": "3.25.76"
+       },
+       "devDependencies": {
+         "@biomejs/biome": "2.4.8",
+@@ -83,7 +83,7 @@
+         "inngest-cli": "^1.44.0",
+         "lint-staged": "^16.2.7",
+         "nanoid": "^5.1.6",
+-        "nodemailer": "^9.0.0",
++        "nodemailer": "10.2.1",
+         "pdfjs-dist": "5.4.296",
+         "pino": "^9.14.0",
+         "pino-pretty": "^13.1.2",
+@@ -3721,9 +3721,9 @@
+       }
+     },
+     "node_modules/@img/sharp-darwin-arm64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.35.4.tgz",
+-      "integrity": "sha512-Uhfl4V4lhP2nbUVF9+hyH1+luj86f1gUFeo8ALYxFoULoU+G87D43BfeMP8XHsk9boxAnCY/bf2EHwhA7MuGsA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-darwin-arm64/-/sharp-darwin-arm64-0.35.5.tgz",
++      "integrity": "sha512-QRUlFQ0WxvdWyqqG/WtI3iupfD5rBzmCHXSdPsY91sAtVtTo7Q4cb6zOccZ3gqEqkr0f1As1ehLqmEpDsRf+lg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -3739,13 +3739,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-darwin-arm64": "1.3.3"
++        "@img/sharp-libvips-darwin-arm64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-darwin-x64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-darwin-x64/-/sharp-darwin-x64-0.35.4.tgz",
+-      "integrity": "sha512-hWniXY3bG5qKpkKrAwPe4y+VTPmf086YQAnkxWh7uA1YrlRouWGa0M0Mxj3ZjnXFkv7/TD1bTy9lGUK26vRvWw==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-darwin-x64/-/sharp-darwin-x64-0.35.5.tgz",
++      "integrity": "sha512-+BR255RhDlpygUpOc/Jdt1nT6DQ3XG/ERo5wbcdOf5Q320dKtPCKPLR1LJs9VGXRaMa8l1uUa0tkCNOXiAxZUw==",
+       "cpu": [
+         "x64"
+       ],
+@@ -3761,20 +3761,20 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-darwin-x64": "1.3.3"
++        "@img/sharp-libvips-darwin-x64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-freebsd-wasm32": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-freebsd-wasm32/-/sharp-freebsd-wasm32-0.35.4.tgz",
+-      "integrity": "sha512-lIsKw/BU+kjB4eZjxrYrZmwOJYi3Ajrv66iAlBmUPyKc3HpnloevB1g3wxGD9P/5BbQ1brBGl65VRRrCvQDEqA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-freebsd-wasm32/-/sharp-freebsd-wasm32-0.35.5.tgz",
++      "integrity": "sha512-Y/z91nEZ4uIBX5X3nfTovjU9lHNKFYbL2lpHCLVNmXQK03VIZvXBBt0KxbPGp2SdGSF+2mQU4e+hQaWOt86iAw==",
+       "license": "Apache-2.0",
+       "optional": true,
+       "os": [
+         "freebsd"
+       ],
+       "dependencies": {
+-        "@img/sharp-wasm32": "0.35.4"
++        "@img/sharp-wasm32": "0.35.5"
+       },
+       "engines": {
+         "node": ">=20.9.0"
+@@ -3784,9 +3784,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-darwin-arm64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.3.3.tgz",
+-      "integrity": "sha512-suTBPTDGrI9WodccaDdwZItTSaBYASlBk1NSfElSHrUfzu3szG6lvIF58+WiFvnfzuK8ZBFS5zE00PxqxnRiPg==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-darwin-arm64/-/sharp-libvips-darwin-arm64-1.3.4.tgz",
++      "integrity": "sha512-5R89nBYiRdUlSWJxPhO+GVtaXzXSxKnRu/xqMn3KTA3L9EB9Oy/P+Nn2f2vlhPuUdy/Zusb2DarbyTpGCfEDuw==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -3800,9 +3800,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-darwin-x64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-darwin-x64/-/sharp-libvips-darwin-x64-1.3.3.tgz",
+-      "integrity": "sha512-FVJZ5mITMobmXIz/hPDTw0EintTW5H3WfrxwLqEqjiIihlu+hVRyGrFQ60xl0Lxn7Bt3zdpevPaQi0HEzqz9fw==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-darwin-x64/-/sharp-libvips-darwin-x64-1.3.4.tgz",
++      "integrity": "sha512-iR2OKH80yi0U+dUplyh3/xdpFvps6YkCwsXenIJxqxR1v9o+xtKTGbS9H7cps+2Vxjc8B1j96p75NmTGjIhtpQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -3816,9 +3816,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-arm": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-arm/-/sharp-libvips-linux-arm-1.3.3.tgz",
+-      "integrity": "sha512-3rbU4vqXXc3hY/OiXdl52xZvT0F1yEngWfvqudtPJg/KkyiaQw2DRsFrNzpmLvfavbwOq3qXn36GP8obHRULQA==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-arm/-/sharp-libvips-linux-arm-1.3.4.tgz",
++      "integrity": "sha512-LmRtTsOHuvM2+wlO2Db37dx5MiZhB0FvSunciw48YjdOkZz9KAiRbm8ujeMOA1INqmei5NapFxYEK1D1ZSidmw==",
+       "cpu": [
+         "arm"
+       ],
+@@ -3835,9 +3835,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-arm64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-arm64/-/sharp-libvips-linux-arm64-1.3.3.tgz",
+-      "integrity": "sha512-0DaL0A6Xu6sQSQFwe4iVCrKWU2cCTItnRsYsCdxAMm9NF6twAA9BKnoqy4hqz4+azQ0JHuA26qiUKsf1XJ/v5A==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-arm64/-/sharp-libvips-linux-arm64-1.3.4.tgz",
++      "integrity": "sha512-Y3dgX/6lE2QhQb+Gxy0WZxfg9MEm/JBjamZpS2IklP7xIQoKN4hzAm7KcMVGtaVDt3neE9OKBC7vAfonA/Lr1A==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -3854,9 +3854,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-ppc64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-ppc64/-/sharp-libvips-linux-ppc64-1.3.3.tgz",
+-      "integrity": "sha512-cdn1OvUBwsXhbC0zSzJnNzf5MZ/mTrobawDvNXBTxe8VtqKAm0sRuEY2Evzovb/w9JMk4TvRxqt1mekSuJz64w==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-ppc64/-/sharp-libvips-linux-ppc64-1.3.4.tgz",
++      "integrity": "sha512-Le6boB8Tai0Nis+gIxIpKx68UDVVIqdR8Tin5Yf1z2LJJQLDJvCDRqRu+jC2qCoD+eIomonmOwB4smBRxfVpYQ==",
+       "cpu": [
+         "ppc64"
+       ],
+@@ -3873,9 +3873,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-riscv64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-riscv64/-/sharp-libvips-linux-riscv64-1.3.3.tgz",
+-      "integrity": "sha512-HjPVx7yKz+0lqdhDlTw1tt90wamBoxhiXpvl1XZpJLiHH4RCJ5yDTqH+VlYPv2fwFs89JFw4c1IexYOcQUi4IQ==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-riscv64/-/sharp-libvips-linux-riscv64-1.3.4.tgz",
++      "integrity": "sha512-aHkkIEHPRdQEegJN20MLmGtxYD9R2wQr3Cwpddnu5+YKMt6Uzax7S9h5gpZTo8wyrGuZSlfQ63OevL5mTyOC7Q==",
+       "cpu": [
+         "riscv64"
+       ],
+@@ -3892,9 +3892,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-s390x": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-s390x/-/sharp-libvips-linux-s390x-1.3.3.tgz",
+-      "integrity": "sha512-neWLh+3yCNThxnfy3c4BbVBeGgt9aftno+XbT56iK28RgeDs3UOFWviLWlUu0bArYVYJaFDK+RRohbicUNCm8Q==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-s390x/-/sharp-libvips-linux-s390x-1.3.4.tgz",
++      "integrity": "sha512-ra/mB6MikESDUO7Yg+Mi95bFBb9GsObURuhnOv3OqknjGe9sZrG8tCe9q0xSIGrtLgvgw0gKnFWcK4blSgQOuQ==",
+       "cpu": [
+         "s390x"
+       ],
+@@ -3911,9 +3911,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linux-x64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-x64/-/sharp-libvips-linux-x64-1.3.3.tgz",
+-      "integrity": "sha512-4vKmvAst9nrowcqquKFAyZJUDolUaIp8uRiN0mWFguJ1IplC9/pitXtlnnlU4aa/eJw3J7i67V+pwUL+wZGdsA==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linux-x64/-/sharp-libvips-linux-x64-1.3.4.tgz",
++      "integrity": "sha512-GJ//SSXbnwSDes02umB3nDJLFcQzw8a18V8fyhqr6tV515tOEMdImjjxj1AoafMRz56F3PHgftnj1QEKSU1zkw==",
+       "cpu": [
+         "x64"
+       ],
+@@ -3930,9 +3930,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linuxmusl-arm64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-arm64/-/sharp-libvips-linuxmusl-arm64-1.3.3.tgz",
+-      "integrity": "sha512-Y9kQaLMuNoB0bPYOOdcZMaseNrFpPodIWWMrx+CZyydf2xn68j9WYc6sWWRrDwNkzCQjKYfc68L7jKjGlHMibw==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-arm64/-/sharp-libvips-linuxmusl-arm64-1.3.4.tgz",
++      "integrity": "sha512-hvulFwtjUcagsis6BBxHwGFwWoNZjgYmULGVrZcyfNbjA8hKILbRxGg15/7w5HDyXHXUos/j6baAWqnCyQ2DWA==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -3949,9 +3949,9 @@
+       }
+     },
+     "node_modules/@img/sharp-libvips-linuxmusl-x64": {
+-      "version": "1.3.3",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-x64/-/sharp-libvips-linuxmusl-x64-1.3.3.tgz",
+-      "integrity": "sha512-fj8Mv0HHfD1Rr+4I68+3agJynxDWtBFgicTbSOb9Bke6pIwzGcJ+RX/yHjmiEGFMCavY/dxvem7MyNaJF+wDiw==",
++      "version": "1.3.4",
++      "resolved": "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-x64/-/sharp-libvips-linuxmusl-x64-1.3.4.tgz",
++      "integrity": "sha512-6zXKeE/p39I1AmA3cJG35eyBGNqNddLnUXjhwBnsGjFPWqf5VKkDBEqaEkPDoTEtkxwi2vv8Tcr2mDyP4So7Fg==",
+       "cpu": [
+         "x64"
+       ],
+@@ -3968,9 +3968,9 @@
+       }
+     },
+     "node_modules/@img/sharp-linux-arm": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-arm/-/sharp-linux-arm-0.35.4.tgz",
+-      "integrity": "sha512-7OAS8gI0EReKGVN2HssHlM6umJgxF5VI3xN0p9FA91p/YO+ou5hiNghLdZ5BEHztwaaK5+bLKRf8x/o2L2nk9A==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-arm/-/sharp-linux-arm-0.35.5.tgz",
++      "integrity": "sha512-LEaXK2WdXVK5ykcw0buWyPMsmLLL2vpHLD6yrNSW+JGEL3BZPA4tpKN6iaMc4AxTTAoaX/sU1rOL51lcIz48ZQ==",
+       "cpu": [
+         "arm"
+       ],
+@@ -3989,13 +3989,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-arm": "1.3.3"
++        "@img/sharp-libvips-linux-arm": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linux-arm64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-arm64/-/sharp-linux-arm64-0.35.4.tgz",
+-      "integrity": "sha512-De4jpEnAU8Hd5oT0j1G3uL4ZvTuipVMn7YC6vPaJhy6/7EwEae0SVAoBrUMYQbkLGDm85taVWwuPc1a44LTzCQ==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-arm64/-/sharp-linux-arm64-0.35.5.tgz",
++      "integrity": "sha512-LYVx5JTsOM2CBzmxreh+nl64/3H6Xb09iSLknqH47z2T2DFFxDeFLP5y4dJwe6H7uGQlHPyEEtIqyo3DYsRwdQ==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -4014,13 +4014,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-arm64": "1.3.3"
++        "@img/sharp-libvips-linux-arm64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linux-ppc64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-ppc64/-/sharp-linux-ppc64-0.35.4.tgz",
+-      "integrity": "sha512-2oYZJeIl4kCcMGk4ouZVjnkCtFrpQFlNEtJ6GbxzhHQchwH0NH/qEb9ykmOl29dqwMq+JhFdZn+1ak2FKhI9fQ==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-ppc64/-/sharp-linux-ppc64-0.35.5.tgz",
++      "integrity": "sha512-QVxAAq8evVRI9ia2vqgwrmWucn5Dfv+JdWzj75pD8omHLPSP7f8p20O8jxzjCcuCEQEOtYOZUmX1hkiZ0kdevA==",
+       "cpu": [
+         "ppc64"
+       ],
+@@ -4039,13 +4039,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-ppc64": "1.3.3"
++        "@img/sharp-libvips-linux-ppc64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linux-riscv64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-riscv64/-/sharp-linux-riscv64-0.35.4.tgz",
+-      "integrity": "sha512-cPbNChoRURAWdebDIHSenxRpgEdy7JkPydSnUxRm9VvKD7m0/xVaR/8Fzlu81pk5nHEvHH87UZUA7cTtwnbJSA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-riscv64/-/sharp-linux-riscv64-0.35.5.tgz",
++      "integrity": "sha512-LtdreXguaavKODPIfzJ4kffx7UNt1omwtK0rch4EBbbSTXPnxWmYSayXdLJw0fJzQ97kHt1gL/yh4tvU+nCyRQ==",
+       "cpu": [
+         "riscv64"
+       ],
+@@ -4064,13 +4064,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-riscv64": "1.3.3"
++        "@img/sharp-libvips-linux-riscv64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linux-s390x": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-s390x/-/sharp-linux-s390x-0.35.4.tgz",
+-      "integrity": "sha512-RY0JFY8Fd6RonCBtHz+DvadaPkXDSI1AUn6yWL9TipqkZ1vY8w8evqdgyDFnkm4/K1ve1TvZiaePP5oSd4+WVQ==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-s390x/-/sharp-linux-s390x-0.35.5.tgz",
++      "integrity": "sha512-UZasTOFiYzotTsGOCu42BfUzP6Tu6Do/947iRm1RsLKvlllxwGcn4RN27LibGWceix4Y+Pmw3jsnTcCQIgWjqA==",
+       "cpu": [
+         "s390x"
+       ],
+@@ -4089,13 +4089,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-s390x": "1.3.3"
++        "@img/sharp-libvips-linux-s390x": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linux-x64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linux-x64/-/sharp-linux-x64-0.35.4.tgz",
+-      "integrity": "sha512-9qvvEAuk8k89TfWUoX2htWjbAMX8p+NxCppjpcg5k6xMsjhBQPTsoIh36h9Qde4WRuGpJeYnOjdosDn/cnv+OA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linux-x64/-/sharp-linux-x64-0.35.5.tgz",
++      "integrity": "sha512-SxFtLTeJInhAA9Q836kux2vZNeOBQEx658qvbboZScr0wIARym3IcGmW7KpVD5sbVg0Ojy+udFQdayYIZyoNog==",
+       "cpu": [
+         "x64"
+       ],
+@@ -4114,13 +4114,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linux-x64": "1.3.3"
++        "@img/sharp-libvips-linux-x64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linuxmusl-arm64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linuxmusl-arm64/-/sharp-linuxmusl-arm64-0.35.4.tgz",
+-      "integrity": "sha512-KB5jxpfWQTr0nc3xdHtWChdbifHrBGsd2SM62Eyxrl8afikm+f5qGBU75SJIZBT/S1MC8XyacdlXBMSWq6OURA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linuxmusl-arm64/-/sharp-linuxmusl-arm64-0.35.5.tgz",
++      "integrity": "sha512-9HbMclmI1zlNkFRs3z9/eBtDjfD0sGlrX1z6b1qwmiFY5ElDLh4BC0LPBdVp7z1DXFiKlIcznf+ZlsuZzLxQqg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -4139,13 +4139,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linuxmusl-arm64": "1.3.3"
++        "@img/sharp-libvips-linuxmusl-arm64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-linuxmusl-x64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-linuxmusl-x64/-/sharp-linuxmusl-x64-0.35.4.tgz",
+-      "integrity": "sha512-f+eZJZIQNEEd26RPSW+76chwOf1XtA2Y/O+5ocVyLliHkeih3e+jhLVBdNTd2rS3IbNXK8+ug93Vf5ZXtF5Lxg==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-linuxmusl-x64/-/sharp-linuxmusl-x64-0.35.5.tgz",
++      "integrity": "sha512-4KOphqB035HrVdqLZfCgMzzERrQkkzOwRhl4OAkRO1YCldbaFjySXMaK534Mo0V+LndnlJk+sbUyLeU0ULyD1A==",
+       "cpu": [
+         "x64"
+       ],
+@@ -4164,13 +4164,13 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-libvips-linuxmusl-x64": "1.3.3"
++        "@img/sharp-libvips-linuxmusl-x64": "1.3.4"
+       }
+     },
+     "node_modules/@img/sharp-wasm32": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-wasm32/-/sharp-wasm32-0.35.4.tgz",
+-      "integrity": "sha512-zQnl4Kwp7Q6NHsENtU2T/00Zi+w3AQNwz3+UaTyVBy2FpXrzXzGjndpK61onhZjRtRpQXxCTeqw19bVyXOh7jA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-wasm32/-/sharp-wasm32-0.35.5.tgz",
++      "integrity": "sha512-Ptsga1su4tQx+LLF1ECS9U6nz5kmrXKo6XVbtR48Ke3ZRxxgaWBu7IDtEe1quo8hiupwm6WFqxVlXaSf7IINGQ==",
+       "license": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
+       "optional": true,
+       "dependencies": {
+@@ -4184,16 +4184,16 @@
+       }
+     },
+     "node_modules/@img/sharp-webcontainers-wasm32": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-webcontainers-wasm32/-/sharp-webcontainers-wasm32-0.35.4.tgz",
+-      "integrity": "sha512-ESfNkywmCfPNyaZjxooddJQiQ+l/nTpGEOGthxiLnIHXC/CmcBixnfwUleX9mCz9ovrUUvKMap/pm8RYbzfwaA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-webcontainers-wasm32/-/sharp-webcontainers-wasm32-0.35.5.tgz",
++      "integrity": "sha512-hfhF/FmoQyTUkA0bIKFOtw536BQSeBMe6BF6QyWlrPxT754+TFLaZ7sKKTfvvM0yJgKgaYTwnFCIZ/GuDw5SUA==",
+       "cpu": [
+         "wasm32"
+       ],
+       "license": "Apache-2.0",
+       "optional": true,
+       "dependencies": {
+-        "@img/sharp-wasm32": "0.35.4"
++        "@img/sharp-wasm32": "0.35.5"
+       },
+       "engines": {
+         "node": ">=20.9.0"
+@@ -4203,9 +4203,9 @@
+       }
+     },
+     "node_modules/@img/sharp-win32-arm64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-win32-arm64/-/sharp-win32-arm64-0.35.4.tgz",
+-      "integrity": "sha512-iNdlBX9gLVvqe2I3uIJSIKTq6wckP/DYxZtcqxm09x5Gi24DnFBmPAWZmr60ZyYMG0xlzo6goG3670ar+RXvRw==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-win32-arm64/-/sharp-win32-arm64-0.35.5.tgz",
++      "integrity": "sha512-X4t7g+7ZA5DKblCBEXGjUqqemj4vczING/5viFwAL8h4N3qYeyjwdCvRLHi4EdOUI+2Z7UFlp1VM+p/AuEtm6Q==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -4222,9 +4222,9 @@
+       }
+     },
+     "node_modules/@img/sharp-win32-ia32": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-win32-ia32/-/sharp-win32-ia32-0.35.4.tgz",
+-      "integrity": "sha512-kqRsbaa5CS6KHlpxnN7WhE6vAAugXyZButpRdvDWetlv6Qv4N9WTcrWzF7tXfB9T7MsoadqdI8hmwLq6UlLvtw==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-win32-ia32/-/sharp-win32-ia32-0.35.5.tgz",
++      "integrity": "sha512-5Zm82LoBc43nhwNybZlG7Y1KO//Zhsn306fQl29ZOuStHLGTo3BWL83q3cznX0poxSAMuYL1On/BHBxkBeKr6A==",
+       "cpu": [
+         "ia32"
+       ],
+@@ -4241,9 +4241,9 @@
+       }
+     },
+     "node_modules/@img/sharp-win32-x64": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.35.4.tgz",
+-      "integrity": "sha512-XtmnYhBcrORsJ4XJngyzr/EWP0hRZLAZRFaApdKuviyqF78+ylxh2y06ZmtULAMOnObJ3ucpN0AcwSWnMowTRg==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.35.5.tgz",
++      "integrity": "sha512-x76eH0vEiHlcMQu8Y8IenntaACtddpT6W0wmXtWrnKcnKI7ME5DdgqhAD6SEWOEl1v2zDvkZDhFA9KnURwpfqg==",
+       "cpu": [
+         "x64"
+       ],
+@@ -5761,15 +5761,15 @@
+       }
+     },
+     "node_modules/@next/env": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/env/-/env-16.4.0.tgz",
+-      "integrity": "sha512-pyLlT5oafGlX8X7xjgGNXz5dNIDSxREm+qD6i9VLSZiZFopA/XWl8NM/KPmLx/8EG/++c49iid3gNWSQW1+2dQ==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/env/-/env-16.4.2.tgz",
++      "integrity": "sha512-nTUTFH7G5/J/fmpkjVLegOkqyKOP0CEsJcMsyO4UCYeN1su+YMW/MfaSErnJskL7XM+UDK6aTvslxsRCyya/sA==",
+       "license": "MIT"
+     },
+     "node_modules/@next/swc-darwin-arm64": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-16.4.0.tgz",
+-      "integrity": "sha512-yyZ+9MgViAKLLb5l1gPBGjRwnq3teNLb5Zx6JEw8LzNSTjlsnp+baUHFxTgl7PpjCmKf48VQfyipG1eBflb48Q==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-darwin-arm64/-/swc-darwin-arm64-16.4.2.tgz",
++      "integrity": "sha512-ONkhFvZNFWlsEHOM/81AtxdyuJP2KRYKYR0JxPwvcu1AuPMMMgcL+wW2luldJvMtZwKtUxoSkCychW5wIeoYSw==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -5783,9 +5783,9 @@
+       }
+     },
+     "node_modules/@next/swc-darwin-x64": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-16.4.0.tgz",
+-      "integrity": "sha512-RePEEejEj1Auf5s9qEcG0JbcDP3ceNUS/ofNX8AhxzgIjTVlZIHMatlp16YplcSMpsVo/ZMQHJTjbMYJznjGUg==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-darwin-x64/-/swc-darwin-x64-16.4.2.tgz",
++      "integrity": "sha512-luPCMbOsCoaF+kXJEUjmjmOZg1lC3BflhmUu+ZmW4tBu2vW/4AXak8JBFvePizGkxVmNiAw/r9ra+6UviCWtWQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -5799,9 +5799,9 @@
+       }
+     },
+     "node_modules/@next/swc-linux-arm64-gnu": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-gnu/-/swc-linux-arm64-gnu-16.4.0.tgz",
+-      "integrity": "sha512-HhsyCqd+NpmvDDVY/LqkAN24f+QVvXh3ie+PfcwKinWL2Mu826JymQxJXGjAIfmJ4VlHjp4Pe/nZtXtUoEMAqw==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-gnu/-/swc-linux-arm64-gnu-16.4.2.tgz",
++      "integrity": "sha512-xhwFTAncJyaCNy5KqKKuKaIIdCy1/1ZV1s5S1G0hhT7wGMkDTlfJ6aQbfRFnIG/s3/kDrxQ8aycVe+c5QnP8ow==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -5818,9 +5818,9 @@
+       }
+     },
+     "node_modules/@next/swc-linux-arm64-musl": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-musl/-/swc-linux-arm64-musl-16.4.0.tgz",
+-      "integrity": "sha512-sN9Pf+Zh+RpZAOmbR7d8KAA8T61CVhawtbEJ2Bk6QrRzx6Z/6haaF4UiwBzytM96GRRRWZh9/WALIEO3npMamA==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-linux-arm64-musl/-/swc-linux-arm64-musl-16.4.2.tgz",
++      "integrity": "sha512-T1PNmfbPcxr5ndtWUL/3wQtLXsz808lq6sc2GrNT5k2oquF7UyqZddHSuAewHVsWsGXe6nsl9HoN1YNriVjuSg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -5837,9 +5837,9 @@
+       }
+     },
+     "node_modules/@next/swc-linux-x64-gnu": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-16.4.0.tgz",
+-      "integrity": "sha512-D5M5xLWQVd1CvR+L7BickM1weRfmM41x3L1NWcnKY/oyJJqr1qwaCgmu3dMAhLBOMdZwSuDCRV6DJRRpiUkbDQ==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-16.4.2.tgz",
++      "integrity": "sha512-N9cDUOCGtkJG5PNKDFZUF3xXndrJJcpLp121uAGjIGvO/U2p9tfdNOM9htj7+5f72l0m8rMw/cvYacUJBQoudg==",
+       "cpu": [
+         "x64"
+       ],
+@@ -5856,9 +5856,9 @@
+       }
+     },
+     "node_modules/@next/swc-linux-x64-musl": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-16.4.0.tgz",
+-      "integrity": "sha512-8d5WLS6a9YalqpOgXdlbvonFu+sIgjA+CO6tGzetrpPVcUL56foa7B7664h41rAlbLi5fJwK4vWji3zf4QDy+w==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-linux-x64-musl/-/swc-linux-x64-musl-16.4.2.tgz",
++      "integrity": "sha512-yY2uh1YhX6ufuYy2FCbw1dqblbhI57GLYAJfCkqD9auTv6pLrH67Uccjc3QMKBeCYAG6lkgu08ExmX1bbjejjQ==",
+       "cpu": [
+         "x64"
+       ],
+@@ -5875,9 +5875,9 @@
+       }
+     },
+     "node_modules/@next/swc-win32-arm64-msvc": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-win32-arm64-msvc/-/swc-win32-arm64-msvc-16.4.0.tgz",
+-      "integrity": "sha512-sQuOIiW3snb48UwrBcDMvFA/u03qtw2LeuSIxFIQ9AJuW9UG/4Ddsfo+eV73PnZwBhyncMtsKVh7PrzMol2/fA==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-win32-arm64-msvc/-/swc-win32-arm64-msvc-16.4.2.tgz",
++      "integrity": "sha512-j/ArWRIHpMMB6wYLMhr2puTguBt70lNU/Cmjl9p6dTDE8DGknYJMP9PdwPk2dqpCNL/KIX9yfngDvIesxJPmsg==",
+       "cpu": [
+         "arm64"
+       ],
+@@ -5891,9 +5891,9 @@
+       }
+     },
+     "node_modules/@next/swc-win32-x64-msvc": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-16.4.0.tgz",
+-      "integrity": "sha512-6/33lCuxpdHUy27RegyGM/5uTpF7YZd3UR4D0gpkOA/tWY5YR7msbQjqPgCZmSmxrrTLGCXYA4A8vT2H5DPGTQ==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/@next/swc-win32-x64-msvc/-/swc-win32-x64-msvc-16.4.2.tgz",
++      "integrity": "sha512-AA4edyWHDko3NCSo0x6GomsdgFb0oR1J3MXU1b5xt6FRFg4AucrMPW3S0hCe/9onU0O1BbpGQBsqo1r0Gneu1g==",
+       "cpu": [
+         "x64"
+       ],
+@@ -13701,19 +13701,6 @@
+         "tailwindcss": ">=3.0.0 || >=4.0.0 || insiders"
+       }
+     },
+-    "node_modules/@tailwindcss/typography/node_modules/postcss-selector-parser": {
+-      "version": "6.0.10",
+-      "resolved": "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-6.0.10.tgz",
+-      "integrity": "sha512-IQ7TZdoaqbT+LCpShg46jnZVlhWD2w6iQYAcYXfHARZ7X1t/UGhhceQDs5X0cGqKvYlHNOuv7Oa1xmb0oQuA3w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "cssesc": "^3.0.0",
+-        "util-deprecate": "^1.0.2"
+-      },
+-      "engines": {
+-        "node": ">=4"
+-      }
+-    },
+     "node_modules/@tanstack/query-core": {
+       "version": "5.90.10",
+       "resolved": "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.90.10.tgz",
+@@ -13774,9 +13761,10 @@
+       }
+     },
+     "node_modules/@team-plain/typescript-sdk": {
+-      "version": "5.11.0",
+-      "resolved": "https://registry.npmjs.org/@team-plain/typescript-sdk/-/typescript-sdk-5.11.0.tgz",
+-      "integrity": "sha512-EEyfQjD1d1tFMLFtqV7StWtiwAesFD1B5zdTYvcjpoJLlftr4NMS0BVllSKnr7n7jjWivTsVuuG7yZcZD6ZonA==",
++      "version": "5.12.1",
++      "resolved": "https://registry.npmjs.org/@team-plain/typescript-sdk/-/typescript-sdk-5.12.1.tgz",
++      "integrity": "sha512-EgCzFDsRkFcexuOWJMFh99w86E86U5/1VN26Q6Dogtmi2ln5wFHeoJ8/0PQQmDj9GWRI/y63ltlE6I4KN0fvLA==",
++      "deprecated": "This package is now deprecated. Please use @team-plain/graphql, @team-plain/webhooks and @team-plain/ui-components (https://github.com/team-plain/sdk)",
+       "license": "MIT",
+       "dependencies": {
+         "@graphql-typed-document-node/core": "^3.2.0",
+@@ -14713,16 +14701,16 @@
+       }
+     },
+     "node_modules/@vitest/expect": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/expect/-/expect-4.1.11.tgz",
+-      "integrity": "sha512-VX2x5vNJXET47KAFzwERI+KRMtTTCSWTfSMKsW7JsUsXV4psq++e3DvZpuTDOpHcxytiDs6p2nhVb2tVDiiUYw==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/expect/-/expect-4.1.12.tgz",
++      "integrity": "sha512-vFlTt+YEu9WBpNjdGayNmlMVzrWPi1+sv853/7t2FU7hpO5gAFBKHzQmkCq5Xjpr+evegF2994LQT3hF3mRlqQ==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+         "@standard-schema/spec": "^1.1.0",
+         "@types/chai": "^5.2.2",
+-        "@vitest/spy": "4.1.11",
+-        "@vitest/utils": "4.1.11",
++        "@vitest/spy": "4.1.12",
++        "@vitest/utils": "4.1.12",
+         "chai": "^6.2.2",
+         "tinyrainbow": "^3.1.0"
+       },
+@@ -14731,13 +14719,13 @@
+       }
+     },
+     "node_modules/@vitest/mocker": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/mocker/-/mocker-4.1.11.tgz",
+-      "integrity": "sha512-2XJVD55d1o5AZous5CCGKS74g/riOj9odEt2bQpCVZeblHyHdnMeFl4jl0XjU21stf4mbjUkew2eXQZt65g5CQ==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/mocker/-/mocker-4.1.12.tgz",
++      "integrity": "sha512-fKShNpKZzupWZuY0z7egydvL0sqW4INEZBEExMBMAa6izlENEVHwoXgdaTCaBZ5fwlr4xf2o1wXC83n9RpO+NA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/spy": "4.1.11",
++        "@vitest/spy": "4.1.12",
+         "estree-walker": "^3.0.3",
+         "magic-string": "^0.30.21"
+       },
+@@ -14768,9 +14756,9 @@
+       }
+     },
+     "node_modules/@vitest/pretty-format": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/pretty-format/-/pretty-format-4.1.11.tgz",
+-      "integrity": "sha512-yiZzPbGTS9Sr/JpFl8zHrcIkAofNbFV6k21vIgQN/cY/oxZeXhJv5sc/MBJ5jFKWmWs+oJHw0UXLZjmf931+Vw==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/pretty-format/-/pretty-format-4.1.12.tgz",
++      "integrity": "sha512-XW9O8+Mxx4VpCtkYdMJLZQQwsVryP9wk7cPKDxtXFfwSak6yRh5+2fep/Y0XF/ElBvJHq8bcYdi6aeuai0opZA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -14781,13 +14769,13 @@
+       }
+     },
+     "node_modules/@vitest/runner": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/runner/-/runner-4.1.11.tgz",
+-      "integrity": "sha512-LztvUgdwMNJMIkj3hQnnxiC2Xy1zNxq928W/xhjCLaNCzqTZOudjwbQf6v9IntZGPw132i2Lq2rgTRZHD3JHNw==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/runner/-/runner-4.1.12.tgz",
++      "integrity": "sha512-NKlVKCr5QnCe8jijdMnmkpHHU+WTqiLFR6G0pHji9uRjXK9xJl1k1nTw6F3pOOj2PDcsDt2GKQMI7wIsaT491w==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/utils": "4.1.11",
++        "@vitest/utils": "4.1.12",
+         "pathe": "^2.0.3"
+       },
+       "funding": {
+@@ -14802,14 +14790,14 @@
+       "license": "MIT"
+     },
+     "node_modules/@vitest/snapshot": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/snapshot/-/snapshot-4.1.11.tgz",
+-      "integrity": "sha512-pN7ikn1ON7h8ee4gIAp4AzyK+zBtJPzVbqOgu5LCEh4VaJVbPQcgYQYJIMGQPXVeJJq1fnfazis7a5pFNPahog==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/snapshot/-/snapshot-4.1.12.tgz",
++      "integrity": "sha512-ko1y1Qgb/slzQ9mr+b89Cuqud8WG1TKtsPD8r7ZUBdvVOGt85Af2HwCqHujrhwJq95hs/9RM7fcAPg57o1vlzw==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/pretty-format": "4.1.11",
+-        "@vitest/utils": "4.1.11",
++        "@vitest/pretty-format": "4.1.12",
++        "@vitest/utils": "4.1.12",
+         "magic-string": "^0.30.21",
+         "pathe": "^2.0.3"
+       },
+@@ -14825,9 +14813,9 @@
+       "license": "MIT"
+     },
+     "node_modules/@vitest/spy": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/spy/-/spy-4.1.11.tgz",
+-      "integrity": "sha512-apNa/prQy2qCeywhnixOHPRCgGNhvg7T4Dapfl1GahLp/R+uhBm5cPyFoNVyqsNd2h1nJxL6BqqdIjiABL60YA==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/spy/-/spy-4.1.12.tgz",
++      "integrity": "sha512-RGq9x4JNGNTZHEJxvN0oSiJjeSCExm0n2gZKKJZHY9cX5AVA6M7VJILBT3ZJ/tJ/0J9uWT7fETV9/btoi//vSg==",
+       "dev": true,
+       "license": "MIT",
+       "funding": {
+@@ -14835,13 +14823,13 @@
+       }
+     },
+     "node_modules/@vitest/utils": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/@vitest/utils/-/utils-4.1.11.tgz",
+-      "integrity": "sha512-zTCVGpyFsGWBhllOyKlTw/vnr6D9qxsfSDyfbyZmTyjHw5N/VuvzHpHoQjm2ZJzn4RJgx5w4r7V0er69CmLgPQ==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/@vitest/utils/-/utils-4.1.12.tgz",
++      "integrity": "sha512-Q3awXrwOfEV+qc3WmO5ONyE0yO7Q1gQ9/oyHxGLZ/pl7N3NO/ZztqQwKLuwMkV+CA1JYSIeO3gkHnRDIo4AVaA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/pretty-format": "4.1.11",
++        "@vitest/pretty-format": "4.1.12",
+         "convert-source-map": "^2.0.0",
+         "tinyrainbow": "^3.1.0"
+       },
+@@ -15647,9 +15635,9 @@
+       "license": "MIT"
+     },
+     "node_modules/body-parser": {
+-      "version": "1.20.8",
+-      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.8.tgz",
+-      "integrity": "sha512-JNcyFQ64OiijEkPzUBTCe+hyPXUD/3LEldGQ6iF5LR1w00mx9o7xtDWHXBY2iItjdCFGoilOLNQbH943ut7pHA==",
++      "version": "1.20.9",
++      "resolved": "https://registry.npmjs.org/body-parser/-/body-parser-1.20.9.tgz",
++      "integrity": "sha512-FISIQxV5u91Y9gvuFq3q/tA/qTqLJn3AhRcEvyozyhJTh5OBFFtv827AdHU7Rbyct4r+Ba1/99oFa1Y3yuFsdw==",
+       "license": "MIT",
+       "dependencies": {
+         "bytes": "~3.1.2",
+@@ -15705,22 +15693,6 @@
+       "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==",
+       "license": "MIT"
+     },
+-    "node_modules/body-parser/node_modules/qs": {
+-      "version": "6.16.0",
+-      "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
+-      "integrity": "sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==",
+-      "license": "BSD-3-Clause",
+-      "dependencies": {
+-        "es-define-property": "^1.0.1",
+-        "side-channel": "^1.1.1"
+-      },
+-      "engines": {
+-        "node": ">=0.6"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/ljharb"
+-      }
+-    },
+     "node_modules/body-parser/node_modules/statuses": {
+       "version": "2.0.2",
+       "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.2.tgz",
+@@ -16092,9 +16064,9 @@
+       }
+     },
+     "node_modules/chai": {
+-      "version": "6.2.2",
+-      "resolved": "https://registry.npmjs.org/chai/-/chai-6.2.2.tgz",
+-      "integrity": "sha512-NUPRluOfOiTKBKvWPtSD4PhFvWCqOi0BGStNWs57X9js7XGTprSmFoz5F0tWhR4WPjNeR9jXqdC7/UpSJTnlRg==",
++      "version": "6.3.0",
++      "resolved": "https://registry.npmjs.org/chai/-/chai-6.3.0.tgz",
++      "integrity": "sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -17851,9 +17823,19 @@
+       }
+     },
+     "node_modules/deepmerge-ts": {
+-      "version": "7.1.5",
+-      "resolved": "https://registry.npmjs.org/deepmerge-ts/-/deepmerge-ts-7.1.5.tgz",
+-      "integrity": "sha512-HOJkrhaYsweh+W+e74Yn7YStZOilkoPb6fycpwNLKzSPtruFs48nYis0zy5yJz1+ktUhHxoRDJ27RQAWLIJVJw==",
++      "version": "8.0.0",
++      "resolved": "https://registry.npmjs.org/deepmerge-ts/-/deepmerge-ts-8.0.0.tgz",
++      "integrity": "sha512-ICNjaP0ML+eSdEpJYQC46XiAn/UjAdwbEl0dE8p85ZTeNDinN4Kd4+9jS4OSAuH7st6eC7rQhsqTF5zIDaUm2g==",
++      "funding": [
++        {
++          "type": "ko-fi",
++          "url": "https://ko-fi.com/rebeccastevens"
++        },
++        {
++          "type": "tidelift",
++          "url": "https://tidelift.com/funding/github/npm/deepmerge-ts"
++        }
++      ],
+       "license": "BSD-3-Clause",
+       "engines": {
+         "node": ">=16.0.0"
+@@ -18058,9 +18040,9 @@
+       }
+     },
+     "node_modules/dompurify": {
+-      "version": "3.4.16",
+-      "resolved": "https://registry.npmjs.org/dompurify/-/dompurify-3.4.16.tgz",
+-      "integrity": "sha512-sqo+pNp3qRhCIpbgRi1y8Tgk27Bo2Ry7w0dC1NBeNTdZChWjz9Xb/KOoZbRP/R6pQZ80Qw8YhXw13hWWBbMRnQ==",
++      "version": "3.4.17",
++      "resolved": "https://registry.npmjs.org/dompurify/-/dompurify-3.4.17.tgz",
++      "integrity": "sha512-B/pSlYVHQ58kqISD/yDjuJ1yfzI34m1gF4lAod2bwSRhiN4K5Cl3H8Af7hqB2PmTL911tdEudnnXn5FnhRoz0w==",
+       "license": "(MPL-2.0 OR Apache-2.0)",
+       "optionalDependencies": {
+         "@types/trusted-types": "^2.0.7"
+@@ -18968,9 +18950,9 @@
+       "license": "Unlicense"
+     },
+     "node_modules/fast-uri": {
+-      "version": "3.1.8",
+-      "resolved": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.8.tgz",
+-      "integrity": "sha512-GZMtZUTNRpOVIECoXwLNZS5xUGE+mVNbTB8h/7Rwh2TFWcBQiPzTgyZi05BF9UMZKkLJv8XBRJTlU7zg8+ZfMg==",
++      "version": "3.1.9",
++      "resolved": "https://registry.npmjs.org/fast-uri/-/fast-uri-3.1.9.tgz",
++      "integrity": "sha512-hS/0Wt3Ya043oKXs0sIxrMpKQITXhMLIrVAKKXi4gozGC9v7YRWVnXIZzjNPTO02M9BdxLCWqK1yRXgNziVyJQ==",
+       "funding": [
+         {
+           "type": "github",
+@@ -19199,9 +19181,9 @@
+       }
+     },
+     "node_modules/follow-redirects": {
+-      "version": "1.16.0",
+-      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.0.tgz",
+-      "integrity": "sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==",
++      "version": "1.16.1",
++      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.1.tgz",
++      "integrity": "sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==",
+       "funding": [
+         {
+           "type": "individual",
+@@ -19599,9 +19581,9 @@
+       }
+     },
+     "node_modules/fumadocs-mdx/node_modules/zod": {
+-      "version": "4.6.5",
+-      "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.5.tgz",
+-      "integrity": "sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==",
++      "version": "4.6.7",
++      "resolved": "https://registry.npmjs.org/zod/-/zod-4.6.7.tgz",
++      "integrity": "sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==",
+       "license": "MIT",
+       "funding": {
+         "url": "https://github.com/sponsors/colinhacks"
+@@ -20483,9 +20465,9 @@
+       }
+     },
+     "node_modules/hono": {
+-      "version": "4.13.7",
+-      "resolved": "https://registry.npmjs.org/hono/-/hono-4.13.7.tgz",
+-      "integrity": "sha512-c8/gF9ac8Y78/agExVocyLevgR+JlpNB444Py0FSX8pJoPdYUfUzRcXtYEYGwt6l19qIlVZPN5Mfsw9jFShmQQ==",
++      "version": "4.13.13",
++      "resolved": "https://registry.npmjs.org/hono/-/hono-4.13.13.tgz",
++      "integrity": "sha512-CQ46U0ZkAGmbT/4UxdzzGJpacP2IeKgY4a5/tOI9AABbpOMfK739wfDXmv1usCk+3RkKj1hQy4/fjhiwa2xlrA==",
+       "license": "MIT",
+       "engines": {
+         "node": ">=16.9.0"
+@@ -20774,9 +20756,9 @@
+       "license": "MIT"
+     },
+     "node_modules/inngest": {
+-      "version": "3.54.0",
+-      "resolved": "https://registry.npmjs.org/inngest/-/inngest-3.54.0.tgz",
+-      "integrity": "sha512-EBMgyRZt9rWUmc9GUdxznbO1CmyXKZi2CZPNxNTyZJyjZMXFhPiftq/lTKjhYXD9/WlqaVFVB2K7o8vDAkGs6w==",
++      "version": "3.54.2",
++      "resolved": "https://registry.npmjs.org/inngest/-/inngest-3.54.2.tgz",
++      "integrity": "sha512-SAAc52c7n34E9dBEapy99g0vO5MPJP2yttoZpCu3LcYy1d8tz6CrkdoEQ4FBBgzMNnQxNpeAH5lvNeFCGNXbtA==",
+       "license": "Apache-2.0",
+       "dependencies": {
+         "@bufbuild/protobuf": "^2.2.3",
+@@ -20856,9 +20838,9 @@
+       }
+     },
+     "node_modules/inngest-cli": {
+-      "version": "1.46.0",
+-      "resolved": "https://registry.npmjs.org/inngest-cli/-/inngest-cli-1.46.0.tgz",
+-      "integrity": "sha512-1m8kiPEq0CTqrz5/kdQ75pgLu6dNmpPWbL8fwX+mTGKoVPfljaNMxoVcLIc+yCA1I/jLST04i0EADFeRmRHmwA==",
++      "version": "1.49.0",
++      "resolved": "https://registry.npmjs.org/inngest-cli/-/inngest-cli-1.49.0.tgz",
++      "integrity": "sha512-NFzVcaGUkUjKdzrnOHl+sGRs51MfcWHFUADLV6KcmGa0IXwVumyL/82MAiGCBPrHQjFzlcdci97gQjdVerrItQ==",
+       "dev": true,
+       "hasInstallScript": true,
+       "license": "SEE LICENSE IN LICENSE.md",
+@@ -24112,12 +24094,12 @@
+       }
+     },
+     "node_modules/next": {
+-      "version": "16.4.0",
+-      "resolved": "https://registry.npmjs.org/next/-/next-16.4.0.tgz",
+-      "integrity": "sha512-N2C+9q89Z/oLrsepSRS4jRMtwmUZAoZuAHU0e9T6+sAB5DdhADmrnOW+zjYijlrYFmVfmQhGVGy9eMFoB7UgKg==",
++      "version": "16.4.2",
++      "resolved": "https://registry.npmjs.org/next/-/next-16.4.2.tgz",
++      "integrity": "sha512-r+oBJojfefUjOiWkBhXgLS+igxX/7BWyK59uHnyOyplMSLtBZ+QLP3okrdYTbrfrbrmNTVWLBPaHDX9KRaIt3w==",
+       "license": "MIT",
+       "dependencies": {
+-        "@next/env": "16.4.0",
++        "@next/env": "16.4.2",
+         "@swc/helpers": "0.5.23",
+         "baseline-browser-mapping": "^2.9.19",
+         "caniuse-lite": "^1.0.30001579",
+@@ -24131,15 +24113,15 @@
+         "node": ">=20.9.0"
+       },
+       "optionalDependencies": {
+-        "@next/swc-darwin-arm64": "16.4.0",
+-        "@next/swc-darwin-x64": "16.4.0",
+-        "@next/swc-linux-arm64-gnu": "16.4.0",
+-        "@next/swc-linux-arm64-musl": "16.4.0",
+-        "@next/swc-linux-x64-gnu": "16.4.0",
+-        "@next/swc-linux-x64-musl": "16.4.0",
+-        "@next/swc-win32-arm64-msvc": "16.4.0",
+-        "@next/swc-win32-x64-msvc": "16.4.0",
+-        "sharp": "^0.35.4"
++        "@next/swc-darwin-arm64": "16.4.2",
++        "@next/swc-darwin-x64": "16.4.2",
++        "@next/swc-linux-arm64-gnu": "16.4.2",
++        "@next/swc-linux-arm64-musl": "16.4.2",
++        "@next/swc-linux-x64-gnu": "16.4.2",
++        "@next/swc-linux-x64-musl": "16.4.2",
++        "@next/swc-win32-arm64-msvc": "16.4.2",
++        "@next/swc-win32-x64-msvc": "16.4.2",
++        "sharp": "^0.35.5"
+       },
+       "peerDependencies": {
+         "@opentelemetry/api": "^1.1.0",
+@@ -24292,12 +24274,12 @@
+       }
+     },
+     "node_modules/nodemailer": {
+-      "version": "9.1.1",
+-      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-9.1.1.tgz",
+-      "integrity": "sha512-izw9mVKFix6YSnC9eLgV6g1opl9DUlRio9ZNcq+Wu9Ujn2UwF+8Nl0B8nz22kEC+CTZCvinkxwJ0DeFbb6NwcQ==",
++      "version": "10.2.1",
++      "resolved": "https://registry.npmjs.org/nodemailer/-/nodemailer-10.2.1.tgz",
++      "integrity": "sha512-ZrDNsPFoDMwefNs7sJwrYiEJ/CG4ClJWDZv05iNJsEBWa8GRDry1QJHTJxsuTAY9eDDKjX4k+q3SxslXJOao7w==",
+       "license": "MIT-0",
+       "engines": {
+-        "node": ">=6.0.0"
++        "node": ">=20.0.0"
+       }
+     },
+     "node_modules/normalize-path": {
+@@ -25664,9 +25646,9 @@
+       }
+     },
+     "node_modules/postcss-selector-parser": {
+-      "version": "6.1.4",
+-      "resolved": "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-6.1.4.tgz",
+-      "integrity": "sha512-bIoJLOmjCO1S9XdY/DcnR5hJxvrDir1PbGChrzXG3vw0/FOliy/fA3dmdhQ441kah4gKv+TwckGzex6wNS5cnQ==",
++      "version": "6.1.5",
++      "resolved": "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-6.1.5.tgz",
++      "integrity": "sha512-TEHFzb5KRDKaOgJ4TYE+0jyJtFbjLvkdVOu0fZ2b6MTWzoqZd4Le+61aEppWkvTlYePgOX4ATL1wsAIPMLTw6Q==",
+       "license": "MIT",
+       "dependencies": {
+         "cssesc": "^3.0.0",
+@@ -26113,12 +26095,13 @@
+       }
+     },
+     "node_modules/qs": {
+-      "version": "6.14.2",
+-      "resolved": "https://registry.npmjs.org/qs/-/qs-6.14.2.tgz",
+-      "integrity": "sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==",
++      "version": "6.16.0",
++      "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
++      "integrity": "sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==",
+       "license": "BSD-3-Clause",
+       "dependencies": {
+-        "side-channel": "^1.1.0"
++        "es-define-property": "^1.0.1",
++        "side-channel": "^1.1.1"
+       },
+       "engines": {
+         "node": ">=0.6"
+@@ -27757,9 +27740,9 @@
+       "license": "ISC"
+     },
+     "node_modules/sharp": {
+-      "version": "0.35.4",
+-      "resolved": "https://registry.npmjs.org/sharp/-/sharp-0.35.4.tgz",
+-      "integrity": "sha512-n++8XWcj+jCOr2IOl7h8LbKnGBDY4aPbmprMONBNFdn0ImXqpGVv5zliDs0V9HbmbCQLpbuo2ej9rAoOQTvMDA==",
++      "version": "0.35.5",
++      "resolved": "https://registry.npmjs.org/sharp/-/sharp-0.35.5.tgz",
++      "integrity": "sha512-Ywn4OnzGukp7CDMrp08RQ50YKmuwG47brZgIVPTvBaaAfQlRlygrRqSrxdCiL9M+LlzLBiJ68IR1QqvzHyjC7g==",
+       "license": "Apache-2.0",
+       "dependencies": {
+         "@img/colour": "^1.1.0",
+@@ -27773,31 +27756,31 @@
+         "url": "https://opencollective.com/libvips"
+       },
+       "optionalDependencies": {
+-        "@img/sharp-darwin-arm64": "0.35.4",
+-        "@img/sharp-darwin-x64": "0.35.4",
+-        "@img/sharp-freebsd-wasm32": "0.35.4",
+-        "@img/sharp-libvips-darwin-arm64": "1.3.3",
+-        "@img/sharp-libvips-darwin-x64": "1.3.3",
+-        "@img/sharp-libvips-linux-arm": "1.3.3",
+-        "@img/sharp-libvips-linux-arm64": "1.3.3",
+-        "@img/sharp-libvips-linux-ppc64": "1.3.3",
+-        "@img/sharp-libvips-linux-riscv64": "1.3.3",
+-        "@img/sharp-libvips-linux-s390x": "1.3.3",
+-        "@img/sharp-libvips-linux-x64": "1.3.3",
+-        "@img/sharp-libvips-linuxmusl-arm64": "1.3.3",
+-        "@img/sharp-libvips-linuxmusl-x64": "1.3.3",
+-        "@img/sharp-linux-arm": "0.35.4",
+-        "@img/sharp-linux-arm64": "0.35.4",
+-        "@img/sharp-linux-ppc64": "0.35.4",
+-        "@img/sharp-linux-riscv64": "0.35.4",
+-        "@img/sharp-linux-s390x": "0.35.4",
+-        "@img/sharp-linux-x64": "0.35.4",
+-        "@img/sharp-linuxmusl-arm64": "0.35.4",
+-        "@img/sharp-linuxmusl-x64": "0.35.4",
+-        "@img/sharp-webcontainers-wasm32": "0.35.4",
+-        "@img/sharp-win32-arm64": "0.35.4",
+-        "@img/sharp-win32-ia32": "0.35.4",
+-        "@img/sharp-win32-x64": "0.35.4"
++        "@img/sharp-darwin-arm64": "0.35.5",
++        "@img/sharp-darwin-x64": "0.35.5",
++        "@img/sharp-freebsd-wasm32": "0.35.5",
++        "@img/sharp-libvips-darwin-arm64": "1.3.4",
++        "@img/sharp-libvips-darwin-x64": "1.3.4",
++        "@img/sharp-libvips-linux-arm": "1.3.4",
++        "@img/sharp-libvips-linux-arm64": "1.3.4",
++        "@img/sharp-libvips-linux-ppc64": "1.3.4",
++        "@img/sharp-libvips-linux-riscv64": "1.3.4",
++        "@img/sharp-libvips-linux-s390x": "1.3.4",
++        "@img/sharp-libvips-linux-x64": "1.3.4",
++        "@img/sharp-libvips-linuxmusl-arm64": "1.3.4",
++        "@img/sharp-libvips-linuxmusl-x64": "1.3.4",
++        "@img/sharp-linux-arm": "0.35.5",
++        "@img/sharp-linux-arm64": "0.35.5",
++        "@img/sharp-linux-ppc64": "0.35.5",
++        "@img/sharp-linux-riscv64": "0.35.5",
++        "@img/sharp-linux-s390x": "0.35.5",
++        "@img/sharp-linux-x64": "0.35.5",
++        "@img/sharp-linuxmusl-arm64": "0.35.5",
++        "@img/sharp-linuxmusl-x64": "0.35.5",
++        "@img/sharp-webcontainers-wasm32": "0.35.5",
++        "@img/sharp-win32-arm64": "0.35.5",
++        "@img/sharp-win32-ia32": "0.35.5",
++        "@img/sharp-win32-x64": "0.35.5"
+       },
+       "peerDependenciesMeta": {
+         "@types/node": {
+@@ -29108,9 +29091,9 @@
+       }
+     },
+     "node_modules/tinyrainbow": {
+-      "version": "3.1.1",
+-      "resolved": "https://registry.npmjs.org/tinyrainbow/-/tinyrainbow-3.1.1.tgz",
+-      "integrity": "sha512-yau8yJdTt989Mm0Bd/236QnzEiPf2xLLTqUZRUJOo/3CB078LSwzei343DgtJVmfJKJE3TMINY1u42SQsP6mXw==",
++      "version": "3.2.0",
++      "resolved": "https://registry.npmjs.org/tinyrainbow/-/tinyrainbow-3.2.0.tgz",
++      "integrity": "sha512-LgO3D9yZJjApUiuUfl9iFAwrtaX4+lok3wJIqttGoKCHlWUqHqbQpnxCf82L8FjgKsh4iGo78hqJwgL8F6To2A==",
+       "dev": true,
+       "license": "MIT",
+       "engines": {
+@@ -29234,9 +29217,9 @@
+       }
+     },
+     "node_modules/ts-deepmerge": {
+-      "version": "6.2.1",
+-      "resolved": "https://registry.npmjs.org/ts-deepmerge/-/ts-deepmerge-6.2.1.tgz",
+-      "integrity": "sha512-8CYSLazCyj0DJDpPIxOFzJG46r93uh6EynYjuey+bxcLltBeqZL7DMfaE5ZPzZNFlav7wx+2TDa/mBl8gkTYzw==",
++      "version": "8.0.0",
++      "resolved": "https://registry.npmjs.org/ts-deepmerge/-/ts-deepmerge-8.0.0.tgz",
++      "integrity": "sha512-133O+10nJmVI8w5xeVZPEv5PIrv7iaUae07wv1aH8XJH95Ur6YIhWAPhPyP1YPlbPS9fCVcNIZTu7m8urRVF0A==",
+       "license": "ISC",
+       "engines": {
+         "node": ">=14.13.1"
+@@ -29454,9 +29437,9 @@
+       "license": "MIT"
+     },
+     "node_modules/undici": {
+-      "version": "7.30.0",
+-      "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.0.tgz",
+-      "integrity": "sha512-dkrQXeHSaoamnItlYbmzG0wFYrM0ZwDxCIg0A7aKjTyyhh9svRzCNFEzV+Vm05/yehjCzjDZ31KXfGEjYSztDQ==",
++      "version": "7.30.1",
++      "resolved": "https://registry.npmjs.org/undici/-/undici-7.30.1.tgz",
++      "integrity": "sha512-03KrMbjIFDWQR5RNPrSw3bd1r12JpyFQl9/yxjUbJtqkjmllqC5lFjZh6ujeuJCKr8EOQvRW872Oy/az+nLYxg==",
+       "license": "MIT",
+       "engines": {
+         "node": ">=20.18.1"
+@@ -29821,9 +29804,9 @@
+       }
+     },
+     "node_modules/vite": {
+-      "version": "7.3.6",
+-      "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.6.tgz",
+-      "integrity": "sha512-4XP60spRGjSZFf1qYH+dJIkK2znL3zQfl9KkOV9MkkRR/3Dls0dxaBsQPTloEc5BLXWPL9vsOxopxyKoMmDueg==",
++      "version": "7.3.7",
++      "resolved": "https://registry.npmjs.org/vite/-/vite-7.3.7.tgz",
++      "integrity": "sha512-AHEzTORMbi7/7aXp7w7KZ5+DCUdSeLsJz0grY8xHpc9DHdYb0vQu6DqJfm2tOw3gDExNgPgnJTXxM6syYFHaCA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+@@ -30040,19 +30023,19 @@
+       }
+     },
+     "node_modules/vitest": {
+-      "version": "4.1.11",
+-      "resolved": "https://registry.npmjs.org/vitest/-/vitest-4.1.11.tgz",
+-      "integrity": "sha512-fhACrNXUidIbGSBr5FlbuBkO7VWC1ZyLl0DO4CU2DrQoAPxX84Ysxs+HeGQpii5lZWV1Q4gBZTTu49mF+A6Edw==",
++      "version": "4.1.12",
++      "resolved": "https://registry.npmjs.org/vitest/-/vitest-4.1.12.tgz",
++      "integrity": "sha512-5eWdz2yb3ajxWF3C8C4TjkXl7FGm3n2E/VlazALrQHzK7nYMSGFnCZto0bbPNl77AwkOZVLk0YnBAejUu0NiWA==",
+       "dev": true,
+       "license": "MIT",
+       "dependencies": {
+-        "@vitest/expect": "4.1.11",
+-        "@vitest/mocker": "4.1.11",
+-        "@vitest/pretty-format": "4.1.11",
+-        "@vitest/runner": "4.1.11",
+-        "@vitest/snapshot": "4.1.11",
+-        "@vitest/spy": "4.1.11",
+-        "@vitest/utils": "4.1.11",
++        "@vitest/expect": "4.1.12",
++        "@vitest/mocker": "4.1.12",
++        "@vitest/pretty-format": "4.1.12",
++        "@vitest/runner": "4.1.12",
++        "@vitest/snapshot": "4.1.12",
++        "@vitest/spy": "4.1.12",
++        "@vitest/utils": "4.1.12",
+         "es-module-lexer": "^2.0.0",
+         "expect-type": "^1.3.0",
+         "magic-string": "^0.30.21",
+@@ -30080,12 +30063,12 @@
+         "@edge-runtime/vm": "*",
+         "@opentelemetry/api": "^1.9.0",
+         "@types/node": "^20.0.0 || ^22.0.0 || >=24.0.0",
+-        "@vitest/browser-playwright": "4.1.11",
+-        "@vitest/browser-preview": "4.1.11",
+-        "@vitest/browser-webdriverio": "4.1.11",
+-        "@vitest/coverage-istanbul": "4.1.11",
+-        "@vitest/coverage-v8": "4.1.11",
+-        "@vitest/ui": "4.1.11",
++        "@vitest/browser-playwright": "4.1.12",
++        "@vitest/browser-preview": "4.1.12",
++        "@vitest/browser-webdriverio": "^4.1.11",
++        "@vitest/coverage-istanbul": "4.1.12",
++        "@vitest/coverage-v8": "4.1.12",
++        "@vitest/ui": "4.1.12",
+         "happy-dom": "*",
+         "jsdom": "*",
+         "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
+@@ -30727,7 +30710,7 @@
+         "@documenso/nodemailer-resend": "5.0.0",
+         "@documenso/tailwind-config": "*",
+         "@react-email/render": "2.1.0",
+-        "nodemailer": "^9.0.0",
++        "nodemailer": "10.2.1",
+         "react-email": "^6.9.0",
+         "resend": "^6.5.2"
+       },
+@@ -30793,7 +30776,7 @@
+         "posthog-node": "4.18.0",
+         "react": "^19.2.7",
+         "remeda": "^2.32.0",
+-        "sharp": "0.35.4",
++        "sharp": "0.35.5",
+         "stripe": "^12.18.0",
+         "ts-pattern": "^5.9.0",
+         "zod": "^3.25.76"
+diff --git a/package.json b/package.json
+index 6aef8ce..839586f 100644
+--- a/package.json
++++ b/package.json
+@@ -85,7 +85,7 @@
+     "inngest-cli": "^1.44.0",
+     "lint-staged": "^16.2.7",
+     "nanoid": "^5.1.6",
+-    "nodemailer": "^9.0.0",
++    "nodemailer": "10.2.1",
+     "pdfjs-dist": "5.4.296",
+     "pino": "^9.14.0",
+     "pino-pretty": "^13.1.2",
+@@ -145,13 +145,18 @@
+     "posthog-node": "4.18.0",
+     "react": "^19.2.7",
+     "react-dom": "^19.2.7",
+-    "sharp": "0.35.4",
++    "sharp": "0.35.5",
+     "typescript": "5.6.2",
+     "@marsidev/react-turnstile": "^1.5.0",
+-    "zod": "^3.25.76"
++    "zod": "3.25.76"
+   },
+   "overrides": {
++    "deepmerge-ts": "8.0.0",
++    "ts-deepmerge": "8.0.0",
++    "postcss-selector-parser@6": "6.1.5",
++    "postcss-selector-parser@7": "7.1.6",
+     "lodash": "4.18.1",
++    "qs": "6.16.0",
+     "brace-expansion@1": "^1.1.18",
+     "pdfjs-dist": "5.4.296",
+     "postcss": "^8.5.19",
+@@ -162,7 +167,7 @@
+     "typescript": "5.6.2",
+     "zod": "$zod",
+     "fumadocs-mdx": {
+-      "zod": "^4.3.5"
++      "zod": "^4.6.6"
+     }
+   }
+ }
+diff --git a/packages/email/package.json b/packages/email/package.json
+index e5ff687..7c5a9f9 100644
+--- a/packages/email/package.json
++++ b/packages/email/package.json
+@@ -20,7 +20,7 @@
+     "@documenso/nodemailer-resend": "5.0.0",
+     "@documenso/tailwind-config": "*",
+     "@react-email/render": "2.1.0",
+-    "nodemailer": "^9.0.0",
++    "nodemailer": "10.2.1",
+     "react-email": "^6.9.0",
+     "resend": "^6.5.2"
+   },
+diff --git a/packages/email/transports/mailchannels.ts b/packages/email/transports/mailchannels.ts
+index 923346f..f8f0dd9 100644
+--- a/packages/email/transports/mailchannels.ts
++++ b/packages/email/transports/mailchannels.ts
+@@ -7,8 +7,6 @@ import { normalizeMailHeaders } from './normalize-headers';
+ 
+ const VERSION = '1.0.0';
+ 
+-type NodeMailerAddress = string | Address | Array<string | Address> | undefined;
+-
+ interface MailChannelsAddress {
+   email: string;
+   name?: string;
+@@ -46,22 +44,25 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
+     };
+   }
+ 
+-  public send(mail: MailMessage, callback: (_err: Error | null, _info: SentMessageInfo) => void) {
++  public send(mail: MailMessage, callback: (_err: Error | null, _info?: SentMessageInfo) => void) {
+     if (!mail.data.to || !mail.data.from) {
+-      return callback(new Error('Missing required fields "to" or "from"'), null);
++      return callback(new Error('Missing required fields "to" or "from"'));
+     }
+ 
+-    const mailTo = this.toMailChannelsAddresses(mail.data.to);
+-    const mailCc = this.toMailChannelsAddresses(mail.data.cc);
+-    const mailBcc = this.toMailChannelsAddresses(mail.data.bcc);
++    const addresses = mail.message.getAddresses();
++    const mailTo = this.toMailChannelsAddresses(addresses.to);
++    const mailCc = this.toMailChannelsAddresses(addresses.cc);
++    const mailBcc = this.toMailChannelsAddresses(addresses.bcc);
+ 
+-    const [from] = this.toMailChannelsAddresses(mail.data.from);
+-    const [replyTo] = this.toMailChannelsAddresses(mail.data.replyTo);
++    const [from] = this.toMailChannelsAddresses(addresses.from);
++    const [replyTo] = this.toMailChannelsAddresses(addresses['reply-to']);
+ 
+-    if (!from) {
+-      return callback(new Error('Missing required field "from"'), null);
++    if (!from || mailTo.length === 0) {
++      return callback(new Error('Missing required fields "to" or "from"'));
+     }
+ 
++    const envelope = mail.message.getEnvelope();
++
+     const requestHeaders: Record<string, string> = {
+       'Content-Type': 'application/json',
+     };
+@@ -103,12 +104,9 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
+       .then((res) => {
+         if (res.status >= 200 && res.status <= 299) {
+           return callback(null, {
+-            messageId: '',
+-            envelope: {
+-              from: mail.data.from,
+-              to: mail.data.to,
+-            },
+-            accepted: mail.data.to,
++            messageId: mail.message.messageId(),
++            envelope,
++            accepted: envelope.to,
+             rejected: [],
+             pending: [],
+           });
+@@ -116,44 +114,24 @@ export class MailChannelsTransport implements Transport<SentMessageInfo> {
+ 
+         res
+           .json()
+-          .then((data) => callback(new Error(`MailChannels error: ${data.message}`), null))
+-          .catch((err) => callback(err, null));
++          .then((data) => callback(new Error(`MailChannels error: ${data.message}`)))
++          .catch((err) => callback(err));
+       })
+       .catch((err) => {
+-        return callback(err, null);
++        return callback(err);
+       });
+   }
+ 
+   /**
+    * Converts a nodemailer address(s) to an array of MailChannel compatible address.
+    */
+-  private toMailChannelsAddresses(address: NodeMailerAddress): Array<MailChannelsAddress> {
+-    if (!address) {
+-      return [];
+-    }
+-
+-    if (typeof address === 'string') {
+-      return [{ email: address }];
+-    }
+-
+-    if (Array.isArray(address)) {
+-      return address.map((address) => {
+-        if (typeof address === 'string') {
+-          return { email: address };
+-        }
+-
+-        return {
+-          email: address.address,
+-          name: address.name,
+-        };
+-      });
+-    }
+-
+-    return [
+-      {
+-        email: address.address,
+-        name: address.name,
+-      },
+-    ];
++  private toMailChannelsAddresses(addresses: Address[] = []): Array<MailChannelsAddress> {
++    return addresses.flatMap((address) => {
++      if (address.group) {
++        return this.toMailChannelsAddresses(address.group);
++      }
++
++      return address.address ? [{ email: address.address, name: address.name }] : [];
++    });
+   }
+ }
+diff --git a/packages/lib/package.json b/packages/lib/package.json
+index 01ff0f9..7be2070 100644
+--- a/packages/lib/package.json
++++ b/packages/lib/package.json
+@@ -67,7 +67,7 @@
+     "posthog-node": "4.18.0",
+     "react": "^19.2.7",
+     "remeda": "^2.32.0",
+-    "sharp": "0.35.4",
++    "sharp": "0.35.5",
+     "stripe": "^12.18.0",
+     "ts-pattern": "^5.9.0",
+     "zod": "^3.25.76"
+diff --git a/patches/zod+3.25.76.patch b/patches/zod+3.25.76.patch
+new file mode 100644
+index 0000000..d1570a7
+--- /dev/null
++++ b/patches/zod+3.25.76.patch
+@@ -0,0 +1,206 @@
++diff --git a/node_modules/zod/v3/types.cjs b/node_modules/zod/v3/types.cjs
++--- a/node_modules/zod/v3/types.cjs
+++++ b/node_modules/zod/v3/types.cjs
++@@ -1790,6 +1790,8 @@
++                     exact: true,
++                     message: def.exactLength.message,
++                 });
+++                if (tooBig)
+++                    return parseUtil_js_1.INVALID;
++                 status.dirty();
++             }
++         }
++@@ -1816,7 +1818,7 @@
++                     exact: false,
++                     message: def.maxLength.message,
++                 });
++-                status.dirty();
+++                return parseUtil_js_1.INVALID;
++             }
++         }
++         if (ctx.common.async) {
++@@ -2843,7 +2845,7 @@
++                     exact: false,
++                     message: def.maxSize.message,
++                 });
++-                status.dirty();
+++                return parseUtil_js_1.INVALID;
++             }
++         }
++         const valueType = this._def.valueType;
++diff --git a/node_modules/zod/v3/types.js b/node_modules/zod/v3/types.js
++--- a/node_modules/zod/v3/types.js
+++++ b/node_modules/zod/v3/types.js
++@@ -1769,6 +1769,8 @@
++                     exact: true,
++                     message: def.exactLength.message,
++                 });
+++                if (tooBig)
+++                    return INVALID;
++                 status.dirty();
++             }
++         }
++@@ -1795,7 +1797,7 @@
++                     exact: false,
++                     message: def.maxLength.message,
++                 });
++-                status.dirty();
+++                return INVALID;
++             }
++         }
++         if (ctx.common.async) {
++@@ -2814,7 +2816,7 @@
++                     exact: false,
++                     message: def.maxSize.message,
++                 });
++-                status.dirty();
+++                return INVALID;
++             }
++         }
++         const valueType = this._def.valueType;
++diff --git a/node_modules/zod/v4/core/schemas.cjs b/node_modules/zod/v4/core/schemas.cjs
++--- a/node_modules/zod/v4/core/schemas.cjs
+++++ b/node_modules/zod/v4/core/schemas.cjs
++@@ -62,6 +62,8 @@
++     }
++     else {
++         const runChecks = (payload, checks, ctx) => {
+++            if (payload.skipChecks)
+++                return payload;
++             let isAborted = util.aborted(payload);
++             let asyncResult;
++             for (const ch of checks) {
++@@ -650,6 +652,36 @@
++     }
++     final.value[index] = result.value;
++ }
+++function capSize(inst, size) {
+++    const caps = [];
+++    for (const ch of inst._zod.def.checks ?? []) {
+++        const d = ch._zod.def;
+++        if (!/_(length|size)$|_equals$/.test(d.check))
+++            break;
+++        const max = d.maximum ?? d.length ?? d.size;
+++        if (max >= 0)
+++            caps.push([max, ch]);
+++    }
+++    if (!caps.length)
+++        return;
+++    const cap = Math.min(...caps.map(([max]) => max));
+++    const parse = inst._zod.parse;
+++    inst._zod.parse = (payload, ctx) => {
+++        const n = size(payload.value);
+++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+++            for (const [max, ch] of caps) {
+++                if (n > max && ch._zod.def.when(payload)) {
+++                    const start = payload.issues.length;
+++                    ch._zod.check(payload);
+++                    payload.issues[start].continue = false;
+++                    payload.skipChecks = true;
+++                    return payload;
+++                }
+++            }
+++        }
+++        return parse(payload, ctx);
+++    };
+++}
++ exports.$ZodArray = core.$constructor("$ZodArray", (inst, def) => {
++     exports.$ZodType.init(inst, def);
++     inst._zod.parse = (payload, ctx) => {
++@@ -683,6 +715,7 @@
++         }
++         return payload; //handleArrayResultsAsync(parseResults, final);
++     };
+++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
++ });
++ function handleObjectResult(result, final, key) {
++     // if(isOptional)
++@@ -1304,6 +1337,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Map ? input.size : -1);
++ });
++ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
++     if (keyResult.issues.length) {
++@@ -1364,6 +1398,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Set ? input.size : -1);
++ });
++ function handleSetResult(result, final) {
++     if (result.issues.length) {
++diff --git a/node_modules/zod/v4/core/schemas.js b/node_modules/zod/v4/core/schemas.js
++--- a/node_modules/zod/v4/core/schemas.js
+++++ b/node_modules/zod/v4/core/schemas.js
++@@ -32,6 +32,8 @@
++     }
++     else {
++         const runChecks = (payload, checks, ctx) => {
+++            if (payload.skipChecks)
+++                return payload;
++             let isAborted = util.aborted(payload);
++             let asyncResult;
++             for (const ch of checks) {
++@@ -619,6 +621,36 @@
++     }
++     final.value[index] = result.value;
++ }
+++function capSize(inst, size) {
+++    const caps = [];
+++    for (const ch of inst._zod.def.checks ?? []) {
+++        const d = ch._zod.def;
+++        if (!/_(length|size)$|_equals$/.test(d.check))
+++            break;
+++        const max = d.maximum ?? d.length ?? d.size;
+++        if (max >= 0)
+++            caps.push([max, ch]);
+++    }
+++    if (!caps.length)
+++        return;
+++    const cap = Math.min(...caps.map(([max]) => max));
+++    const parse = inst._zod.parse;
+++    inst._zod.parse = (payload, ctx) => {
+++        const n = size(payload.value);
+++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+++            for (const [max, ch] of caps) {
+++                if (n > max && ch._zod.def.when(payload)) {
+++                    const start = payload.issues.length;
+++                    ch._zod.check(payload);
+++                    payload.issues[start].continue = false;
+++                    payload.skipChecks = true;
+++                    return payload;
+++                }
+++            }
+++        }
+++        return parse(payload, ctx);
+++    };
+++}
++ export const $ZodArray = /*@__PURE__*/ core.$constructor("$ZodArray", (inst, def) => {
++     $ZodType.init(inst, def);
++     inst._zod.parse = (payload, ctx) => {
++@@ -652,6 +684,7 @@
++         }
++         return payload; //handleArrayResultsAsync(parseResults, final);
++     };
+++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
++ });
++ function handleObjectResult(result, final, key) {
++     // if(isOptional)
++@@ -1273,6 +1306,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Map ? input.size : -1);
++ });
++ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
++     if (keyResult.issues.length) {
++@@ -1333,6 +1367,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Set ? input.size : -1);
++ });
++ function handleSetResult(result, final) {
++     if (result.issues.length) {
+diff --git a/patches/@anatine+zod-openapi+1.14.2.patch b/patches/@anatine+zod-openapi+1.14.2.patch
+new file mode 100644
+index 0000000..38c0016
+--- /dev/null
++++ b/patches/@anatine+zod-openapi+1.14.2.patch
+@@ -0,0 +1,146 @@
++diff --git a/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js b/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
++--- a/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
+++++ b/node_modules/@anatine/zod-openapi/src/lib/zod-openapi.js
++@@ -38,7 +38,7 @@
++             }
++         }
++     }
++-    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
+++    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign(Object.assign({}, (zodRef.description ? { description: zodRef.description } : {})), input), (['number', 'string', 'boolean', 'null'].includes(output)
++         ? {
++             type: output,
++         }
++@@ -81,7 +81,7 @@
++                 break;
++         }
++     });
++-    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNumber({ zodRef, schemas, }) {
++     const baseSchema = {
++@@ -108,7 +108,7 @@
++                 baseSchema.multipleOf = item.value;
++         }
++     });
++-    return (0, ts_deepmerge_1.default)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(baseSchema, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseObject({ zodRef, schemas, useOutput, }) {
++     var _a;
++@@ -131,14 +131,14 @@
++             item._def.typeName === 'ZodDefault') && !(item instanceof zod_1.z.ZodNever || item._def.typeName === 'ZodDefault'));
++     });
++     const required = requiredProperties.length > 0 ? { required: requiredProperties } : {};
++-    return (0, ts_deepmerge_1.default)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
+++    return (0, ts_deepmerge_1.merge)(Object.assign(Object.assign({ type: 'object', properties: iterateZodObject({
++             zodRef: zodRef,
++             schemas,
++             useOutput,
++         }) }, required), additionalProperties), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseRecord({ zodRef, schemas, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: 'object',
++         additionalProperties: zodRef._def.valueType instanceof zod_1.z.ZodUnknown
++             ? {}
++@@ -146,26 +146,26 @@
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBigInt({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'integer', format: 'int64' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBoolean({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'boolean' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDate({ zodRef, schemas }) {
++-    return (0, ts_deepmerge_1.default)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ type: 'string', format: 'date-time' }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNull({ zodRef, schemas }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: 'string',
++         format: 'null',
++         nullable: true,
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseOptionalNullable({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef.unwrap(), useOutput), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDefault({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(Object.assign({ default: zodRef._def.defaultValue() }, generateSchema(zodRef._def.innerType, useOutput)), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseArray({ schemas, zodRef, useOutput, }) {
++     const constraints = {};
++@@ -177,22 +177,22 @@
++         constraints.minItems = zodRef._def.minLength.value;
++     if (zodRef._def.maxLength != null)
++         constraints.maxItems = zodRef._def.maxLength.value;
++-    return (0, ts_deepmerge_1.default)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(Object.assign({ type: 'array', items: generateSchema(zodRef.element, useOutput) }, constraints), zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseLiteral({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: typeof zodRef._def.value,
++         enum: [zodRef._def.value],
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseEnum({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         type: typeof Object.values(zodRef._def.values)[0],
++         enum: Object.values(zodRef._def.values),
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseIntersection({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         allOf: [
++             generateSchema(zodRef._def.left, useOutput),
++             generateSchema(zodRef._def.right, useOutput),
++@@ -209,18 +209,18 @@
++             typeof content._def.value :
++             null, null);
++         if (type) {
++-            return (0, ts_deepmerge_1.default)({
+++            return (0, ts_deepmerge_1.merge)({
++                 type: type,
++                 enum: literals.map((literal) => literal._def.value)
++             }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++         }
++     }
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         oneOf: contents.map((schema) => generateSchema(schema, useOutput)),
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseDiscriminatedUnion({ schemas, zodRef, useOutput, }) {
++-    return (0, ts_deepmerge_1.default)({
+++    return (0, ts_deepmerge_1.merge)({
++         discriminator: {
++             propertyName: zodRef._def.discriminator,
++         },
++@@ -228,13 +228,13 @@
++     }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseNever({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)({ readOnly: true }, zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ function parseBranded({ schemas, zodRef, }) {
++-    return (0, ts_deepmerge_1.default)(generateSchema(zodRef._def.type), ...schemas);
+++    return (0, ts_deepmerge_1.merge)(generateSchema(zodRef._def.type), ...schemas);
++ }
++ function catchAllParser({ zodRef, schemas, }) {
++-    return (0, ts_deepmerge_1.default)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
+++    return (0, ts_deepmerge_1.merge)(zodRef.description ? { description: zodRef.description } : {}, ...schemas);
++ }
++ const workerMap = {
++     ZodObject: parseObject,
+diff --git a/scripts/security/zod-size-gate-check.mjs b/scripts/security/zod-size-gate-check.mjs
+new file mode 100644
+index 0000000..24532f3
+--- /dev/null
++++ b/scripts/security/zod-size-gate-check.mjs
+@@ -0,0 +1,47 @@
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++
++const require = createRequire(import.meta.url);
++
++for (const [name, { z }] of [
++  ['CommonJS', require('zod')],
++  ['ESM', await import('zod')],
++  ['CommonJS v4', require('zod/v4')],
++  ['ESM v4', await import('zod/v4')],
++]) {
++  const oversized = Array(20_000).fill(0);
++  for (const schema of [z.array(z.string()).max(1), z.array(z.string()).length(1)]) {
++    const result = schema.safeParse(oversized);
++    assert.equal(result.success, false);
++    assert.equal(result.error.issues.length, 1);
++    assert.equal(result.error.issues[0].code, 'too_big');
++  }
++
++  let parsed = 0;
++  const element = z.string().transform(value => { parsed += 1; return value; });
++  const bounded = z.array(element).max(1);
++  assert.equal(bounded.safeParse(Array(20_000).fill('valid element')).success, false);
++  assert.equal((await bounded.safeParseAsync(Array(20_000).fill('valid element'))).success, false);
++  assert.equal(parsed, 0);
++
++  const set = z.set(z.string()).max(1).safeParse(new Set(oversized.map((_, index) => index)));
++  assert.equal(set.success, false);
++  assert.equal(set.error.issues.length, 1);
++  assert.equal(set.error.issues[0].code, 'too_big');
++
++  const nested = z.object({ values: z.array(z.string()).max(1) }).safeParse({ values: oversized });
++  assert.deepEqual(nested.error.issues[0].path, ['values']);
++  assert.equal(z.array(z.string()).min(2).safeParse(['valid']).error.issues[0].code, 'too_small');
++  assert.deepEqual(z.array(z.number()).max(3).parse([1, 2]), [1, 2]);
++  assert.deepEqual(z.preprocess(value => value.slice(0, 2), z.array(z.number()).max(2)).parse([1, 2, 3]), [1, 2]);
++  assert.equal(z.array(z.number()).parse(oversized).length, oversized.length);
++  assert.equal(z.array(z.string()).max(1, { message: 'synthetic cap' }).safeParse(oversized).error.issues[0].message, 'synthetic cap');
++  if (name.endsWith('v4')) {
++    const map = z.map(z.string(), z.string()).check(z.maxSize(1)).safeParse(new Map(oversized.map((_, index) => [index, index])));
++    assert.equal(map.success, false);
++    assert.equal(map.error.issues.length, 1);
++    assert.equal(map.error.issues[0].code, 'too_big');
++    assert.deepEqual(z.array(z.number()).overwrite(values => values.slice(0, 2)).max(2).parse([1, 2, 3]), [1, 2]);
++  }
++  console.log(JSON.stringify({ module: name, oversizedEntries: oversized.length, boundedIssues: 1, parsedElements: parsed }));
++}
+diff --git a/scripts/security/mailchannels-transport-check.mjs b/scripts/security/mailchannels-transport-check.mjs
+new file mode 100644
+index 0000000..b360fd3
+--- /dev/null
++++ b/scripts/security/mailchannels-transport-check.mjs
+@@ -0,0 +1,61 @@
++import assert from 'node:assert/strict';
++import { createServer } from 'node:http';
++import { createTransport } from 'nodemailer';
++
++import { MailChannelsTransport } from '../../packages/email/transports/mailchannels.ts';
++
++const requests = [];
++let responseStatus = 202;
++const server = createServer(async (request, response) => {
++  const chunks = [];
++  for await (const chunk of request) {
++    chunks.push(chunk);
++  }
++  requests.push({ method: request.method, body: JSON.parse(Buffer.concat(chunks).toString()) });
++  response.writeHead(responseStatus, { 'Content-Type': 'application/json' });
++  response.end(JSON.stringify({ message: 'synthetic transport response' }));
++});
++
++await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++try {
++  const transport = createTransport(MailChannelsTransport.makeTransport({
++    endpoint: `http://127.0.0.1:${server.address().port}/send`,
++  }));
++  const message = {
++    from: { name: 'Synthetic Sender', address: 'sender@example.test' },
++    to: 'Consultants: First <first@example.test>, Second <second@example.test>;',
++    cc: 'copy@example.test',
++    bcc: 'private@example.test',
++    replyTo: { name: 'Reply Desk', address: 'reply@example.test' },
++    subject: 'Synthetic transport check',
++    text: 'No external email is sent.',
++    headers: { 'X-Synthetic-Check': 'yes' },
++  };
++  const result = await transport.sendMail(message);
++  assert.deepEqual(result.envelope, {
++    from: 'sender@example.test',
++    to: ['first@example.test', 'second@example.test', 'copy@example.test', 'private@example.test'],
++  });
++  assert.deepEqual(result.accepted, result.envelope.to);
++  assert.match(result.messageId, /^<.+>$/);
++  const request = requests[0];
++  assert.equal(request.method, 'POST');
++  assert.deepEqual(request.body.from, { email: 'sender@example.test', name: 'Synthetic Sender' });
++  assert.deepEqual(request.body.reply_to, { email: 'reply@example.test', name: 'Reply Desk' });
++  assert.deepEqual(request.body.personalizations[0].to, [
++    { email: 'first@example.test', name: 'First' },
++    { email: 'second@example.test', name: 'Second' },
++  ]);
++  assert.equal(request.body.personalizations[0].cc[0].email, 'copy@example.test');
++  assert.equal(request.body.personalizations[0].bcc[0].email, 'private@example.test');
++  assert.equal(request.body.headers['X-Synthetic-Check'], 'yes');
++  assert.equal(request.body.content[0].value, message.text);
++
++  responseStatus = 500;
++  await assert.rejects(transport.sendMail(message), /MailChannels error: synthetic transport response/);
++  await assert.rejects(transport.sendMail({ from: message.from, text: message.text }), /Missing required fields/);
++  assert.equal(requests.length, 2);
++  console.log(JSON.stringify({ transport: 'custom HTTP', acceptedRecipients: 4, errorPaths: 2 }));
++} finally {
++  await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
++}
+diff --git a/scripts/security/dependency-guards-check.mts b/scripts/security/dependency-guards-check.mts
+new file mode 100644
+index 0000000..9e1ea56
+--- /dev/null
++++ b/scripts/security/dependency-guards-check.mts
+@@ -0,0 +1,73 @@
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++import { deepmerge } from 'deepmerge-ts';
++import { generateSchema } from '@anatine/zod-openapi';
++import { z } from 'zod';
++
++const require = createRequire(import.meta.url);
++const prismaRequire = createRequire(require.resolve('@prisma/config'));
++const openApiRequire = createRequire(require.resolve('@anatine/zod-openapi'));
++const typographyRequire = createRequire(require.resolve('@tailwindcss/typography'));
++const failures: string[] = [];
++
++const check = (name: string, run: () => void) => {
++  try {
++    run();
++    console.log(JSON.stringify({ name, passed: true }));
++  } catch (error) {
++    failures.push(name);
++    console.error(JSON.stringify({ name, passed: false, error: error instanceof Error ? error.name : 'Error' }));
++  }
++};
++
++for (const [name, merge] of [
++  ['deepmerge-ts ESM', deepmerge],
++  ['deepmerge-ts CJS', prismaRequire('deepmerge-ts').deepmerge],
++] as const) {
++  check(name, () => {
++    const left: Record<string, unknown> = { schema: './schema.prisma' };
++    const right: Record<string, unknown> = { migrations: { path: './migrations' } };
++    left.self = left;
++    right.self = right;
++    const merged = merge(left, right);
++    assert.equal(merged.schema, './schema.prisma');
++    assert.deepEqual(merged.migrations, { path: './migrations' });
++    assert.equal(merged.self, merged);
++  });
++}
++
++check('OpenAPI merge prototype methods', () => {
++  const { merge } = openApiRequire('ts-deepmerge');
++  const merged = merge({ nested: { left: 1 } }, JSON.parse('{"nested":{"right":2},"toString":"invalid","valueOf":"invalid"}'));
++  assert.deepEqual(merged.nested, { left: 1, right: 2 });
++  assert.equal(typeof merged.toString, 'function');
++  assert.equal(typeof merged.valueOf, 'function');
++  assert.equal(merged.toString(), '[object Object]');
++});
++
++check('OpenAPI schema consumer', () => {
++  assert.deepEqual(generateSchema(z.object({
++    name: z.string().min(2).describe('Name'),
++    active: z.boolean().default(true),
++  })), {
++    type: 'object',
++    properties: {
++      name: { type: 'string', minLength: 2, description: 'Name' },
++      active: { default: true, type: 'boolean' },
++    },
++    required: ['name'],
++  });
++});
++
++check('Typography selector parser patch', () => {
++  const parser = typographyRequire('postcss-selector-parser');
++  const [major, minor, patch] = typographyRequire('postcss-selector-parser/package.json').version.split('.').map(Number);
++  assert.ok((major === 6 && (minor > 1 || (minor === 1 && patch >= 5))) ||
++    (major === 7 && (minor > 1 || (minor === 1 && patch >= 6))) || major > 7);
++  const count = 12_000;
++  const parsed = parser().astSync('.a'.repeat(count));
++  assert.equal(parsed.nodes[0].nodes.length, count);
++  assert.equal(parsed.toString(), '.a'.repeat(count));
++});
++
++assert.deepEqual(failures, [], `Dependency guards failed: ${failures.join(', ')}`);
