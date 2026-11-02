@@ -156,14 +156,14 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
 
       expect { get "/api/v1/subscription", headers: headers }
-        .to have_enqueued_mail(SubscriptionMailer, :plan_purchased).once
+        .to have_enqueued_job(SubscriptionPurchaseDeliveryJob).once
       expect(company.reload.plan_tier).to eq("paid")
 
       expect {
         Subscriptions::StripeSyncService.reconcile(
           company:, stripe_customer_id: "cus_123", stripe_subscription_id: "sub_123", notify_plan_purchase: true
         )
-      }.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      }.not_to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
     end
   end
 
@@ -196,7 +196,8 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       allow(Stripe::Subscription).to receive(:list).and_return(
         Stripe::ListObject.construct_from(data: [active_subscription], has_more: false)
       )
-      allow(SubscriptionMailer).to receive(:with).and_raise(StandardError, "queue unavailable")
+      allow_any_instance_of(SubscriptionPurchaseDeliveryJob).to receive(:enqueue)
+        .and_raise(SolidQueue::Job::EnqueueError, "queue unavailable")
       allow(Rails.error).to receive(:report)
 
       get "/api/v1/subscription", headers: headers
@@ -204,8 +205,9 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(response).to have_http_status(:ok)
       expect(company.reload.plan_tier).to eq("paid")
       expect(Rails.error).to have_received(:report).with(
-        an_instance_of(StandardError), hash_including(handled: true)
+        an_instance_of(SolidQueue::Job::EnqueueError), hash_including(handled: true)
       )
+      expect(SubscriptionPurchaseEvent.pending.where(company:).count).to eq(1)
     end
   end
 

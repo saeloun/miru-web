@@ -43,6 +43,7 @@
 
 ### Fixed
 
+- Purchase analytics and plan purchase alerts are no longer lost when queueing fails or a process dies after a subscription becomes paid
 - Preserve mobile asset loading and CommonJS compatibility with patched image-size and brace-expansion dependencies.
 
 ## 3.0.5 - 2026-09-17

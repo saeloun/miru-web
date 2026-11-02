@@ -134,7 +134,7 @@ RSpec.describe "Stripe webhooks", type: :request do
 
     expect do
       post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
-    end.to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+    end.to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
 
     expect(response).to have_http_status(:ok)
     expect(company.reload.plan_tier).to eq("paid")

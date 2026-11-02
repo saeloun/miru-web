@@ -36,6 +36,9 @@ default: &default
         signature_reminders:
           class: SignatureRemindersJob
           schedule: '17 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -93,6 +96,9 @@ production:
         signature_reminders:
           class: SignatureRemindersJob
           schedule: '17 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>
