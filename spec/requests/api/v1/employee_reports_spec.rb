@@ -29,6 +29,8 @@ RSpec.describe "Employee reports and settings", type: :request do
     get "/api/v1/employee_reports"
     expect(response.parsed_body).to include("employee_reports" => [], "company_id" => company.id)
     expect(response.parsed_body.fetch("presets").fetch("insurance")).to include("family_members")
+    expect(response.parsed_body.fetch("presets").fetch("salary")).to include("recorded_work_day_equivalents")
+    expect(response.parsed_body.fetch("columns")).to include(a_hash_including("key" => "recorded_work_day_equivalents"))
     expect(response.parsed_body.fetch("columns").first.keys).to eq(%w[key label description])
     save_report
     expect(response).to have_http_status(:created)

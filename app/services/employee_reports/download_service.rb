@@ -28,15 +28,17 @@ module EmployeeReports
 
     private
 
+      # Aggregate selected source columns once for the whole report, including shared work totals.
       def monthly_values
         @user_ids = @employments.map(&:user_id)
+        work_minutes = nil
         @report.columns.index_with do |key|
           case key
           when "recorded_time_off_minutes"
             TimeoffEntry.from_workspace(@company.id).where(user_id: @user_ids, leave_date: @month.all_month)
               .group(:user_id).sum(:duration)
-          when "recorded_work_minutes"
-            work_entries.group(:user_id).sum(:duration)
+          when "recorded_work_minutes", "recorded_work_day_equivalents"
+            work_minutes ||= work_entries.group(:user_id).sum(:duration)
           when "recorded_working_days"
             work_entries.group(:user_id).distinct.count(:work_date)
           when "national_holiday_dates"
