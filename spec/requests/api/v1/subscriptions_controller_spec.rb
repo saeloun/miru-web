@@ -425,6 +425,28 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
     end
   end
 
+  describe "POST /api/v1/subscription/checkout with a subscription awaiting payment" do
+    %w[incomplete unpaid].each do |status|
+      it "asks for payment recovery when the subscription is #{status}" do
+        company.update!(stripe_customer_id: "cus_123")
+        subscription = Stripe::Subscription.construct_from(
+          id: "sub_123", customer: "cus_123", status:, created: 1, items: { data: [] }
+        )
+        allow(Stripe::Subscription).to receive(:list).and_return(
+          Stripe::ListObject.construct_from(data: [subscription], has_more: false)
+        )
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return("price_monthly")
+
+        post "/api/v1/subscription/checkout", params: { interval: "monthly" }, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["errors"]).to eq(I18n.t("subscriptions.payment_recovery_required"))
+        expect(company.reload.plan_tier).not_to eq("paid")
+      end
+    end
+  end
+
   describe "POST /api/v1/subscription/portal" do
     it "returns 422 when customer does not exist" do
       post "/api/v1/subscription/portal", headers: headers

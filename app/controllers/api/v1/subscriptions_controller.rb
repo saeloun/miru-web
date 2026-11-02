@@ -29,7 +29,7 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       base_url: request.base_url
     ).process
     unless session
-      render json: { errors: I18n.t("subscriptions.already_subscribed") }, status: 422
+      render json: { errors: I18n.t(checkout_block_message) }, status: 422
       return
     end
 
@@ -105,6 +105,12 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
       )
 
       Subscriptions::StripeSyncService.reconcile(company: current_company, notify_plan_purchase: true)
+    end
+
+    def checkout_block_message
+      return "subscriptions.payment_recovery_required" if %w[incomplete unpaid].include?(current_company.subscription_status)
+
+      "subscriptions.already_subscribed"
     end
 
     def checkout_payload(url)
