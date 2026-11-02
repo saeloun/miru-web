@@ -26,13 +26,11 @@
     "typescript": "~5.9.3"
   },
   "pnpm": {
-    "auditConfig": {
-      "ignoreCves": [
-        "CVE-2026-85393",
-        "CVE-2026-93687"
-      ]
-    },
     "overrides": {
+      "minimatch@^10": "10.2.6",
+      "minimatch@^9": "10.2.6",
+      "glob@^13": "14.0.3",
+      "node-forge@^1": "1.4.2",
       "@babel/core@^7": "7.29.6",
       "@xmldom/xmldom@^0.8": "0.8.15",
       "tar@^7": ">=7.5.21 <8",
@@ -49,6 +47,8 @@
       "metro>image-size": "2.0.3"
     },
     "patchedDependencies": {
+      "minimatch@10.2.6": "../../patches/minimatch@10.2.6.patch",
+      "deepmerge@4.3.1": "../../patches/deepmerge@4.3.1.patch",
       "brace-expansion@5.0.12": "patches/brace-expansion@5.0.12.patch",
       "metro@0.83.3": "patches/metro@0.83.3.patch"
     }
