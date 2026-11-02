@@ -167,6 +167,48 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
     end
   end
 
+  describe "billing summary reconciliation" do
+    let(:active_subscription) do
+      Stripe::Subscription.construct_from(
+        id: "sub_123", customer: "cus_123", status: "active", created: 1, items: { data: [] }
+      )
+    end
+
+    before do
+      company.update!(stripe_customer_id: "cus_123")
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
+    end
+
+    it "contacts Stripe at most once per company in the throttle window" do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [], has_more: false)
+      )
+
+      3.times { get "/api/v1/subscription", headers: headers }
+
+      expect(response).to have_http_status(:ok)
+      expect(Stripe::Subscription).to have_received(:list).once
+    end
+
+    it "keeps a recovered purchase when its alert cannot be queued" do
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [active_subscription], has_more: false)
+      )
+      allow(SubscriptionMailer).to receive(:with).and_raise(StandardError, "queue unavailable")
+      allow(Rails.error).to receive(:report)
+
+      get "/api/v1/subscription", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(company.reload.plan_tier).to eq("paid")
+      expect(Rails.error).to have_received(:report).with(
+        an_instance_of(StandardError), hash_including(handled: true)
+      )
+    end
+  end
+
   describe "POST /api/v1/subscription/trial" do
     it "starts a 14-day trial and returns the updated summary" do
       travel_to(Time.zone.local(2026, 3, 11, 12, 0, 0)) do

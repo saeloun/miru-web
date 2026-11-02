@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 class Api::V1::SubscriptionsController < Api::V1::ApplicationController
+  RECONCILE_INTERVAL = 10.seconds
+
   def show
     authorize current_company, policy_class: CompanyPolicy
 
-    if current_company.plan_tier != "paid" && current_company.stripe_customer_id.present?
-      Subscriptions::StripeSyncService.reconcile(company: current_company, notify_plan_purchase: true)
-    end
+    reconcile_unpaid_company
     render_summary
   end
 
@@ -96,6 +96,15 @@ class Api::V1::SubscriptionsController < Api::V1::ApplicationController
         trial_ends_at: current_company.trial_ends_at,
         pro_access: current_company.pro_access?
       }
+    end
+
+    def reconcile_unpaid_company
+      return if current_company.plan_tier == "paid" || current_company.stripe_customer_id.blank?
+      return unless Rails.cache.write(
+        "subscriptions/reconcile/#{current_company.id}", true, expires_in: RECONCILE_INTERVAL, unless_exist: true
+      )
+
+      Subscriptions::StripeSyncService.reconcile(company: current_company, notify_plan_purchase: true)
     end
 
     def checkout_payload(url)

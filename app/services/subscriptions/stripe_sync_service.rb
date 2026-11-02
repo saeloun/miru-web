@@ -98,12 +98,26 @@ module Subscriptions
 
         return unless became_paid
 
-        Analytics::TrackingService.new.track_subscription_purchased(
-          target_company,
-          subscription_id: subscription_value(stripe_subscription, :id),
-          subscription_status: subscription_value(stripe_subscription, :status)
-        )
-        notify_plan_purchase!(target_company, stripe_subscription) if notify_plan_purchase
+        ActiveRecord.after_all_transactions_commit { announce_purchase(target_company, stripe_subscription) }
+      end
+
+      def announce_purchase(target_company, stripe_subscription)
+        report_failure(target_company) do
+          Analytics::TrackingService.new.track_subscription_purchased(
+            target_company,
+            subscription_id: subscription_value(stripe_subscription, :id),
+            subscription_status: subscription_value(stripe_subscription, :status)
+          )
+        end
+        return unless notify_plan_purchase
+
+        report_failure(target_company) { notify_plan_purchase!(target_company, stripe_subscription) }
+      end
+
+      def report_failure(target_company)
+        yield
+      rescue StandardError => error
+        Rails.error.report(error, handled: true, context: { company_id: target_company.id })
       end
 
       def disable_company!(target_company)
