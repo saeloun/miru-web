@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   post "/hiring-form/resume", to: "hiring_portal#resume"
   post "/hiring-form/resume/download", to: "hiring_portal#resume_download"
   post "/hiring/inbound/:routing_key", to: "hiring/inbound_emails#create"
+  get "/native/auth/google/:request_id", to: "native_google_auth/browser#show",
+    as: :native_google_authorization
   # Health check endpoint
   get "/health", to: "health#index"
   get "/document-review", to: "document_reviews#show", as: :document_review
