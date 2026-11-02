@@ -2,4 +2,5 @@
 
 set -eu
 
-bin/yarn install && npx eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'
+pnpm install --frozen-lockfile
+pnpm exec eslint './app/javascript/**/*.{ts,tsx,js,jsx,json}'

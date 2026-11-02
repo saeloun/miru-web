@@ -52,6 +52,18 @@ RSpec.describe ExpensePolicy, type: :policy do
     end
   end
 
+  permissions :update?, :destroy? do
+    it "forbids edits and deletion of settled claims even when the stored status is inconsistent" do
+      [owner, admin, book_keeper, employee].each do |actor|
+        expect(described_class).not_to permit(actor, paid_expense)
+      end
+      paid_expense.update_columns(status: :approved, paid_at: Time.current)
+      [owner, admin, book_keeper, employee].each do |actor|
+        expect(described_class).not_to permit(actor, paid_expense.reload)
+      end
+    end
+  end
+
   permissions :destroy? do
     it "permits owner and admin in the same workspace" do
       expect(described_class).to permit(owner, expense)

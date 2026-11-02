@@ -15,14 +15,14 @@ class Api::V1::EmploymentsController < Api::V1::ApplicationController
 
   def update
     authorize @employment
-    @employment.update!(employment_params)
+    @employment.update_profile!(employment_params)
     render json: { notice: I18n.t("employment.update.success") }
   end
 
   private
 
     def set_employment
-      @employment = Employment.find_by!(user_id: params[:id], company_id: current_company.id)
+      @employment = current_company.employments.kept.find_by!(user_id: params[:id])
     end
 
     def employment_params

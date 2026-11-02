@@ -1,6 +1,9 @@
 ---
 en:
   activerecord:
+    attributes:
+      employment:
+        employee_id: Employee ID
     errors:
       models:
         client:

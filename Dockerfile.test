@@ -1,27 +1,52 @@
 #syntax=docker/dockerfile:1
-FROM ruby:3.2.4-slim AS base
+ARG RUBY_VERSION=4.0.9
+# Build from the verified release until Docker Hub publishes the security patch.
+FROM debian:trixie-slim AS ruby-build
+ARG RUBY_VERSION
+ARG RUBY_SHA256=a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential ca-certificates curl \
+    libffi-dev libgmp-dev libreadline-dev libssl-dev libyaml-dev ruby rustc xz-utils zlib1g-dev && \
+    curl -fsSL "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-${RUBY_VERSION}.tar.xz" -o /tmp/ruby.tar.xz && \
+    echo "${RUBY_SHA256}  /tmp/ruby.tar.xz" | sha256sum -c - && \
+    mkdir /tmp/ruby && tar -xJf /tmp/ruby.tar.xz -C /tmp/ruby --strip-components=1 && \
+    cd /tmp/ruby && \
+    LDFLAGS="-Wl,-z,relro -Wl,-z,now" ./configure --enable-shared --enable-yjit --disable-install-doc && \
+    make -j 4 && make install
 
-ARG NODE_VERSION=20.18.2
-ARG NODESOURCE_SETUP_SHA256=2c4c6683a17b6f4128898a7b521e3c8bb725a99ffaf1b5e32ac97c6fa7d381be
+FROM debian:trixie-slim AS base
+ARG RUBY_VERSION
+ENV LANG=C.UTF-8 \
+    GEM_HOME=/usr/local/bundle \
+    BUNDLE_APP_CONFIG=/usr/local/bundle \
+    BUNDLE_SILENCE_ROOT_WARNING=1
+ENV PATH=/usr/local/bundle/bin:$PATH
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y ca-certificates libcrypt1 libffi8 \
+    libgmp10 libreadline8t64 libssl3t64 libyaml-0-2 zlib1g && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=ruby-build /usr/local/ /usr/local/
+RUN ldconfig && mkdir -p /usr/local/bundle && chmod 1777 /usr/local/bundle && \
+    ruby -ropenssl -rpsych -rzlib -e 'abort "Unexpected Ruby" unless RUBY_VERSION == ARGV.fetch(0); abort "YJIT unavailable" unless RubyVM::YJIT.respond_to?(:enable)' "${RUBY_VERSION}"
+
+ARG NODE_VERSION=24.22.1
+ARG NODESOURCE_SETUP_SHA256=6e3d580f5bd7ccf2aa1e8df8d35c60d78e873c3ff8beb282c9bebd914904ad72
 
 RUN mkdir /app
 WORKDIR /app
 RUN mkdir -p tmp/pids
 
 RUN apt-get update && apt-get install -y --no-install-recommends curl gnupg2 && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" > /etc/apt/sources.list.d/yarn.list && \
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh && \
+    curl -fsSL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh && \
     echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
     bash /tmp/nodesource_setup.sh && \
     rm /tmp/nodesource_setup.sh && \
-    apt-get install -y --no-install-recommends nodejs yarn && \
+    apt-get install -y --no-install-recommends nodejs && \
+    npm install -g pnpm@9.15.9 && \
     npm --version && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-RUN curl --location --silent https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-    && apt-get update && apt-get install google-chrome-stable -y --no-install-recommends postgresql-client && \
+RUN apt-get update && apt-get install -y --no-install-recommends chromium chromium-sandbox postgresql-client && \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 FROM base AS build-deps
@@ -32,7 +57,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends git build-essen
 
 FROM build-deps AS gems
 
-RUN gem install bundler -v 2.3.11
+RUN gem install bundler -v 4.0.20
 
 COPY Gemfile Gemfile.lock ./
 
@@ -40,9 +65,9 @@ RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 
 FROM base AS node_modules
 
-COPY package.json yarn.lock ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN yarn install --check-files
+RUN pnpm install --frozen-lockfile --ignore-scripts
 
 FROM base
 

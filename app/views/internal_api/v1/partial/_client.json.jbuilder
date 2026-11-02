@@ -2,6 +2,7 @@
 
 json.id client.id
 json.name client.name
+json.legal_name client.legal_name
 json.email client.email
 json.ein client.ein
 json.phone client.phone

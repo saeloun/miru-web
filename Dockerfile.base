@@ -1,6 +1,34 @@
 # Miru 2.0 Base Image - Optimized for Rails 8 & Playwright
 # Build once and push to registry for reuse across environments
-FROM ruby:4.0.1-slim AS miru-base
+ARG RUBY_VERSION=4.0.9
+# Build from the verified release until Docker Hub publishes the security patch.
+FROM debian:trixie-slim AS ruby-build
+ARG RUBY_VERSION
+ARG RUBY_SHA256=a8057adb39f51ad6dc3106237504c93dd792bb515837b4fe7817ae21ed7e51f4
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential ca-certificates curl \
+    libffi-dev libgmp-dev libreadline-dev libssl-dev libyaml-dev ruby rustc xz-utils zlib1g-dev && \
+    curl -fsSL "https://cache.ruby-lang.org/pub/ruby/4.0/ruby-${RUBY_VERSION}.tar.xz" -o /tmp/ruby.tar.xz && \
+    echo "${RUBY_SHA256}  /tmp/ruby.tar.xz" | sha256sum -c - && \
+    mkdir /tmp/ruby && tar -xJf /tmp/ruby.tar.xz -C /tmp/ruby --strip-components=1 && \
+    cd /tmp/ruby && \
+    LDFLAGS="-Wl,-z,relro -Wl,-z,now" ./configure --enable-shared --enable-yjit --disable-install-doc && \
+    make -j 4 && make install
+
+FROM debian:trixie-slim AS miru-base
+ARG RUBY_VERSION
+ENV LANG=C.UTF-8 \
+    GEM_HOME=/usr/local/bundle \
+    BUNDLE_APP_CONFIG=/usr/local/bundle \
+    BUNDLE_SILENCE_ROOT_WARNING=1
+ENV PATH=/usr/local/bundle/bin:$PATH
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y ca-certificates libcrypt1 libffi8 \
+    libgmp10 libreadline8t64 libssl3t64 libyaml-0-2 zlib1g && \
+    rm -rf /var/lib/apt/lists/*
+COPY --from=ruby-build /usr/local/ /usr/local/
+RUN ldconfig && mkdir -p /usr/local/bundle && chmod 1777 /usr/local/bundle && \
+    ruby -ropenssl -rpsych -rzlib -e 'abort "Unexpected Ruby" unless RUBY_VERSION == ARGV.fetch(0); abort "YJIT unavailable" unless RubyVM::YJIT.respond_to?(:enable)' "${RUBY_VERSION}"
 
 # Install essential system dependencies
 RUN apt-get update -qq && \
@@ -45,9 +73,9 @@ RUN apt-get update -qq && \
     libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Node.js 22 LTS
-ARG NODESOURCE_SETUP_SHA256=575583bbac2fccc0b5edd0dbc03e222d9f9dc8d724da996d22754d6411104fd1
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh && \
+# Install Node.js 24 LTS
+ARG NODESOURCE_SETUP_SHA256=6e3d580f5bd7ccf2aa1e8df8d35c60d78e873c3ff8beb282c9bebd914904ad72
+RUN curl -fsSL https://deb.nodesource.com/setup_24.x -o /tmp/nodesource_setup.sh && \
     echo "${NODESOURCE_SETUP_SHA256}  /tmp/nodesource_setup.sh" | sha256sum -c - && \
     bash /tmp/nodesource_setup.sh && \
     rm /tmp/nodesource_setup.sh && \
@@ -55,7 +83,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o /tmp/nodesource_setup.sh
     rm -rf /var/lib/apt/lists/*
 
 # Install pnpm (fast, disk space efficient package manager)
-RUN npm install -g pnpm@9.15.5
+RUN npm install -g pnpm@9.15.9
 
 # Install only Chromium for Playwright (no Firefox or WebKit needed)
 ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright

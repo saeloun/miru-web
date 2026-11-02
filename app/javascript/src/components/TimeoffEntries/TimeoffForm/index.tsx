@@ -86,7 +86,7 @@ const TimeoffForm = ({ isDisplayEditTimeoffEntryForm = false }) => {
     if (leaveTypes?.length !== tempLeaveTypes?.length) {
       setLeaveTypes([...tempLeaveTypes]);
     }
-  }, [hasNationalHoliday, hasOptionalHoliday]);
+  }, [hasNationalHoliday, hasOptionalHoliday, leaveTypes, setLeaveTypes]);
 
   useEffect(() => {
     if (isDisplayEditTimeoffEntryForm) {

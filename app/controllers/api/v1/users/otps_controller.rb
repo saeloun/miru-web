@@ -4,6 +4,7 @@ class Api::V1::Users::OtpsController < Api::V1::ApplicationController
   include AuthResponsePayload
   include SameOriginAuthentication
   include SsoEnforcementConcern
+  include SecondFactorAuthentication
 
   skip_before_action :authenticate_user!
   skip_before_action :authenticate_user_using_x_auth_token
@@ -29,6 +30,15 @@ class Api::V1::Users::OtpsController < Api::V1::ApplicationController
       code: otp_params[:code]
     )
     return unless sso_sign_in_allowed?(result.user)
+
+    unless result.user.active_for_authentication? && result.user.confirmed? && !result.user.access_locked?
+      raise MobileOtp::ChallengeToken::InvalidTokenError
+    end
+
+    if second_factor_required?(result.user) && !trusted_browser?(result.user)
+      render json: second_factor_challenge_payload(result.user, company: result.company)
+      return
+    end
 
     sign_in(result.user)
     Rails.event.notify(Users::SignedIn.new(result.user, sign_in_method: :otp))

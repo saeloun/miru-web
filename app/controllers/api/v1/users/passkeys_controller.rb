@@ -4,6 +4,7 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
   include AuthResponsePayload
   include SameOriginAuthentication
   include SsoEnforcementConcern
+  include SecondFactorAuthentication
 
   skip_before_action :authenticate_user!, only: :authenticate
   skip_before_action :authenticate_user_using_x_auth_token, only: :authenticate
@@ -32,8 +33,8 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     },
     exclude: current_user.passkeys.pluck(:external_id),
     authenticator_selection: {
-      resident_key: "preferred",
-      user_verification: "preferred"
+      resident_key: "required",
+      user_verification: "required"
     }
   )
 
@@ -55,7 +56,8 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
 
     credential = relying_party.verify_registration(
       passkey_params[:credential].to_h,
-      payload["challenge"]
+      payload["challenge"],
+      user_verification: true
     )
 
     current_user.passkeys.create!(
@@ -75,22 +77,31 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
 
     user = User.find(payload["user_id"])
     company = Company.find_by(id: payload["company_id"])
-    raise ActiveRecord::RecordNotFound unless user.active_for_authentication? && company && user.employed_at?(company.id)
-
-    credential, passkey = relying_party.verify_authentication(
-      authentication_params[:credential].to_h,
-      payload["challenge"],
-      public_key: nil,
-      sign_count: nil
-    ) do |webauthn_credential|
-      user.passkeys.find_by!(external_id: webauthn_credential.id)
+    unless user.active_for_authentication? && company && user.employed_at?(company.id)
+      render json: { error: I18n.t("devise.failure.unauthenticated") }, status: 401
+      return
     end
 
-    passkey.update!(sign_count: credential.sign_count, last_used_at: Time.current)
-    # Passkeys do not satisfy workspace SSO; enforced workspaces require Google or GitHub sign-in.
-    return unless sso_sign_in_allowed?(user)
+    user.with_lock do
+      validate_pending_login!(user, payload)
+      raise Passkeys::ChallengeToken::InvalidTokenError unless user.passkey_required_for_login?
 
-    sign_in(user)
+      credential, passkey = relying_party.verify_authentication(
+        authentication_params[:credential].to_h,
+        payload["challenge"],
+        public_key: nil,
+        sign_count: nil,
+        user_verification: true
+      ) do |webauthn_credential|
+        user.passkeys.find_by!(external_id: webauthn_credential.id)
+      end
+
+      passkey.update!(sign_count: credential.sign_count, last_used_at: Time.current)
+      # Passkeys do not satisfy workspace SSO; enforced workspaces require Google or GitHub sign-in.
+      return unless second_factor_sign_in_allowed?(user, payload)
+
+      complete_second_factor_sign_in(user, payload)
+    end
     Rails.event.notify(Users::SignedIn.new(user, sign_in_method: :passkey))
 
     render json: signed_in_payload(
@@ -105,11 +116,6 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
     authorize current_user, policy_class: PasskeyPolicy
     required = ActiveModel::Type::Boolean.new.cast(requirement_params[:required])
 
-    if required && current_user.totp_enabled?
-      render json: { error: I18n.t("passkeys.disable_totp_first") }, status: 422
-      return
-    end
-
     if required && current_user.passkeys.none?
       render json: { error: I18n.t("passkeys.add_passkey_first") }, status: 422
       return
@@ -117,6 +123,19 @@ class Api::V1::Users::PasskeysController < Api::V1::ApplicationController
 
     current_user.update!(passkey_required_for_login: required)
     render_passkeys(notice: required ? I18n.t("passkeys.requirement_enabled") : I18n.t("passkeys.requirement_disabled"))
+  end
+
+  def update
+    authorize current_user, policy_class: PasskeyPolicy
+    passkey = current_user.passkeys.find(params[:id])
+    nickname = params.permit(:nickname)[:nickname].to_s.strip
+    if nickname.blank? || nickname.length > 80
+      render json: { error: I18n.t("passkeys.invalid_name") }, status: 422
+      return
+    end
+
+    passkey.update!(nickname:)
+    render_passkeys(notice: I18n.t("passkeys.renamed"))
   end
 
   def destroy

@@ -13,12 +13,15 @@ export const isEmailValid = (email: string): boolean => {
 
 export const getInitialRecipients = (invoice: any): string[] =>
   Array.from(
-    new Set(
+    new Map(
       [
         invoice.client.email,
         ...(invoice.client.clientMembersEmails || []),
-      ].filter(Boolean)
-    )
+        invoice.client.financeEmail,
+      ]
+        .filter(Boolean)
+        .map(email => [email.toLowerCase(), email])
+    ).values()
   );
 
 export const emailSubject = (invoice: any, isSendReminder = false): string => {

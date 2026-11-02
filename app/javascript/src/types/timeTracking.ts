@@ -39,7 +39,9 @@ export interface DayInfo {
 export interface Client {
   id: number | string;
   name: string;
+  legalName?: string;
   email?: string;
+  financeEmail?: string;
   phone?: string;
   address?: string;
   logo?: string;

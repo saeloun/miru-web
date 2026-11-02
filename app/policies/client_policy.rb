@@ -63,6 +63,11 @@ class ClientPolicy < ApplicationPolicy
       :logo,
       :currency,
       :signature_enabled,
+      :legal_name,
+      :finance_email,
+      :signatory_name,
+      :signatory_designation,
+      :signatory_email,
       addresses_attributes: [:id, :address_line_1, :address_line_2, :city, :state, :country, :pin]
     ]
   end

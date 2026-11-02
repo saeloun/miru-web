@@ -7,7 +7,7 @@ RSpec.describe "Reports", type: :system, js: true do
   let!(:admin) { create(:user, current_workspace: company) }
 
   before do
-    create(:employment, company:, user: admin)
+    create(:employment, company:, user: admin, resigned_at: nil)
     admin.add_role :admin, company
   end
 
@@ -30,6 +30,28 @@ RSpec.describe "Reports", type: :system, js: true do
         expect(page).to have_content("Revenue by Client", wait: 10)
         expect(page).to have_content("Accounts Aging", wait: 10)
         expect(page).to have_content("Outstanding", wait: 10)
+        expect(page).to have_css('[role="button"][aria-label="Open Compensation Burn and Profitability report"]')
+      end
+    end
+
+    it "opens the organization compensation report and returns to Reports" do
+      with_forgery_protection do
+        visit "/reports"
+        find('[role="button"][aria-label="Open Compensation Burn and Profitability report"]').click
+        expect(page).to have_current_path("/reports/compensation-profitability", wait: 10)
+        expect(page).to have_content("Organization owners and admins only")
+        expect(page).to have_content(company.name)
+        within("section[aria-label='Data readiness']") do
+          expect(page).to have_content("Complete data: 0 of 1 person")
+          expect(page).to have_content("Payroll proration: Not configured")
+          expect(page).to have_content("Missing compensation: 1 person")
+        end
+        click_link "Review reporting setup"
+        expect(page).to have_css("details.panel[open]")
+        expect(page).to have_button("Save payroll policy")
+        click_link "← Reports"
+        expect(page).to have_current_path("/reports", wait: 10)
+        expect_reports_shell
       end
     end
 
@@ -223,7 +245,7 @@ RSpec.describe "Reports", type: :system, js: true do
 
         find("button", text: "Clients", match: :first).click
         find("[role='menuitemcheckbox']", text: "Toolbar Filter Alpha Client", match: :first).click
-        page.send_keys(:escape)
+        expect(page).not_to have_css("[role='menu']")
 
         expect(page).to have_content("Toolbar Filter Alpha Client", wait: 10)
         expect(page).to have_no_content("Toolbar Filter Beta Client")
@@ -550,6 +572,19 @@ RSpec.describe "Reports", type: :system, js: true do
         )
         expect(page).to have_content("Client Insights", wait: 10)
       end
+    end
+  end
+
+  it "keeps compensation confidential from organization bookkeepers" do
+    bookkeeper = create(:user, current_workspace: company)
+    create(:employment, company:, user: bookkeeper, resigned_at: nil)
+    bookkeeper.add_role :book_keeper, company
+    sign_in(bookkeeper)
+
+    with_forgery_protection do
+      visit "/reports"
+      expect(page).to have_content("Revenue by Client", wait: 10)
+      expect(page).to have_no_css('[role="button"][aria-label="Open Compensation Burn and Profitability report"]')
     end
   end
 

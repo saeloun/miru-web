@@ -73,13 +73,14 @@ module Clients
       def client_details(clients)
         minutes_by_client = total_minutes_by_client(clients)
         previous_invoice_numbers = previous_invoice_numbers_by_client(clients)
+        include_contacts = ClientPolicy.new(current_user, Client).create?
 
         clients.map do |client|
           client.client_detail(
             time_frame,
             minutes_spent: minutes_by_client.fetch(client.id, 0),
             previous_invoice_number: previous_invoice_numbers.fetch(client.id, 0)
-          )
+          ).tap { |details| details[:finance_email] = client.finance_email if include_contacts }
         end
       end
 

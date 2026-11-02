@@ -340,6 +340,7 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       }
 
       assertion = fake_client.get(
+        user_verified: true,
         challenge: json_response.dig("public_key", "challenge"),
         rp_id: "localhost",
         allow_credentials: [user.passkeys.first.external_id]
@@ -365,6 +366,7 @@ RSpec.describe "Api::V1::Users::Sessions#create", type: :request do
       }
 
       assertion = fake_client.get(
+        user_verified: true,
         challenge: json_response.dig("public_key", "challenge"),
         rp_id: "localhost",
         allow_credentials: [user.passkeys.first.external_id]

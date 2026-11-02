@@ -7,9 +7,11 @@ json.partial! "internal_api/v1/partial/invoice", locals: { invoice: }
 json.client do
   json.id client.id
   json.name client.name
+  json.legal_name client.legal_name
   json.address client.current_address
   json.phone client.phone
   json.email client.email
+  json.finance_email client.finance_email
   json.client_members_emails client_member_emails
   json.currency client.currency
 end

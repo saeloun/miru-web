@@ -3,10 +3,10 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "4.0.1"
+ruby "4.0.9"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.2"
+gem "rails", "~> 8.1.4"
 
 # Use postgresql as the database for Active Record
 gem "pg"
@@ -155,7 +155,7 @@ gem "observer"
 # Faraday HTTP client adapter for Faraday 2.0+
 gem "faraday", ">= 2.14.1"
 gem "faraday-net_http"
-gem "mcp", "~> 0.25.0"
+gem "mcp", "~> 1.2.0"
 
 # Country information and timezones
 gem "countries", "~> 6.0"

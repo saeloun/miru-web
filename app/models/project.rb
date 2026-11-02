@@ -20,6 +20,8 @@ class Project < ApplicationRecord
   has_one :company, through: :client
   has_many :timesheet_entries, inverse_of: :project
   has_many :project_members, dependent: :destroy
+  has_many :profitability_billing_rates, dependent: :destroy
+  has_many :profitability_profiles, foreign_key: :primary_project_id, dependent: :nullify
   has_many :expenses, dependent: :nullify
 
   # Validations

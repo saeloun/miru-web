@@ -14,7 +14,9 @@ const TotpPanel = ({
   onDisable,
   onGenerateRecoveryCodes,
   onSetup,
-  provisioningUri,
+  onCancelSetup,
+  onDismissCodes,
+  qrCode,
   recoveryCodes,
   recoveryCodesCount,
   secret,
@@ -24,14 +26,18 @@ const TotpPanel = ({
   if (!canManage) return null;
 
   return (
-    <Card className="border-border shadow-sm">
+    <Card
+      className="border-border shadow-sm"
+      role="region"
+      aria-label={i18n.t("accountSecurity.authenticator")}
+    >
       <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2 text-lg font-geist-semibold">
           <ShieldCheck
             className="h-5 w-5 text-muted-foreground"
             weight="bold"
           />
-          {i18n.t("twoFactor.title")}
+          {i18n.t("accountSecurity.authenticator")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -46,7 +52,7 @@ const TotpPanel = ({
               </p>
             </div>
             <Button disabled={busy} onClick={onSetup} type="button">
-              {i18n.t("twoFactor.setupAction")}
+              {i18n.t("accountSecurity.setupAuthenticator")}
             </Button>
           </div>
         )}
@@ -62,6 +68,15 @@ const TotpPanel = ({
               </p>
             </div>
             <div className="rounded-xl border border-border bg-muted/30 p-3">
+              {qrCode && (
+                <img
+                  alt={i18n.t("loginSecurity.qrCode")}
+                  className="mb-3 rounded-lg"
+                  src={qrCode}
+                  width={240}
+                  height={240}
+                />
+              )}
               <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                 <Key className="h-3.5 w-3.5" weight="bold" />
                 {i18n.t("twoFactor.manualEntryKey")}
@@ -69,11 +84,6 @@ const TotpPanel = ({
               <p className="mt-2 break-all font-mono text-sm text-foreground">
                 {secret}
               </p>
-              {provisioningUri && (
-                <p className="mt-2 break-all text-xs text-muted-foreground">
-                  {provisioningUri}
-                </p>
-              )}
             </div>
             <div className="space-y-2">
               <label
@@ -84,13 +94,14 @@ const TotpPanel = ({
               </label>
               <Input
                 id="totp_verification_code"
+                autoComplete="one-time-code"
                 inputMode="numeric"
                 placeholder={i18n.t("twoFactor.verificationCodePlaceholder")}
                 value={verificationCode}
                 onChange={event => setVerificationCode(event.target.value)}
               />
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
                 disabled={busy || !verificationCode.trim()}
                 onClick={onConfirm}
@@ -106,6 +117,14 @@ const TotpPanel = ({
               >
                 {i18n.t("twoFactor.resetKeyAction")}
               </Button>
+              <Button
+                disabled={busy}
+                onClick={onCancelSetup}
+                type="button"
+                variant="outline"
+              >
+                {i18n.t("cancel")}
+              </Button>
             </div>
           </div>
         )}
@@ -117,7 +136,7 @@ const TotpPanel = ({
                 {i18n.t("twoFactor.enabledTitle")}
               </p>
               <p className="text-sm text-muted-foreground">
-                {i18n.t("twoFactor.enabledDescription")}
+                {i18n.t("accountSecurity.authenticatorDescription")}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
@@ -127,7 +146,7 @@ const TotpPanel = ({
                 })}
               </span>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Button
                 disabled={busy}
                 onClick={onGenerateRecoveryCodes}
@@ -143,7 +162,7 @@ const TotpPanel = ({
                 type="button"
                 variant="outline"
               >
-                {i18n.t("twoFactor.disableAction")}
+                {i18n.t("accountSecurity.disableAuthenticatorAction")}
               </Button>
             </div>
           </div>
@@ -169,6 +188,32 @@ const TotpPanel = ({
                 </div>
               ))}
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                const url = URL.createObjectURL(
+                  new Blob(
+                    [
+                      `Miru recovery codes\n\n${recoveryCodes.join(
+                        "\n"
+                      )}\n\nEach code can only be used once. Keep these codes in a safe place.\n`,
+                    ],
+                    { type: "text/plain" }
+                  )
+                );
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = "miru-recovery-codes.txt";
+                link.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}
+            >
+              {i18n.t("loginSecurity.downloadCodes")}
+            </Button>
+            <Button type="button" variant="outline" onClick={onDismissCodes}>
+              {i18n.t("accountSecurity.savedCodes")}
+            </Button>
           </div>
         )}
       </CardContent>

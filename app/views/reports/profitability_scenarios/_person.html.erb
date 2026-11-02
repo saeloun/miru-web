@@ -1,0 +1,10 @@
+<tr data-person-row>
+  <td><label><span class="visually-hidden">Person or planned hire</span><input name="profitability_scenario[assumptions][people][][name]" value="<%= person['name'] %>" maxlength="100" required></label></td>
+  <% { 'capacity_hours' => ['Monthly capacity hours', 744], 'utilization' => ['Target utilization %', 100], 'billing_rate' => ['Hourly billing rate', 1000000000000], 'monthly_compensation' => ['Monthly compensation', 1000000000000] }.each do |key, (label, maximum)| %>
+    <td><label><span class="visually-hidden"><%= label %></span><input type="number" min="0" max="<%= maximum %>" step="0.0001" name="profitability_scenario[assumptions][people][][<%= key %>]" value="<%= person[key] %>"></label></td>
+  <% end %>
+  <td data-person-revenue><%= profitability_number(result&.dig(:revenue), currency: @assumptions['currency']) %></td>
+  <td data-person-margin><%= profitability_number(result&.dig(:margin), currency: @assumptions['currency']) %></td>
+  <td data-person-flags><%= result&.dig(:flags)&.join('; ') %></td>
+  <td><button type="button" data-remove-row aria-label="Remove person row">Remove</button></td>
+</tr>

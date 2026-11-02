@@ -5,6 +5,7 @@ class User < ApplicationRecord
   include PhoneNumberValidatable
 
   TOTP_ISSUER = "Miru"
+  encrypts :otp_secret_ciphertext, support_unencrypted_data: true
   RECOVERY_CODES_COUNT = 8
   MAX_AVATAR_SIZE_MB = 5
   ALLOWED_AVATAR_CONTENT_TYPES = %w[image/png image/jpeg image/jpg image/webp].freeze
@@ -33,8 +34,12 @@ class User < ApplicationRecord
 
   # Associations
   has_many :employments, dependent: :destroy
+  has_many :employee_occasion_deliveries, foreign_key: :admin_id, dependent: :destroy
   has_many :companies, through: :employments
   has_many :project_members, dependent: :destroy
+  has_many :profitability_billing_rates, dependent: :destroy
+  has_many :compensation_report_runs, foreign_key: :created_by_id, inverse_of: :created_by, dependent: :destroy
+  has_many :profitability_scenarios, foreign_key: :created_by_id, inverse_of: :created_by, dependent: :nullify
   has_many :timesheet_entries
   has_many :agents, dependent: :destroy
   has_many :identities, dependent: :delete_all
@@ -43,6 +48,8 @@ class User < ApplicationRecord
   has_many :addresses, as: :addressable, dependent: :destroy
   has_many :devices, dependent: :destroy
   has_many :passkeys, dependent: :destroy
+  has_many :second_factor_challenges, dependent: :delete_all
+  has_many :browser_sessions, dependent: :destroy
   has_many :invitations, foreign_key: "sender_id", dependent: :destroy
   has_secure_token :token, length: 50
   has_many :projects, through: :project_members
@@ -59,7 +66,7 @@ class User < ApplicationRecord
     inverse_of: :creator,
     dependent: :destroy
 
-  rolify strict: true
+  rolify strict: true, after_add: :ensure_staff_employee_id
 
   scope :with_kept_employments, -> { merge(Employment.kept) }
   scope :with_ids, -> (user_ids) { where(id: user_ids) if user_ids.present? }
@@ -88,7 +95,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
     :recoverable, :rememberable, :validatable,
     :trackable, :confirmable, :lockable, :invitable,
-    :session_limitable, :pwned_password, :jwt_authenticatable, :omniauthable,
+    :pwned_password, :jwt_authenticatable, :omniauthable,
     jwt_revocation_strategy: self,
     omniauth_providers: [:google_oauth2, :github]
 
@@ -121,6 +128,10 @@ class User < ApplicationRecord
   end
 
   # Callbacks
+  before_destroy(prepend: true) do
+    Company.where(id: Employment.where(user_id: id_in_database).select(:company_id))
+      .order(:id).lock("FOR NO KEY UPDATE").load
+  end
   after_discard :discard_project_members
   before_create :set_token
   before_update :set_token, if: :authentication_state_will_change?
@@ -182,9 +193,10 @@ class User < ApplicationRecord
   def assign_company_and_role
     return self.errors.add(:base, I18n.t("errors.internal_server_error")) if current_company.nil? || role.nil?
 
-    ActiveRecord::Base.transaction do
+    current_company.with_employee_number_lock do
       assign_company
       assign_role
+      employments.kept.find_by(company: current_company)&.ensure_employee_id!
     end
   end
 
@@ -253,19 +265,21 @@ class User < ApplicationRecord
   end
 
   def verify_totp_code!(code)
-    return false if otp_secret.blank?
+    with_lock do
+      return false if otp_secret.blank?
 
-    timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
-      normalized_otp_code(code),
-      drift_behind: 30,
-      drift_ahead: 30,
-      after: otp_last_used_at
-    )
+      timestamp = ::ROTP::TOTP.new(otp_secret, issuer: TOTP_ISSUER).verify(
+        normalized_otp_code(code),
+        drift_behind: 30,
+        drift_ahead: 30,
+        after: otp_last_used_at
+      )
 
-    return false unless timestamp
+      return false unless timestamp
 
-    update!(otp_last_used_at: timestamp.to_i)
-    true
+      update!(otp_last_used_at: timestamp.to_i)
+      true
+    end
   end
 
   def generate_recovery_codes!
@@ -280,13 +294,15 @@ class User < ApplicationRecord
   end
 
   def consume_recovery_code!(code)
-    normalized = normalized_recovery_code(code)
-    digest = digest_recovery_code(normalized)
-    digests = Array(otp_recovery_codes_digest)
-    return false unless digests.include?(digest)
+    with_lock do
+      normalized = normalized_recovery_code(code)
+      digest = digest_recovery_code(normalized)
+      digests = Array(otp_recovery_codes_digest)
+      return false unless digests.include?(digest)
 
-    update!(otp_recovery_codes_digest: digests - [digest])
-    true
+      update!(otp_recovery_codes_digest: digests - [digest])
+      true
+    end
   end
 
   def clear_totp!
@@ -332,12 +348,16 @@ class User < ApplicationRecord
 
     def authentication_state_changed?
       saved_change_to_encrypted_password? ||
+        saved_change_to_otp_secret_ciphertext? ||
+        saved_change_to_otp_recovery_codes_generated_at? ||
         saved_change_to_otp_required_for_login? ||
         saved_change_to_passkey_required_for_login?
     end
 
     def authentication_state_will_change?
       will_save_change_to_encrypted_password? ||
+        will_save_change_to_otp_secret_ciphertext? ||
+        will_save_change_to_otp_recovery_codes_generated_at? ||
         will_save_change_to_otp_required_for_login? ||
         will_save_change_to_passkey_required_for_login?
     end
@@ -377,6 +397,12 @@ class User < ApplicationRecord
         "github_url": "",
         "linkedin_url": ""
       }
+    end
+
+    def ensure_staff_employee_id(role)
+      return unless role.resource_type == "Company" && Employment::STAFF_ROLES.include?(role.name)
+
+      employments.kept.find_by(company_id: role.resource_id)&.ensure_employee_id!
     end
 
     def assign_company

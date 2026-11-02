@@ -454,7 +454,7 @@ module Imports
         pairs.each do |(project_id, user_id), row|
           next if existing.include?([project_id, user_id])
 
-          ProjectMember.create!(project_id:, user_id:, hourly_rate: row[:hourly_rate])
+          ProjectMember.create!(project: row[:project_plan][:record], user: row[:user], hourly_rate: row[:hourly_rate])
         end
       end
 

@@ -5,10 +5,13 @@ class Expense < ApplicationRecord
   include Searchable
 
   audited associated_with: :company,
-    only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :category_name]
+    only: [:amount, :base_currency_amount, :currency, :date, :expense_type, :status, :paid_at, :approved_at, :category_name]
 
   MAX_RECEIPT_SIZE_MB = 10
   MAX_RECEIPTS = 10
+  APPROVAL_FIELDS = %i[amount currency date user_id company_id].freeze
+  SETTLEMENT_FIELDS = [:status, :paid_at, :approved_at, *APPROVAL_FIELDS,
+    :base_currency_amount, :exchange_rate, :exchange_rate_date].freeze
   ALLOWED_RECEIPT_CONTENT_TYPES = %w[
     image/png image/jpeg image/jpg image/webp application/pdf text/csv application/vnd.ms-excel
     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
@@ -50,9 +53,11 @@ class Expense < ApplicationRecord
   validates :currency, presence: true, format: { with: /\A[A-Z]{3}\z/ }
   validate :known_currency_code
   validate :validate_receipt_constraints
+  validate :financial_state_is_current, on: :update
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
+  before_validation :record_approval_time
   after_create { Rails.event.notify(Expenses::Created.new(self)) }
 
   scope :kept_ordered, -> { kept.order(created_at: :desc) }
@@ -112,15 +117,23 @@ class Expense < ApplicationRecord
   end
 
   def approve!
-    update!(status: :approved, paid_at: nil)
+    with_lock do
+      update!(status: :approved, paid_at: nil, approved_at: approved? && approved_at ? approved_at : Time.current)
+    end
   end
 
   def reject!
-    update!(status: :rejected, paid_at: nil)
+    with_lock { update!(status: :rejected, paid_at: nil) }
   end
 
   def mark_paid!
-    update!(status: :paid, paid_at: Time.current)
+    with_lock do
+      unless approved? && paid_at.nil? && !discarded?
+        errors.add(:status, "must be approved, unpaid and not discarded before recording payment")
+        raise ActiveRecord::RecordInvalid, self
+      end
+      update!(status: :paid, paid_at: Time.current)
+    end
   end
 
   def formatted_date
@@ -136,6 +149,31 @@ class Expense < ApplicationRecord
   end
 
   private
+
+    def financial_state_is_current
+      return unless SETTLEMENT_FIELDS.any? { |field| will_save_change_to_attribute?(field) }
+
+      previous_status, previous_paid_at, previous_approved_at = self.class.where(id:).lock.pick(:status, :paid_at, :approved_at)
+      if previous_status == "paid" || previous_paid_at.present?
+        errors.add(:status, "cannot reopen or rewrite a paid settlement")
+      elsif previous_status == "approved" && approval_fields_changed? &&
+          (status_in_database != previous_status || approved_at_in_database != previous_approved_at)
+        errors.add(:base, "Reload this expense before editing; its approval changed")
+      end
+    end
+
+    def approval_fields_changed?
+      APPROVAL_FIELDS.any? { |field| will_save_change_to_attribute?(field) }
+    end
+
+    def record_approval_time
+      if approved? && will_save_change_to_status?
+        self.approved_at = Time.current
+      elsif persisted? && approval_fields_changed?
+        self.approved_at = nil
+        self.status = :submitted if approved?
+      end
+    end
 
     def validate_receipt_constraints
       return unless receipts.attached?
@@ -162,11 +200,12 @@ class Expense < ApplicationRecord
 
     def calculate_base_currency_amount
       return if amount.blank?
-      return unless new_record? || amount_changed? || currency_changed? || date_changed?
+      return unless new_record? || amount_changed? || currency_changed? || date_changed? || company_id_changed?
 
       base_currency = company&.base_currency
       if base_currency.blank? || currency.blank? || currency == base_currency
         self.exchange_rate = 1.0
+        self.exchange_rate_date = nil
         self.base_currency_amount = amount
         return
       end

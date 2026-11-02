@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en"><head><title>Profitability Planning | Miru</title><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
+  <%= csrf_meta_tags %><%= csp_meta_tag %><%= vite_javascript_tag "profitability_planning.ts" %><%= render "styles" %>
+</head><body><main>
+  <a href="<%= profitability_scenarios_path %>">← Saved plans</a> · <a href="<%= compensation_profitability_path %>">Compensation actuals</a>
+  <p><%= current_company.name %> · Confidential · Organization owners and admins only</p>
+  <h1>Profitability Planning</h1>
+  <p>Edit the assumptions to compare a plan with its first saved baseline. Monthly assumptions repeat across the forecast; this is a scenario, not a prediction or payroll change.</p>
+  <p>New plans copy available inputs from the current-month report. Target utilization starts at an assumed 80%; verify it and any copied inputs. Compensation is a monthly planning amount; joining and exit changes must be modeled explicitly. Blank financial inputs remain N/A.</p>
+  <% if @error %><p class="error" role="alert"><%= @error %></p><% end %>
+  <%= form_with url: (@scenario.persisted? ? profitability_scenario_path(@scenario) : profitability_scenarios_path), method: (@scenario.persisted? ? :patch : :post), id: "planning-form", data: { preview_url: preview_profitability_scenarios_path, currency: @assumptions['currency'] } do %>
+    <%= hidden_field_tag 'profitability_scenario[lock_version]', @scenario.lock_version %>
+    <%= hidden_field_tag 'profitability_scenario[company_id]', current_company.id %>
+    <% if @source_token %><%= hidden_field_tag 'profitability_scenario[source_token]', @source_token %><% end %>
+    <%= hidden_field_tag 'profitability_scenario[assumptions][currency]', @assumptions['currency'] %>
+    <section class="panel controls" aria-label="Forecast assumptions">
+      <label>Plan name<%= text_field_tag 'profitability_scenario[name]', @scenario.name, maxlength: 100, required: true %></label>
+      <label>Start month (first day)<%= date_field_tag 'profitability_scenario[assumptions][start_month]', @assumptions['start_month'], required: true %></label>
+      <label>Forecast months<%= number_field_tag 'profitability_scenario[assumptions][months]', @assumptions['months'], min: 1, max: 24, required: true %></label>
+      <strong>All amounts in <%= @assumptions['currency'] %></strong>
+    </section>
+    <section class="panel table-scroll"><h2>People and planned hires</h2>
+      <p>Revenue = monthly capacity × target utilization × hourly rate. Enter compensation once per person; add non-compensation costs under Overhead.</p>
+      <table aria-label="Planning people"><thead><tr><th>Person / planned hire</th><th>Monthly capacity hours</th><th>Target utilization %</th><th>Hourly rate</th><th>Monthly compensation</th><th>Monthly revenue</th><th>Monthly margin</th><th>Data quality</th><th>Actions</th></tr></thead>
+      <tbody id="planning-people"><% @assumptions.fetch('people', []).each_with_index do |person, index| %><%= render "person", person:, result: @projection&.dig(:people, index) %><% end %></tbody></table>
+      <div class="actions"><button type="button" data-add-person>Add person or planned hire</button></div>
+    </section>
+    <section class="panel"><h2>Overhead</h2><p>Subscriptions, accounting, rent and other planned costs. Exclude compensation already entered above.</p>
+      <div id="planning-overheads"><% @assumptions.fetch('overheads', []).each do |overhead| %><%= render "overhead", overhead: %><% end %></div>
+      <button type="button" data-add-overhead>Add overhead</button>
+    </section>
+    <section class="panel"><h2>Cash and reserves (optional)</h2><p>Collections are cash you expect to receive each month, independently of projected billings. Runway assumes all modeled costs are paid monthly. No financing or unentered costs are included.</p>
+      <div class="controls">
+        <label>Opening available cash<%= number_field_tag 'profitability_scenario[assumptions][opening_cash]', @assumptions['opening_cash'], min: 0, max: 1000000000000, step: '0.0001' %></label>
+        <label>Expected monthly cash collections<%= number_field_tag 'profitability_scenario[assumptions][monthly_collections]', @assumptions['monthly_collections'], min: 0, max: 1000000000000, step: '0.0001' %></label>
+        <label>Reserve target in months of costs<%= number_field_tag 'profitability_scenario[assumptions][reserve_months]', @assumptions['reserve_months'], min: 1, max: 12, required: true %></label>
+      </div>
+    </section>
+    <div class="actions"><button type="submit">Save plan</button><button type="button" data-recalculate>Recalculate</button><span id="planning-status" role="status" aria-live="polite">Preview — save to keep changes</span></div>
+  <% end %>
+  <p id="planning-error" role="alert" class="error" hidden></p>
+  <p id="planning-incomplete" class="flag" <%= 'hidden' unless @projection&.dig(:incomplete) %>>Incomplete assumptions — dependent projections remain N/A. Review the row flags and blank overhead amounts.</p>
+  <section class="panel summary" aria-label="Projected monthly results">
+    <% { revenue: 'Projected monthly revenue', compensation: 'Monthly compensation', overhead: 'Monthly overhead', cost: 'Total monthly costs', margin: 'Monthly margin', margin_percentage: 'Margin %', utilization: 'Overall utilization %', net_cash_burn: 'Monthly net cash burn', runway_months: 'Cash runway (months)', months_to_reserve: 'Months to reserve target' }.each do |key, label| %>
+      <% format = %i[margin_percentage utilization].include?(key) ? 'percent' : %i[runway_months months_to_reserve].include?(key) ? 'number' : 'currency' %>
+      <div><%= label %><strong data-summary="<%= key %>" data-format="<%= format %>"><%= profitability_number(@projection&.dig(:summary, key), currency: (format == 'currency' ? @assumptions['currency'] : nil), percent: format == 'percent') %></strong></div>
+    <% end %>
+  </section>
+  <p>Negative cash burn means collections exceed costs. Runway is N/A without cash inputs or when cash is not being depleted. Reserve timing is N/A when the target is unmet and there is no cash surplus.</p>
+  <section class="panel summary" aria-label="Forecast totals">
+    <% { revenue: 'Revenue over forecast', cost: 'Costs over forecast', margin: 'Margin over forecast' }.each do |key, label| %>
+      <div><%= label %><strong data-total="<%= key %>"><%= profitability_number(@projection&.dig(:totals, key), currency: @assumptions['currency']) %></strong></div>
+    <% end %>
+  </section>
+  <% if @baseline %>
+    <section class="panel table-scroll"><h2>First saved baseline</h2><p>The baseline remains fixed. Compare monthly results.</p>
+      <table><thead><tr><th>Metric</th><th>First saved baseline (<%= @baseline[:currency] %>)</th><th>Current plan (<%= @assumptions['currency'] %>)</th></tr></thead><tbody>
+      <% { revenue: 'Revenue', cost: 'Costs', margin: 'Margin' }.each do |key, label| %><tr><td><%= label %></td><td><%= profitability_number(@baseline[:summary][key], currency: @baseline[:currency]) %></td><td data-summary="<%= key %>" data-format="currency"><%= profitability_number(@projection&.dig(:summary, key), currency: @assumptions['currency']) %></td></tr><% end %>
+      </tbody></table>
+    </section>
+    <% if @error.blank? %>
+      <p>Saved <%= @scenario.updated_at.iso8601 %>. <a data-planning-export href="<%= @export_url %>">Export saved plan CSV</a>. Authorized link expires in <%= Rails.configuration.x.compensation_report_export_ttl / 60 %> minutes; save edits before exporting.</p>
+    <% else %><p>These edits have not been saved. Reload the saved plan before exporting.</p><% end %>
+  <% else %><p>The first save establishes the baseline. Save now, then adjust assumptions to compare scenarios.</p><% end %>
+  <% if (source = @scenario.worksheet['source']) %>
+    <details class="panel"><summary>Source history and original data-quality warnings</summary>
+      <p>Captured <%= source['captured_at'] %><% if source['from'] %> from compensation actuals for <%= source['from'] %> – <%= source['to'] %>. Monthly compensation uses annual compensation ÷ 12, converted using stored FX as of <%= source['conversion_date'] %><% end %>.</p>
+      <p>These original warnings remain for review even after you fill planning assumptions. They do not describe approved future payroll or change when the forecast start month changes.</p>
+      <ul><% source.fetch('people', []).each do |person| %><% if person['flags'].any? %><li><%= person['name'] %>: <%= person['flags'].map(&:humanize).join('; ') %></li><% end %><% end %></ul>
+      <% source.fetch('exchange_rates', []).each do |rate| %><p><%= rate['from'] %> → <%= rate['to'] %>: <%= rate['rate'] %> · <%= rate['date'] %> · <%= rate['source'] %></p><% end %>
+    </details>
+  <% end %>
+  <section class="panel table-scroll"><h2>Monthly projection</h2><table><thead><tr><th>Month</th><th>Revenue</th><th>Costs</th><th>Margin</th><th>Closing cash</th></tr></thead><tbody id="planning-months">
+    <% @projection&.dig(:months)&.each do |month| %><tr><td><%= month[:month] %></td><% month.values_at(:revenue, :cost, :margin, :closing_cash).each do |value| %><td><%= profitability_number(value, currency: @assumptions['currency']) %></td><% end %></tr><% end %>
+  </tbody></table></section>
+  <template id="planning-person-template"><%= render "person", person: {}, result: nil %></template>
+  <template id="planning-overhead-template"><%= render "overhead", overhead: {} %></template>
+</main></body></html>

@@ -32,6 +32,36 @@ require "rails_helper"
 RSpec.describe Company, type: :model do
   subject { create(:company) }
 
+  describe "destroy boundary semantics" do
+    it "keeps dirty attributes while destroying dependents and nullifying current workspaces" do
+      company = create(:company)
+      user = create(:user, current_workspace: company)
+      employment = create(:employment, company:, user:)
+      run = CompensationReportRun.create!(company:, created_by: user, expires_at: 1.hour.from_now,
+        payload: { "synthetic" => true })
+      company.name = "Unsaved Company"
+
+      company.destroy!
+
+      expect(company.name).to eq("Unsaved Company")
+      expect(company).to be_destroyed
+      expect(company).to be_frozen
+      expect(Employment.exists?(employment.id)).to be(false)
+      expect(CompensationReportRun.exists?(run.id)).to be(false)
+      expect(user.reload.current_workspace_id).to be_nil
+      expect(company.audits.where(action: "destroy")).to exist
+      expect { company.destroy! }.to raise_error(ActiveRecord::RecordNotSaved)
+    end
+
+    it "can destroy a new record and destroy it again without persisting it" do
+      company = build(:company)
+
+      expect { 2.times { company.destroy! } }.not_to change(Company, :count)
+      expect(company).to be_destroyed
+      expect(company).to be_frozen
+    end
+  end
+
   describe "Associations" do
     it { is_expected.to have_many(:users).through(:employments) }
     it { is_expected.to have_many(:employments).dependent(:destroy) }

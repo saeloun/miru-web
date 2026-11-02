@@ -11,19 +11,21 @@ import {
   pickPrimaryAddress,
   teamsMapper,
 } from "mapper/teams.mapper";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
+import { hasEmployeeRecordsAccess } from "../../../../lib/employeeRecordsAccess";
 import { getDisplayAvatarUrl } from "helpers";
 import { sendGAPageView } from "utils/googleAnalytics";
 import { i18n } from "../../../../i18n";
 
 import PersonalProfileSummary from "./PersonalProfileSummary";
+import AccountSecurity from "./AccountSecurity";
 
 const UserDetailsView = () => {
   const { updateDetails, personalDetails, isCalledFromSettings } =
     useProfileContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [currentUserId, setCurrentUserId] = useState(null);
-  const { avatarUrl, user, isDesktop, companyRole } = useUserContext();
+  const { avatarUrl, user, company, isDesktop, companyRole } = useUserContext();
   const { memberId } = useParams();
 
   const getData = async () => {
@@ -126,6 +128,28 @@ const UserDetailsView = () => {
           isCalledFromSettings={isCalledFromSettings}
           personalDetails={personalDetails}
         />
+      )}
+      {isCalledFromSettings && !isLoading && (
+        <div className="mx-auto w-full max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+          <AccountSecurity />
+        </div>
+      )}
+      {hasEmployeeRecordsAccess(
+        company,
+        user,
+        companyRole,
+        memberId || user?.id
+      ) && (
+        <Link
+          className="my-4 inline-flex min-h-10 items-center text-primary underline"
+          to={
+            memberId
+              ? `/team/${memberId}/employee-records?company_id=${company.id}`
+              : "/settings/employee-records"
+          }
+        >
+          {i18n.t("employeeRecords.title")}
+        </Link>
       )}
       <Outlet />
     </div>

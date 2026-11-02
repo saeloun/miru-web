@@ -3,6 +3,7 @@
 class Api::V1::UsersController < Api::V1::BaseController
   def me
     if current_user
+      company = current_company
       render json: {
         user: {
           id: current_user.id,
@@ -14,14 +15,14 @@ class Api::V1::UsersController < Api::V1::BaseController
           personal_email_id: current_user.personal_email_id,
           locale: current_user.locale,
           social_accounts: current_user.social_accounts,
-          date_format: current_company&.date_format,
+          date_format: company&.date_format,
           avatar_url: current_user.avatar.attached? ? url_for(current_user.avatar) : nil,
           confirmed: current_user.confirmed?,
           calendar_enabled: current_user.calendar_enabled,
           calendar_connected: current_user.calendar_connected,
           current_workspace_id: current_user.current_workspace_id
         },
-        company: current_company&.attributes&.slice(
+        company: company&.attributes&.slice(
           "id",
           "name",
           "base_currency",
@@ -31,17 +32,20 @@ class Api::V1::UsersController < Api::V1::BaseController
           "tax_id",
           "timesheet_edit_days"
         )&.merge(
-          "address" => current_company&.current_address,
-          "logo" => current_company&.company_logo,
-          "pro_access" => current_company&.pro_access?,
-          "plan_tier" => current_company&.plan_tier,
-          "current_plan_label" => current_company&.current_plan_label,
-          "team_member_limit" => current_company&.team_member_limit,
-          "used_team_seats" => current_company&.used_team_seats,
-          "reserved_team_seats" => current_company&.reserved_team_seats,
-          "team_member_limit_reached" => current_company&.team_member_limit_reached?
+          "payroll_review_enabled" => Payroll::Entitlement.enabled?(company&.id),
+          "employee_records_available" => company.id == current_user.current_workspace_id &&
+            EmployeeRecordPolicy.new(current_user, EmployeeRecord).index?,
+          "address" => company&.current_address,
+          "logo" => company&.company_logo,
+          "pro_access" => company&.pro_access?,
+          "plan_tier" => company&.plan_tier,
+          "current_plan_label" => company&.current_plan_label,
+          "team_member_limit" => company&.team_member_limit,
+          "used_team_seats" => company&.used_team_seats,
+          "reserved_team_seats" => company&.reserved_team_seats,
+          "team_member_limit_reached" => company&.team_member_limit_reached?
         ),
-        company_role: current_user.roles.find_by(resource: current_company)&.name
+        company_role: current_user.roles.find_by(resource: company)&.name
       }
     else
       render json: { user: nil, company: nil, company_role: nil }, status: 401
@@ -64,26 +68,30 @@ class Api::V1::UsersController < Api::V1::BaseController
       return
     end
 
-    Audited::Audit.create!(
-      auditable: target_user,
-      associated: current_company,
-      user: current_user,
-      action: "super_admin_delete",
-      audited_changes: {
-        actor_id: current_user.id,
-        actor_email: current_user.email,
-        target_user_id: target_user.id,
-        target_user_email: target_user.email,
-        occurred_at: Time.current.iso8601
-      },
-      comment: "Super admin permanently deleted user"
-    )
+    User.transaction do
+      Audited::Audit.create!(
+        auditable: target_user,
+        associated: current_company,
+        user: current_user,
+        action: "super_admin_delete",
+        audited_changes: {
+          actor_id: current_user.id,
+          actor_email: current_user.email,
+          target_user_id: target_user.id,
+          target_user_email: target_user.email,
+          occurred_at: Time.current.iso8601
+        },
+        comment: "Super admin permanently deleted user"
+      )
 
-    target_user.destroy!
+      target_user.destroy!
+    end
 
     render json: {
       notice: I18n.t("user.super_admin_delete.success", email: target_user.email)
     }, status: 200
+  rescue ActiveRecord::InvalidForeignKey
+    render json: { errors: I18n.t("user.super_admin_delete.retained_history") }, status: 422
   end
 
   private
