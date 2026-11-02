@@ -65,12 +65,11 @@
     ]
   },
   "pnpm": {
-    "auditConfig": {
-      "ignoreCves": [
-        "CVE-2026-93687"
-      ]
-    },
     "overrides": {
+      "follow-redirects": "1.16.2",
+      "minimatch@^10": "10.2.6",
+      "minimatch@^9": "10.2.6",
+      "joi@^17": "17.13.9",
       "postcss": ">=8.5.18 <9",
       "brace-expansion": "5.0.12",
       "js-yaml": "4.3.2",
@@ -80,7 +79,9 @@
       "tinypool": "2.1.2"
     },
     "patchedDependencies": {
-      "brace-expansion@5.0.12": "patches/brace-expansion@5.0.12.patch"
+      "brace-expansion@5.0.12": "patches/brace-expansion@5.0.12.patch",
+      "minimatch@10.2.6": "../patches/minimatch@10.2.6.patch",
+      "deepmerge@4.3.1": "../patches/deepmerge@4.3.1.patch"
     }
   }
 }

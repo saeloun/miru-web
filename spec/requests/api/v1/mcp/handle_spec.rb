@@ -81,6 +81,29 @@ RSpec.describe "Api::V1::MCP#handle", type: :request do
         expect(json_response["result"]).to be_present
       end
 
+      it "renders modern subscription acknowledgements" do
+        payload = {
+          jsonrpc: "2.0", id: "listen-1", method: "subscriptions/listen",
+          params: {
+            notifications: {},
+            _meta: {
+              "io.modelcontextprotocol/protocolVersion" => "2026-07-28",
+              "io.modelcontextprotocol/clientCapabilities" => {}
+            }
+          }
+        }
+        headers = mcp_headers(cli_token:, mcp_method: "subscriptions/listen")
+          .merge("MCP-Protocol-Version" => "2026-07-28")
+
+        post mcp_path, params: payload.to_json, headers: headers
+
+        expect(response).to have_http_status(:ok)
+        expect(response.media_type).to eq("text/event-stream")
+        acknowledgement = JSON.parse(response.body.delete_prefix("data: "))
+        expect(acknowledgement["method"]).to eq("notifications/subscriptions/acknowledged")
+        expect(acknowledgement.dig("params", "_meta", "io.modelcontextprotocol/subscriptionId")).to eq("listen-1")
+      end
+
       it "forwards request host to proxy-backed tool calls" do
         allow(MCP::Miru::ApiProxy).to receive(:request).and_call_original
 

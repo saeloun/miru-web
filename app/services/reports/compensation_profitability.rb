@@ -295,6 +295,10 @@ module Reports
           results.merge!(compensation_cost: nil, salary_inr: nil, salary_usd: nil, available_hours: nil)
         end
         results[:available_hours] = nil if leave.any? || flags.include?("holiday_requires_review")
+        # Keep daily proration and FX precision until the period total is known.
+        %i[compensation_cost salary_inr salary_usd].each do |field|
+          results[field] = results[field]&.round(2, BigDecimal::ROUND_HALF_UP)
+        end
         results
       end
 
