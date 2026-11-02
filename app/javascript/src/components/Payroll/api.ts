@@ -90,6 +90,7 @@ export interface RunDetail extends RunSummary {
 
 export interface RunPreflight {
   status: string;
+  approval_state: string;
   preview_only: boolean;
   execution_enabled: boolean;
   company_id: string;
