@@ -72,6 +72,7 @@ RUN bundle install &&  rm -rf vendor/bundle/ruby/*/cache
 FROM base AS node_modules
 
 COPY package.json pnpm-lock.yaml ./
+COPY patches ./patches
 
 RUN pnpm install --frozen-lockfile --ignore-scripts
 
