@@ -19,7 +19,6 @@ Add these to your local env file (or shell profile) before starting the app:
 - `STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY` (recommended for subscriptions)
 - `STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY` (recommended for subscriptions)
 - `STRIPE_SUBSCRIPTION_PRICE_ID` (fallback if interval-specific IDs are not set)
-- `STRIPE_PLAN_PAGE_URL` (optional; if present, billing checkout redirects to this hosted Stripe URL instead of creating a session server-side)
 
 Notes:
 
@@ -54,7 +53,7 @@ How each wizard option maps to Miru:
 - `Pre-built checkout form`:
 - Matches current Miru implementation and should be used by default.
 - `Shareable payment links`:
-- Optional. Only relevant if you intentionally use a hosted Stripe Payment Link URL via `STRIPE_PLAN_PAGE_URL`.
+- Not used by billing checkout, because hosted links bypass managed-session deduplication.
 - `Embedded components`:
 - Not used in current Miru implementation; requires separate frontend integration work.
 
@@ -111,10 +110,6 @@ Do not use:
 - `STRIPE_WEBHOOK_ENDPOINT_SECRET`:
 - If using Stripe CLI locally: value printed by `stripe listen` (`<webhook_signing_secret>`)
 - If using Dashboard webhook endpoint: Developers -> Webhooks -> select endpoint -> Reveal signing secret (`<webhook_signing_secret>`)
-
-- `STRIPE_PLAN_PAGE_URL` (optional):
-- Use only if you want billing checkout to redirect to a hosted Payment Link page instead of server-created Checkout Sessions.
-- Copy the full hosted URL from Payment Links/Checkout link setup if you intentionally adopt that path.
 
 ## Local Webhook Setup (Stripe CLI)
 
