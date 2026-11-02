@@ -143,6 +143,28 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(body["pro_access"]).to eq(true)
       expect(body["trial_available"]).to eq(false)
     end
+
+    it "alerts once when polling activates a purchase before the webhook arrives" do
+      company.update!(stripe_customer_id: "cus_123")
+      subscription = Stripe::Subscription.construct_from(
+        id: "sub_123", customer: "cus_123", status: "active", created: 1, items: { data: [] }
+      )
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [subscription], has_more: false)
+      )
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
+
+      expect { get "/api/v1/subscription", headers: headers }
+        .to have_enqueued_mail(SubscriptionMailer, :plan_purchased).once
+      expect(company.reload.plan_tier).to eq("paid")
+
+      expect {
+        Subscriptions::StripeSyncService.reconcile(
+          company:, stripe_customer_id: "cus_123", stripe_subscription_id: "sub_123", notify_plan_purchase: true
+        )
+      }.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+    end
   end
 
   describe "POST /api/v1/subscription/trial" do

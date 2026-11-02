@@ -96,6 +96,18 @@ RSpec.describe Subscriptions::CheckoutService do
     expect(Stripe::Checkout::Session).not_to have_received(:create)
   end
 
+  it "alerts when a repeated checkout discovers the unprojected purchase" do
+    subscription = Stripe::Subscription.construct_from(
+      id: "sub_active", customer: "cus_checkout", status: "active", created: 1, items: { data: [] }
+    )
+    allow(Stripe::Subscription).to receive(:list).and_return(collection([subscription]))
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
+
+    expect { expect(checkout).to be_nil }
+      .to have_enqueued_mail(SubscriptionMailer, :plan_purchased).once
+  end
+
   it "fails closed when Stripe cannot verify existing subscriptions" do
     allow(Stripe::Subscription).to receive(:list).and_raise(Stripe::APIConnectionError, "offline")
     expect { checkout }.to raise_error(Stripe::APIConnectionError)

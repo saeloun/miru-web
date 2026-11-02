@@ -39,7 +39,7 @@ module Subscriptions
       def reconcile_existing_subscription(subscriptions)
         return false if subscriptions.all? { |subscription| %w[canceled incomplete_expired].include?(subscription.status) }
 
-        StripeSyncService.reconcile(company:)
+        StripeSyncService.reconcile(company:, notify_plan_purchase: true)
         true
       end
 
