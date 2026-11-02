@@ -1,6 +1,6 @@
 # Hiring email intake
 
-Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions, maintain an assignment library and approve acknowledgements and private candidate forms. Assignment issuance/submission/review, interviews, offers and retention remain later milestones of the applicant-tracking plan.
+Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions, maintain an assignment library, issue assignments, and approve acknowledgements and private candidate forms. Candidates can submit disclosed work privately, and designated reviewers can record assessments. Interviews, offers and retention remain later milestones of the applicant-tracking plan.
 
 ## Configure an inbox
 
@@ -60,7 +60,7 @@ Any later edit returns the task to draft. **Task revision history** retains the 
 
 Stale saves retain your draft. **Reload saved task** asks for explicit discard when you have unsaved changes. A failed read can be retried without leaving the editor. Browsing history does not adopt a newer write version for an unsaved edit. After a connection failure during creation, check the library before creating another draft.
 
-This increment does not issue tasks, send candidate messages, accept assignment uploads or grant reviewers access. Those workflows, mandatory contribution/AI disclosures, assessment dimensions and progression controls remain required in Task 4.
+From an application, an active owner/admin can issue an approved task version with an explicit deadline and designated reviewer. Candidates receive a private link for files, repository links, setup instructions, their own-contribution statement and AI-use disclosure. The separate **Assignment reviews** queue exposes only the current reviewer's assigned work. Reviews record all six assessment dimensions and Pass, Fail or Clarification Required. Admins explicitly choose revision, cancellation, advancement or pending rejection. Issuance and these decisions do not send a candidate email in this increment.
 
 ## Understand attempts and delivery reviews
 

@@ -141,7 +141,8 @@ module Hiring
           "mailbox_id" => mailbox.id, "actor_id" => @actor&.id,
           "subject" => setting.details.fetch("acknowledgement_subject"), "body" => setting.acknowledgement_text }
         if setting.form["enabled"]
-          access = Form.issue!(application:, setting:, actor: @actor)
+          access = application.hiring_portal_accesses.where(revoked_at: nil).where("expires_at > ?", Time.current).first ||
+            Form.issue!(application:, setting:, actor: @actor)
           options = Rails.application.config.action_mailer.default_url_options
           protocol = Rails.application.config.force_ssl ? "https" : options.fetch(:protocol, "http")
           url = Rails.application.routes.url_helpers.hiring_form_url(**options, protocol:, anchor: access.access_token)

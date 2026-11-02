@@ -160,7 +160,7 @@ RSpec.describe "Private candidate forms", type: :request do
     sign_out admin
     portal("submit", answers:, lock_version: 0)
     expect(response).to have_http_status(:unprocessable_content)
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
       file: Rack::Test::UploadedFile.new(source, "application/pdf", original_filename: "Applicant resume.pdf") } }
     expect(response).to have_http_status(:ok)
@@ -207,7 +207,7 @@ RSpec.describe "Private candidate forms", type: :request do
   it "accepts a DOCX resume without fetching, extracting or executing its contents" do
     access = issue
     sign_out admin
-    source = Rails.root.join("spec/fixtures/agreements/synthetic-short.docx")
+    source = Rails.root.join("spec/fixtures/files/synthetic-short.docx")
     post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
       file: Rack::Test::UploadedFile.new(source, "application/vnd.openxmlformats-officedocument.wordprocessingml.document") } }
     expect(response).to have_http_status(:ok)
@@ -220,7 +220,7 @@ RSpec.describe "Private candidate forms", type: :request do
   it "rejects stale and submitted resume replacements without changing stored bytes" do
     access = issue
     sign_out admin
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     upload = ->(version) do
       post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: version.to_s,
         file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
@@ -243,7 +243,7 @@ RSpec.describe "Private candidate forms", type: :request do
 
   it "refuses public storage and detects changed resume bytes on both download paths" do
     access = issue
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     upload = -> do
       post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
         file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
@@ -285,7 +285,7 @@ RSpec.describe "Private candidate forms", type: :request do
 
   it "deletes one workspace's forms without purging another workspace's shared resume" do
     access = issue
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
       file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
     expect(response).to have_http_status(:ok)
@@ -389,7 +389,7 @@ RSpec.describe "Private candidate forms", type: :request do
     access = issue
     sign_out admin
     submitted = answers.merge("custom_public" => "Later classified private", "custom_removed" => "Removed from future forms")
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
       file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
     expect(response).to have_http_status(:ok)
@@ -442,7 +442,7 @@ RSpec.describe "Private candidate forms", type: :request do
   it "retains no file bytes when persistence fails after an upload" do
     access = issue
     sign_out admin
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     original_blobs = ActiveStorage::Blob.pluck(:key)
     keys = []
     allow(ActiveStorage::Blob.service).to receive(:upload).and_wrap_original do |upload, key, *arguments, **options|

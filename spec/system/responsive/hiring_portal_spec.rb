@@ -74,7 +74,7 @@ RSpec.describe "Candidate application form", type: :system, js: true do
     fill_in "Expected compensation amount", with: "120000.50"
     fill_in "Expected compensation currency", with: "INR"
     select_radix "Expected compensation period", "Monthly"
-    attach_file "Resume", Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    attach_file "Resume", Rails.root.join("spec/fixtures/files/qa-main.pdf")
     expect(page).to have_text("qa-main.pdf")
     click_button "Submit application"
     expect(page).to have_text("Application submitted")
@@ -138,11 +138,11 @@ RSpec.describe "Candidate application form", type: :system, js: true do
         return response;
       };
     JS
-    attach_file "Resume", Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    attach_file "Resume", Rails.root.join("spec/fixtures/files/qa-main.pdf")
     expect(page).to have_css('[role="alert"]', text: "Synthetic temporary upload failure")
     expect(access.reload.hiring_submission.resume).not_to be_attached
     expect(find_field("Resume").value).to eq("")
-    attach_file "Resume", Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    attach_file "Resume", Rails.root.join("spec/fixtures/files/qa-main.pdf")
     expect(page).to have_css('[role="alert"]', text: "Synthetic lost upload response")
     expect(page).to have_css('[role="alert"]:focus')
     expect(access.reload.hiring_submission.resume).to be_attached

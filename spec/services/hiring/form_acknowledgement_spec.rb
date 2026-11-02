@@ -112,6 +112,47 @@ RSpec.describe "Candidate forms in hiring acknowledgements" do
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
+  it "preserves a delivered live form when a reconciled acknowledgement retry fails delivery" do
+    setting = approve
+    first = queue
+    access = HiringPortalAccess.find(first.content.fetch("portal_access_id"))
+    HiringMailer.acknowledgement(first.id).deliver_now
+    expect(ActionMailer::Base.deliveries.size).to eq(1)
+    first.update!(state: "uncertain", started_at: Time.current, error_code: "transport_unknown")
+    service = Hiring::Acknowledgement.new(receipt:, actor: admin)
+    service.reconcile!(message: first, lock_version: first.lock_version, outcome: "not_accepted",
+      evidence: "Synthetic provider report missed the accepted delivery", worker_stopped: true)
+
+    retry_message = service.retry!(message: first, message_lock_version: first.lock_version,
+      lock_version: receipt.reload.lock_version, approved_setting_version: setting.lock_version, recipient: "candidate@example.test")
+    expect(access.reload).to be_active
+    expect(retry_message.content.fetch("portal_access_id")).to eq(access.id)
+    expect(HiringPortalAccess.count).to eq(1)
+    expect(retry_message.content.fetch("body")).to include(access.access_token)
+
+    allow_any_instance_of(Mail::TestMailer).to receive(:deliver!).and_raise(Postmark::InactiveRecipientError, "Synthetic rejection")
+    HiringDeliveryJob.perform_now(retry_message.id)
+    expect(retry_message.reload).to have_attributes(state: "failed", error_code: "transport_rejected")
+    expect(access.reload).to be_active
+    expect(ActionMailer::Base.deliveries.size).to eq(1)
+  end
+
+  it "replaces an expired form on an explicitly confirmed acknowledgement retry" do
+    setting = approve
+    first = queue
+    access = HiringPortalAccess.find(first.content.fetch("portal_access_id"))
+    first.update!(state: "failed", error_code: "transport_rejected")
+
+    travel_to(access.expires_at + 1.second) do
+      retry_message = Hiring::Acknowledgement.new(receipt:, actor: admin).retry!(message: first, message_lock_version: first.lock_version,
+        lock_version: receipt.reload.lock_version, approved_setting_version: setting.lock_version, recipient: "candidate@example.test")
+      replacement = HiringPortalAccess.find(retry_message.content.fetch("portal_access_id"))
+      expect(replacement.id).not_to eq(access.id)
+      expect(replacement).to be_active
+      expect(access.reload.revoked_at).to be_present
+    end
+  end
+
   it "adds an HTTPS form link to automatic intake when the application requires SSL" do
     approve
     allow(Rails.application.config).to receive(:force_ssl).and_return(true)

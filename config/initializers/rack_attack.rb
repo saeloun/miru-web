@@ -26,6 +26,10 @@ class Rack::Attack
     req.ip if req.post? && req.path.start_with?("/hiring-form/", "/hiring-assignment/")
   end
 
+  throttle("hiring/inbound/ip", limit: 120, period: 1.minute) do |req|
+    req.ip if req.post? && req.path.start_with?("/hiring/inbound/")
+  end
+
   throttle("analytics/pdf/ip", limit: 5, period: 1.minute) do |req|
     req.ip if req.get? && req.path.match?(%r{\A/internal_api/v1/analytics/exports/[^/]+\.pdf\z})
   end

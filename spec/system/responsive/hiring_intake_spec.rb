@@ -37,7 +37,7 @@ RSpec.describe "Hiring intake", type: :system, js: true do
   def capture(name)
     return unless ENV["MIRU_QA_SCREENSHOTS"] == "1"
 
-    path = Rails.root.join("docs/qa/hiring-2463", name)
+    path = Rails.root.join(ENV.fetch("MIRU_QA_SCREENSHOT_DIR", "docs/qa/hiring-2463"), name)
     FileUtils.mkdir_p(path.dirname)
     page.save_screenshot(path, full: true)
   end
@@ -49,7 +49,8 @@ RSpec.describe "Hiring intake", type: :system, js: true do
     click_link "Manage roles"
     fill_in "Role title", with: "Senior Ruby consultant"
     click_button "Add role"
-    expect(page).to have_text("Senior Ruby consultant")
+    role = HiringRole.find_by!(company:, title: "Senior Ruby consultant")
+    expect(page).to have_field("role-title-#{role.id}", with: role.title)
     capture("roles-desktop.png")
 
     add_candidate(notes: "Synthetic private screening note")

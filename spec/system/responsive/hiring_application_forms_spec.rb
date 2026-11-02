@@ -73,7 +73,7 @@ RSpec.describe "Admin candidate form review", type: :system, js: true do
     fill_in "Expected compensation currency", with: "INR"
     select_radix "Expected compensation period", "Monthly"
     fill_in "Private explanation", with: "Private candidate context"
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     attach_file "Resume", source
     expect(page).to have_text("Uploaded: qa-main.pdf")
     click_button "Submit application"

@@ -56,7 +56,7 @@ RSpec.describe "Candidate assessment portal", type: :system, js: true do
     fill_in "AI tools used", with: "Local assistant"
     fill_in "How you used AI", with: "Discussed query alternatives"
     fill_in "Parts assisted by AI", with: "Test case suggestions"
-    attach_file "Submission file", Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    attach_file "Submission file", Rails.root.join("spec/fixtures/files/qa-main.pdf")
     expect(page).to have_button("Download qa-main.pdf")
     expect(page).to have_field("Your own contribution", with: "I wrote and can explain the implementation and tests")
     click_button "Submit assignment"
@@ -66,7 +66,7 @@ RSpec.describe "Candidate assessment portal", type: :system, js: true do
     saved = record.reload.submission
     expect(saved.answers).to include("ai_used" => true, "ai_tools" => "Local assistant")
     expect(saved.submitted_at).to be_present
-    expect(saved.file_bytes(saved.files.sole)).to eq(File.binread(Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")))
+    expect(saved.file_bytes(saved.files.sole)).to eq(File.binread(Rails.root.join("spec/fixtures/files/qa-main.pdf")))
     expect(page.evaluate_script("document.documentElement.scrollWidth > window.innerWidth")).to be(false)
     expect(errors).to be_empty
     expect(requests).not_to include(a_string_including(record.access_token), a_string_matching(%r{/(?:ahoy|analytics|replay)(?:/|$)}))
@@ -106,7 +106,7 @@ RSpec.describe "Candidate assessment portal", type: :system, js: true do
         return response;
       };
     JS
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
     attach_file "Submission file", source
     expect(page).to have_text("Synthetic temporary upload failure")
     attach_file "Submission file", source
