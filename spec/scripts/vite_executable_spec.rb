@@ -84,4 +84,23 @@ RSpec.describe "Vite executable resolution" do
 
     expect(status).to be_success, errors
   end
+
+  it "explains an unusable configured executable even when local dependencies are available" do
+    write_command("custom-vite", "exit 0\n")
+    File.chmod(0o644, File.join(@project, "commands/custom-vite"))
+    script = File.join(@project, "node_modules/.bin/vite")
+    FileUtils.mkdir_p(File.dirname(script))
+    File.write(script, "#!/bin/sh\nexit 0\n")
+    File.chmod(0o755, script)
+    config = File.join(@project, "config/vite.json")
+    settings = JSON.parse(File.read(config))
+    settings["all"]["viteBinPath"] = "commands/custom-vite"
+    File.write(config, JSON.generate(settings))
+
+    _output, errors, status = run_vite("build")
+
+    expect(status).not_to be_success
+    expect(errors).to include("Check viteBinPath: the configured Vite file is not executable")
+    expect(File.exist?(File.join(@project, "pnpm-called"))).to be(false)
+  end
 end
