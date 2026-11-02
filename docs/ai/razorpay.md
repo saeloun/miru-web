@@ -1,5 +1,21 @@
 # Razorpay Payment Operations
 
+## Merchant OAuth connection foundation
+
+The company-bound OAuth connection API is a separate delivery from invoice collection activation and RazorpayX/Payroll. It reuses PaymentsProvider encrypted settings; it adds no schema migration. Its connection status always reports collections/payouts unavailable until the remaining integration and provider acceptance are complete. Existing API-key invoice customers keep their current flow and cannot be replaced through OAuth.
+
+Active workspace owners/admins can use GET/POST/DELETE `/payments/razorpay/connection`; the fixed callback is GET `/payments/razorpay/callback`. Mutations require the normal browser session and CSRF protection. The callback also requires the initiating browser, actor, workspace, application/mode and a single-use ten-minute state. Failed or superseded attempts cannot reconnect the account. Disconnect disables local operations even when upstream revocation cannot be confirmed.
+
+An account with stored OAuth credentials must be explicitly disconnected before starting again. A rejected restart preserves the current credentials, so the owner can still revoke the original grant rather than silently orphan it. Pending attempts without credentials may be restarted safely. After a disconnect, the workspace can reconnect only the same Razorpay merchant account.
+
+Disconnect applies only to a provider already using OAuth; a provider that never started OAuth is left untouched and gets a 409. The API-key settings endpoint returns 409 while OAuth credentials, cleanup material, a pending consent or an in-flight exchange exist, and works again once they are gone. Saving API keys permanently prevents starting OAuth on that provider.
+
+`revocation_pending` means encrypted cleanup material is retained, reconnect is blocked, and explicit disconnect retries revocation. `reconciliation_required` means an exchange or refresh that reached the provider ended without a usable result. Miru treats every such failure as a grant that may exist, including provider 4xx responses, because the provider's failure contract has not been verified. Reconnect and API-key changes stay blocked, disconnect does not clear the marker, and there is no supported way to clear it yet. Classifying definite provider failures and adding a supported recovery path must happen before enabling this feature.
+
+Configuration is disabled by default. The OAuth client requires `RAZORPAY_OAUTH_ENABLED=true`, `RAZORPAY_OAUTH_CLIENT_ID`, `RAZORPAY_OAUTH_CLIENT_SECRET`, `RAZORPAY_OAUTH_MODE` (`test` or `live`) and `RAZORPAY_OAUTH_REDIRECT_URI`. The callback URI must use the fixed path above and HTTPS in production. Register it with the correct development/production partner application. Keep credentials in deployment secrets; never paste them into issue descriptions, browser responses or logs.
+
+Official Technology Partner/KYC approval, co-branded onboarding enablement, registered application and scopes must be verified separately. This backend foundation does not add the Connect/Create settings UI, change the legacy SDK invoice authentication, verify Payment Link callback signatures for OAuth, or complete merchant-status/revocation webhooks. Do not represent a successful authorization callback as merchant activation, an invoice payment, Payroll access or permission to move funds.
+
 ## Integration Shape
 
 - Miru uses Razorpay Standard Payment Links for INR invoice collection.

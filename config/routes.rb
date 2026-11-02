@@ -91,6 +91,10 @@ Rails.application.routes.draw do
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
+  get "payments/razorpay/connection", to: "razorpay_connections#show"
+  post "payments/razorpay/connection", to: "razorpay_connections#create"
+  delete "payments/razorpay/connection", to: "razorpay_connections#destroy"
+  get "payments/razorpay/callback", to: "razorpay_connections#callback"
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"

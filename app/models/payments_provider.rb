@@ -83,7 +83,7 @@ class PaymentsProvider < ApplicationRecord
     end
   end
 
-  encrypted_setting :key_secret, :webhook_secret, :client_secret
+  encrypted_setting :key_secret, :webhook_secret, :client_secret, :razorpay_oauth_credentials
 
   def self.paypal_currency_supported?(currency)
     PAYPAL_CURRENCIES.include?(currency.to_s.upcase)
@@ -116,6 +116,13 @@ class PaymentsProvider < ApplicationRecord
 
   def razorpay_configured?
     razorpay? && key_id.present? && key_secret.present?
+  end
+
+  def razorpay_oauth_in_use?
+    settings.to_h.values_at(
+      "razorpay_oauth_credentials", "razorpay_oauth_credentials_ciphertext",
+      "oauth_state", "oauth_pending_digest", "oauth_refresh_uncertain"
+    ).any?(&:present?)
   end
 
   def paypal_configured?
