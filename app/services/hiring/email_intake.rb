@@ -16,32 +16,39 @@ module Hiring
           next @receipt
         end
 
-        content = EmailContent.new(@receipt.source)
-        details = @receipt.details.merge(content.details)
-        reason = content.review_reason
-        @company.with_lock do
-          previous = @company.hiring_receipts.where(message_key: content.key, state: "accepted")
-            .where.not(id: @receipt.id).order(:id).first if content.key
-          application = previous&.hiring_application || @company.hiring_applications.find_by(email_key: content.key) if content.key
-          if application
-            fingerprint = previous ? previous.details["fingerprint"] : application.creation_details["email_fingerprint"]
-            reason = fingerprint == content.fingerprint ? nil : "message_content_changed"
-          elsif reason.nil? || reason == "application_not_identified"
-            application = referenced_application(content)
-            reason = nil if application
-          end
+        record_content(EmailContent.new(@receipt.source))
+        @receipt
+      end
+    end
 
+    private
+
+      def record_content(content)
+        details = @receipt.details.merge(content.details)
+        @company.with_lock do
+          application, reason = matching_application(content)
           new_application = !application && !reason
           application = create_application(content) if new_application
           @receipt.update!(state: reason ? "review" : "accepted", review_reason: reason,
             hiring_application: application, message_key: content.key, details:)
           Acknowledgement.new(receipt: @receipt).queue if new_application
         end
-        @receipt
       end
-    end
 
-    private
+      def matching_application(content)
+        reason = content.review_reason
+        previous = @company.hiring_receipts.where(message_key: content.key, state: "accepted")
+          .where.not(id: @receipt.id).order(:id).first if content.key
+        application = previous&.hiring_application || @company.hiring_applications.find_by(email_key: content.key) if content.key
+        if application
+          fingerprint = previous ? previous.details["fingerprint"] : application.creation_details["email_fingerprint"]
+          reason = fingerprint == content.fingerprint ? nil : "message_content_changed"
+        elsif reason.nil? || reason == "application_not_identified"
+          application = referenced_application(content)
+          reason = nil if application
+        end
+        [application, reason]
+      end
 
       def referenced_application(content)
         content.references.reverse_each do |reference|

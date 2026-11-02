@@ -11,7 +11,7 @@ RSpec.describe "RackAttack OTP throttles", type: :request do
     Rack::Attack.enabled = true
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
 
-    example.run
+    freeze_time { example.run }
   ensure
     Rack::Attack.enabled = enabled
     Rack::Attack.cache.store = store

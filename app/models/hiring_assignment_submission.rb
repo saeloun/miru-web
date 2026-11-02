@@ -69,10 +69,10 @@ class HiringAssignmentSubmission < ApplicationRecord
 
     def valid_answers
       valid = answers.is_a?(Hash) && (answers.keys - KEYS).empty? && answers.to_json.bytesize <= 96.kilobytes &&
-        %w[setup approach own_contribution].all? { |key| text?(answers[key]) } && [true, false].include?(answers["ai_used"])
+        answers.values_at("setup", "approach", "own_contribution").all? { |value| text?(value) } && [true, false].include?(answers["ai_used"])
       if valid
-        valid &&= KEYS.excluding("ai_used", "repository_url").all? { |key| answers[key].nil? || answers[key] == "" || text?(answers[key]) }
-        valid &&= %w[ai_tools ai_how ai_parts].all? { |key| text?(answers[key]) } if answers["ai_used"]
+        valid &&= answers.values_at(*KEYS.excluding("ai_used", "repository_url")).all? { |value| value.nil? || value == "" || text?(value) }
+        valid &&= answers.values_at("ai_tools", "ai_how", "ai_parts").all? { |value| text?(value) } if answers["ai_used"]
         repository = answers["repository_url"]
         has_repository = repository.is_a?(String) && repository.present?
         valid &&= !has_repository || repository_url?(repository)

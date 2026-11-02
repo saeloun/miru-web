@@ -31,7 +31,7 @@ class Api::V1::Hiring::MailboxesController < Api::V1::Hiring::BaseController
     end
     mailbox = current_user.with_lock do
       authorize_hiring
-      current_company.hiring_mailboxes.create!(attributes.slice("name", "source_email"))
+      current_company.hiring_mailboxes.create!(name: attributes["name"], source_email: attributes["source_email"])
     end
     render json: { company_id: current_company.id, mailbox: mailbox_details(mailbox) }, status: 201
   end
@@ -49,7 +49,9 @@ class Api::V1::Hiring::MailboxesController < Api::V1::Hiring::BaseController
       mailbox.with_lock do
         raise ActiveRecord::StaleObjectError.new(mailbox, "update") unless mailbox.lock_version == attributes["lock_version"]
 
-        mailbox.update!(attributes.slice("name", "active"))
+        mailbox.name = attributes["name"] if attributes.key?("name")
+        mailbox.active = attributes["active"] if attributes.key?("active")
+        mailbox.save!
       end
     end
     render json: { company_id: current_company.id, mailbox: mailbox_details(mailbox) }

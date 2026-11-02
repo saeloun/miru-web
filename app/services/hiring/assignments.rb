@@ -33,11 +33,7 @@ module Hiring
           version!(submission, attributes["submission_version"])
           raise Intake::InvalidInput, "Use valid submission answers." unless attributes["answers"].is_a?(Hash)
 
-          submission.update!(answers: attributes["answers"], submitted_at: Time.current)
-          assignment.update!(status: "submitted")
-          update_stage!("assignment_review")
-          assignment.record_event!("submitted", actor: nil)
-          submission
+          record_submission!(assignment, submission, attributes["answers"])
         end
       end
     rescue ActiveRecord::RecordInvalid
@@ -52,17 +48,8 @@ module Hiring
         unless identity(attributes["submission_id"]) == submission.id
           raise Intake::Conflict, "The submitted work changed. Reload before reviewing."
         end
-        dimensions = attributes["dimensions"]
-        outcome, kind = attributes.values_at("outcome", "request_kind")
-        unless HiringAssignmentReview::OUTCOMES.include?(outcome) && HiringAssignmentReview::REQUEST_KINDS.include?(kind) &&
-            dimensions.is_a?(Hash) && dimensions.keys.sort == HiringAssignmentReview::DIMENSIONS.sort && dimensions.values.all? { |value| text?(value, 5_000) }
-          raise Intake::InvalidInput, "Record all six assessment dimensions, an outcome and a follow-up type."
-        end
-        notes = attributes["notes"]
-        unless (notes.nil? || notes == "" || text?(notes)) &&
-            (outcome == "clarification_required" ? kind != "none" && text?(notes) : kind == "none")
-          raise Intake::InvalidInput, "Clarification requires a specific walkthrough, follow-up or revision request and instructions."
-        end
+        validate_review!(attributes)
+        dimensions, outcome, kind, notes = attributes.values_at("dimensions", "outcome", "request_kind", "notes")
         record = assignment.reviews.create!(company: @company, submission:, created_by: @actor, outcome:,
           review_round: assignment.review_round, assignment_version: assignment.lock_version + 1,
           details: { "dimensions" => dimensions, "request_kind" => kind, "notes" => notes, "reviewer_name" => @actor.full_name })
@@ -79,24 +66,8 @@ module Hiring
       with_candidate(assignment, token) do
         submission = candidate_edit!(assignment, attributes, %w[assignment_version submission_version file])
         upload = attributes["file"]
-        unless upload.is_a?(ActionDispatch::Http::UploadedFile) && upload.size.between?(1, HiringAssignmentSubmission::MAX_FILE_BYTES)
-          raise Intake::InvalidInput, "Upload a file between 1 byte and 5 MiB."
-        end
-        unless submission.files.count < HiringAssignmentSubmission::MAX_FILES &&
-            submission.files.sum { |file| file.blob.byte_size } + upload.size <= HiringAssignmentSubmission::MAX_TOTAL_BYTES
-          raise Intake::InvalidInput, "Use at most five files and 20 MiB in total."
-        end
-        raise HiringSubmission::StorageUnavailable if ActiveStorage::Blob.service.public?
-
-        name = upload.original_filename
-        raise Intake::InvalidInput, "Use a valid file name." unless name.is_a?(String) && name.valid_encoding?
-
-        name = File.basename(name.tr("\x00-\x1f\x7f", "-")).last(200)
-        name = "submission" if name.blank? || %w[. ..].include?(name)
-        blob = ActiveStorage::Blob.create_before_direct_upload!(filename: name, content_type: "application/octet-stream",
-          byte_size: upload.size, checksum: Digest::MD5.file(upload.tempfile.path).base64digest,
-          metadata: { identified: true, analyzed: true, hiring_assignment_submission_id: submission.id,
-            hiring_company_id: @company.id, hiring_sha256: Digest::SHA256.file(upload.tempfile.path).hexdigest })
+        validate_upload!(submission, upload)
+        blob = upload_blob(submission, upload)
         upload.tempfile.rewind
         blob.upload(upload.tempfile, identify: false)
         candidate_access!(assignment, token)
@@ -171,26 +142,11 @@ module Hiring
         end
         case attributes["action"]
         when "revise"
-          raise Intake::InvalidInput, "Include instructions for the revised work." unless text?(attributes["candidate_note"])
-
-          assignment.update!(status: "superseded", ended_at: Time.current)
-          replacement = issue_record!(attributes, previous: assignment)
-          assignment.record_event!("revised", actor: @actor, details: { "reason" => attributes["reason"], "replacement_id" => replacement.id })
-          replacement
+          revise_assignment!(assignment, attributes)
         when "advance", "reject"
-          raise Intake::InvalidInput, "Record the designated review before deciding." unless latest
-
-          assignment.update!(status: "completed", ended_at: Time.current)
-          stage = attributes["action"] == "advance" ? "interview" : "rejection_pending"
-          update_stage!(stage)
-          assignment.record_event!(attributes["action"] == "advance" ? "advanced" : "rejection_pending", actor: @actor,
-            details: { "reason" => attributes["reason"], "review_id" => latest.id })
-          assignment
+          conclude_assignment!(assignment, attributes, latest)
         when "cancel"
-          assignment.update!(status: "cancelled", ended_at: Time.current)
-          update_stage!(HiringAssignment::ACTIVE_STAGES.include?(@application.stage) ? "screening" : @application.stage)
-          assignment.record_event!("cancelled", actor: @actor, details: { "reason" => attributes["reason"] })
-          assignment
+          cancel_assignment!(assignment, attributes)
         else
           raise Intake::InvalidInput, "Choose a valid assessment decision."
         end
@@ -198,6 +154,79 @@ module Hiring
     end
 
     private
+
+      def record_submission!(assignment, submission, answers)
+        submission.update!(answers: answers, submitted_at: Time.current)
+        assignment.update!(status: "submitted")
+        update_stage!("assignment_review")
+        assignment.record_event!("submitted", actor: nil)
+        submission
+      end
+
+      def validate_review!(attributes)
+        dimensions = attributes["dimensions"]
+        outcome, kind = attributes.values_at("outcome", "request_kind")
+        unless HiringAssignmentReview::OUTCOMES.include?(outcome) && HiringAssignmentReview::REQUEST_KINDS.include?(kind) &&
+            dimensions.is_a?(Hash) && dimensions.keys.sort == HiringAssignmentReview::DIMENSIONS.sort && dimensions.values.all? { |value| text?(value, 5_000) }
+          raise Intake::InvalidInput, "Record all six assessment dimensions, an outcome and a follow-up type."
+        end
+        notes = attributes["notes"]
+        unless (notes.nil? || notes == "" || text?(notes)) &&
+            (outcome == "clarification_required" ? kind != "none" && text?(notes) : kind == "none")
+          raise Intake::InvalidInput, "Clarification requires a specific walkthrough, follow-up or revision request and instructions."
+        end
+      end
+
+      def validate_upload!(submission, upload)
+        unless upload.is_a?(ActionDispatch::Http::UploadedFile) && upload.size.between?(1, HiringAssignmentSubmission::MAX_FILE_BYTES)
+          raise Intake::InvalidInput, "Upload a file between 1 byte and 5 MiB."
+        end
+        unless submission.files.count < HiringAssignmentSubmission::MAX_FILES &&
+            submission.files.sum { |file| file.blob.byte_size } + upload.size <= HiringAssignmentSubmission::MAX_TOTAL_BYTES
+          raise Intake::InvalidInput, "Use at most five files and 20 MiB in total."
+        end
+        raise HiringSubmission::StorageUnavailable if ActiveStorage::Blob.service.public?
+      end
+
+      def upload_blob(submission, upload)
+        name = upload.original_filename
+        raise Intake::InvalidInput, "Use a valid file name." unless name.is_a?(String) && name.valid_encoding?
+
+        name = File.basename(name.tr("\x00-\x1f\x7f", "-")).last(200)
+        name = "submission" if name.blank? || %w[. ..].include?(name)
+
+        ActiveStorage::Blob.create_before_direct_upload!(filename: name, content_type: "application/octet-stream",
+          byte_size: upload.size, checksum: Digest::MD5.file(upload.tempfile.path).base64digest,
+          metadata: { identified: true, analyzed: true, hiring_assignment_submission_id: submission.id,
+            hiring_company_id: @company.id, hiring_sha256: Digest::SHA256.file(upload.tempfile.path).hexdigest })
+      end
+
+      def revise_assignment!(assignment, attributes)
+        raise Intake::InvalidInput, "Include instructions for the revised work." unless text?(attributes["candidate_note"])
+
+        assignment.update!(status: "superseded", ended_at: Time.current)
+        replacement = issue_record!(attributes, previous: assignment)
+        assignment.record_event!("revised", actor: @actor, details: { "reason" => attributes["reason"], "replacement_id" => replacement.id })
+        replacement
+      end
+
+      def conclude_assignment!(assignment, attributes, latest)
+        raise Intake::InvalidInput, "Record the designated review before deciding." unless latest
+
+        assignment.update!(status: "completed", ended_at: Time.current)
+        stage = attributes["action"] == "advance" ? "interview" : "rejection_pending"
+        update_stage!(stage)
+        assignment.record_event!(attributes["action"] == "advance" ? "advanced" : "rejection_pending", actor: @actor,
+          details: { "reason" => attributes["reason"], "review_id" => latest.id })
+        assignment
+      end
+
+      def cancel_assignment!(assignment, attributes)
+        assignment.update!(status: "cancelled", ended_at: Time.current)
+        update_stage!(HiringAssignment::ACTIVE_STAGES.include?(@application.stage) ? "screening" : @application.stage)
+        assignment.record_event!("cancelled", actor: @actor, details: { "reason" => attributes["reason"] })
+        assignment
+      end
 
       def with_candidate(assignment, token)
         @application.with_lock do

@@ -119,20 +119,24 @@ module Hiring
             raise Intake::Conflict, "The applicant email changed. Reload and confirm the current recipient."
           end
 
-          attributes = { hiring_setting: setting, approved_setting_version: setting.lock_version,
-            queued_by: @actor }
-          message = Audited.audit_class.as_user(@actor) do
-            if retry_of
-              @company.hiring_messages.create!(**attributes, content: snapshot(setting, application, mailbox), hiring_application: application, kind: "acknowledgement",
-                original_message_id: retry_of.original_message_id || retry_of.id, attempt_number: retry_of.attempt_number + 1)
-            else
-              @company.hiring_messages.operations.find_or_create_by!(hiring_application: application, kind: "acknowledgement") do |record|
-                record.assign_attributes(attributes.merge(content: snapshot(setting, application, mailbox)))
-              end
-            end
-          end
+          message = queued_message(setting, application, mailbox, retry_of)
           ActiveRecord.after_all_transactions_commit { message.enqueue }
           message
+        end
+      end
+
+      def queued_message(setting, application, mailbox, retry_of)
+        attributes = { hiring_setting: setting, approved_setting_version: setting.lock_version,
+          queued_by: @actor }
+        Audited.audit_class.as_user(@actor) do
+          if retry_of
+            @company.hiring_messages.create!(**attributes, content: snapshot(setting, application, mailbox), hiring_application: application, kind: "acknowledgement",
+              original_message_id: retry_of.original_message_id || retry_of.id, attempt_number: retry_of.attempt_number + 1)
+          else
+            @company.hiring_messages.operations.find_or_create_by!(hiring_application: application, kind: "acknowledgement") do |record|
+              record.assign_attributes(attributes.merge(content: snapshot(setting, application, mailbox)))
+            end
+          end
         end
       end
 

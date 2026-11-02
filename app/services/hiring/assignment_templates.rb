@@ -27,12 +27,26 @@ module Hiring
     private
 
       def write!(action)
+        validate_request!
+        apply_action(action)
+        raise Intake::InvalidInput, "No task changes to save." if @template.persisted? && !@template.changed?
+
+        @template.save!
+        @template.revisions.create!(company: @company, created_by: @actor, template_version: @template.lock_version,
+          snapshot: @template.review_details.merge(actor_name: @actor.full_name))
+        @template
+      end
+
+      def validate_request!
         unless @attributes.is_a?(Hash) && (@attributes.keys - KEYS).empty? && @attributes["company_id"].to_s == @company.id.to_s
           raise Intake::InvalidInput, "Use valid task details in this workspace."
         end
         if @template.persisted? && (!@attributes["lock_version"].is_a?(Integer) || @attributes["lock_version"] != @template.lock_version)
           raise Intake::Conflict, "This task changed. Reload before saving or approving."
         end
+      end
+
+      def apply_action(action)
         case action
         when "save"
           unless @attributes.slice("title", "skills", "experience").values.all? { |value| value.is_a?(String) }
@@ -54,12 +68,6 @@ module Hiring
         else
           raise Intake::InvalidInput, "Choose a valid task action."
         end
-        raise Intake::InvalidInput, "No task changes to save." if @template.persisted? && !@template.changed?
-
-        @template.save!
-        @template.revisions.create!(company: @company, created_by: @actor, template_version: @template.lock_version,
-          snapshot: @template.review_details.merge(actor_name: @actor.full_name))
-        @template
       end
 
       def selected_role

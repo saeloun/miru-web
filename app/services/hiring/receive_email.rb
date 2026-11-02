@@ -11,11 +11,7 @@ module Hiring
     end
 
     def process
-      unless @source.is_a?(String) && @source.bytesize.between?(1, MAX_BYTES)
-        raise InvalidInput, "Provide an email of at most 20 MB."
-      end
-      storage = ActionMailbox.storage_service ? ActiveStorage::Blob.services.fetch(ActionMailbox.storage_service) : ActiveStorage::Blob.service
-      raise Unavailable, "Private email storage is unavailable." if storage.public?
+      validate_source!
 
       content = EmailContent.new(@source)
       checksum = Digest::SHA256.hexdigest(@source)
@@ -32,6 +28,26 @@ module Hiring
           next receipt
         end
 
+        inbound = transport_email(checksum)
+        @mailbox.hiring_receipts.create!(company: @mailbox.company, inbound_email: inbound,
+          source_checksum: checksum, message_key: content.key, received_at: Time.current, raw_email: inbound.raw_email.blob,
+          details: { "source_email" => @mailbox.source_email, "source_name" => @mailbox.name })
+      end
+    rescue EmailContent::Malformed
+      raise InvalidInput, "Provide a valid RFC 822 email."
+    end
+
+    private
+
+      def validate_source!
+        unless @source.is_a?(String) && @source.bytesize.between?(1, MAX_BYTES)
+          raise InvalidInput, "Provide an email of at most 20 MB."
+        end
+        storage = ActionMailbox.storage_service ? ActiveStorage::Blob.services.fetch(ActionMailbox.storage_service) : ActiveStorage::Blob.service
+        raise Unavailable, "Private email storage is unavailable." if storage.public?
+      end
+
+      def transport_email(checksum)
         transport_id = "hiring-#{checksum}@inbound.miru"
         inbound = ActionMailbox::InboundEmail.find_by(message_id: transport_id)
         if inbound
@@ -48,15 +64,8 @@ module Hiring
           inbound = ActionMailbox::InboundEmail.create!(message_id: transport_id,
             message_checksum: OpenSSL::Digest::SHA1.hexdigest(@source), raw_email: blob)
         end
-        @mailbox.hiring_receipts.create!(company: @mailbox.company, inbound_email: inbound,
-          source_checksum: checksum, message_key: content.key, received_at: Time.current, raw_email: inbound.raw_email.blob,
-          details: { "source_email" => @mailbox.source_email, "source_name" => @mailbox.name })
+        inbound
       end
-    rescue EmailContent::Malformed
-      raise InvalidInput, "Provide a valid RFC 822 email."
-    end
-
-    private
 
       def schedule_existing(inbound)
         ActiveRecord.after_all_transactions_commit { inbound.route_later }

@@ -21,19 +21,14 @@ module Hiring
 
     def process
       @actor.with_lock do
-        unless @actor.current_workspace_id == @company.id && HiringPolicy.new(@actor, HiringApplication).create?
-          raise Pundit::NotAuthorizedError
-        end
+        authorize_actor!
         facts, key = normalized_input
         existing = @company.hiring_applications.find_by(request_key: key)
         if existing
           check_submission!(existing, facts)
           next existing
         end
-        role = @company.hiring_roles.find_by(id: facts["role_id"], status: "open") if facts["role_id"]
-        owner = HiringPolicy.staff_members(@company).find_by(id: facts["owner_employment_id"]) if facts["owner_employment_id"]
-        raise InvalidInput, "Choose an open role in this workspace." if facts["role_id"] && !role
-        raise InvalidInput, "Choose an active staff member in this workspace." if facts["owner_employment_id"] && !owner
+        role, owner = selected_people(facts)
 
         candidate = @company.hiring_candidates.create_or_find_by!(email: facts.fetch("email")) do |record|
           record.full_name = facts.fetch("full_name")
@@ -50,6 +45,20 @@ module Hiring
     end
 
     private
+
+      def authorize_actor!
+        unless @actor.current_workspace_id == @company.id && HiringPolicy.new(@actor, HiringApplication).create?
+          raise Pundit::NotAuthorizedError
+        end
+      end
+
+      def selected_people(facts)
+        role = @company.hiring_roles.find_by(id: facts["role_id"], status: "open") if facts["role_id"]
+        owner = HiringPolicy.staff_members(@company).find_by(id: facts["owner_employment_id"]) if facts["owner_employment_id"]
+        raise InvalidInput, "Choose an open role in this workspace." if facts["role_id"] && !role
+        raise InvalidInput, "Choose an active staff member in this workspace." if facts["owner_employment_id"] && !owner
+        [role, owner]
+      end
 
       def check_submission!(application, facts)
         return if application.creation_details == facts

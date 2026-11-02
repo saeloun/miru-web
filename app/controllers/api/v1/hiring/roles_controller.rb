@@ -44,7 +44,9 @@ class Api::V1::Hiring::RolesController < Api::V1::Hiring::BaseController
         authorize role, :update?, policy_class: HiringPolicy
         raise ActiveRecord::StaleObjectError.new(role, "update") unless role.lock_version == attributes["lock_version"]
 
-        role.update!(values)
+        role.title = values["title"] if values.key?("title")
+        role.status = values["status"] if values.key?("status")
+        role.save!
       end
     end
     render json: { company_id: current_company.id, role: role.slice(:id, :title, :status, :lock_version) }

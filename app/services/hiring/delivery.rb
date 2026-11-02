@@ -42,17 +42,18 @@ module Hiring
         return "approval_changed" unless setting.company_id == @message.company_id && setting.approved? &&
           setting.lock_version == @message.approved_setting_version
 
-        actor_id = @message.content["actor_id"]
+        content = @message.content
+        actor_id = content["actor_id"]
         return "permission_changed" if actor_id && !HiringPolicy.administrators(@message.company).where(user_id: actor_id).exists?
 
-        mailbox = @message.company.hiring_mailboxes.find_by(id: @message.content["mailbox_id"], active: true)
-        return "source_changed" unless mailbox && mailbox.source_email == @message.content["reply_to"]
+        mailbox = @message.company.hiring_mailboxes.find_by(id: content["mailbox_id"], active: true)
+        return "source_changed" unless mailbox && mailbox.source_email == content["reply_to"]
 
         application = @message.hiring_application.reload
         return "application_closed" if %w[withdrawn rejected hired].include?(application.stage)
-        return "recipient_changed" unless application.hiring_candidate.reload.email == @message.content["to"]
+        return "recipient_changed" unless application.hiring_candidate.reload.email == content["to"]
 
-        if (access_id = @message.content["portal_access_id"])
+        if (access_id = content["portal_access_id"])
           access = application.hiring_portal_accesses.find_by(id: access_id)
           return "portal_unavailable" unless access&.active?
         end

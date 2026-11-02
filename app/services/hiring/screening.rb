@@ -11,31 +11,15 @@ module Hiring
 
     def process
       @actor.with_lock do
-        unless @actor.current_workspace_id == @company.id && HiringPolicy.new(@actor, @application).update?
-          raise Pundit::NotAuthorizedError
-        end
+        authorize_actor!
         @company.with_lock do
           @application.with_lock do
             validate_input!
             before = assignment_details
-            role = selected_role
-            owner = selected_owner
             stage = HiringScreening::STAGES.fetch(@attributes["action"]) || @application.stage
-            @application.assign_attributes(hiring_role: role, owner_employment: owner, stage:)
-            if @attributes["action"] == "update_details" && !@application.changed?
-              raise Intake::InvalidInput, "Choose a different role or hiring owner."
-            end
-            Audited.audit_class.as_user(@actor) { @application.save! }
-            # Repeated requests at the same stage still need a new optimistic version.
-            @application.touch if @application.saved_changes.empty?
-            unless HiringAssignment::ACTIVE_STAGES.include?(stage)
-              @application.hiring_assignments.where(ended_at: nil).find_each { |assignment| assignment.cancel_for_stage!(actor: @actor) }
-            end
-            @application.hiring_screenings.create!(company: @company, created_by: @actor,
-              action: @attributes["action"], from_stage: before.fetch("stage"), to_stage: stage,
-              application_version: @application.lock_version,
-              details: { "reason" => @attributes["reason"]&.strip.presence, "actor_name" => @actor.full_name,
-                         "before" => before, "after" => assignment_details })
+            save_application!(stage)
+            cancel_inactive_assignments(stage)
+            record_screening(before, stage)
           end
         end
       end
@@ -44,6 +28,38 @@ module Hiring
     end
 
     private
+
+      def authorize_actor!
+        unless @actor.current_workspace_id == @company.id && HiringPolicy.new(@actor, @application).update?
+          raise Pundit::NotAuthorizedError
+        end
+      end
+
+      def save_application!(stage)
+        role = selected_role
+        owner = selected_owner
+        @application.assign_attributes(hiring_role: role, owner_employment: owner, stage:)
+        if @attributes["action"] == "update_details" && !@application.changed?
+          raise Intake::InvalidInput, "Choose a different role or hiring owner."
+        end
+        Audited.audit_class.as_user(@actor) { @application.save! }
+        # Repeated requests at the same stage still need a new optimistic version.
+        @application.touch if @application.saved_changes.empty?
+      end
+
+      def cancel_inactive_assignments(stage)
+        unless HiringAssignment::ACTIVE_STAGES.include?(stage)
+          @application.hiring_assignments.where(ended_at: nil).find_each { |assignment| assignment.cancel_for_stage!(actor: @actor) }
+        end
+      end
+
+      def record_screening(before, stage)
+        @application.hiring_screenings.create!(company: @company, created_by: @actor,
+          action: @attributes["action"], from_stage: before.fetch("stage"), to_stage: stage,
+          application_version: @application.lock_version,
+          details: { "reason" => @attributes["reason"]&.strip.presence, "actor_name" => @actor.full_name,
+                     "before" => before, "after" => assignment_details })
+      end
 
       def validate_input!
         unless @attributes.is_a?(Hash) && (@attributes.keys - KEYS).empty? && HiringScreening::STAGES.key?(@attributes["action"])
