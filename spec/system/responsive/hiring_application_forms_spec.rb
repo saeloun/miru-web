@@ -45,6 +45,34 @@ RSpec.describe "Admin candidate form review", type: :system, js: true do
     find('section[aria-label="Candidate forms"]')
   end
 
+  [1440, 390].each do |width|
+    it "refreshes the form version after a screening decision at #{width}px" do
+      open_application(width:)
+      within(form_panel) { expect(page).to have_button("Create private form link", disabled: false) }
+      within('section[aria-label="Screening"]') do
+        select "Record information request", from: "Screening action"
+        fill_in "Screening reason", with: "Please confirm your availability."
+        click_button "Save screening"
+        expect(page).to have_text("Screening saved")
+      end
+      within(form_panel) do
+        click_button "Create private form link"
+        expect(page).to have_field("Private form link", readonly: true)
+        expect(page).not_to have_css('[role="alert"]')
+      end
+      expect(application.reload.stage).to eq("information_pending")
+      expect(application.hiring_portal_accesses.count).to eq(1)
+      expect(ActionMailer::Base.deliveries).to be_empty
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to eq(true)
+      expect(@console_errors).to eq([])
+      if ENV["HIRING_FORM_VERSION_SHOTS"]
+        directory = Rails.root.join(ENV.fetch("HIRING_FORM_VERSION_SHOTS"))
+        FileUtils.mkdir_p(directory)
+        page.save_screenshot(directory.join("screening-to-form-#{width}.png"), full: true)
+      end
+    end
+  end
+
   it "opens communication settings to enable an unapproved form" do
     configuration = Hiring::Configure.new(company:, actor: admin)
     setting = company.hiring_setting

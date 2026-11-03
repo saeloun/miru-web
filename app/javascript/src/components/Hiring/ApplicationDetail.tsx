@@ -155,6 +155,7 @@ export default function ApplicationDetail({
         key={`${companyId}:${application.id}`}
         companyId={companyId}
         applicationId={application.id}
+        applicationVersion={application.lock_version}
         timeZone={data.time_zone}
         changed={applicationChanged}
       />

@@ -48,11 +48,13 @@ function answerText(value: FormAnswer | undefined) {
 export default function ApplicationForms({
   companyId,
   applicationId,
+  applicationVersion,
   timeZone,
   changed,
 }: {
   companyId: number;
   applicationId: number;
+  applicationVersion: number;
   timeZone: string;
   changed: (attributes: Pick<Application, "stage" | "lock_version">) => void;
 }) {
@@ -77,6 +79,12 @@ export default function ApplicationForms({
       mounted.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (data && !busy && data.application_lock_version < applicationVersion) {
+      setRefresh(value => value + 1);
+    }
+  }, [applicationVersion, data?.application_lock_version, busy]);
 
   useEffect(() => {
     let active = true;
