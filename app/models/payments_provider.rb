@@ -83,7 +83,7 @@ class PaymentsProvider < ApplicationRecord
     end
   end
 
-  encrypted_setting :key_secret, :webhook_secret, :client_secret
+  encrypted_setting :key_secret, :webhook_secret, :client_secret, :razorpay_oauth_credentials
 
   def self.paypal_currency_supported?(currency)
     PAYPAL_CURRENCIES.include?(currency.to_s.upcase)
@@ -116,6 +116,25 @@ class PaymentsProvider < ApplicationRecord
 
   def razorpay_configured?
     razorpay? && key_id.present? && key_secret.present?
+  end
+
+  def razorpay_oauth?
+    razorpay? && settings.to_h["authentication_mode"] == "oauth"
+  end
+
+  def razorpay_oauth_collections_ready?
+    razorpay_oauth? && PaymentProviders::RazorpayOauthConnection.new(provider: self, actor: nil).collections_ready?
+  end
+
+  def razorpay_collectable?
+    enabled_on_invoices? && (razorpay_configured? || razorpay_oauth_collections_ready?)
+  end
+
+  def razorpay_oauth_in_use?
+    settings.to_h.values_at(
+      "razorpay_oauth_credentials", "razorpay_oauth_credentials_ciphertext",
+      "oauth_state", "oauth_pending_digest", "oauth_refresh_uncertain"
+    ).any?(&:present?)
   end
 
   def paypal_configured?
@@ -189,6 +208,7 @@ class PaymentsProvider < ApplicationRecord
 
     def razorpay_enabled_requires_credentials
       return unless enabled? && !razorpay_configured?
+      return if razorpay_oauth? && (!enabled_changed? || razorpay_oauth_collections_ready?)
 
       errors.add(:base, "Razorpay key id and key secret are required")
     end

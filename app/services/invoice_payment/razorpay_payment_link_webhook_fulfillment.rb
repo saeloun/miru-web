@@ -15,7 +15,7 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
   def process
     return unsupported_event_success unless SUPPORTED_EVENTS.include?(event)
     return fail_with("Invoice not found") if invoice.blank?
-    return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank?
+    return fail_with("Razorpay webhook secret is not configured") if provider&.webhook_secret.blank? || provider.razorpay_oauth?
     return fail_with("Invalid Razorpay webhook signature", :invalid_signature) unless valid_signature?
     return expire_payment_link if INACTIVE_LINK_EVENTS.include?(event)
     return true if superseded_payment_link?

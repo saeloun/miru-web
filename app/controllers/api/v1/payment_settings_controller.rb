@@ -53,11 +53,23 @@ class Api::V1::PaymentSettingsController < Api::V1::ApplicationController
   def update_razorpay
     authorize :update_razorpay, policy_class: PaymentSettingsPolicy
 
-    razorpay_provider.assign_attributes(razorpay_provider_attributes)
-    assign_razorpay_secrets_if_present
+    outcome = current_company.with_lock("FOR NO KEY UPDATE") do
+      @_razorpay_provider = current_company.payments_providers.find_or_initialize_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
+      razorpay_provider.with_lock do
+        next :oauth_in_use if razorpay_provider.razorpay_oauth_in_use?
 
-    if razorpay_provider.save
+        razorpay_provider.settings.delete("authentication_mode")
+        razorpay_provider.assign_attributes(razorpay_provider_attributes)
+        assign_razorpay_secrets_if_present
+        razorpay_provider.save ? :saved : :invalid
+      end
+    end
+
+    case outcome
+    when :saved
       render :index, locals: payment_settings_locals
+    when :oauth_in_use
+      render json: { errors: "Disconnect the Razorpay account connection before saving API keys" }, status: 409
     else
       render json: { errors: razorpay_provider.errors.to_hash(true) }, status: 422
     end

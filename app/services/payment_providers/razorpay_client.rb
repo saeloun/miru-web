@@ -14,18 +14,22 @@ module PaymentProviders
     end
 
     def create_payment_link(payload)
-      with_sdk(headers: { "Content-Type" => "application/json" }) do
+      with_sdk(headers: { "Content-Type" => "application/json" }, oauth: true) do
         request = Razorpay::Request.new("payment_links")
         normalize_response(request.request(:post, "/v1/payment_links", JSON.generate(payload)))
       end
     end
 
     def fetch_payment_link(payment_link_id)
-      with_sdk { normalize_response(Razorpay::PaymentLink.fetch(payment_link_id)) }
+      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.fetch(payment_link_id)) }
     end
 
     def notify_payment_link(payment_link_id, medium)
-      with_sdk { normalize_response(Razorpay::PaymentLink.notify_by(payment_link_id, medium)) }
+      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.notify_by(payment_link_id, medium)) }
+    end
+
+    def cancel_payment_link(payment_link_id)
+      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.cancel(payment_link_id)) }
     end
 
     def create_upi_payout(payload, idempotency_key:)
@@ -52,8 +56,9 @@ module PaymentProviders
 
     private
 
-      def with_sdk(headers: {})
-        raise Error, "Razorpay key id and key secret are required" unless provider.razorpay_configured?
+      def with_sdk(headers: {}, oauth: false)
+        access_token = oauth_access_token if oauth && provider.razorpay_oauth?
+        raise Error, "Razorpay key id and key secret are required" unless access_token || provider.razorpay_configured?
 
         # The official Ruby SDK stores auth and custom headers globally.
         # Serialize calls so one company's credentials cannot leak into another request.
@@ -63,8 +68,7 @@ module PaymentProviders
           previous_access_token = Razorpay.access_token
           previous_headers = Razorpay.custom_headers
 
-          Razorpay.setup(provider.key_id, provider.key_secret)
-          Razorpay.headers = headers
+          configure_sdk(access_token, headers)
           yield
         ensure
           Razorpay.auth = previous_auth
@@ -74,6 +78,17 @@ module PaymentProviders
         end
       rescue Razorpay::Error => error
         raise Error, error.message.presence || "Razorpay request failed"
+      end
+
+      def configure_sdk(access_token, headers)
+        access_token ? Razorpay.setup_with_oauth(access_token) : Razorpay.setup(provider.key_id, provider.key_secret)
+        Razorpay.headers = headers
+      end
+
+      def oauth_access_token
+        PaymentProviders::RazorpayOauthConnection.new(provider:, actor: nil).access_token
+      rescue PaymentProviders::RazorpayOauthConnection::Error
+        raise Error, "Razorpay account connection is unavailable", cause: nil
       end
 
       def normalize_response(response)

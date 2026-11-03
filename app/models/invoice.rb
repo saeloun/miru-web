@@ -49,6 +49,8 @@ class Invoice < ApplicationRecord
     :razorpay_payment_link_id,
     :razorpay_payment_link_url,
     :razorpay_payment_link_status,
+    :razorpay_payment_link_account_id,
+    :razorpay_payment_review,
     :razorpay_payment_id,
     :paypal_order_id,
     :paypal_order_status,
