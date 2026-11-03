@@ -18,6 +18,26 @@ class PayrollRunPolicy < ApplicationPolicy
   end
 
   alias_method :preflight?, :show?
+  alias_method :preparation?, :show?
+  alias_method :approvals?, :show?
+  alias_method :mercury_payments?, :show?
+  alias_method :split_arrangements?, :show?
+
+  def create?
+    index? && roles.where(name: %w[owner admin]).exists?
+  end
+
+  def revisions?
+    index? && record.company_id == workspace_id && record.accounts_reviewer_id == user.id
+  end
+
+  def manage_mercury?
+    show? && roles.where(name: "owner").exists?
+  end
+
+  def manage_mercury_connection?
+    index? && roles.where(name: "owner").exists?
+  end
 
   def roles
     user.roles.where(resource_type: "Company", resource_id: workspace_id, name: %w[owner admin book_keeper])

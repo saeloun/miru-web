@@ -13,6 +13,10 @@ class Employment < ApplicationRecord
   has_many :salary_slips, dependent: :destroy
   has_many :tax_declarations, dependent: :destroy
   has_many :consultant_compensations, dependent: :destroy
+  has_many :payroll_payment_instructions, dependent: :restrict_with_exception
+  has_many :payroll_mercury_recipient_links, dependent: :restrict_with_exception
+  has_many :payroll_payment_groups, dependent: :restrict_with_exception
+  has_many :payroll_split_arrangements, dependent: :restrict_with_exception
   has_many :compensation_versions, dependent: :destroy
   has_one :profitability_profile, dependent: :destroy
   has_one :employee_record, dependent: :destroy

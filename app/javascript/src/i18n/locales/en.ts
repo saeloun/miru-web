@@ -367,6 +367,7 @@ const en = {
       approved_after_cutoff:
         "%{count} claim(s) were approved after the cutoff.",
       foreign_currency: "%{count} claim(s) need a reviewed INR conversion.",
+      reserved_by_payroll: "%{count} claim(s) are reserved by a payroll run.",
       invalid_amount:
         "%{count} claim(s) have an invalid reimbursement amount. Review the original claims.",
     },

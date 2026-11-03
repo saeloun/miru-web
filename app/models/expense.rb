@@ -45,6 +45,7 @@ class Expense < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :expense_category, optional: true
   belongs_to :project, optional: true
+  has_many :payroll_expense_reservations, dependent: :restrict_with_exception
 
   attribute :currency, :string, default: nil
 
@@ -54,6 +55,7 @@ class Expense < ApplicationRecord
   validate :known_currency_code
   validate :validate_receipt_constraints
   validate :financial_state_is_current, on: :update
+  validate :not_reserved_by_payroll, on: :update
 
   before_validation :normalize_currency
   before_validation :calculate_base_currency_amount
@@ -126,14 +128,21 @@ class Expense < ApplicationRecord
     with_lock { update!(status: :rejected, paid_at: nil) }
   end
 
-  def mark_paid!
+  def mark_paid!(payroll_reservation: nil)
     with_lock do
       unless approved? && paid_at.nil? && !discarded?
         errors.add(:status, "must be approved, unpaid and not discarded before recording payment")
         raise ActiveRecord::RecordInvalid, self
       end
+      @payroll_settlement = payroll_reservation&.expense_id == id
       update!(status: :paid, paid_at: Time.current)
     end
+  ensure
+    @payroll_settlement = false
+  end
+
+  def payroll_reserved?
+    payroll_expense_reservations.unsettled.exists?
   end
 
   def formatted_date
@@ -149,6 +158,12 @@ class Expense < ApplicationRecord
   end
 
   private
+
+    def not_reserved_by_payroll
+      return if @payroll_settlement || !SETTLEMENT_FIELDS.any? { |field| will_save_change_to_attribute?(field) }
+
+      errors.add(:base, "This claim is reserved by a payroll run") if payroll_reserved?
+    end
 
     def financial_state_is_current
       return unless SETTLEMENT_FIELDS.any? { |field| will_save_change_to_attribute?(field) }

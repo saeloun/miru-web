@@ -59,16 +59,8 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "7. Mercury USD wires and bank credit" do
-    it "requires provider-onboarded Indian international-wire beneficiaries with verified SWIFT and routing data"
     it "requires enabled funding-account capability and payment scopes independently of a read-only balance connection"
-    it "records source and observation time for INR-per-USD R and calculates principal P divided by R minus 1.50"
-    it "rejects zero or negative buffered rates and rounds each principal to USD cents"
-    it "records configurable company-paid OUR fees, initially 15 USD where applicable, outside consultant income"
     it "requires approval of principal plus fees and renews approval when a stale quote changes"
-    it "persists an idempotency identity before submitting an international-wire approval request"
-    it "polls Mercury approval separately from transaction processing and retains correlated provider references"
-    it "keeps provider sent status distinct from actual receiving-bank INR credit"
-    it "records actual INR credit and requires accounts resolution of any entitlement shortfall"
   end
 
   context "8. India accounts handoff" do
@@ -79,14 +71,8 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "9. Consultant and spouse allocations" do
-    it "requires full spouse beneficiary details, accounts verification and admin approval for setup and changes"
-    it "validates fixed-INR and percentage allocations with an explicit remainder and an exact entitlement sum"
     it "splits after fee and PTO adjustments and keeps reimbursements with the consultant unless reallocation is explicitly approved"
     it "allocates withholding once and reconciles INR rounding without a zero or negative USD transfer leg"
-    it "uses the same approved buffered rate for both principals and charges OUR separately for each transfer"
-    it "retains independent provider identities and statuses for both beneficiaries"
-    it "retries only a confirmed failed leg when the other leg succeeded and reconciles uncertain outcomes first"
-    it "requires all necessary credits and shortfall resolutions before marking the overall settlement fully credited"
     it "retains consultant service-provider identity and tax ownership when a spouse receives an allocation"
   end
 
@@ -113,7 +99,6 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     it "invalidates payment approval after fee, attendance, leave, claim, beneficiary, split, quote or provider-fee changes"
     it "tracks each applicable not-ready, awaiting-approval, ready, accounts-handoff, Mercury-approval, processing, sent, partial-credit, credited, failed, cancelled and returned state"
     it "prevents duplicate run, reservation, transfer, invoice and email creation across repeated clicks and interrupted processing"
-    it "reconciles an uncertain provider submission before authorizing a replacement transfer"
     it "deduplicates repeated bank events and rejects stale out-of-order transitions"
     it "reopens reconciliation for a late return while preserving the original payment, invoice and returned-amount history"
     it "retains actors and immutable source, PTO-decision, bank, approval, fee, claim, reference and invoice versions without confidential payloads"

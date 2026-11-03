@@ -285,8 +285,13 @@ RSpec.describe "Payroll review reads", type: :request do
     expect(json_response.dig("preflight", "blockers")).to include("missing_or_invalid_recipient_net", "invalid_snapshot")
   end
 
-  it "rejects write routes instead of exposing dormant mutation actions" do
-    post api_v1_payroll_runs_path, params: { payroll_payload: payload }, as: :json
+  it "does not accept a raw payroll payload and exposes no edit or delete routes" do
+    post api_v1_payroll_runs_path, params: { company_id: company.id, payroll_payload: payload }, as: :json
+    expect(response).to have_http_status(422)
+    expect(PayrollRun.count).to eq(1)
+    patch api_v1_payroll_run_path(run), params: { company_id: company.id }, as: :json
+    expect(response).to have_http_status(404)
+    delete api_v1_payroll_run_path(run), params: { company_id: company.id }, as: :json
     expect(response).to have_http_status(404)
     expect(PayrollRun.count).to eq(1)
   end

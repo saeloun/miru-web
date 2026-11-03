@@ -490,7 +490,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.bigint "uploaded_by_id", null: false
     t.index ["employment_id"], name: "index_employee_documents_on_employment_id"
     t.index ["uploaded_by_id"], name: "index_employee_documents_on_uploaded_by_id"
-    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying, 'contract'::character varying]::text[])", name: "employee_documents_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying::text, 'contract'::character varying::text])", name: "employee_documents_kind"
   end
 
   create_table "employee_occasion_deliveries", force: :cascade do |t|
@@ -943,7 +943,196 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.index ["actor_id"], name: "index_payroll_approvals_on_actor_id"
     t.index ["payroll_revision_id", "stage"], name: "index_payroll_approvals_on_payroll_revision_id_and_stage", unique: true
     t.index ["payroll_revision_id"], name: "index_payroll_approvals_on_payroll_revision_id"
-    t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying, 'final'::character varying]::text[])", name: "payroll_approval_stage"
+    t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying::text, 'final'::character varying::text])", name: "payroll_approval_stage"
+  end
+
+  create_table "payroll_expense_reservations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "expense_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "amount_minor", null: false
+    t.datetime "settled_at"
+    t.datetime "released_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_expense_reservations_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_expense_reservations_on_employment_id"
+    t.index ["expense_id"], name: "index_payroll_expense_reservations_on_expense_id"
+    t.index ["expense_id"], name: "index_payroll_expense_reservations_one_active", unique: true, where: "(released_at IS NULL)"
+    t.index ["payroll_revision_id"], name: "index_payroll_expense_reservations_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_expense_reservations_on_payroll_run_id"
+    t.check_constraint "amount_minor > 0", name: "payroll_expense_reservation_amount"
+  end
+
+  create_table "payroll_mercury_connections", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "configured_by_id", null: false
+    t.bigint "verified_by_id"
+    t.text "api_token", null: false
+    t.string "environment", null: false
+    t.string "source_account_id", null: false
+    t.string "expected_legal_business_name", null: false
+    t.bigint "wire_fee_minor", default: 1500, null: false
+    t.integer "credential_version", default: 1, null: false
+    t.integer "verified_version"
+    t.datetime "verified_at"
+    t.string "verified_account_name"
+    t.string "verified_account_mask"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_mercury_connections_on_company_id", unique: true
+    t.index ["configured_by_id"], name: "index_payroll_mercury_connections_on_configured_by_id"
+    t.index ["verified_by_id"], name: "index_payroll_mercury_connections_on_verified_by_id"
+    t.check_constraint "environment::text = ANY (ARRAY['live'::character varying, 'sandbox'::character varying]::text[])", name: "payroll_mercury_connection_environment"
+    t.check_constraint "wire_fee_minor > 0", name: "payroll_mercury_connection_fee"
+  end
+
+  create_table "payroll_mercury_recipient_links", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "split_arrangement_id"
+    t.bigint "verified_by_id", null: false
+    t.string "beneficiary", null: false
+    t.string "mercury_recipient_id", null: false
+    t.string "recipient_digest", null: false
+    t.string "bank_details_digest", null: false
+    t.string "display_name", null: false
+    t.string "account_mask", null: false
+    t.string "swift_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_mercury_recipient_links_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_mercury_recipient_links_on_employment_id"
+    t.index ["split_arrangement_id"], name: "index_payroll_mercury_recipient_links_on_split_arrangement_id"
+    t.index ["verified_by_id"], name: "index_payroll_mercury_recipient_links_on_verified_by_id"
+    t.check_constraint "beneficiary::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])", name: "payroll_recipient_beneficiary"
+  end
+
+  create_table "payroll_payment_events", force: :cascade do |t|
+    t.bigint "payroll_payment_instruction_id", null: false
+    t.bigint "actor_id"
+    t.string "kind", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_payroll_payment_events_on_actor_id"
+    t.index ["payroll_payment_instruction_id"], name: "index_payroll_payment_events_on_payroll_payment_instruction_id"
+  end
+
+  create_table "payroll_payment_groups", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "split_arrangement_id"
+    t.string "line_digest", null: false
+    t.bigint "entitlement_minor", null: false
+    t.bigint "reimbursement_minor", default: 0, null: false
+    t.integer "required_legs", null: false
+    t.datetime "fully_credited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_payment_groups_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_payment_groups_on_employment_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_payment_groups_on_payroll_revision_id"
+    t.index ["payroll_run_id", "employment_id"], name: "idx_on_payroll_run_id_employment_id_49550bdfda", unique: true
+    t.index ["payroll_run_id"], name: "index_payroll_payment_groups_on_payroll_run_id"
+    t.index ["split_arrangement_id"], name: "index_payroll_payment_groups_on_split_arrangement_id"
+    t.check_constraint "entitlement_minor > 0", name: "payroll_payment_group_entitlement"
+    t.check_constraint "required_legs = ANY (ARRAY[1, 2])", name: "payroll_payment_group_legs"
+  end
+
+  create_table "payroll_payment_instructions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_payment_group_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "consultant_compensation_id", null: false
+    t.bigint "recipient_link_id", null: false
+    t.bigint "prepared_by_id", null: false
+    t.bigint "rate_entered_by_id"
+    t.bigint "submitted_by_id"
+    t.bigint "absent_confirmed_by_id"
+    t.string "beneficiary", null: false
+    t.integer "connection_version", null: false
+    t.string "environment", null: false
+    t.string "source_account_id", null: false
+    t.string "revision_digest", null: false
+    t.string "bank_details_digest", null: false
+    t.string "recipient_digest", null: false
+    t.string "mercury_recipient_id", null: false
+    t.bigint "entitlement_minor", null: false
+    t.string "entitlement_currency", default: "INR", null: false
+    t.decimal "reference_rate", precision: 18, scale: 10, null: false
+    t.decimal "buffered_rate", precision: 18, scale: 10, null: false
+    t.string "rate_source", null: false
+    t.string "rate_mode", null: false
+    t.datetime "rate_observed_at", null: false
+    t.datetime "rate_valid_until", null: false
+    t.bigint "principal_minor", null: false
+    t.bigint "fee_minor", null: false
+    t.bigint "company_debit_minor", null: false
+    t.string "charge_type", default: "ours", null: false
+    t.string "purpose_category", null: false
+    t.string "purpose_info", null: false
+    t.string "idempotency_key", null: false
+    t.string "frozen_digest", null: false
+    t.string "submission_state", default: "prepared", null: false
+    t.integer "submission_attempts", default: 0, null: false
+    t.datetime "submission_started_at"
+    t.datetime "absent_confirmed_at"
+    t.string "provider_request_id"
+    t.string "request_status"
+    t.datetime "provider_request_created_at"
+    t.datetime "request_approved_at"
+    t.boolean "requester_may_approve"
+    t.integer "approvers_required"
+    t.date "scheduled_send_on"
+    t.string "provider_transaction_id"
+    t.string "transaction_status"
+    t.string "transaction_link_state", default: "none", null: false
+    t.string "transaction_failure_reason"
+    t.string "credit_state", default: "none", null: false
+    t.bigint "credited_minor", default: 0, null: false
+    t.string "held_reason"
+    t.string "last_error_code"
+    t.datetime "last_checked_at"
+    t.datetime "released_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["absent_confirmed_by_id"], name: "index_payroll_payment_instructions_on_absent_confirmed_by_id"
+    t.index ["company_id", "idempotency_key"], name: "idx_on_company_id_idempotency_key_837e390706", unique: true
+    t.index ["company_id", "provider_request_id"], name: "index_payroll_payment_instructions_on_provider_request", unique: true, where: "(provider_request_id IS NOT NULL)"
+    t.index ["company_id", "provider_transaction_id"], name: "index_payroll_payment_instructions_on_provider_transaction", unique: true, where: "(provider_transaction_id IS NOT NULL)"
+    t.index ["company_id"], name: "index_payroll_payment_instructions_on_company_id"
+    t.index ["consultant_compensation_id"], name: "idx_on_consultant_compensation_id_f822a508f1"
+    t.index ["employment_id"], name: "index_payroll_payment_instructions_on_employment_id"
+    t.index ["payroll_payment_group_id", "beneficiary"], name: "index_payroll_payment_instructions_one_open_leg", unique: true, where: "(released_at IS NULL)"
+    t.index ["payroll_payment_group_id"], name: "index_payroll_payment_instructions_on_payroll_payment_group_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_payment_instructions_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_payment_instructions_on_payroll_run_id"
+    t.index ["prepared_by_id"], name: "index_payroll_payment_instructions_on_prepared_by_id"
+    t.index ["rate_entered_by_id"], name: "index_payroll_payment_instructions_on_rate_entered_by_id"
+    t.index ["recipient_link_id"], name: "index_payroll_payment_instructions_on_recipient_link_id"
+    t.index ["submitted_by_id"], name: "index_payroll_payment_instructions_on_submitted_by_id"
+    t.check_constraint "beneficiary::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])", name: "payroll_payment_beneficiary"
+    t.check_constraint "charge_type::text = 'ours'::text", name: "payroll_payment_charge_type"
+    t.check_constraint "company_debit_minor = (principal_minor + fee_minor)", name: "payroll_payment_company_debit"
+    t.check_constraint "credit_state::text = ANY (ARRAY['none'::character varying, 'partial'::character varying, 'credited'::character varying, 'shortfall_resolved'::character varying]::text[])", name: "payroll_payment_credit_state"
+    t.check_constraint "credited_minor >= 0", name: "payroll_payment_credit"
+    t.check_constraint "entitlement_currency::text = 'INR'::text", name: "payroll_payment_entitlement_currency"
+    t.check_constraint "entitlement_minor > 0", name: "payroll_payment_entitlement_positive"
+    t.check_constraint "environment::text = ANY (ARRAY['live'::character varying, 'sandbox'::character varying]::text[])", name: "payroll_payment_environment"
+    t.check_constraint "fee_minor > 0", name: "payroll_payment_fee"
+    t.check_constraint "principal_minor >= 1 AND principal_minor <= 1000000000", name: "payroll_payment_principal_range"
+    t.check_constraint "rate_mode::text = ANY (ARRAY['exchange_rate'::character varying, 'manual'::character varying]::text[])", name: "payroll_payment_rate_mode"
+    t.check_constraint "request_status IS NULL OR (request_status::text = ANY (ARRAY['pendingApproval'::character varying, 'approved'::character varying, 'rejected'::character varying, 'cancelled'::character varying]::text[]))", name: "payroll_payment_request_status"
+    t.check_constraint "submission_state::text = ANY (ARRAY['prepared'::character varying, 'submitting'::character varying, 'accepted'::character varying, 'uncertain'::character varying, 'rejected'::character varying, 'voided'::character varying]::text[])", name: "payroll_payment_submission_state"
+    t.check_constraint "transaction_link_state::text = ANY (ARRAY['none'::character varying, 'linked'::character varying, 'reconciliation_required'::character varying]::text[])", name: "payroll_payment_link_state"
+    t.check_constraint "transaction_status IS NULL OR (transaction_status::text = ANY (ARRAY['pending'::character varying, 'sent'::character varying, 'cancelled'::character varying, 'failed'::character varying, 'reversed'::character varying, 'blocked'::character varying]::text[]))", name: "payroll_payment_transaction_status"
   end
 
   create_table "payroll_revisions", force: :cascade do |t|
@@ -980,6 +1169,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.check_constraint "accounts_reviewer_id <> final_reviewer_id", name: "payroll_distinct_reviewers"
     t.check_constraint "currency::text ~ '^[A-Z]{3}$'::text", name: "payroll_run_currency"
     t.check_constraint "dry_run = true", name: "payroll_run_dry_run_only"
+  end
+
+  create_table "payroll_split_arrangements", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "requested_by_id", null: false
+    t.bigint "verified_by_id"
+    t.bigint "approved_by_id"
+    t.bigint "withdrawn_by_id"
+    t.text "details", null: false
+    t.string "allocation_kind", null: false
+    t.decimal "allocation_value", precision: 14, scale: 2, null: false
+    t.string "allocated_to", null: false
+    t.string "remainder_to", null: false
+    t.datetime "verified_at"
+    t.datetime "approved_at"
+    t.datetime "withdrawn_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_payroll_split_arrangements_on_approved_by_id"
+    t.index ["company_id"], name: "index_payroll_split_arrangements_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_split_arrangements_on_employment_id"
+    t.index ["requested_by_id"], name: "index_payroll_split_arrangements_on_requested_by_id"
+    t.index ["verified_by_id"], name: "index_payroll_split_arrangements_on_verified_by_id"
+    t.index ["withdrawn_by_id"], name: "index_payroll_split_arrangements_on_withdrawn_by_id"
+    t.check_constraint "(allocated_to::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])) AND (remainder_to::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])) AND allocated_to::text <> remainder_to::text", name: "payroll_split_parties"
+    t.check_constraint "allocation_kind::text = ANY (ARRAY['percentage'::character varying, 'fixed_inr'::character varying]::text[])", name: "payroll_split_kind"
+    t.check_constraint "allocation_value > 0::numeric", name: "payroll_split_value"
   end
 
   create_table "previous_employments", force: :cascade do |t|
@@ -1806,11 +2023,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "payroll_approvals", "payroll_revisions"
   add_foreign_key "payroll_approvals", "users", column: "actor_id"
+  add_foreign_key "payroll_expense_reservations", "companies"
+  add_foreign_key "payroll_expense_reservations", "employments"
+  add_foreign_key "payroll_expense_reservations", "expenses"
+  add_foreign_key "payroll_expense_reservations", "payroll_revisions"
+  add_foreign_key "payroll_expense_reservations", "payroll_runs"
+  add_foreign_key "payroll_mercury_connections", "companies"
+  add_foreign_key "payroll_mercury_connections", "users", column: "configured_by_id"
+  add_foreign_key "payroll_mercury_connections", "users", column: "verified_by_id"
+  add_foreign_key "payroll_mercury_recipient_links", "companies"
+  add_foreign_key "payroll_mercury_recipient_links", "employments"
+  add_foreign_key "payroll_mercury_recipient_links", "payroll_split_arrangements", column: "split_arrangement_id"
+  add_foreign_key "payroll_mercury_recipient_links", "users", column: "verified_by_id"
+  add_foreign_key "payroll_payment_events", "payroll_payment_instructions"
+  add_foreign_key "payroll_payment_events", "users", column: "actor_id"
+  add_foreign_key "payroll_payment_groups", "companies"
+  add_foreign_key "payroll_payment_groups", "employments"
+  add_foreign_key "payroll_payment_groups", "payroll_revisions"
+  add_foreign_key "payroll_payment_groups", "payroll_runs"
+  add_foreign_key "payroll_payment_groups", "payroll_split_arrangements", column: "split_arrangement_id"
+  add_foreign_key "payroll_payment_instructions", "companies"
+  add_foreign_key "payroll_payment_instructions", "consultant_compensations"
+  add_foreign_key "payroll_payment_instructions", "employments"
+  add_foreign_key "payroll_payment_instructions", "payroll_mercury_recipient_links", column: "recipient_link_id"
+  add_foreign_key "payroll_payment_instructions", "payroll_payment_groups"
+  add_foreign_key "payroll_payment_instructions", "payroll_revisions"
+  add_foreign_key "payroll_payment_instructions", "payroll_runs"
+  add_foreign_key "payroll_payment_instructions", "users", column: "absent_confirmed_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "prepared_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "rate_entered_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "submitted_by_id"
   add_foreign_key "payroll_revisions", "payroll_runs"
   add_foreign_key "payroll_revisions", "users", column: "created_by_id"
   add_foreign_key "payroll_runs", "companies"
   add_foreign_key "payroll_runs", "users", column: "accounts_reviewer_id"
   add_foreign_key "payroll_runs", "users", column: "final_reviewer_id"
+  add_foreign_key "payroll_split_arrangements", "companies"
+  add_foreign_key "payroll_split_arrangements", "employments"
+  add_foreign_key "payroll_split_arrangements", "users", column: "approved_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "requested_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "verified_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "withdrawn_by_id"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "profitability_billing_rates", "projects"
   add_foreign_key "profitability_billing_rates", "users"
@@ -1900,6 +2153,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   SQL
   execute <<~SQL
     CREATE TRIGGER payroll_approvals_immutable BEFORE UPDATE OR DELETE ON payroll_approvals
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_mercury_recipient_links_immutable BEFORE UPDATE OR DELETE ON payroll_mercury_recipient_links
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_payment_events_immutable BEFORE UPDATE OR DELETE ON payroll_payment_events
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
   SQL
 end

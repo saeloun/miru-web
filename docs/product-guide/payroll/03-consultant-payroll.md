@@ -4,9 +4,9 @@ title: Consultant payroll review
 ---
 
 Owners and admins can open **Consultant payroll** to review a month's consultant
-fees and reimbursement candidates. This is a preview: it does not approve
-payroll, reserve claims, transfer money, send accounts instructions or issue
-invoices. Other staff cannot access coworkers' consultant terms or reports.
+fees and reimbursement candidates. This page is a preview: it does not approve
+payroll, reserve claims or transfer money. Use **Payroll** for that, as described
+below. Other staff cannot access coworkers' consultant terms or reports.
 
 This workflow follows Miru's internal payroll rollout gate and is unavailable
 until the server explicitly enables the authoritative company ID. A role or
@@ -60,9 +60,9 @@ claims belong to that person/workspace, are approved and unpaid, use INR, and
 were both incurred and approved by the cutoff in the company timezone. The
 preview shows amount, date, description and receipt count; review original
 receipts in **Expenses**. Up to 100 claims can be selected in one preview.
-Changed, paid or otherwise ineligible selections require a refresh. Selection
-does not prevent another expense settlement; payroll reservation will be added
-with locked runs.
+Changed, paid or otherwise ineligible selections require a refresh. Selecting a
+claim in this preview doesn't reserve it. Claims are reserved when an owner gives
+final approval to a payroll run.
 
 Historical claims without a recorded approval time, foreign-currency claims and
 claims with invalid non-finite, zero or negative reimbursement amounts require
@@ -90,9 +90,116 @@ person as uploader, publisher, reviewer or terms creator. The records and their
 attribution remain intact; deactivate workspace access instead. A blocked
 deletion does not create a successful-deletion audit record.
 
-Verified beneficiaries, actual funding accounts, PTO decisions/accrual/recovery,
-delegated accounts permissions, locked runs, withholding, India handoff, Mercury
-wires/spouse splits, credit reconciliation and consultant invoices/remittance
-documents remain required follow-on work. See the
-[complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md)
+## Prepare and approve a payroll run
+
+Open **Payroll** and use **Make Payment**. Choose the month, an accounts reviewer
+and a different owner. This creates a run for review and moves no money.
+
+The accounts reviewer opens the run and chooses who to include. Consultants with
+unresolved data show **Not ready for payment** and don't hold up anyone else. For
+each consultant, the reviewer can enter confirmed unpaid hours with a reason,
+select reimbursements, and add other earnings, deductions or withholding, then
+acknowledges any listed warnings. Missing time never reduces the fee unless
+unpaid hours are entered. Reimbursements are never prorated.
+
+The accounts reviewer approves the revision, then the owner gives final approval.
+Final approval reserves the selected claims, so they can't be edited, reviewed,
+deleted, marked paid directly or included in another run. Changing source records,
+claims or that month's consultant terms returns the run to draft until a new revision
+is approved. Once a transfer exists for a month, new terms have to start in a later month.
+A new revision starts from the current one, and a consultant with a transfer must keep
+the same amounts and claims.
+
+## Pay through Mercury
+
+Payments go from your own Mercury account in USD, one request per transfer. The
+amount owed stays in INR. The receiving bank does the conversion, so the final
+INR credit is an estimate until accounts confirms it.
+
+**Mercury requests stay off until an administrator turns them on for this server
+and environment, and they haven't been tried against a real Mercury account yet.**
+
+Before you start, a server administrator needs to:
+
+- Set `MIRU_PAYROLL_ENABLED=true` and `MIRU_PAYROLL_SAELOUN_COMPANY_ID` to your company ID.
+- Configure the Active Record encryption keys. Without them, the token can't be saved.
+- Set `MIRU_PAYROLL_MERCURY_WRITE_ENVIRONMENT` to `sandbox` or `live` when you're ready
+  to create requests. It must match the connection's environment, and it's unset by
+  default.
+
+1. **Set up the connection (owner).** In Mercury, create a Custom API token with the
+   `RequestSendMoney` scope (Send Money with Approval) and read access to accounts,
+   recipients, send-money requests and transactions. Mercury's scope names for those
+   reads aren't publicly documented, so check them when you create the token. Have
+   someone other than the token creator approve requests. Custom scopes can't be edited
+   later, and Mercury deletes tokens that go unused for 45 days.
+
+   Enter the token, the source account ID, the expected legal name and the OUR fee. The
+   token can't be viewed again. **Verify read access** checks the account and legal name.
+   It doesn't prove the token can create payment requests. Mercury only confirms that on
+   the first request, and a token without that permission leaves the first transfer as
+   **Outcome unknown**, so get the scope right first.
+2. **Link recipients (owner).** Onboard the consultant in Mercury first, then enter
+   their existing Mercury recipient ID. Miru compares SWIFT, IFSC, account number
+   and account holder with the Miru profile and refuses any difference. It doesn't
+   create recipients or send invitations. Filling in a SWIFT code in Miru isn't
+   Mercury setup, though it's required here even though Employee records marks it
+   optional. If bank details change, verify the recipient again.
+3. **Prepare the transfer review (owner).** Use Miru's stored USD to INR rate when
+   one is less than 24 hours old, or enter a rate with its source and time. The
+   principal is the INR amount divided by the rate less INR 1.50, rounded to cents.
+   Quotes expire 24 hours after the rate was observed, not after you prepare them.
+4. **Create the approval request (owner).** Check the principal, OUR fee, company
+   debit, purpose and masked accounts, then choose **Create Mercury approval
+   request**. Miru rechecks approvals, roles, bank details, the recipient, the
+   quote and the balance first. A different person approves the request in Mercury.
+5. **Track it.** Miru reads request and transaction status automatically every 30
+   minutes, or when you choose **Refresh bank status**. Approved or sent doesn't
+   mean credited.
+6. **Record the credit (owner or accounts reviewer).** Enter the actual INR credited,
+   the date and the bank reference. A lower credit stays **Partially credited** until
+   accounts records a resolution, and it never changes what the consultant was owed.
+   When every transfer is credited, the reserved claims are marked paid.
+
+### If the outcome is unknown
+
+After a timeout or an unclear response, Mercury may have accepted the request, so
+Miru shows **Outcome unknown** and blocks retries and replacements. Choose **Check
+Mercury for this request**. An exact match links automatically. Other possible
+matches are only listed, and the owner must confirm one after checking it in
+Mercury.
+
+Finding nothing doesn't prove that no request exists. To retry, the assigned accounts
+reviewer records evidence, such as a Mercury support reference, that no request exists.
+Then someone else can retry with the same key or void the transfer. Miru checks Mercury
+again first and stops if a possible match has appeared.
+
+If Miru can't match a wire to a request exactly, it shows **Reconciliation required**.
+Accounts can still record the credit with its bank reference, and the history stays.
+
+### Spouse splits
+
+The owner or accounts reviewer enters the spouse's legal name and bank details, the
+account number twice, and a percentage or fixed INR amount with the other party
+taking the remainder. The assigned accounts reviewer verifies it and a different person,
+an owner, approves it. Any change needs verifying and approving again. While a month's
+transfers can still complete, a split's amounts can't change and it can't be withdrawn. You
+can still correct the spouse's bank details by requesting a split with the same allocation,
+which is how to fix a failed wire to a closed account. A correction that hasn't been
+approved yet can be withdrawn, which restores the approved split. A returned or held transfer
+doesn't block a change. If the amounts change, anything left unsent in that month can't be
+sent afterwards.
+
+The split applies to the fee after adjustments. Reimbursements stay with the
+consultant. Each transfer has its own principal, OUR fee, key and status, so a failed
+transfer can be prepared again without resending the one that succeeded. The consultant
+stays the service provider for income and tax purposes.
+
+## Not available yet
+
+Consultant invoices, FIRC or FIRA attachments, replacing returned funds, the India
+account handoff, consultant self-service for bank details and split requests, bank
+change notifications, Mercury webhooks and the PTO ledger and exception decisions are
+required follow-on work. A returned wire stays visible and can't be replaced from Miru.
+See the [complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md)
 for acceptance status.

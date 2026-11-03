@@ -2,6 +2,8 @@
 
 Updated: 2026-10-17. Target: the November 2026 payroll dry run. March 2027 is a provisional wider product milestone, not a confirmed statutory deadline or a committed feature-completion date.
 
+Update, 3 November 2026: the [consultant payroll to Mercury design](superpowers/specs/2026-11-03-mercury-payroll-approval-requests-design.md) supersedes the statements below that no create, approve or transfer endpoints exist. Runs stay immutable dry-run rows; bank execution lives in sidecar records and needs `MIRU_PAYROLL_MERCURY_WRITE_ENVIRONMENT` to exactly equal the connection's environment. It is unset by default. No real Mercury account has been exercised.
+
 ## Current inventory and ownership
 
 The inspected develop baseline is `16be9654f34b3baf327b4ee8e8de94720e7167f5`.
