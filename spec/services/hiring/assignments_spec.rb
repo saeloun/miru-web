@@ -244,6 +244,46 @@ RSpec.describe "Private hiring assessments" do
     expect(service.admin_file!(assignment:, attachment_id: file.id)).to include(filename: "changed.rb")
   end
 
+  it "refuses an admin download when their workspace changes during the storage read" do
+    assignment = issue
+    file = upload(assignment).files.sole
+    other_company = create(:company)
+    allow_any_instance_of(HiringAssignmentSubmission).to receive(:file_bytes).and_wrap_original do |original, attachment|
+      bytes = original.call(attachment)
+      admin.update!(current_workspace: other_company)
+      bytes
+    end
+    expect { service.admin_file!(assignment:, attachment_id: file.id) }.to raise_error(Pundit::NotAuthorizedError)
+  end
+
+  it "refuses a reviewer download when the assignment is reassigned during the storage read" do
+    assignment = issue
+    file = upload(assignment).files.sole
+    submit(assignment, answers.except("repository_url"))
+    allow_any_instance_of(HiringAssignmentSubmission).to receive(:file_bytes).and_wrap_original do |original, attachment|
+      bytes = original.call(attachment)
+      service.reassign!(assignment:, attributes: { "company_id" => company.id,
+        "application_version" => application.reload.lock_version, "assignment_version" => assignment.reload.lock_version,
+        "reviewer_employment_id" => admin_membership.id, "reason" => "Transfer the review to another active staff member" })
+      bytes
+    end
+    expect { service(reviewer).reviewer_file!(assignment:, attachment_id: file.id) }.to raise_error(Pundit::NotAuthorizedError)
+  end
+
+  it "refuses a draft download when the candidate removes that attachment during the storage read" do
+    assignment = issue
+    work = upload(assignment)
+    file = work.files.sole
+    allow_any_instance_of(HiringAssignmentSubmission).to receive(:file_bytes).and_wrap_original do |original, attachment|
+      bytes = original.call(attachment)
+      service(nil).remove_file!(assignment:, token: assignment.access_token, attributes: {
+        "assignment_version" => assignment.reload.lock_version, "submission_version" => work.reload.lock_version, "attachment_id" => file.id
+      })
+      bytes
+    end
+    expect { service.admin_file!(assignment:, attachment_id: file.id) }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
   it "refuses public storage, oversized files and uploads which cross the deadline without orphaning blobs" do
     assignment = issue
     original_blobs = ActiveStorage::Blob.count

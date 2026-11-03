@@ -6,7 +6,7 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
   protect_from_forgery with: :exception, unless: :token_authenticated_request?
   prepend_before_action :private_headers
   before_action :authorize_hiring
-  before_action -> { require_workspace!(params[:company_id]) }, if: -> { request.get? }
+  before_action -> { require_workspace!(params[:company_id]) }, if: -> { request.get? || request.head? }
 
   rescue_from ActionController::ParameterMissing, ActionController::BadRequest do
     render json: { errors: "Invalid hiring parameters." }, status: 400

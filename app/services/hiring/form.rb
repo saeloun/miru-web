@@ -14,7 +14,7 @@ module Hiring
     CUSTOM_TYPES = %w[text textarea email url number date select checkbox].freeze
 
     def self.issue!(application:, setting:, actor: nil)
-      application.company.with_lock do
+      application.company.with_lock("FOR NO KEY UPDATE") do
         setting.reload
         unless setting.company_id == application.company_id && setting.approved? && setting.form["enabled"]
           raise Intake::InvalidInput, "Approve and enable the application form before issuing a link."

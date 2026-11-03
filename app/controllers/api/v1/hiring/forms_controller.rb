@@ -49,9 +49,15 @@ class Api::V1::Hiring::FormsController < Api::V1::Hiring::BaseController
   end
 
   def resume
+    submission = with_application do |application|
+      application.hiring_submissions.includes(resume_attachment: :blob).find_by!(hiring_portal_access_id: optional_id(:id))
+    end
+    data = submission.resume_bytes
     with_application do |application|
-      submission = application.hiring_portal_accesses.find(optional_id(:id)).hiring_submission
-      data = submission.resume_bytes
+      current = application.hiring_submissions.find(submission.id)
+      unless current.resume_attachment&.blob_id == submission.resume_attachment&.blob_id
+        raise ActiveStorage::FileNotFoundError
+      end
       response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
       send_data data, filename: submission.resume.filename.to_s, type: submission.resume.blob.content_type, disposition: "attachment"
     end
@@ -63,14 +69,13 @@ class Api::V1::Hiring::FormsController < Api::V1::Hiring::BaseController
       current_user.with_lock do
         raise Pundit::NotAuthorizedError unless current_user.current_workspace_id == current_company.id && HiringPolicy.new(current_user, HiringApplication).create?
 
-        current_company.with_lock do
-          application = current_company.hiring_applications.find(optional_id(:application_id))
-          application.with_lock do
-            if attributes && (!attributes["lock_version"].is_a?(Integer) || application.lock_version != attributes["lock_version"])
-              raise ::Hiring::Intake::Conflict, "The application changed. Reload before issuing a link."
-            end
-            yield application
+        current_company.lock!("FOR NO KEY UPDATE") unless request.get? || request.head?
+        application = current_company.hiring_applications.find(optional_id(:application_id))
+        application.with_lock do
+          if attributes && (!attributes["lock_version"].is_a?(Integer) || application.lock_version != attributes["lock_version"])
+            raise ::Hiring::Intake::Conflict, "The application changed. Reload before issuing a link."
           end
+          yield application
         end
       end
     end

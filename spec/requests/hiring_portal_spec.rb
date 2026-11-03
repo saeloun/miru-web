@@ -241,6 +241,46 @@ RSpec.describe "Private candidate forms", type: :request do
     expect(submission.resume_bytes).to eq(File.binread(source))
   end
 
+  it "refuses an admin resume download if employment ends during the storage read" do
+    access = issue
+    source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
+    post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
+      file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
+    expect(response).to have_http_status(:ok)
+    allow_any_instance_of(HiringSubmission).to receive(:resume_bytes).and_wrap_original do |original|
+      bytes = original.call
+      membership.update!(resigned_at: Date.yesterday)
+      bytes
+    end
+    get "/api/v1/hiring/applications/#{application.id}/forms/#{access.id}/resume", params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(response.headers["Cache-Control"]).to include("private", "no-store")
+  end
+
+  %w[remove replace].each do |action|
+    it "refuses an admin resume download if the candidate #{action}s the resume during the storage read" do
+      access = issue
+      source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
+      post "/hiring-form/resume", params: { hiring_form: { token: @token, lock_version: "0",
+        file: Rack::Test::UploadedFile.new(source, "application/pdf") } }
+      expect(response).to have_http_status(:ok)
+      if action == "replace"
+        replacement = ActiveStorage::Blob.create_and_upload!(io: StringIO.new(File.binread(source)), filename: "replacement.pdf",
+          content_type: "application/pdf", metadata: access.hiring_submission.resume.blob.metadata)
+      end
+      allow_any_instance_of(HiringSubmission).to receive(:resume_bytes).and_wrap_original do |original|
+        bytes = original.call
+        action == "remove" ? access.hiring_submission.resume.detach : access.hiring_submission.resume.attach(replacement)
+        bytes
+      end
+      get "/api/v1/hiring/applications/#{application.id}/forms/#{access.id}/resume", params: { company_id: company.id }
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include("%PDF")
+      expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    end
+  end
+
   it "refuses public storage and detects changed resume bytes on both download paths" do
     access = issue
     source = Rails.root.join("spec/fixtures/files/qa-main.pdf")

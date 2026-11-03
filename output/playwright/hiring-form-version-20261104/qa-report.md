@@ -48,5 +48,7 @@ version. The suggested screening overwrite was checked against its separate
 edit-version state; screening does not submit the parent's observed version.
 
 This verifies local changes, not a deployment, provider integration or the whole
-ATS feature. The separate company-lock review comment remains open. Screenshots
-contain synthetic records and synthetic private links.
+ATS feature. The separate company-lock finding has a
+[verified local follow-up](../hiring-download-integrity-20261104/qa-report.md);
+the published review thread awaits branch publication and CI. Screenshots contain
+synthetic records and synthetic private links.

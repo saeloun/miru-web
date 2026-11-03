@@ -4,16 +4,14 @@ class Api::V1::Hiring::AssignmentReviewsController < Api::V1::Hiring::BaseContro
   def index
     current_user.with_lock do
       authorize_hiring
-      current_company.with_lock do
-        reviewers = HiringPolicy.staff_members(current_company).where(user_id: current_user.id).select(:id)
-        relation = current_company.hiring_assignments.where(reviewer_employment_id: reviewers, ended_at: nil).
-          joins(:hiring_application).where(hiring_applications: { stage: HiringAssignment::ACTIVE_STAGES }).order(id: :desc)
-        rows, pagination = page_records(relation)
-        render json: { company_id: current_company.id, assignments: rows.map do |record|
-          { id: record.id, title: record.terms.fetch("title"), candidate_name: record.hiring_application.submitted_name,
-            role: record.terms["role"]&.fetch("title"), status: record.status, due_at: record.due_at }
-        end, pagination: }
-      end
+      reviewers = HiringPolicy.staff_members(current_company).where(user_id: current_user.id).select(:id)
+      relation = current_company.hiring_assignments.where(reviewer_employment_id: reviewers, ended_at: nil).
+        joins(:hiring_application).where(hiring_applications: { stage: HiringAssignment::ACTIVE_STAGES }).order(id: :desc)
+      rows, pagination = page_records(relation)
+      render json: { company_id: current_company.id, assignments: rows.map do |record|
+        { id: record.id, title: record.terms.fetch("title"), candidate_name: record.hiring_application.submitted_name,
+          role: record.terms["role"]&.fetch("title"), status: record.status, due_at: record.due_at }
+      end, pagination: }
     end
   end
 
@@ -30,11 +28,10 @@ class Api::V1::Hiring::AssignmentReviewsController < Api::V1::Hiring::BaseContro
   end
 
   def download
-    with_assignment do |assignment|
-      file = service(assignment).reviewer_file!(assignment:, attachment_id: optional_id(:attachment_id))
-      response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
-      send_data file.fetch(:data), filename: file.fetch(:filename), type: file.fetch(:type), disposition: "attachment"
-    end
+    assignment = with_assignment { |record| record }
+    file = service(assignment).reviewer_file!(assignment:, attachment_id: optional_id(:attachment_id))
+    response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
+    send_data file.fetch(:data), filename: file.fetch(:filename), type: file.fetch(:type), disposition: "attachment"
   end
 
   private
@@ -50,13 +47,12 @@ class Api::V1::Hiring::AssignmentReviewsController < Api::V1::Hiring::BaseContro
     def with_assignment
       current_user.with_lock do
         authorize_hiring
-        current_company.with_lock do
-          assignment = current_company.hiring_assignments.find(optional_id(:id))
-          assignment.hiring_application.with_lock do
-            assignment.with_lock do
-              authorize assignment, :show?
-              yield assignment
-            end
+        current_company.lock!("FOR NO KEY UPDATE") unless request.get? || request.head?
+        assignment = current_company.hiring_assignments.find(optional_id(:id))
+        assignment.hiring_application.with_lock do
+          assignment.with_lock do
+            authorize assignment, :show?
+            yield assignment
           end
         end
       end

@@ -39,12 +39,10 @@ class Api::V1::Hiring::AssignmentsController < Api::V1::Hiring::BaseController
   end
 
   def download
-    with_application do |application|
-      assignment = application.hiring_assignments.find(optional_id(:id))
-      file = service(application).admin_file!(assignment:, attachment_id: optional_id(:attachment_id))
-      response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
-      send_data file.fetch(:data), filename: file.fetch(:filename), type: file.fetch(:type), disposition: "attachment"
-    end
+    assignment = with_application { |application| application.hiring_assignments.find(optional_id(:id)) }
+    file = service(assignment.hiring_application).admin_file!(assignment:, attachment_id: optional_id(:attachment_id))
+    response.headers["Content-Security-Policy"] = "sandbox; default-src 'none'"
+    send_data file.fetch(:data), filename: file.fetch(:filename), type: file.fetch(:type), disposition: "attachment"
   end
 
   private
@@ -54,10 +52,9 @@ class Api::V1::Hiring::AssignmentsController < Api::V1::Hiring::BaseController
     def with_application
       current_user.with_lock do
         authorize_hiring
-        current_company.with_lock do
-          application = current_company.hiring_applications.find(optional_id(:application_id))
-          application.with_lock { yield application }
-        end
+        current_company.lock!("FOR NO KEY UPDATE") unless request.get? || request.head?
+        application = current_company.hiring_applications.find(optional_id(:application_id))
+        application.with_lock { yield application }
       end
     end
 

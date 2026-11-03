@@ -98,6 +98,7 @@ RSpec.describe "Admin and designated-staff assessments", type: :system, js: true
     record = service.issue!(attributes: { "company_id" => company.id, "application_version" => application.reload.lock_version,
       "template_id" => template.id, "template_version" => template.lock_version, "reviewer_employment_id" => reviewer_membership.id,
       "due_at" => 2.days.from_now.iso8601, "request_key" => SecureRandom.uuid })
+    yield record if block_given?
     Hiring::Assignments.new(application:, actor: nil).submit!(assignment: record, token: record.access_token, attributes: {
       "assignment_version" => record.lock_version, "submission_version" => record.submission.lock_version,
       "answers" => { "repository_url" => "https://example.test/work", "setup" => "Run bin/setup", "approach" => "Used query tests",
@@ -114,14 +115,104 @@ RSpec.describe "Admin and designated-staff assessments", type: :system, js: true
     })
   end
 
+  %i[admin reviewer].each do |role|
+    it "releases row locks while reading a private assessment download for #{role}" do
+      source = Rails.root.join("spec/fixtures/files/qa-main.pdf")
+      record = submitted_assignment do |assignment|
+        File.open(source, "rb") do |file|
+          upload = ActionDispatch::Http::UploadedFile.new(tempfile: file, filename: "qa-main.pdf", type: "application/pdf")
+          Hiring::Assignments.new(application:, actor: nil).upload!(assignment:, token: assignment.access_token, attributes: {
+            "assignment_version" => assignment.lock_version, "submission_version" => assignment.submission.lock_version, "file" => upload
+          })
+        end
+      end
+      actor = public_send(role)
+      sign_in actor
+      page.current_window.resize_to(role == :admin ? 1440 : 390, 900)
+      errors = []
+      page.driver.browser.on("Runtime.consoleAPICalled") { |event| errors << event if event["type"] == "error" }
+      page.driver.browser.on("Runtime.exceptionThrown") { |event| errors << event }
+      controller = role == :admin ? Api::V1::Hiring::AssignmentsController : Api::V1::Hiring::AssignmentReviewsController
+      checked_reads = []
+      allow_any_instance_of(controller).to receive(:render).and_wrap_original do |original, *arguments, **options, &block|
+        check_hiring_rows_available(company)
+        checked_reads << original.receiver.action_name
+        original.call(*arguments, **options, &block)
+      end
+      if role == :reviewer
+        visit "/assignment-reviews"
+        expect(page).to have_link("Synthetic Review Candidate · Catalogue review task")
+      end
+      visit(role == :admin ? "/hiring/applications/#{application.id}" : "/assignment-reviews/#{record.id}")
+      expect(page).to have_button("Download qa-main.pdf")
+      checked_download = false
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments, &block|
+        check_hiring_rows_available(company, actor, application, record)
+        checked_download = true
+        original.call(*arguments, &block)
+      end
+      Dir.mktmpdir("miru-assessment-download") do |directory|
+        downloads = page.driver.browser.downloads
+        downloads.set_behavior(save_path: directory)
+        expect(downloads.wait(10) { click_button "Download qa-main.pdf", exact: true }).to be(true)
+        expect(File.binread(File.join(directory, "qa-main.pdf"))).to eq(File.binread(source))
+      end
+      expect(checked_download).to be(true)
+      expect(checked_reads).to include("index")
+      expect(checked_reads).to include("show") if role == :reviewer
+      path = role == :admin ? "/api/v1/hiring/applications/#{application.id}/assignments" : "/api/v1/hiring/assignment_reviews/#{record.id}"
+      expect(hiring_head(path, company.id)).to eq("status" => 200, "body" => "")
+      expect(hiring_head(path, company.id + 1)).to eq("status" => 409, "body" => "")
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
+      if ENV["HIRING_DOWNLOAD_SHOTS"]
+        directory = Rails.root.join(ENV.fetch("HIRING_DOWNLOAD_SHOTS"))
+        FileUtils.mkdir_p(directory)
+        page.save_screenshot(directory.join("#{role}-download.png"), full: true)
+      end
+      membership = role == :admin ? admin_membership : reviewer_membership
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments, &block|
+        bytes = original.call(*arguments, &block)
+        Thread.new do
+          ActiveRecord::Base.connection_pool.with_connection do |connection|
+            connection.transaction do
+              connection.execute("SET LOCAL lock_timeout = '1s'")
+              Employment.where(id: membership.id).update_all(resigned_at: Date.yesterday)
+            end
+          end
+        end.value
+        bytes
+      end
+      file_path = role == :admin ? "#{path}/#{record.id}/files/#{record.submission.files.sole.id}" : "#{path}/files/#{record.submission.files.sole.id}"
+      denied = page.evaluate_async_script(<<~JS, file_path, company.id)
+        const done = arguments[2];
+        fetch(arguments[0] + '?company_id=' + arguments[1])
+          .then(async response => done({status: response.status, body: await response.text()}))
+          .catch(error => done({error: error.message}));
+      JS
+      expect(membership.reload.resigned_at).to eq(Date.yesterday)
+      expect(denied.fetch("status")).to eq(403)
+      expect(denied.fetch("body")).not_to include("%PDF")
+      expect(errors).to be_empty
+    end
+  end
+
   it "issues work, requests a walkthrough, preserves revised work and advances only after explicit Admin review" do
     release_history = true
+    checked_issue = false
+    allow_any_instance_of(Api::V1::Hiring::AssignmentsController).to receive(:render).and_wrap_original do |original, *arguments, **options, &block|
+      if original.receiver.action_name == "create"
+        check_hiring_rows_available(company, lock: "FOR KEY SHARE")
+        checked_issue = true
+      end
+      original.call(*arguments, **options, &block)
+    end
     page.current_window.resize_to(375, 900)
     admin_page
     choose_task_and_reviewer
     fill_in "Candidate instructions", with: "Explain your indexing choices"
     click_button "Issue assignment link"
     expect(page).to have_text("Assignment link created. No email was sent.")
+    expect(checked_issue).to be(true)
     original = application.reload.hiring_assignments.sole
     link = find_link("Open candidate assignment")[:href]
     submit_candidate(link, "Original catalogue design")

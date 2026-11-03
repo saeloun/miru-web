@@ -124,6 +124,17 @@ RSpec.describe "Admin candidate form review", type: :system, js: true do
   end
 
   it "issues a private link, reviews submitted answers and downloads the exact resume before revoking the link" do
+    checked_actions = []
+    allow_any_instance_of(Api::V1::Hiring::FormsController).to receive(:render).and_wrap_original do |original, *arguments, **options, &block|
+      action = original.receiver.action_name
+      if %w[create destroy].include?(action)
+        check_hiring_rows_available(company, lock: "FOR KEY SHARE")
+      else
+        check_hiring_rows_available(company)
+      end
+      checked_actions << action
+      original.call(*arguments, **options, &block)
+    end
     open_application
     within(form_panel) { click_button "Create private form link" }
     expect(page).to have_field("Private form link", readonly: true)
@@ -152,12 +163,23 @@ RSpec.describe "Admin candidate form review", type: :system, js: true do
       expect(page).to have_text("120000.50 INR")
       expect(page).to have_text("Private candidate context")
       expect(page).to have_text("Not provided")
+      checked_download = false
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments, &block|
+        check_hiring_rows_available(company, admin, application)
+        checked_download = true
+        original.call(*arguments, &block)
+      end
       Dir.mktmpdir("miru-candidate-download") do |directory|
         downloads = page.driver.browser.downloads
         downloads.set_behavior(save_path: directory)
         expect(downloads.wait(10) { click_button "Download resume", exact: true }).to be(true)
         expect(File.binread(File.join(directory, "qa-main.pdf"))).to eq(File.binread(source))
       end
+      expect(checked_download).to be(true)
+      expect(checked_actions).to include("index", "create", "resume")
+      path = "/api/v1/hiring/applications/#{application.id}/forms"
+      expect(hiring_head(path, company.id)).to eq("status" => 200, "body" => "")
+      expect(hiring_head(path, company.id + 1)).to eq("status" => 409, "body" => "")
       click_button "Revoke link"
     end
     within('[role="dialog"]') { click_button "Revoke link", exact: true }

@@ -91,23 +91,18 @@ module Hiring
 
     def candidate_file!(assignment:, token:, attachment_id:)
       with_candidate(assignment, token) do
-        result = file_data(assignment, attachment_id)
+        result = file_data(file_attachment(assignment, attachment_id))
         candidate_access!(assignment, token)
         result
       end
     end
 
     def reviewer_file!(assignment:, attachment_id:)
-      with_actor(assignment:, reviewer: true) do
-        result = file_data(assignment, attachment_id)
-        raise Pundit::NotAuthorizedError unless HiringAssignmentPolicy.new(@actor.reload, assignment).review?
-
-        result
-      end
+      actor_file(assignment, attachment_id, reviewer: true)
     end
 
     def admin_file!(assignment:, attachment_id:)
-      with_actor(assignment:) { file_data(assignment, attachment_id) }
+      actor_file(assignment, attachment_id, reviewer: false)
     end
 
     def reassign!(assignment:, attributes:)
@@ -247,32 +242,44 @@ module Hiring
         submission
       end
 
-      def file_data(assignment, attachment_id)
-        submission = assignment.submission
-        attachment = submission.files_attachments.find(identity(attachment_id))
-        { data: submission.file_bytes(attachment), filename: attachment.filename.to_s, type: "application/octet-stream" }
+      def file_attachment(assignment, attachment_id)
+        assignment.submission.files_attachments.includes(:blob).find(identity(attachment_id))
       end
 
-      def with_actor(assignment: nil, reviewer: false, &operation)
+      def file_data(attachment)
+        { data: attachment.record.file_bytes(attachment), filename: attachment.filename.to_s, type: "application/octet-stream" }
+      end
+
+      def actor_file(assignment, attachment_id, reviewer:)
+        attachment = with_actor(assignment:, reviewer:, read_only: true) { file_attachment(assignment, attachment_id) }
+        result = file_data(attachment)
+        with_actor(assignment:, reviewer:, read_only: true) do
+          unless file_attachment(assignment, attachment_id).blob_id == attachment.blob_id
+            raise ActiveStorage::FileNotFoundError
+          end
+          result
+        end
+      end
+
+      def with_actor(assignment: nil, reviewer: false, read_only: false, &operation)
         raise Pundit::NotAuthorizedError unless @actor
 
         @actor.with_lock do
-          @company.with_lock do
-            @application.with_lock do
-              unless @actor.current_workspace_id == @company.id &&
-                  (reviewer ? HiringAssignmentPolicy.new(@actor, assignment).review? : HiringPolicy.new(@actor, @application).update?)
-                raise Pundit::NotAuthorizedError
-              end
-              if assignment
-                assignment.with_lock do
-                  unless assignment.company_id == @company.id && assignment.hiring_application_id == @application.id
-                    raise Pundit::NotAuthorizedError
-                  end
-                  operation.call
+          @company.lock!("FOR NO KEY UPDATE") unless read_only
+          @application.with_lock do
+            unless @actor.current_workspace_id == @company.id &&
+                (reviewer ? HiringAssignmentPolicy.new(@actor, assignment).review? : HiringPolicy.new(@actor, @application).update?)
+              raise Pundit::NotAuthorizedError
+            end
+            if assignment
+              assignment.with_lock do
+                unless assignment.company_id == @company.id && assignment.hiring_application_id == @application.id
+                  raise Pundit::NotAuthorizedError
                 end
-              else
                 operation.call
               end
+            else
+              operation.call
             end
           end
         end
