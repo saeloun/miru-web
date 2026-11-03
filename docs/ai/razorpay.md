@@ -70,6 +70,8 @@ An open review blocks checkout through other providers as well as Razorpay. Chec
 
 An owner/admin can check the original account, mode and reference in Payment Settings, or provide the actual link ID found in Razorpay. If it cannot be located, contact Razorpay support with that reference. Keep the invoice blocked until its outcome is established; do not clear its JSON marker or create a replacement invoice to bypass it.
 
+Settings distinguishes a confirmed binding from a pending lookup, a recent check and an attempt that is no longer pending. It never infers confirmation just because the intent disappeared. Invalid IDs and request limits are shown without implying Razorpay was queried. A failed status refresh keeps the last loaded account read-only; a 401/403 removes its displayed details. Recovery input and feedback belong to the original creation reference, so a later attempt on the same invoice cannot inherit them.
+
 ### Mobile collection retries
 
 For connected-account links, `POST /api/v1/mobile/collections` requires a stable string `collection.idempotency_key` of 1 to 100 characters. Reuse the key on retries. A missing or invalid key returns 422 with `code: "idempotency_key_required"` before saving an invoice. Collection creation and replay lookup are serialized within the company; no Razorpay HTTP is performed under that company lock.

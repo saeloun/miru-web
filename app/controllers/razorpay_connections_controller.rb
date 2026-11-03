@@ -79,10 +79,18 @@ class RazorpayConnectionsController < ApplicationController
 
   def recover_link_creation
     invoice = current_company.invoices.find(params[:invoice_id])
-    PaymentProviders::RazorpayPaymentLinkCreation.new(invoice:, provider:).recover!(payment_link_id: params[:payment_link_id])
+    link_id = params[:payment_link_id]
+    link_id = link_id.strip if link_id.is_a?(String)
+    unless link_id.nil? || (link_id.is_a?(String) && (link_id.empty? || link_id.match?(PaymentProviders::RazorpayPaymentLinkCreation::LINK_ID)))
+      return render json: { code: "invalid_link_id", errors: "Enter a Payment Link ID beginning with plink_. Nothing was checked." }, status: 422
+    end
+    creation = PaymentProviders::RazorpayPaymentLinkCreation.new(invoice:, provider:)
+    creation.recover!(payment_link_id: link_id)
     current_user.reload
     authorize_management
-    render_connection
+    pending = PaymentProviders::RazorpayPaymentLinkCreation.pending?(invoice.reload)
+    render json: { connection: connection.status, link_creation_pending: pending,
+      link_creation_checked: creation.checked, link_confirmed: !pending && invoice.razorpay_payment_link_id.present? }
   rescue PaymentProviders::RazorpayClient::Error
     render json: { errors: "Link confirmation is still pending. Check its original Razorpay account, mode and reference, then retry." }, status: 409
   end

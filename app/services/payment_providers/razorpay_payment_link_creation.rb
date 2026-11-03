@@ -7,7 +7,7 @@ module PaymentProviders
     RECHECK_INTERVAL = 15.seconds
     LINK_ID = /\Aplink_[A-Za-z0-9_]{1,80}\z/
 
-    attr_reader :created
+    attr_reader :created, :checked
 
     def self.pending?(invoice)
       (invoice.payment_infos || {}).key?(KEY)
@@ -54,10 +54,12 @@ module PaymentProviders
     end
 
     def recover!(payment_link_id: nil)
+      @checked = false
       prepare!
       intent = recovery_intent(payment_link_id)
       return unless intent
 
+      @checked = true
       candidate_id = payment_link_id.presence || locate_link(intent)
       return unless candidate_id
       raise RazorpayClient::Error, "Enter a Payment Link ID beginning with plink_" unless valid_link_id?(candidate_id)

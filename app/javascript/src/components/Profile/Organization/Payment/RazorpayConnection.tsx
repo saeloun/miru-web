@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { razorpayConnectionApi } from "apis/api";
+import { isAxiosError } from "axios";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription, AlertTitle } from "../../../ui/alert";
@@ -91,33 +92,73 @@ const CONNECTABLE_STATUSES: ConnectionStatus[] = [
   "revoked",
 ];
 
-const actionButtonClass = "h-auto w-full whitespace-normal py-2 sm:w-auto";
+const actionButtonClass =
+  "h-auto min-h-10 w-full whitespace-normal py-2 sm:w-auto";
 
 const text = (key: string, options?: Record<string, unknown>) =>
   i18n.t(`paymentSettingsPage.razorpayConnection.${key}`, options);
+
+const linkKey = (link: LinkNeedingConfirmation) =>
+  `${link.invoice_id}:${link.reference_id || ""}`;
 
 const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
   onApiKeysBlockedChange,
 }) => {
   const [details, setDetails] = useState<ConnectionResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
+  const [checkingLink, setCheckingLink] = useState<number | null>(null);
+  const heading = useRef<HTMLHeadingElement>(null);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
   const [reviewToConfirm, setReviewToConfirm] =
     useState<PaymentNeedingReview | null>(null);
   const [accountId, setAccountId] = useState("");
   const [providerReference, setProviderReference] = useState("");
   const [recoveryLinkIds, setRecoveryLinkIds] = useState<
-    Record<number, string>
+    Record<string, string>
   >({});
 
+  const [recoveryFeedback, setRecoveryFeedback] = useState<
+    Record<string, { message: string; error?: boolean; inputError?: boolean }>
+  >({});
+
+  const controlsDisabled = isWorking || isLoading || loadError;
+
   const refresh = useCallback(async () => {
+    setIsLoading(true);
     try {
       const { data } = await razorpayConnectionApi.get();
       setDetails(data);
+      const pendingKeys = new Set(
+        (data.connection.links_needing_confirmation || []).map(linkKey)
+      );
+
+      setRecoveryFeedback(current =>
+        Object.fromEntries(
+          Object.entries(current).filter(([key]) => pendingKeys.has(key))
+        )
+      );
+
+      setRecoveryLinkIds(current =>
+        Object.fromEntries(
+          Object.entries(current).filter(([key]) => pendingKeys.has(key))
+        )
+      );
+      setLoadError(false);
       setAccountId(current => current || data.connection.account_id || "");
       onApiKeysBlockedChange(data.api_keys_blocked);
-    } catch {
-      setDetails(null);
+    } catch (error) {
+      setLoadError(true);
+      onApiKeysBlockedChange(true);
+      if (
+        isAxiosError(error) &&
+        [401, 403].includes(error.response?.status || 0)
+      ) {
+        setDetails(null);
+      }
+    } finally {
+      setIsLoading(false);
     }
   }, [onApiKeysBlockedChange]);
 
@@ -193,7 +234,114 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
     }
   };
 
-  if (!details) return null;
+  const checkLink = async (link: LinkNeedingConfirmation) => {
+    const invoiceId = link.invoice_id;
+    const key = linkKey(link);
+    let inputError = false;
+
+    setIsWorking(true);
+    setCheckingLink(invoiceId);
+    setRecoveryFeedback(current => ({
+      ...current,
+      [key]: { message: text("linkChecking") },
+    }));
+    try {
+      const { data } = await razorpayConnectionApi.recoverLinkCreation(
+        invoiceId,
+        recoveryLinkIds[key] || ""
+      );
+      const pending = data.link_creation_pending !== false;
+      const confirmed = data.link_confirmed === true;
+      const message = pending
+        ? text(
+            data.link_creation_checked === false
+              ? "linkRecentlyChecked"
+              : "linkStillPending"
+          )
+        : text(confirmed ? "linkConfirmed" : "linkNoLongerPending");
+
+      setRecoveryFeedback(current => ({
+        ...current,
+        [key]: { message },
+      }));
+      if (!pending) {
+        if (confirmed) toast.success(message);
+        else toast.message(message);
+      }
+    } catch (error) {
+      const body = isAxiosError<{ errors?: unknown; code?: string }>(error)
+        ? error.response?.data
+        : undefined;
+      const limited = isAxiosError(error) && error.response?.status === 429;
+
+      inputError = body?.code === "invalid_link_id";
+
+      setRecoveryFeedback(current => ({
+        ...current,
+        [key]: {
+          message: limited
+            ? text("linkRateLimited")
+            : typeof body?.errors === "string"
+            ? body.errors
+            : text("linkCheckFailed"),
+          error: true,
+          inputError,
+        },
+      }));
+    } finally {
+      await refresh();
+      setCheckingLink(null);
+      setIsWorking(false);
+      window.requestAnimationFrame(() => {
+        const target = document.getElementById(
+          `razorpay_link_${inputError ? "id" : "check"}_${invoiceId}`
+        );
+        if (target && !target.matches(":disabled")) target.focus();
+        else heading.current?.focus();
+      });
+    }
+  };
+
+  const loadFailure = (
+    <Alert>
+      <AlertTitle>{text("loadFailed")}</AlertTitle>
+      <AlertDescription>
+        {details && <p>{text("lastKnownStatus")}</p>}
+        <Button
+          className={`mt-3 ${actionButtonClass}`}
+          disabled={isLoading || isWorking}
+          type="button"
+          variant="outline"
+          onClick={async () => {
+            await refresh();
+            window.requestAnimationFrame(() => heading.current?.focus());
+          }}
+        >
+          {text("retryLoading")}
+        </Button>
+      </AlertDescription>
+    </Alert>
+  );
+
+  if (!details) {
+    return (
+      <section
+        aria-labelledby="razorpay-connection-title"
+        className="mt-5 space-y-3 rounded-lg border border-border bg-background p-4"
+        data-testid="razorpay-connection"
+      >
+        <h4
+          className="text-sm font-semibold"
+          id="razorpay-connection-title"
+          ref={heading}
+          tabIndex={-1}
+        >
+          {text("title")}
+        </h4>
+        {loadError ? loadFailure : <p role="status">{text("loading")}</p>}
+      </section>
+    );
+  }
 
   const resolveReview = () => {
     if (!reviewToConfirm) return;
@@ -217,7 +365,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
   const connectButton = (
     <Button
       className={`bg-primary hover:bg-primary/90 ${actionButtonClass}`}
-      disabled={isWorking}
+      disabled={controlsDisabled}
       onClick={startConnection}
     >
       {text("connect")}
@@ -227,7 +375,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
   const disconnectButton = (label: string) => (
     <Button
       className={actionButtonClass}
-      disabled={isWorking}
+      disabled={controlsDisabled}
       variant="outline"
       onClick={() => setShowDisconnectDialog(true)}
     >
@@ -245,6 +393,8 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
         <h4
           className="text-sm font-semibold text-foreground"
           id="razorpay-connection-title"
+          ref={heading}
+          tabIndex={-1}
         >
           {text("title")}
         </h4>
@@ -257,6 +407,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
       </div>
 
       <div className="mt-2 space-y-3">
+        {loadError && loadFailure}
         <p aria-live="polite" className="text-sm text-muted-foreground">
           {!connectAvailable && status === "disconnected"
             ? text(`unavailable.${details.unavailable_reason}`)
@@ -264,10 +415,18 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
         </p>
 
         {unconfirmedLinks.length > 0 && (
-          <Alert variant="destructive">
-            <AlertTitle>{text("linkConfirmationTitle")}</AlertTitle>
+          <Alert
+            aria-labelledby="razorpay-link-confirmation-title"
+            role="region"
+          >
+            <AlertTitle id="razorpay-link-confirmation-title">
+              {text("linkConfirmationTitle")}
+            </AlertTitle>
             <AlertDescription>
               <p>{text("linkConfirmationDescription")}</p>
+              {status !== "connected" && (
+                <p className="mt-2">{text("linkConnectionRequired")}</p>
+              )}
               <ul className="mt-3 space-y-4">
                 {unconfirmedLinks.map(link => (
                   <li className="min-w-0 space-y-2" key={link.invoice_id}>
@@ -287,21 +446,36 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
                         mode: link.mode || text("reviewPaymentUnknown"),
                       })}
                     </p>
-                    <Label htmlFor={`razorpay_link_id_${link.invoice_id}`}>
+                    <Label
+                      className="block"
+                      htmlFor={`razorpay_link_id_${link.invoice_id}`}
+                    >
                       {text("linkId")}
                     </Label>
                     <Input
-                      aria-describedby={`razorpay_link_help_${link.invoice_id}`}
-                      disabled={isWorking}
+                      aria-describedby={`razorpay_link_help_${link.invoice_id} razorpay_link_feedback_${link.invoice_id}`}
+                      aria-invalid={
+                        recoveryFeedback[linkKey(link)]?.inputError || undefined
+                      }
+                      className="min-h-10"
+                      disabled={controlsDisabled}
                       id={`razorpay_link_id_${link.invoice_id}`}
                       maxLength={86}
-                      value={recoveryLinkIds[link.invoice_id] || ""}
-                      onChange={event =>
+                      value={recoveryLinkIds[linkKey(link)] || ""}
+                      onChange={event => {
                         setRecoveryLinkIds(current => ({
                           ...current,
-                          [link.invoice_id]: event.target.value,
-                        }))
-                      }
+                          [linkKey(link)]: event.target.value,
+                        }));
+                        if (recoveryFeedback[linkKey(link)]?.inputError) {
+                          setRecoveryFeedback(current => {
+                            const updated = { ...current };
+                            delete updated[linkKey(link)];
+
+                            return updated;
+                          });
+                        }
+                      }}
                     />
                     <p
                       className="text-xs"
@@ -311,22 +485,35 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
                     </p>
                     <Button
                       className={actionButtonClass}
-                      disabled={isWorking}
+                      disabled={controlsDisabled || status !== "connected"}
+                      id={`razorpay_link_check_${link.invoice_id}`}
                       type="button"
                       variant="outline"
-                      onClick={() =>
-                        run(
-                          () =>
-                            razorpayConnectionApi.recoverLinkCreation(
-                              link.invoice_id,
-                              recoveryLinkIds[link.invoice_id] || ""
-                            ),
-                          text("linkRefreshResult")
-                        )
-                      }
+                      onClick={() => checkLink(link)}
                     >
-                      {text("linkRecheck")}
+                      {text(
+                        checkingLink === link.invoice_id
+                          ? "linkChecking"
+                          : "linkRecheck"
+                      )}
                     </Button>
+                    {recoveryFeedback[linkKey(link)] && (
+                      <p
+                        className={
+                          recoveryFeedback[linkKey(link)].error
+                            ? "text-sm text-destructive"
+                            : "text-sm"
+                        }
+                        id={`razorpay_link_feedback_${link.invoice_id}`}
+                        role={
+                          recoveryFeedback[linkKey(link)].error
+                            ? "alert"
+                            : "status"
+                        }
+                      >
+                        {recoveryFeedback[linkKey(link)].message}
+                      </p>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -368,7 +555,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
                     </div>
                     <Button
                       className={actionButtonClass}
-                      disabled={isWorking}
+                      disabled={controlsDisabled}
                       variant="outline"
                       onClick={() => setReviewToConfirm(payment)}
                     >
@@ -443,7 +630,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
             <div className="flex items-center gap-2">
               <Switch
                 checked={connection.collections_enabled}
-                disabled={isWorking || !connection.collections_ready}
+                disabled={controlsDisabled || !connection.collections_ready}
                 id="razorpay_connection_collections"
                 onCheckedChange={enabled =>
                   run(() => razorpayConnectionApi.updateCollections(enabled))
@@ -495,7 +682,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
             </p>
             <Button
               className={actionButtonClass}
-              disabled={isWorking}
+              disabled={controlsDisabled}
               type="submit"
               variant="outline"
             >
@@ -515,7 +702,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
             </ol>
             <Button
               className={actionButtonClass}
-              disabled={isWorking}
+              disabled={controlsDisabled}
               variant="outline"
               onClick={() => run(refresh)}
             >
@@ -545,7 +732,9 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
               </p>
               <Button
                 className={actionButtonClass}
-                disabled={isWorking || providerReference.trim().length === 0}
+                disabled={
+                  controlsDisabled || providerReference.trim().length === 0
+                }
                 type="submit"
                 variant="outline"
               >

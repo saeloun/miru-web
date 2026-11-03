@@ -2394,7 +2394,25 @@ const en = {
       linkHelp:
         "If you found the link in Razorpay, enter its plink_ ID. Leave this blank to check by reference. This check never creates or sends another link.",
       linkRecheck: "Check Razorpay",
-      linkRefreshResult: "Payment link status refreshed.",
+      linkStillPending:
+        "Not confirmed. This invoice stays on hold; no new link was created.",
+      linkConfirmed: "Payment link confirmed.",
+      linkRecentlyChecked:
+        "A check ran recently or is still in progress. This invoice stays on hold; try again shortly.",
+      linkNoLongerPending:
+        "No confirmation is pending. Check the invoice before taking further action.",
+      linkChecking: "Checking Razorpay…",
+      linkCheckFailed:
+        "Razorpay could not confirm this link. Keep the invoice on hold and try again later.",
+      linkRateLimited:
+        "Too many checks. Nothing was checked. Wait a minute and try again.",
+      linkConnectionRequired:
+        "Reconnect the original Razorpay account before checking these links.",
+      loading: "Loading Razorpay status…",
+      loadFailed: "Could not load Razorpay status",
+      lastKnownStatus:
+        "Showing the last loaded status. Actions are paused until Razorpay status can be loaded again.",
+      retryLoading: "Retry loading status",
       linkConfirmationLimit:
         "Showing the first 20 links. Confirm these to see any remaining links.",
       reviewDescription:

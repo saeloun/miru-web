@@ -407,6 +407,8 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id, payment_link_id: "plink_oauth" }, as: :json
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.dig("connection", "links_needing_confirmation")).to eq([])
+      expect(response.parsed_body["link_creation_pending"]).to be(false)
+      expect(response.parsed_body["link_confirmed"]).to be(true)
       expect(invoice.reload.razorpay_payment_link_id).to eq("plink_oauth")
       expect(a_request(:post, links_url)).to have_been_made.once
     end
@@ -422,6 +424,59 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       expect(response).to have_http_status(:not_found)
       expect(a_request(:get, "#{links_url}/plink_oauth")).not_to have_been_made
       expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
+    end
+
+    it "rejects an invalid manual link ID with actionable feedback before contacting Razorpay" do
+      uncertain_creation
+      sign_in owner
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id, payment_link_id: "not-a-link" }, as: :json
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(response.parsed_body).to include("code" => "invalid_link_id", "errors" => "Enter a Payment Link ID beginning with plink_. Nothing was checked.")
+      expect(a_request(:get, %r{api\.razorpay\.com})).not_to have_been_made
+      expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
+    end
+
+    it "reports the target's pending outcome even when it is outside the first 20 listed invoices" do
+      20.times do
+        create(:invoice, company:, client:, currency: "INR", payment_infos: {
+          "razorpay_link_creation" => { "reference_id" => "miru-#{SecureRandom.uuid.delete('-')}", "account_id" => "acc_synthetic", "mode" => "test" }
+        })
+      end
+      intent = uncertain_creation
+      sign_in owner
+      stub_request(:get, "#{links_url}/").with(query: { reference_id: intent["reference_id"] })
+        .to_return(status: 200, body: { payment_links: [] }.to_json, headers: { "Content-Type" => "application/json" })
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id }, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body["link_creation_pending"]).to be(true)
+      expect(response.parsed_body.dig("connection", "links_needing_confirmation").pluck("invoice_id")).not_to include(invoice.id)
+      expect(a_request(:post, links_url)).to have_been_made.once
+    end
+
+    it "does not confirm a link when a definitive rejection has removed an in-flight intent" do
+      stub_request(:post, links_url).to_return(status: 400,
+        body: { error: { code: "BAD_REQUEST_ERROR", description: "wrong input fields sent." } }.to_json,
+        headers: { "Content-Type" => "application/json" })
+      start_payment
+      expect(invoice.reload.payment_infos).not_to have_key("razorpay_link_creation")
+      expect(invoice.razorpay_payment_link_id).to be_nil
+      sign_in owner
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id }, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body).to include("link_creation_pending" => false, "link_confirmed" => false)
+      expect(a_request(:get, %r{api\.razorpay\.com})).not_to have_been_made
+    end
+
+    it "distinguishes a recent check from a new provider lookup" do
+      intent = uncertain_creation
+      sign_in owner
+      lookup = stub_request(:get, "#{links_url}/").with(query: { reference_id: intent["reference_id"] })
+        .to_return(status: 200, body: { payment_links: [] }.to_json, headers: { "Content-Type" => "application/json" })
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id }, as: :json
+      expect(response.parsed_body).to include("link_creation_pending" => true, "link_creation_checked" => true)
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id }, as: :json
+      expect(response.parsed_body).to include("link_creation_pending" => true, "link_creation_checked" => false)
+      expect(lookup).to have_been_requested.once
     end
 
     it "rechecks the owner's authorization after the provider responds" do

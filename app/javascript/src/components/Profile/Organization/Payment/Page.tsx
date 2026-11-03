@@ -74,7 +74,7 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   const [isSavingUpi, setIsSavingUpi] = useState<boolean>(false);
   const [isSavingRazorpay, setIsSavingRazorpay] = useState<boolean>(false);
   const [razorpayApiKeysBlocked, setRazorpayApiKeysBlocked] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [isSavingPaypal, setIsSavingPaypal] = useState<boolean>(false);
   const [isDisconnectingPaypal, setIsDisconnectingPaypal] =
     useState<boolean>(false);

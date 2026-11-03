@@ -464,7 +464,7 @@ export const razorpayConnectionApi = {
     http.post(
       `${razorpayConnectionPath}/link_recovery`,
       { invoice_id: invoiceId, payment_link_id: paymentLinkId.trim() },
-      siteRootRequest
+      { ...siteRootRequest, skipErrorToast: true }
     ),
   submitRecoveryEvidence: (providerReference: string) =>
     http.post(

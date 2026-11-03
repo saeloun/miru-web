@@ -227,7 +227,8 @@ RSpec.describe "Razorpay merchant connection", type: :request do
       "DELETE connection" => [:delete, "/payments/razorpay/connection"],
       "POST recovery" => [:post, "/payments/razorpay/connection/recovery"],
       "POST recovery evidence" => [:post, "/payments/razorpay/connection/recovery/evidence"],
-      "POST payment review" => [:post, "/payments/razorpay/connection/payment_review"]
+      "POST payment review" => [:post, "/payments/razorpay/connection/payment_review"],
+      "POST link recovery" => [:post, "/payments/razorpay/connection/link_recovery"]
     }.each do |label, (verb, path)|
       it "throttles #{label}" do
         public_send(verb, path, as: :json)
