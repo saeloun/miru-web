@@ -230,6 +230,19 @@ RSpec.describe "Durable subscription purchase announcements" do
   describe "delivery" do
     let(:event) { company.subscription_purchase_events.sole }
 
+    it "reports exhausted retries with recovery guidance and leaves the alert pending" do
+      allow_any_instance_of(Mail::Message).to receive(:deliver).and_raise(Net::OpenTimeout, "mail provider unavailable")
+      allow(Rails.error).to receive(:report)
+      job = SubscriptionPurchaseDeliveryJob.new(event)
+      job.exception_executions = { "[StandardError]" => 4 }
+
+      expect { job.perform_now }.to raise_error(Net::OpenTimeout)
+
+      expect(Rails.error).to have_received(:report).with(an_instance_of(Net::OpenTimeout),
+        hash_including(handled: true, context: hash_including(subscription_purchase_event_id: event.id, recovery: /Retried automatically/)))
+      expect(event.reload.notified_at).to be_nil
+    end
+
     before { announce }
 
     it "records analytics once and sends the alert with the stored values" do

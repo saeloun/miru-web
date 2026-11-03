@@ -4,6 +4,7 @@ class SubscriptionPurchaseEvent < ApplicationRecord
   REDELIVERY_DELAY = 15.minutes
   BATCH_SIZE = 100
   MAX_BACKOFF_STEPS = 6
+  RECOVERY_GUIDANCE = "Retried automatically by SubscriptionPurchaseDeliveryRecoveryJob; see docs/ai/stripe.md#purchase-announcements"
 
   belongs_to :company
 
@@ -32,6 +33,6 @@ class SubscriptionPurchaseEvent < ApplicationRecord
 
     def report_enqueue_failure(error)
       Rails.error.report(error, handled: true, context: { subscription_purchase_event_id: id,
-        recovery: "Retried automatically by SubscriptionPurchaseDeliveryRecoveryJob; see docs/ai/stripe.md#purchase-announcements" })
+        recovery: RECOVERY_GUIDANCE })
     end
 end
