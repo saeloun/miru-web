@@ -35,7 +35,17 @@ RSpec.describe EmployeeReports::DownloadService do
     create(:timeoff_entry, user:, leave_type:, leave_date: "2026-10-02", duration: 480, discarded_at: Time.current)
     create(:timeoff_entry, user:, leave_date: "2026-10-03", duration: 480)
     expect(row.to_h).to include("Month recorded time off (minutes)" => "240", "Month recorded work (minutes)" => "180.0",
+      "Month recorded work (8-hour days)" => "0.375",
       "Month recorded working days" => "1", "Month calendar weekdays (Mon–Fri)" => "22")
+  end
+
+  it "exports fractional working days when selected without the minutes column" do
+    report.update!(columns: ["recorded_work_day_equivalents"])
+    project = create(:project, company:)
+    create(:timesheet_entry, project:, user:, work_date: "2026-10-01", duration: 240)
+    create(:timesheet_entry, project:, user:, work_date: "2026-10-02", duration: 300.1)
+
+    expect(row.to_h).to eq("Month recorded work (8-hour days)" => "1.1252")
   end
 
   it "separates approved unpaid from recorded paid personal reimbursements, preserving currencies and local month" do
@@ -88,6 +98,7 @@ RSpec.describe EmployeeReports::DownloadService do
 
   it "preserves empty monthly values and only loads selected source columns" do
     expect(row.to_h).to include("Month recorded work (minutes)" => "0.0", "Month recorded time off (minutes)" => "0",
+      "Month recorded work (8-hour days)" => "0.0",
       "Month recorded working days" => "0", "Month recorded paid reimbursements by currency (JSON)" => "{}",
       "Month approved unpaid reimbursements by currency (JSON)" => "{}", "Month configured national holiday dates (JSON)" => "[]")
     report.update!(columns: ["name"])
@@ -126,6 +137,7 @@ RSpec.describe EmployeeReports::DownloadService do
           expect(rows.size).to eq(members.size)
           rows.each do |result|
             expect(result.to_h).to include("Month recorded work (minutes)" => "60.0",
+              "Month recorded work (8-hour days)" => "0.125",
               "Month recorded time off (minutes)" => "120", "Month recorded working days" => "1",
               "Month recorded paid reimbursements by currency (JSON)" => '{"USD":"12.34"}',
               "Month approved unpaid reimbursements by currency (JSON)" => '{"INR":"5.67"}',
@@ -133,6 +145,7 @@ RSpec.describe EmployeeReports::DownloadService do
           end
         end
       end
+      expect(queries.count { |sql| sql.include?('SUM("timesheet_entries"."duration")') }).to eq(1)
       queries.size
     end
     expect(counts.last).to eq(counts.first)

@@ -37,6 +37,11 @@ module EmployeeReports
       @monthly_values.fetch("recorded_work_minutes").fetch(@user.id, BigDecimal("0"))
     end
 
+    def recorded_work_day_equivalents
+      minutes = @monthly_values.fetch("recorded_work_day_equivalents").fetch(@user.id, 0)
+      (minutes.to_d / 480).round(4).to_s("F")
+    end
+
     def calendar_weekdays
       return if @employment.joined_at.nil?
 
