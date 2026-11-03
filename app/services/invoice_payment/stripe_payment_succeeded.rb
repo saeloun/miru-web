@@ -25,6 +25,7 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
   rescue StandardError => error
     Rails.logger.error error.message
     Rails.logger.error error.backtrace.join("\n")
+    Sentry.capture_exception(error)
     nil
   end
 

@@ -110,33 +110,61 @@ RSpec.describe InvoicePayment::Settle do
       expect(client1_sent_invoice1.status).to eq("paid")
     end
   end
+end
 
-  context "when Stripe settles the invoice" do
-    let(:invoice) do
-      create(
-        :invoice,
-        client: client1,
-        status: "sent",
-        amount: 100,
-        amount_due: 100,
-        amount_paid: 0
-      )
-    end
-    let(:payment_params) do
-      {
-        invoice_id: invoice.id,
-        transaction_date: Date.current,
-        transaction_type: "stripe",
-        amount: 100,
-        note: "Stripe payment"
-      }
-    end
+RSpec.describe InvoicePayment::Settle, "Stripe confirmation commits" do
+  before do
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+    invoice
+    clear_enqueued_jobs
+  end
 
-    it "enqueues payment confirmations at settlement time" do
-      expect {
+  let(:invoice) { create(:invoice, status: "sent", amount: 100, amount_due: 100, amount_paid: 0) }
+  let(:payment_params) do
+    { invoice_id: invoice.id, transaction_date: Date.current, transaction_type: "stripe", amount: 100 }
+  end
+
+  it "enqueues both confirmations after a standalone settlement commits" do
+    expect do
+      described_class.process(payment_params, invoice)
+    end.to have_enqueued_mail(PaymentMailer, :payment)
+      .and have_enqueued_mail(ClientPaymentMailer, :payment)
+  end
+
+  it "enqueues both confirmations only after the invoice lock commits" do
+    expect do
+      invoice.with_lock do
         described_class.process(payment_params, invoice)
-      }.to have_enqueued_mail(PaymentMailer, :payment)
-        .and have_enqueued_mail(ClientPaymentMailer, :payment)
+
+        expect(enqueued_jobs).to be_empty
+      end
+    end.to have_enqueued_mail(PaymentMailer, :payment)
+      .and have_enqueued_mail(ClientPaymentMailer, :payment)
+  end
+
+  it "keeps a captured payment when a confirmation cannot be enqueued" do
+    error = StandardError.new("Synthetic mail queue unavailable")
+    allow(PaymentMailer).to receive_message_chain(:with, :payment, :deliver_later).and_raise(error)
+    allow(Sentry).to receive(:capture_exception)
+
+    expect do
+      invoice.with_lock { described_class.process(payment_params, invoice) }
+    end.not_to raise_error
+
+    expect(invoice.reload).to be_paid
+    expect(invoice.payments.count).to eq(1)
+    expect(Sentry).to have_received(:capture_exception).with(error)
+  end
+
+  it "does not send confirmations for a rolled-back settlement" do
+    invoice.with_lock do
+      described_class.process(payment_params, invoice)
+      raise ActiveRecord::Rollback
     end
+
+    expect(invoice.reload).to be_sent
+    expect(invoice.payments).to be_empty
+    expect(enqueued_jobs).to be_empty
   end
 end
