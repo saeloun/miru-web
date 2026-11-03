@@ -35,9 +35,16 @@ class PayrollPaymentGroup < ApplicationRecord
   def fully_credited?
     legs = open_legs.to_a
     legs.size == required_legs && legs.all? do |leg|
-      RESOLVED_CREDIT_STATES.include?(leg.credit_state) && !leg.unexplained_transactions? &&
+      RESOLVED_CREDIT_STATES.include?(leg.credit_state) && leg.held_reason.blank? &&
         PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(leg.transaction_status)
     end
+  end
+
+  def can_complete?
+    return false if fully_credited_at
+
+    legs = open_legs.to_a
+    legs.any? { |leg| leg.submission_state != "prepared" } && legs.none?(&:held?)
   end
 
   private

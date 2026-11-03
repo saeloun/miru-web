@@ -138,7 +138,8 @@ module Payroll
       end
 
       instruction.with_lock do
-        unless instruction.credit_state == "partial" && PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(instruction.transaction_status)
+        unless instruction.credit_state == "partial" && instruction.held_reason.blank? &&
+            PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(instruction.transaction_status)
           raise MercuryPayment::Blocked.new("no_open_shortfall")
         end
 
@@ -204,11 +205,11 @@ module Payroll
         client = connection.client
         parsed = read_request(client, instruction.provider_request_id)
         closed = !instruction.matches_request?(parsed) && TERMINAL_REQUEST_STATUSES.include?(parsed.status)
-        raise MercuryPayment::Blocked.new("request_id_known") unless closed && no_transactions_for?(client, instruction, parsed)
+        raise MercuryPayment::Blocked.new("request_id_known") unless closed && no_transactions_for?(client, parsed)
       end
 
-      def no_transactions_for?(client, instruction, parsed)
-        transactions, total = Contract.transactions(client.request_transactions(account_id: instruction.source_account_id,
+      def no_transactions_for?(client, parsed)
+        transactions, total = Contract.transactions(client.request_transactions(account_id: parsed.account_id,
           request_id: parsed.request_id, start: (parsed.created_at - 1.day).to_date))
         total.zero? && transactions.empty?
       rescue PayrollProviders::Error
@@ -254,7 +255,7 @@ module Payroll
         return apply_no_transaction(instruction, actor) if matches.empty?
 
         observe_unlinked_status(instruction, matches, actor)
-        return flag_reconciliation(instruction, actor, "multiple_transactions") if matches.many?
+        return flag_reconciliation(instruction, actor, "multiple_transactions", hold: true) if matches.many?
 
         transaction = matches.first
         return flag_reconciliation(instruction, actor, "transaction_mismatch") unless linkable?(instruction, transaction)
@@ -283,7 +284,7 @@ module Payroll
       def apply_no_transaction(instruction, actor)
         if TERMINAL_REQUEST_STATUSES.include?(instruction.request_status)
           if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status
-            return flag_reconciliation(instruction, actor, "cancelled_after_approval")
+            return flag_reconciliation(instruction, actor, "cancelled_after_approval", hold: true)
           end
 
           return instruction.update!(released_at: Time.current) unless instruction.released_at
@@ -299,16 +300,17 @@ module Payroll
         unexplained = no_funds && ([nil, "pending"].exclude?(previous) || instruction.credited_minor.positive?)
         instruction.update!({ provider_transaction_id: transaction.id, transaction_status: transaction.status,
           transaction_failure_reason: transaction.failure_reason, last_checked_at: Time.current }
-          .merge(unexplained ? {} : { transaction_link_state: "linked", last_error_code: nil }))
+          .merge(unexplained ? {} : { transaction_link_state: "linked", last_error_code: nil, held_reason: nil }))
         record_change(instruction, actor, "transaction_status_changed", previous, transaction.status)
-        return flag_reconciliation(instruction, actor, "failed_after_sent") if unexplained
+        return flag_reconciliation(instruction, actor, "failed_after_sent", hold: true) if unexplained
 
         instruction.update!(released_at: Time.current) if no_funds && instruction.released_at.nil?
       end
 
-      def flag_reconciliation(instruction, actor, code)
+      def flag_reconciliation(instruction, actor, code, hold: false)
         changed = instruction.transaction_link_state != "reconciliation_required" || instruction.last_error_code != code
-        instruction.update!(transaction_link_state: "reconciliation_required", last_error_code: code, last_checked_at: Time.current)
+        instruction.update!({ transaction_link_state: "reconciliation_required", last_error_code: code, last_checked_at: Time.current }
+          .merge(hold ? { held_reason: code } : {}))
         instruction.payroll_payment_events.create!(kind: "reconciliation_required", actor:, data: { "code" => code }) if changed
       end
 

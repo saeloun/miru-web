@@ -147,6 +147,7 @@ class CreatePayrollMercuryPayments < ActiveRecord::Migration[8.1]
       t.string :transaction_failure_reason
       t.string :credit_state, null: false, default: "none"
       t.bigint :credited_minor, null: false, default: 0
+      t.string :held_reason
       t.string :last_error_code
       t.datetime :last_checked_at
       t.datetime :released_at

@@ -104,7 +104,7 @@ const labels: Record<string, string> = {
   request_does_not_match: "That request does not match this transfer",
   request_id_invalid: "Enter a valid request ID",
   request_id_known:
-    "Mercury returned a request for this transfer. Check it, or cancel it in Mercury first",
+    "Mercury returned a request for this transfer. Check it in Mercury. It must be cancelled there with no transaction before this can continue",
   absence_evidence_required:
     "Enter a reference using letters, numbers and basic punctuation",
   credit_amount_invalid: "Enter a plain INR amount such as 100000.50",

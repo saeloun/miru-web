@@ -183,7 +183,8 @@ The owner or accounts reviewer enters the spouse's legal name and bank details, 
 account number twice, and a percentage or fixed INR amount with the other party
 taking the remainder. The assigned accounts reviewer verifies it and a different person,
 an owner, approves it. Any change needs verifying and approving again. A split can't
-change while a transfer using it can still complete, in any month.
+change while a month's transfers can still complete. A returned or held transfer doesn't
+block a change, but anything left unsent in that month can't be sent afterwards.
 
 The split applies to the fee after adjustments. Reimbursements stay with the
 consultant. Each transfer has its own principal, OUR fee, key and status, so a failed

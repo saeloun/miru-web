@@ -1030,6 +1030,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_090000) do
     t.string "transaction_failure_reason"
     t.string "credit_state", default: "none", null: false
     t.bigint "credited_minor", default: 0, null: false
+    t.string "held_reason"
     t.string "last_error_code"
     t.datetime "last_checked_at"
     t.datetime "released_at"

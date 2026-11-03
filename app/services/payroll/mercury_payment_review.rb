@@ -159,7 +159,8 @@ module Payroll
           reconcile: manage && open_slot && leg.stuck_submission?,
           attest_absence: accounts_reviewer? && open_slot && leg.stuck_submission? && !leg.retry_unlocked?,
           record_credit: leg.credit_recordable?,
-          resolve_shortfall: leg.credit_state == "partial" && PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(leg.transaction_status)
+          resolve_shortfall: leg.credit_state == "partial" && leg.held_reason.blank? &&
+            PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(leg.transaction_status)
         }
       end
   end

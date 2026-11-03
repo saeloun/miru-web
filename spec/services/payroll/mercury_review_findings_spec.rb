@@ -451,6 +451,113 @@ RSpec.describe "Mercury payroll review findings" do
     end
   end
 
+  describe "verification F1: holds survive transient errors" do
+    let!(:leg) do
+      accepted = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(accepted)
+    end
+
+    before do
+      stub_status(transactions: [mercury_transaction("status" => "sent"), mercury_transaction("id" => "other", "status" => "sent")])
+      refresh(leg)
+    end
+
+    it "keeps credit on hold after a read failure overwrites the last error" do
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(status: 503)
+      Payroll::MercuryStatusRefreshJob.perform_now
+      fresh = leg.reload
+      expect(fresh.last_error_code).to eq("provider_status_unavailable")
+      expect(fresh.held_reason).to eq("multiple_transactions")
+      expect(fresh.credit_recordable?).to be(false)
+      expect(fresh.display_state).to eq("reconciliation_required")
+    end
+
+    it "clears the hold only when Mercury shows one matching wire again" do
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refreshed = refresh(leg)
+      expect(refreshed.held_reason).to be_nil
+      expect(refreshed.credit_recordable?).to be(true)
+    end
+
+    it "does not resolve a shortfall on a held leg" do
+      PayrollPaymentInstruction.where(id: leg.id).update_all(credit_state: "partial", credited_minor: 100)
+      expect(blocked_codes { service.resolve_shortfall!(actor: accounts, instruction_id: leg.id, reason: "Accepted") }).to eq(["no_open_shortfall"])
+    end
+  end
+
+  describe "verification F2 and F3: which transfers lock a split" do
+    let(:revision) { approve_revision }
+    let!(:arrangement) do
+      revision
+      approved_split(value: "50")
+    end
+    let(:legs) do
+      verified_connection
+      linked_recipient
+      link_spouse
+      payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+    end
+
+    def accept(leg, id: request_id)
+      stub_mercury_reads
+      stub_request(:get, "#{mercury_base}/recipient/#{spouse_recipient_id}").to_return(mercury_json(
+        mercury_recipient("id" => spouse_recipient_id, "name" => "Synthetic Spouse",
+          "internationalWireRoutingInfo" => { "iban" => "222233334444", "swiftCode" => "SPOUINBBXXX",
+                                              "countrySpecific" => { "india" => { "ifscCode" => "SPOU0000002" } } })
+      ))
+      recipient = leg.beneficiary == "spouse" ? spouse_recipient_id : recipient_id
+      stub_mercury_write(mercury_json(mercury_request("requestId" => id, "recipientId" => recipient, "amount" => leg.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
+    end
+
+    def withdraw
+      split_service.withdraw!(actor: owner, arrangement_id: arrangement.id).withdrawn?
+    end
+
+    it "frees the split when a held leg means the group cannot complete" do
+      leg = accept(legs.first)
+      PayrollPaymentInstruction.where(id: leg.id).update_all(held_reason: "cancelled_after_approval", transaction_status: nil)
+      expect(withdraw).to be(true)
+    end
+
+    it "frees the split when a returned leg sits beside a credited one" do
+      consultant = accept(legs.first)
+      spouse = accept(legs.last, id: "77777777-7777-4777-8777-777777777777")
+      PayrollPaymentInstruction.where(id: consultant.id).update_all(credit_state: "credited", credited_minor: consultant.entitlement_minor, transaction_status: "sent")
+      PayrollPaymentInstruction.where(id: spouse.id).update_all(transaction_status: "reversed")
+      expect(withdraw).to be(true)
+    end
+
+    it "keeps the split locked for a Mercury-blocked wire, which can still change" do
+      leg = accept(legs.first)
+      PayrollPaymentInstruction.where(id: leg.id).update_all(transaction_status: "blocked")
+      expect(blocked_codes { withdraw }).to eq(["split_locked_by_bank_activity"])
+    end
+
+    it "keeps the split locked while a credited leg waits for a failed sibling to be replaced" do
+      consultant = accept(legs.first)
+      PayrollPaymentInstruction.where(id: consultant.id).update_all(credit_state: "credited", credited_minor: consultant.entitlement_minor, transaction_status: "sent")
+      PayrollPaymentInstruction.where(id: legs.last.id).update_all(submission_state: "voided", released_at: Time.current)
+      expect(blocked_codes { withdraw }).to eq(["split_locked_by_bank_activity"])
+    end
+  end
+
+  describe "verification: known request read uses the request's own account" do
+    it "reads transactions on the account Mercury reports" do
+      other_account = "99999999-9999-4999-8999-999999999999"
+      instruction = prepared_instruction
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("accountId" => other_account)))
+      leg = payment.submit!(actor: owner, instruction_id: instruction.id, expected_digest: instruction.frozen_digest)
+      stub_listing([])
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("accountId" => other_account, "status" => "cancelled")))
+      lookup = stub_request(:get, %r{#{Regexp.escape(mercury_base)}/account/#{other_account}/transactions}).to_return(mercury_json({ "total" => 0, "transactions" => [] }))
+      service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
+      expect(lookup).to have_been_requested.once
+    end
+  end
+
   describe "verification R1: return reported as a second sent transaction" do
     let!(:leg) do
       accepted = accepted_instruction

@@ -60,11 +60,7 @@ module Payroll
 
       def guard_bank_activity!(employment)
         groups = PayrollPaymentGroup.where(company_id: @company_id, employment_id: employment.id, fully_credited_at: nil)
-        barred = PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS
-        can_complete = groups.any? do |group|
-          group.in_flight_legs.where("transaction_status IS NULL OR transaction_status NOT IN (?)", barred).exists?
-        end
-        raise MercuryPayment::Blocked.new("split_locked_by_bank_activity") if can_complete
+        raise MercuryPayment::Blocked.new("split_locked_by_bank_activity") if groups.any?(&:can_complete?)
       end
 
       def find(id)

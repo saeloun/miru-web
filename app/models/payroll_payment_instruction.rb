@@ -13,6 +13,7 @@ class PayrollPaymentInstruction < ApplicationRecord
   LINK_STATES = %w[none linked reconciliation_required].freeze
   CREDIT_STATES = %w[none partial credited shortfall_resolved].freeze
   NO_FUNDS_MOVED_TRANSACTIONS = %w[cancelled failed].freeze
+  HELD_TRANSACTIONS = %w[cancelled failed reversed].freeze
   CREDIT_BARRED_TRANSACTIONS = %w[blocked cancelled failed reversed].freeze
   MAX_PRINCIPAL_MINOR = 1_000_000_000
   PURPOSE_CATEGORY = "contractor"
@@ -87,13 +88,13 @@ class PayrollPaymentInstruction < ApplicationRecord
     submission_state == "uncertain" && absent_confirmed_at.present?
   end
 
-  def unexplained_transactions?
-    transaction_link_state == "reconciliation_required" && last_error_code == "multiple_transactions"
+  def held?
+    held_reason.present? || HELD_TRANSACTIONS.include?(transaction_status)
   end
 
   def credit_recordable?
     return false unless submission_state == "accepted" && released_at.nil? && %w[none partial].include?(credit_state)
-    return false if unexplained_transactions?
+    return false if held_reason.present?
     return false if CREDIT_BARRED_TRANSACTIONS.include?(transaction_status) || request_status != "approved"
 
     transaction_link_state == "reconciliation_required" || transaction_status == "sent"
@@ -115,6 +116,8 @@ class PayrollPaymentInstruction < ApplicationRecord
       barred = { "reversed" => "returned", "failed" => "transaction_failed", "cancelled" => "transaction_cancelled",
                  "blocked" => "transaction_blocked" }[transaction_status]
       return barred if barred
+
+      return "reconciliation_required" if held_reason.present?
 
       reconciling = transaction_link_state == "reconciliation_required"
       return "credited_unlinked" if reconciling && %w[credited shortfall_resolved].include?(credit_state)

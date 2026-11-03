@@ -197,6 +197,21 @@ const ConsultantRow = ({
           ))}
         </ul>
       )}
+      {consultant.current.included && !consultant.ready && (
+        <p className="text-sm">
+          This consultant is in the current revision but will be left out of the
+          next one until they&apos;re ready.
+        </p>
+      )}
+      {consultant.ready &&
+        (consultant.current.expense_ids || []).some(
+          id => !consultant.eligible_expenses.some(claim => claim.id === id)
+        ) && (
+          <p className="text-sm">
+            A claim in the current revision is no longer eligible and will be
+            left out of the next one.
+          </p>
+        )}
       {consultant.locked && (
         <p className="text-sm">
           A bank transfer exists for this consultant, so their amounts and
