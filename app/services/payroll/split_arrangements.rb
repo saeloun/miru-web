@@ -13,8 +13,10 @@ module Payroll
 
       line_ids = @run.current_revision&.payroll_payload&.fetch("lines", [])&.pluck("employment_id") || []
       employment = Employment.kept.where(company_id: @company_id, id: line_ids).find(employment_id)
-      guard_bank_activity!(employment)
-      PayrollSplitArrangement.create!(attributes.merge(company_id: @company_id, employment:, requested_by: actor, details:))
+      @run.with_lock do
+        guard_bank_activity!(employment)
+        PayrollSplitArrangement.create!(attributes.merge(company_id: @company_id, employment:, requested_by: actor, details:))
+      end
     end
 
     def verify!(actor:, arrangement_id:)
@@ -44,8 +46,9 @@ module Payroll
     def withdraw!(actor:, arrangement_id:)
       authorize_owner!(actor)
       arrangement = find(arrangement_id)
-      guard_bank_activity!(arrangement.employment)
-      arrangement.with_lock do
+      @run.with_lock do
+        guard_bank_activity!(arrangement.employment)
+        arrangement.lock!
         raise MercuryPayment::Blocked.new("split_not_current") unless current?(arrangement) && !arrangement.withdrawn?
 
         arrangement.update!(withdrawn_by: actor, withdrawn_at: Time.current)
@@ -56,7 +59,7 @@ module Payroll
     private
 
       def guard_bank_activity!(employment)
-        groups = PayrollPaymentGroup.where(company_id: @company_id, employment_id: employment.id, fully_credited_at: nil)
+        groups = PayrollPaymentGroup.where(payroll_run_id: @run.id, employment_id: employment.id, fully_credited_at: nil)
         raise MercuryPayment::Blocked.new("split_locked_by_bank_activity") if groups.any? { |group| group.in_flight_legs.exists? }
       end
 

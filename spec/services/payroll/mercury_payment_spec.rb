@@ -147,8 +147,8 @@ RSpec.describe Payroll::MercuryPayment do
       stub_mercury_write
       submit(instruction)
       expect do
-        workflow.revise!(actor: accounts, payload: synthetic_payload(amount_minor: 6_300_000), idempotency_key: "changed", expected_digest: revision.digest)
-      end.to raise_error(Payroll::Workflow::Conflict, /Bank activity/)
+        workflow.revise!(actor: accounts, payload: synthetic_payload(reimbursements: [10_000]), idempotency_key: "changed", expected_digest: revision.digest)
+      end.to raise_error(Payroll::Workflow::Conflict, /bank transfer exists/)
     end
 
     it "does not prepare the same transfer twice" do

@@ -104,8 +104,11 @@ unpaid hours are entered. Reimbursements are never prorated.
 
 The accounts reviewer approves the revision, then the owner gives final approval.
 Final approval reserves the selected claims, so they can't be edited, reviewed,
-deleted, marked paid directly or included in another run. Changing source records
-or claims returns the run to draft until a new revision is approved.
+deleted, marked paid directly or included in another run. Changing source records,
+claims or that month's consultant terms returns the run to draft until a new revision
+is approved. Once a transfer exists for a month, new terms have to start in a later month.
+A new revision starts from the current one, and a consultant with a transfer must keep
+the same amounts and claims.
 
 ## Pay through Mercury
 
@@ -116,20 +119,35 @@ INR credit is an estimate until accounts confirms it.
 **Mercury requests stay off until an administrator turns them on for this server
 and environment, and they haven't been tried against a real Mercury account yet.**
 
-1. **Set up the connection (owner).** Enter a scoped API token, the source account
-   ID, the expected legal name and the OUR fee. The token can't be viewed again.
-   **Verify read access** checks the account and legal name. It doesn't prove the
-   token can create payment requests; Mercury only confirms that on the first
-   request.
+Before you start, a server administrator needs to:
+
+- Set `MIRU_PAYROLL_ENABLED=true` and `MIRU_PAYROLL_SAELOUN_COMPANY_ID` to your company ID.
+- Configure the Active Record encryption keys. Without them, the token can't be saved.
+- Set `MIRU_PAYROLL_MERCURY_WRITE_ENVIRONMENT` to `sandbox` or `live` when you're ready
+  to create requests. It must match the connection's environment, and it's unset by
+  default.
+
+1. **Set up the connection (owner).** In Mercury, create a Custom API token with the
+   `RequestSendMoney` scope (Send Money with Approval) and read access to accounts,
+   recipients, send-money requests and transactions. Mercury's scope names for those
+   reads aren't publicly documented, so check them when you create the token. The person
+   who creates the token can't approve its requests.
+
+   Enter the token, the source account ID, the expected legal name and the OUR fee. The
+   token can't be viewed again. **Verify read access** checks the account and legal name.
+   It doesn't prove the token can create payment requests. Mercury only confirms that on
+   the first request, and a token without that permission leaves the first transfer as
+   **Outcome unknown**, so get the scope right first.
 2. **Link recipients (owner).** Onboard the consultant in Mercury first, then enter
    their existing Mercury recipient ID. Miru compares SWIFT, IFSC, account number
    and account holder with the Miru profile and refuses any difference. It doesn't
    create recipients or send invitations. Filling in a SWIFT code in Miru isn't
-   Mercury setup.
+   Mercury setup, though it's required here even though Employee records marks it
+   optional. If bank details change, verify the recipient again.
 3. **Prepare the transfer review (owner).** Use Miru's stored USD to INR rate when
    one is less than 24 hours old, or enter a rate with its source and time. The
    principal is the INR amount divided by the rate less INR 1.50, rounded to cents.
-   Quotes expire after 24 hours.
+   Quotes expire 24 hours after the rate was observed, not after you prepare them.
 4. **Create the approval request (owner).** Check the principal, OUR fee, company
    debit, purpose and masked accounts, then choose **Create Mercury approval
    request**. Miru rechecks approvals, roles, bank details, the recipient, the
@@ -164,7 +182,7 @@ The owner or accounts reviewer enters the spouse's legal name and bank details, 
 account number twice, and a percentage or fixed INR amount with the other party
 taking the remainder. The assigned accounts reviewer verifies it and a different person,
 an owner, approves it. Any change needs verifying and approving again, and a split can't
-change while one of its transfers is in flight.
+change for a run while one of its transfers is in flight there.
 
 The split applies to the fee after adjustments. Reimbursements stay with the
 consultant. Each transfer has its own principal, OUR fee, key and status, so a failed

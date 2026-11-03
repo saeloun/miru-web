@@ -186,9 +186,9 @@ RSpec.describe "Mercury spouse split payments" do
         leg.update!(submission_state: "accepted", request_status: "approved", provider_request_created_at: Time.current,
           provider_request_id: SecureRandom.uuid, transaction_status: "sent", transaction_link_state: "linked")
       end
-      service.record_credit!(actor: accounts, instruction_id: consultant_leg.id, amount: "46875.00", credited_on: Date.current.iso8601, reference: "UTR1")
+      service.record_credit!(actor: accounts, instruction_id: consultant_leg.id, amount: "46875.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
       expect(group.reload.fully_credited_at).to be_nil
-      service.record_credit!(actor: accounts, instruction_id: spouse_leg.id, amount: "15625.00", credited_on: Date.current.iso8601, reference: "UTR2")
+      service.record_credit!(actor: accounts, instruction_id: spouse_leg.id, amount: "15625.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR2")
       expect(group.reload.fully_credited_at).to be_present
     end
 

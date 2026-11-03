@@ -54,7 +54,23 @@ module Payroll
         unresolvable = unresolvable_codes(source)
         not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"])
         review.merge(source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
-          required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?)
+          required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
+          current: current_selection(employment), locked: bank_activity?(employment))
+      end
+
+      def current_selection(employment)
+        line = @run.current_revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id }
+        return { included: false } unless line
+
+        preparation = line["preparation"] || {}
+        adjustments = (line["extras"] + line["deductions"]).to_h { |entry| [entry["code"], (BigDecimal(entry["amount_minor"]) / 100).to_s("F")] }
+        { included: true, confirmed_unpaid_hours: preparation["confirmed_unpaid_hours"], unpaid_reason: preparation["unpaid_reason"],
+          expense_ids: line["reimbursements"].filter_map { |entry| ClaimReference.expense_id(entry["source_reference"]) },
+          other_earning: adjustments["other_earning"], other_deduction: adjustments["other_deduction"], withholding: adjustments["withholding"] }
+      end
+
+      def bank_activity?(employment)
+        PayrollPaymentGroup.where(payroll_run_id: @run.id, employment_id: employment.id).any? { |group| group.in_flight_legs.exists? }
       end
 
       def review_for(employment, cutoff, inputs)
@@ -155,7 +171,7 @@ module Payroll
                          "deductions_minor" => deductions.sum { |entry| entry["amount_minor"] }, "net_minor" => minor(calculation.fetch("net").to_d) },
           "extras" => extras, "reimbursements" => reimbursements, "deductions" => deductions,
           "preparation" => { "cutoff" => cutoff.iso8601, "confirmed_unpaid_hours" => review[:confirmed_unpaid_hours],
-                             "unpaid_reason" => review[:unpaid_reason].presence }
+                             "unpaid_reason" => review[:unpaid_reason].presence, "terms_id" => review[:compensation_id].to_s }
         }
       end
 

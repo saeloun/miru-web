@@ -71,7 +71,7 @@ module Payroll
           fully_credited_at: group&.fully_credited_at&.iso8601, legs: legs(group), can_prepare: can_prepare?(blockers, group, allocations),
           combined_company_debit_minor: open_legs(group).sum(&:company_debit_minor).to_s,
           resolved_shortfall_minor: open_legs(group).select { |leg| leg.credit_state == "shortfall_resolved" }.sum(&:shortfall_minor).to_s,
-          settled_claims_need_review: settled_claims_need_review?(employment, group)
+          settled_claims_need_review: settled_claims_need_review?(group), run_approved: @readiness.run_approved?
         }
       end
 
@@ -79,10 +79,10 @@ module Payroll
         group ? group.payroll_payment_instructions.select { |leg| leg.released_at.nil? } : []
       end
 
-      def settled_claims_need_review?(employment, group)
+      def settled_claims_need_review?(group)
         return false if group.nil? || group.fully_credited_at
 
-        PayrollExpenseReservation.active.where(payroll_run_id: @run.id, employment_id: employment.id).where.not(settled_at: nil).exists?
+        group.payroll_payment_instructions.any? { |leg| leg.payroll_payment_events.any? { |event| event.kind == "group_credit_reopened" } }
       end
 
       def can_prepare?(blockers, group, allocations)
@@ -116,8 +116,9 @@ module Payroll
 
       def recipient_detail(employment, beneficiary)
         link = PayrollMercuryRecipientLink.current_for(employment, beneficiary)
-        { beneficiary:, linked: link.present?, name: link&.display_name, account_mask: link&.account_mask, swift_code: link&.swift_code,
-          verified_at: link&.created_at&.iso8601 }
+        details = MercurySetup.bank_details(employment, beneficiary, arrangement: @readiness.active_arrangement(employment))
+        { beneficiary:, linked: link.present?, current: link.present? && link.bank_details_digest == MercurySetup.digest(details.sort.to_h),
+          name: link&.display_name, account_mask: link&.account_mask, swift_code: link&.swift_code, verified_at: link&.created_at&.iso8601 }
       end
 
       def legs(group)
@@ -149,12 +150,14 @@ module Payroll
       def actions(leg)
         manage = @policy.manage_mercury?
         open_slot = leg.released_at.nil?
-        unsent = open_slot && (leg.submission_state == "prepared" || leg.retry_unlocked?)
+        attester = leg.retry_unlocked? && leg.absent_confirmed_by_id == @user.id
+        unsent = open_slot && !attester && (leg.submission_state == "prepared" || leg.retry_unlocked?)
         {
           submit: manage && unsent, void: manage && unsent, refresh: open_slot && leg.submission_state == "accepted",
           reconcile: manage && open_slot && leg.stuck_submission?,
-          attest_absence: accounts_reviewer? && open_slot && leg.stuck_submission? && !leg.retry_unlocked? && leg.provider_request_id.nil?,
-          record_credit: leg.credit_recordable?, resolve_shortfall: leg.credit_state == "partial"
+          attest_absence: accounts_reviewer? && open_slot && leg.stuck_submission? && !leg.retry_unlocked?,
+          record_credit: leg.credit_recordable?,
+          resolve_shortfall: leg.credit_state == "partial" && PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(leg.transaction_status)
         }
       end
   end

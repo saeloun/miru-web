@@ -144,6 +144,21 @@ const emptySelection: Selection = {
   withholding: "",
 };
 
+const initialSelection = (row: PreparationConsultant): Selection => ({
+  ...emptySelection,
+  included: row.current.included,
+  unpaid:
+    row.current.confirmed_unpaid_hours &&
+    Number(row.current.confirmed_unpaid_hours) > 0
+      ? row.current.confirmed_unpaid_hours
+      : "",
+  reason: row.current.unpaid_reason || "",
+  expenseIds: row.current.expense_ids || [],
+  earning: row.current.other_earning || "",
+  deduction: row.current.other_deduction || "",
+  withholding: row.current.withholding || "",
+});
+
 const ConsultantRow = ({
   consultant,
   selection,
@@ -179,6 +194,12 @@ const ConsultantRow = ({
             <li key={reason}>{label(reason)}</li>
           ))}
         </ul>
+      )}
+      {consultant.locked && (
+        <p className="text-sm">
+          A bank transfer exists for this consultant, so their amounts and
+          claims must stay the same in any new revision.
+        </p>
       )}
       {consultant.ready && canPrepare && (
         <div className="space-y-3">
@@ -333,7 +354,17 @@ export const PrepareRevisionPanel = ({
     const controller = new window.AbortController();
     payrollApi
       .preparation(runId, companyId, controller.signal)
-      .then(response => setData(response.data))
+      .then(response => {
+        setData(response.data);
+        setSelections(
+          Object.fromEntries(
+            response.data.consultants.map((row: PreparationConsultant) => [
+              row.employment_id,
+              initialSelection(row),
+            ])
+          )
+        );
+      })
       .catch(failure => {
         if (!controller.signal.aborted) setError(errorMessage(failure));
       });

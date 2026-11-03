@@ -145,7 +145,7 @@ module Payroll
       def valid_preparation?(preparation)
         return true if preparation.nil?
 
-        keys?(preparation, %w[cutoff confirmed_unpaid_hours unpaid_reason]) && preparation.values.all? { |value| value.nil? || value.is_a?(String) }
+        keys?(preparation, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && preparation.values.all? { |value| value.nil? || value.is_a?(String) }
       end
 
       def consultant_terms_issues(line, employment, calculation)
@@ -154,7 +154,9 @@ module Payroll
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
         terms = sources.terms(employment.id)
         amount = calculation.dig("input", "compensation", "amount")
-        current = terms && BigDecimal(amount) == terms.monthly_fee && !sources.terms_changed?(employment.id)
+        frozen_terms = line.dig("preparation", "terms_id")
+        current = terms && BigDecimal(amount) == terms.monthly_fee && !sources.terms_changed?(employment.id) &&
+          (frozen_terms.nil? || frozen_terms == terms.id.to_s)
         current ? [] : ["terms_changed"]
       end
 

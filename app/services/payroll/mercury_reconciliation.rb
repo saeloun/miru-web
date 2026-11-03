@@ -8,7 +8,8 @@ module Payroll
     TRANSACTION_WAIT = 3.days
     MAX_REQUEST_PAGES = 10
     MONEY_FORMAT = /\A\d{1,12}(\.\d{1,2})?\z/
-    REFERENCE_FORMAT = %r{\A[\w .:/#-]{1,100}\z}
+    REFERENCE_FORMAT = %r{\A[\w .,:/#-]{1,100}\z}
+    TERMINAL_REQUEST_STATUSES = %w[rejected cancelled].freeze
 
     def self.accept!(instruction, parsed, actor:, event:)
       instruction.with_lock do
@@ -18,7 +19,8 @@ module Payroll
         end
 
         instruction.update!(accepted_attributes(parsed).merge(submission_state: "accepted", absent_confirmed_at: nil, absent_confirmed_by: nil,
-          last_error_code: nil, provider_request_id: parsed.request_id, provider_request_created_at: parsed.created_at))
+          last_error_code: nil, provider_request_id: parsed.request_id, provider_request_created_at: parsed.created_at,
+          request_approved_at: parsed.status == "approved" ? Time.current : nil))
         instruction.payroll_payment_events.create!(kind: event, actor:, data: { "status" => parsed.status })
       end
       instruction
@@ -82,17 +84,19 @@ module Payroll
 
       instruction = find_instruction(instruction_id)
       guard_reconcilable!(instruction)
-      raise MercuryPayment::Blocked.new("request_id_known") if instruction.provider_request_id
+      known_request_id = instruction.provider_request_id
+      guard_known_request_closed!(instruction) if known_request_id
 
       codes = absence_blockers(instruction)
       raise MercuryPayment::Blocked.new(codes) if codes.any?
 
       instruction.with_lock do
         guard_reconcilable!(instruction)
-        raise MercuryPayment::Blocked.new("request_id_known") if instruction.provider_request_id
+        raise MercuryPayment::Blocked.new("request_id_known") unless instruction.provider_request_id == known_request_id
 
-        instruction.update!(submission_state: "uncertain", absent_confirmed_at: Time.current, absent_confirmed_by: actor)
-        instruction.payroll_payment_events.create!(kind: "absence_attested", actor:, data: { "evidence_reference" => evidence_reference })
+        instruction.update!(submission_state: "uncertain", absent_confirmed_at: Time.current, absent_confirmed_by: actor, provider_request_id: nil)
+        instruction.payroll_payment_events.create!(kind: "absence_attested", actor:,
+          data: { "evidence_reference" => evidence_reference, "cleared_request_id" => known_request_id }.compact)
       end
       instruction
     end
@@ -196,6 +200,13 @@ module Payroll
         raise MercuryPayment::Blocked.new("submission_in_progress")
       end
 
+      def guard_known_request_closed!(instruction)
+        parsed = read_request(connection.client, instruction.provider_request_id)
+        return if !instruction.matches_request?(parsed) && TERMINAL_REQUEST_STATUSES.include?(parsed.status)
+
+        raise MercuryPayment::Blocked.new("request_id_known")
+      end
+
       def read_request(client, request_id)
         Contract.send_money_request(client.send_money_request(request_id))
       rescue PayrollProviders::Error
@@ -233,13 +244,12 @@ module Payroll
 
         matches = transactions.select { |transaction| transaction.request_id == instruction.provider_request_id && transaction.kind != Contract::FEE_KIND }
         return apply_no_transaction(instruction, actor) if matches.empty?
+
+        observe_unlinked_status(instruction, matches, actor)
         return flag_reconciliation(instruction, actor, "multiple_transactions") if matches.many?
 
         transaction = matches.first
-        unless linkable?(instruction, transaction)
-          observe_unlinked_status(instruction, transaction, actor)
-          return flag_reconciliation(instruction, actor, "transaction_mismatch")
-        end
+        return flag_reconciliation(instruction, actor, "transaction_mismatch") unless linkable?(instruction, transaction)
 
         link_transaction(instruction, transaction, actor)
       end
@@ -250,17 +260,23 @@ module Payroll
           [nil, transaction.id].include?(instruction.provider_transaction_id) && !transaction_claimed?(instruction, transaction.id)
       end
 
-      def observe_unlinked_status(instruction, transaction, actor)
-        return if instruction.provider_transaction_id
+      def observe_unlinked_status(instruction, matches, actor)
+        worst = PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.reverse_each.filter_map do |status|
+          matches.find { |transaction| transaction.status == status }
+        end.first
+        worst ||= matches.first if matches.one? && instruction.provider_transaction_id.nil?
+        return unless worst && !linkable?(instruction, worst) || (worst && matches.many?)
 
         previous = instruction.transaction_status
-        instruction.update!(transaction_status: transaction.status, transaction_failure_reason: transaction.failure_reason)
-        record_change(instruction, actor, "transaction_status_changed", previous, transaction.status)
+        instruction.update!(transaction_status: worst.status, transaction_failure_reason: worst.failure_reason)
+        record_change(instruction, actor, "transaction_status_changed", previous, worst.status)
       end
 
       def apply_no_transaction(instruction, actor)
-        if %w[rejected cancelled].include?(instruction.request_status)
-          return flag_reconciliation(instruction, actor, "cancelled_after_approval") if instruction.request_approved_at
+        if TERMINAL_REQUEST_STATUSES.include?(instruction.request_status)
+          if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status
+            return flag_reconciliation(instruction, actor, "cancelled_after_approval")
+          end
 
           return instruction.update!(released_at: Time.current) unless instruction.released_at
         end

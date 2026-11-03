@@ -11,7 +11,8 @@ module Payroll
         line = payload["lines"].find { |entry| entry["employment_id"] == group.employment_id }
         next if line && PayrollPaymentGroup.line_digest(line) == group.line_digest
 
-        raise Workflow::Conflict, "Bank activity exists for a consultant in this run; their amounts and claims must stay unchanged"
+        name = group.employment.user.full_name
+        raise Workflow::Conflict, "A bank transfer exists for #{name}, so their amounts and claims must stay unchanged in this revision"
       end
     rescue NoMethodError, TypeError
       raise Workflow::Conflict, "This revision cannot be compared with bank activity", cause: nil

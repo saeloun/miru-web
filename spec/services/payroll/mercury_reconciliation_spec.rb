@@ -236,6 +236,7 @@ RSpec.describe Payroll::MercuryReconciliation do
 
     it "refuses attestation when a request ID is already known" do
       PayrollPaymentInstruction.where(id: leg.id).update_all(provider_request_id: request_id)
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request))
       expect(blocked_codes { service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1") }).to eq(["request_id_known"])
     end
 
@@ -254,7 +255,7 @@ RSpec.describe Payroll::MercuryReconciliation do
     end
 
     def credit(amount: "62500.00", reference: "UTR123", actor: accounts)
-      service.record_credit!(actor:, instruction_id: leg.id, amount:, credited_on: Date.current.iso8601, reference:)
+      service.record_credit!(actor:, instruction_id: leg.id, amount:, credited_on: company.resolved_time_zone.today.iso8601, reference:)
     end
 
     it "marks the entitlement credited only from a recorded credit" do

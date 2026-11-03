@@ -13,7 +13,7 @@ class PayrollPaymentInstruction < ApplicationRecord
   LINK_STATES = %w[none linked reconciliation_required].freeze
   CREDIT_STATES = %w[none partial credited shortfall_resolved].freeze
   NO_FUNDS_MOVED_TRANSACTIONS = %w[cancelled failed].freeze
-  CREDIT_BARRED_TRANSACTIONS = %w[cancelled failed reversed blocked].freeze
+  CREDIT_BARRED_TRANSACTIONS = %w[blocked cancelled failed reversed].freeze
   MAX_PRINCIPAL_MINOR = 1_000_000_000
   PURPOSE_CATEGORY = "contractor"
   CHARGE_TYPE = "ours"

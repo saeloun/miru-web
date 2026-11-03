@@ -52,7 +52,7 @@ const labels: Record<string, string> = {
   split_pending_approval: "A spouse split awaits verification and approval",
   split_changed: "The spouse split changed. Prepare again",
   bank_profile_incomplete:
-    "Bank profile needs account holder, account number, IFSC and SWIFT",
+    "Add account holder, account number, IFSC and SWIFT in Employee records",
   spouse_bank_profile_incomplete: "Spouse bank details are incomplete",
   recipient_not_linked: "Link the consultant's Mercury recipient",
   spouse_recipient_not_linked: "Link the spouse's Mercury recipient",
@@ -89,6 +89,8 @@ const labels: Record<string, string> = {
   connection_changed: "The Mercury connection changed. Prepare again",
   source_account_ineligible:
     "The source account is not active or its legal name differs",
+  mercury_read_failed:
+    "Mercury refused or didn't answer. Check the token, its read permissions and the environment",
   insufficient_balance: "The balance does not cover principal and fees",
   reconcile_before_retry: "Reconcile the earlier attempt first",
   submission_in_progress: "A submission is in progress",
@@ -100,9 +102,11 @@ const labels: Record<string, string> = {
   provider_status_unavailable: "Mercury's status could not be read",
   request_does_not_match: "That request does not match this transfer",
   request_id_invalid: "Enter a valid request ID",
-  request_id_known: "A request ID is known. Reconcile using it",
-  absence_evidence_required: "Enter the evidence reference",
-  credit_amount_invalid: "Enter a positive INR amount",
+  request_id_known:
+    "Mercury returned a request for this transfer. Check it, or cancel it in Mercury first",
+  absence_evidence_required:
+    "Enter a reference using letters, numbers and basic punctuation",
+  credit_amount_invalid: "Enter a plain INR amount such as 100000.50",
   credit_date_invalid: "Enter a credit date that is not in the future",
   credit_reference_invalid: "Enter a transaction reference",
   credit_not_recordable: "Credit cannot be recorded in this state",

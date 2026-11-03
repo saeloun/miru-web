@@ -135,6 +135,16 @@ export interface PreparationConsultant {
   required_acknowledgements: string[];
   not_ready_reasons: string[];
   ready: boolean;
+  locked: boolean;
+  current: {
+    included: boolean;
+    confirmed_unpaid_hours?: string | null;
+    unpaid_reason?: string | null;
+    expense_ids?: number[];
+    other_earning?: string | null;
+    other_deduction?: string | null;
+    withholding?: string | null;
+  };
 }
 
 export interface RunPreparation {
@@ -220,6 +230,7 @@ export interface MercuryConsultant {
   recipients: {
     beneficiary: string;
     linked: boolean;
+    current: boolean;
     name: string | null;
     account_mask: string | null;
     swift_code: string | null;
@@ -228,6 +239,7 @@ export interface MercuryConsultant {
   combined_company_debit_minor: string;
   resolved_shortfall_minor: string;
   settled_claims_need_review: boolean;
+  run_approved: boolean;
   legs: MercuryLeg[];
   can_prepare: boolean;
 }

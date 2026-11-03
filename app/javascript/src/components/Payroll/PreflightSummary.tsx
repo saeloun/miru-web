@@ -106,7 +106,7 @@ const PreflightSummary = ({
       <Card className="w-full max-w-3xl border-border">
         <CardHeader className="gap-3">
           <p className="text-sm font-medium text-muted-foreground">
-            Dry run preview only
+            {payrollOnly ? "Run record" : "Dry run preview only"}
           </p>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0 space-y-1">
@@ -114,7 +114,9 @@ const PreflightSummary = ({
                 className="break-words text-xl font-semibold text-foreground"
                 id={headingId}
               >
-                Payroll balance review
+                {payrollOnly
+                  ? "Recorded payroll total"
+                  : "Payroll balance review"}
               </h2>
               <p className="break-words text-sm text-muted-foreground">
                 {companyLabel?.trim() || "Company unavailable"}
@@ -122,9 +124,11 @@ const PreflightSummary = ({
                 {month?.trim() || "Payroll month unavailable"}
               </p>
             </div>
-            <Badge variant={ready ? "secondary" : "outline"}>
-              {ready ? "Ready for manual review" : "Blocked"}
-            </Badge>
+            {!payrollOnly && (
+              <Badge variant={ready ? "secondary" : "outline"}>
+                {ready ? "Ready for manual review" : "Blocked"}
+              </Badge>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {payrollOnly
@@ -153,7 +157,7 @@ const PreflightSummary = ({
               </dd>
             </div>
           </dl>
-          {!ready && (
+          {!ready && !payrollOnly && (
             <div className="space-y-2">
               <h3 className="text-base font-semibold text-foreground">
                 Before manual review

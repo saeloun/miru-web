@@ -119,7 +119,17 @@ RSpec.describe Payroll::ConsultantRevision do
 
   it "retains the unpaid reason and cutoff in the approved line" do
     revision = build(unpaid: "8", reason: "Approved unpaid leave")
-    expect(line(revision)["preparation"]).to eq("cutoff" => cutoff, "confirmed_unpaid_hours" => "8.0", "unpaid_reason" => "Approved unpaid leave")
+    expect(line(revision)["preparation"]).to include("cutoff" => cutoff, "confirmed_unpaid_hours" => "8.0", "unpaid_reason" => "Approved unpaid leave")
+    expect(line(revision)["preparation"]["terms_id"]).to be_present
+    expect(revision.approval_issues).to eq([])
+  end
+
+  it "prefills preparation from the current revision and marks consultants with bank activity" do
+    revision = build(unpaid: "8", reason: "Approved unpaid leave", expenses: [claim.id], withholding: "100.00")
+    row = builder.preparation(cutoff:).find { |entry| entry[:employment_id] == employment.id }
+    expect(row[:current]).to eq(included: true, confirmed_unpaid_hours: "8.0", unpaid_reason: "Approved unpaid leave", expense_ids: [claim.id],
+      other_earning: nil, other_deduction: nil, withholding: "100.0")
+    expect(row[:locked]).to be(false)
     expect(revision.approval_issues).to eq([])
   end
 
@@ -207,9 +217,9 @@ RSpec.describe Payroll::ConsultantRevision do
       Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
       PayrollPaymentInstruction.find(leg.id).update!(request_status: "approved", transaction_status: "sent", transaction_link_state: "linked")
       service = Payroll::MercuryReconciliation.new(run)
-      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "1000.00", credited_on: Date.current.iso8601, reference: "UTR1")
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "1000.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
       expect(claim.reload).not_to be_paid
-      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "66500.00", credited_on: Date.current.iso8601, reference: "UTR2")
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "66500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR2")
       expect(claim.reload).to be_paid
       expect(PayrollExpenseReservation.find_by!(expense: claim).settled_at).to be_present
       expect(leg.payroll_payment_group.reload.fully_credited_at).to be_present
@@ -225,7 +235,7 @@ RSpec.describe Payroll::ConsultantRevision do
       stub_mercury_write(mercury_json(mercury_request("amount" => (leg.principal_minor / 100.0))))
       Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
       PayrollPaymentInstruction.find(leg.id).update!(request_status: "approved", transaction_status: "sent", transaction_link_state: "linked")
-      Payroll::MercuryReconciliation.new(run).record_credit!(actor: accounts, instruction_id: leg.id, amount: "67500.00", credited_on: Date.current.iso8601, reference: "UTR1")
+      Payroll::MercuryReconciliation.new(run).record_credit!(actor: accounts, instruction_id: leg.id, amount: "67500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
       expect(claim.reload).to be_paid
       newer = build(expenses: [claim.id])
       expect(newer.approval_issues).to eq([])

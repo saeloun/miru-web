@@ -51,7 +51,7 @@ RSpec.describe "Mercury payroll concurrency" do
     leg = on_thread do
       employment.update!(joined_at: Date.new(2020, 1, 1))
       revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
-        consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601, expected_digest: nil, idempotency_key: "c1"
+        consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: company.resolved_time_zone.today.iso8601, expected_digest: nil, idempotency_key: "c1"
       )
       workflow = Payroll::Workflow.new(run)
       workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import {
   MercuryConsultant,
@@ -163,7 +163,7 @@ const Setup = ({ companyId, data, apply, busy }: Context) => {
                 onChange={event => setFee(event.target.value)}
               />
             </div>
-            <div className="flex items-end gap-2">
+            <div className="flex flex-wrap items-end gap-2">
               <Button disabled={busy} type="submit">
                 Save connection
               </Button>
@@ -405,7 +405,7 @@ const RecipientLink = ({
     >
       <div className="min-w-64 flex-1 space-y-1">
         <Label htmlFor={inputId}>
-          {label(beneficiary)}: existing Mercury recipient ID
+          {label(beneficiary)}: Mercury recipient ID to verify
         </Label>
         <Input
           required
@@ -606,6 +606,18 @@ const Leg = ({ leg, context }: { leg: MercuryLeg; context: Context }) => {
           does not mean the money was credited.
         </p>
       )}
+      {leg.display_state === "returned" && (
+        <p className="text-sm">
+          This wire came back. Miru can&apos;t replace it yet, so work out the
+          next step with accounts. Its history stays here.
+        </p>
+      )}
+      {leg.display_state === "reconciliation_required" && (
+        <p className="text-sm">
+          Miru couldn&apos;t match this to a single Mercury wire. Check it in
+          Mercury, then record the credit with its bank reference.
+        </p>
+      )}
       {leg.requester_may_approve === true && (
         <p className="text-sm text-destructive" role="alert">
           Mercury reports the requester may approve this. Have a different
@@ -655,7 +667,8 @@ const Leg = ({ leg, context }: { leg: MercuryLeg; context: Context }) => {
           <p className="text-sm">
             We don&apos;t know whether Mercury accepted this request, so it may
             exist. An empty search isn&apos;t proof. It can only be retried with
-            the same key once accounts records evidence that no request exists.
+            the same key once accounts records evidence that no request exists,
+            and a request Mercury returned must be cancelled there first.
           </p>
           {scan && (
             <div className="text-sm">
@@ -838,7 +851,9 @@ const Consultant = ({
   context: Context;
 }) => {
   const manage = context.data.permissions.manage;
-  const unlinked = consultant.recipients.filter(recipient => !recipient.linked);
+  const unlinked = consultant.recipients.filter(
+    recipient => !recipient.linked || !recipient.current
+  );
 
   return (
     <Card>
@@ -850,6 +865,14 @@ const Consultant = ({
               ? consultant.resolved_shortfall_minor !== "0"
                 ? "Fully credited; shortfall resolved"
                 : "Fully credited"
+              : consultant.legs.some(leg => leg.display_state === "returned")
+              ? "Returned. Needs accounts review"
+              : consultant.legs.some(
+                  leg =>
+                    !leg.released &&
+                    leg.display_state === "reconciliation_required"
+                )
+              ? "Needs reconciliation"
               : consultant.legs.some(leg => !leg.released)
               ? "In progress"
               : consultant.blockers.length
@@ -858,9 +881,9 @@ const Consultant = ({
           </Badge>
         </div>
         <p className="text-sm tabular-nums text-muted-foreground">
-          Approved total {exactAmount(consultant.entitlement_minor, "INR")}, of
-          which reimbursements{" "}
-          {exactAmount(consultant.reimbursement_minor, "INR")}
+          {consultant.run_approved ? "Approved total" : "Revision total"}{" "}
+          {exactAmount(consultant.entitlement_minor, "INR")}, of which
+          reimbursements {exactAmount(consultant.reimbursement_minor, "INR")}
           {consultant.combined_company_debit_minor !== "0" && (
             <>
               . Combined company debit{" "}
@@ -899,7 +922,7 @@ const Consultant = ({
         )}
         <SplitPanel consultant={consultant} context={context} />
         {consultant.recipients
-          .filter(recipient => recipient.linked)
+          .filter(recipient => recipient.linked && recipient.current)
           .map(recipient => (
             <p className="text-sm" key={recipient.beneficiary}>
               {label(recipient.beneficiary)} recipient verified against the Miru
@@ -938,6 +961,11 @@ const MercuryPaymentsPanel = ({
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [refresh, setRefresh] = useState(0);
+  const errorRef = useRef<HTMLParagraphElement>(null);
+
+  useEffect(() => {
+    if (error) errorRef.current?.scrollIntoView({ block: "center" });
+  }, [error]);
 
   useEffect(() => {
     const controller = new window.AbortController();
@@ -985,7 +1013,7 @@ const MercuryPaymentsPanel = ({
     <section className="space-y-4">
       <h2 className="text-xl font-semibold">Mercury payments</h2>
       {error && (
-        <p className="text-sm text-destructive" role="alert">
+        <p className="text-sm text-destructive" ref={errorRef} role="alert">
           {error}
         </p>
       )}

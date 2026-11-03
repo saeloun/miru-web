@@ -542,7 +542,7 @@ const Review = () => {
                       </Link>
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {item.dry_run ? "Dry run" : "Saved review"} ·{" "}
+                      Payroll run ·{" "}
                       {item.current_revision
                         ? `Revision ${item.current_revision.number}`
                         : "No calculation revision"}
@@ -645,7 +645,7 @@ const Review = () => {
               />
               <Card>
                 <CardHeader>
-                  <h2 className="text-lg font-semibold">Reconciliation</h2>
+                  <h2 className="text-lg font-semibold">Totals check</h2>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Facts
@@ -662,7 +662,7 @@ const Review = () => {
                         ),
                       ],
                       [
-                        "Detail reconciliation",
+                        "Line totals",
                         preflight.reconciliation.reconciled
                           ? "Detail totals reconcile; complete roster verification remains"
                           : "Needs review",

@@ -188,7 +188,7 @@ RSpec.describe "Mercury payroll review findings" do
 
   describe "finding 5: reconciliation does not bypass transaction state" do
     def credit(leg)
-      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: Date.current.iso8601, reference: "UTR1")
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
     end
 
     %w[failed reversed].each do |status|
@@ -255,7 +255,7 @@ RSpec.describe "Mercury payroll review findings" do
     end
 
     def credit(amount)
-      service.record_credit!(actor: accounts, instruction_id: leg.id, amount:, credited_on: Date.current.iso8601, reference: "UTR-#{amount}")
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount:, credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR-#{amount}")
     end
 
     it "does not resolve a shortfall on a failed wire" do
@@ -341,6 +341,159 @@ RSpec.describe "Mercury payroll review findings" do
           attributes: { allocation_kind: "percentage", allocation_value: "10", allocated_to: "spouse", remainder_to: "consultant" },
           details: spouse_details, account_number_confirmation: spouse_details["bank_account_number"])
       end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "gate review E1: returned wire with two transactions" do
+    let!(:leg) do
+      accepted = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(accepted)
+    end
+
+    it "stores the reversal, bars credit and reopens the group" do
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
+      returned = mercury_transaction("id" => "return-tx", "amount" => 744.05, "kind" => "incomingDomesticWire", "status" => "sent")
+      stub_status(transactions: [mercury_transaction("status" => "reversed"), returned])
+      refreshed = refresh(leg)
+      expect(refreshed.transaction_status).to eq("reversed")
+      expect(refreshed.display_state).to eq("returned")
+      expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    it "bars credit on a linked leg when a second transaction shows failure" do
+      stub_status(transactions: [mercury_transaction, mercury_transaction("id" => "other", "status" => "failed")])
+      refreshed = refresh(leg)
+      expect(refreshed.transaction_status).to eq("failed")
+      expect(refreshed.credit_recordable?).to be(false)
+    end
+  end
+
+  describe "gate review E2: approval seen on linking" do
+    it "does not release a request first linked as approved and later cancelled" do
+      leg = uncertain_instruction
+      stub_listing([mercury_request("memo" => leg.idempotency_key, "status" => "approved")])
+      service.reconcile!(actor: owner, instruction_id: leg.id)
+      expect(leg.reload.request_approved_at).to be_present
+      stub_status(request: mercury_request("status" => "cancelled"))
+      expect(refresh(leg).released_at).to be_nil
+    end
+
+    it "does not release after seeing a transaction, even if the list is later empty" do
+      leg = accepted_instruction
+      stub_status(request: mercury_request("status" => "cancelled"), transactions: [mercury_transaction("status" => "sent")])
+      refresh(leg)
+      stub_status(request: mercury_request("status" => "cancelled"))
+      refreshed = refresh(leg)
+      expect(refreshed.released_at).to be_nil
+      expect(refreshed.transaction_link_state).to eq("reconciliation_required")
+    end
+  end
+
+  describe "gate review E4: split lock scope" do
+    it "does not lock a split because of another month's held transfer" do
+      revision = approve_revision
+      arrangement = approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:).first
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => leg.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
+      later = PayrollRun.create!(company:, period: Date.new(2026, 12, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
+      expect(Payroll::SplitArrangements.new(later).withdraw!(actor: owner, arrangement_id: arrangement.id).withdrawn?).to be(true)
+    end
+  end
+
+  describe "gate review E5 and E6: terms" do
+    it "treats a same-date schedule correction as a change even with the same fee" do
+      builder = Payroll::ConsultantRevision.new(run, actor: accounts)
+      employment.update!(joined_at: Date.new(2020, 1, 1))
+      travel_to(Time.utc(2026, 12, 5, 12)) do
+        revision = builder.create!(consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601, expected_digest: nil, idempotency_key: "t1")
+        expect(revision.approval_issues).to eq([])
+        ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
+          hours_per_day: 8, weekdays: [1, 2, 3, 4], payment_source: "mercury_us", legal_entity_name: legal_name, change_reason: "Four-day week")
+        expect(revision.approval_issues).to include("terms_changed")
+      end
+    end
+
+    it "refuses terms that would change a month with bank activity" do
+      accepted_instruction
+      terms = { employment:, created_by: owner, monthly_fee: 70_000, hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us",
+                legal_entity_name: legal_name, change_reason: "Raise" }
+      [Date.new(2026, 11, 1), Date.new(2026, 11, 15)].each do |effective_on|
+        expect { ConsultantCompensation.create!(terms.merge(effective_on:)) }.to raise_error(ActiveRecord::RecordInvalid, /bank activity/)
+      end
+      expect { ConsultantCompensation.create!(terms.merge(effective_on: Date.new(2026, 12, 1))) }.not_to raise_error
+    end
+  end
+
+  describe "gate review E7: mismatched request has an exit" do
+    let!(:leg) do
+      instruction = prepared_instruction
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => 1.00)))
+      payment.submit!(actor: owner, instruction_id: instruction.id, expected_digest: instruction.frozen_digest)
+    end
+
+    before { stub_listing([]) }
+
+    it "stays blocked while the mismatched request may still pay" do
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("amount" => 1.00)))
+      expect(blocked_codes { service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1") }).to eq(["request_id_known"])
+    end
+
+    it "allows attestation once Mercury shows that request cancelled" do
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("amount" => 1.00, "status" => "cancelled")))
+      attested = service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
+      expect(attested.retry_unlocked?).to be(true)
+      expect(attested.provider_request_id).to be_nil
+      expect(attested.payroll_payment_events.find_by(kind: "absence_attested").data["cleared_request_id"]).to eq(request_id)
+    end
+  end
+
+  describe "gate review D5/D7: review signals" do
+    let(:leg) do
+      accepted = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(accepted)
+    end
+
+    def consultant
+      Payroll::MercuryPaymentReview.new(run, owner).call[:consultants].first
+    end
+
+    it "does not raise the settled-claim alert from settlement alone" do
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
+      PayrollPaymentGroup.where(id: leg.payroll_payment_group_id).update_all(fully_credited_at: nil)
+      expect(consultant[:settled_claims_need_review]).to be(false)
+    end
+
+    it "marks a recipient unverified after bank details change" do
+      leg
+      employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999999999"))
+      expect(consultant[:recipients].first[:current]).to be(false)
+    end
+
+    it "hides submit and void from the attester and resolve on a barred leg" do
+      instruction = uncertain_instruction
+      stub_listing([])
+      accounts.add_role(:owner, company)
+      service.attest_absence!(actor: accounts, instruction_id: instruction.id, evidence_reference: "Case 1")
+      actions = Payroll::MercuryPaymentReview.new(run, accounts).call[:consultants].first[:legs].first[:actions]
+      expect(actions.values_at(:submit, :void)).to eq([false, false])
+    end
+  end
+
+  describe "gate review X2: read failures" do
+    it "reports a token or provider failure separately from an ineligible account" do
+      stub_mercury_reads
+      Payroll::MercurySetup.new(company).save!(actor: owner, attributes: { api_token: token, environment: "sandbox",
+        source_account_id: account_id, expected_legal_business_name: legal_name })
+      stub_request(:get, "#{mercury_base}/account/#{account_id}").to_return(status: 401)
+      expect(blocked_codes { Payroll::MercurySetup.new(company).verify!(actor: owner) }).to eq(["mercury_read_failed"])
     end
   end
 

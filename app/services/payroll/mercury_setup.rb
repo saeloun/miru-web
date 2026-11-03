@@ -92,14 +92,20 @@ module Payroll
       end
 
       def read_account!(connection)
-        connection.balance_adapter.fetch_balance(company_id: @company.id, currency: "USD")
-        account = Contract.account(connection.client.account(connection.source_account_id))
+        account = read_account(connection)
         unless account.id == connection.source_account_id && account.legal_business_name == connection.expected_legal_business_name
           blocked!("source_account_ineligible")
         end
+        connection.balance_adapter.fetch_balance(company_id: @company.id, currency: "USD")
         account
       rescue PayrollProviders::Error
         blocked!("source_account_ineligible")
+      end
+
+      def read_account(connection)
+        Contract.account(connection.client.account(connection.source_account_id))
+      rescue PayrollProviders::MercuryClient::Rejected, PayrollProviders::MercuryClient::Ambiguous
+        blocked!("mercury_read_failed")
       end
 
       def read_recipient!(connection, recipient_id)

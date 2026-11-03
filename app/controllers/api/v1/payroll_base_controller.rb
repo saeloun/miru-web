@@ -24,6 +24,9 @@ class Api::V1::PayrollBaseController < Api::V1::ApplicationController
   rescue_from Payroll::ConsultantReview::InvalidInput do |error|
     render json: { errors: error.message }, status: 422
   end
+  rescue_from ActiveRecord::Encryption::Errors::Configuration do
+    render json: { errors: "Encryption keys are not configured on this server, so credentials can't be stored" }, status: 503
+  end
   rescue_from ActiveRecord::RecordInvalid do |error|
     render json: { errors: error.record.errors.full_messages.to_sentence }, status: 422
   end
