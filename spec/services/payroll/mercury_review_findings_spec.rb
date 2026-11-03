@@ -192,11 +192,12 @@ RSpec.describe "Mercury payroll review findings" do
     end
 
     %w[failed reversed].each do |status|
-      it "stores an unlinkable #{status} status and bars credit" do
+      it "bars credit for an unlinkable #{status} without binding the transaction" do
         leg = accepted_instruction
         stub_status(transactions: [mercury_transaction("status" => status, "kind" => "other")])
         refreshed = refresh(leg)
-        expect(refreshed.transaction_status).to eq(status)
+        expect(refreshed.transaction_status).to be_nil
+        expect(refreshed.held_reason).to eq("transaction_mismatch")
         expect(refreshed.provider_transaction_id).to be_nil
         expect(blocked_codes { credit(leg) }).to eq(["credit_not_recordable"])
       end
@@ -361,10 +362,12 @@ RSpec.describe "Mercury payroll review findings" do
       expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
     end
 
-    it "bars credit on a linked leg when a second transaction shows failure" do
+    it "holds credit without assigning an unrelated failure to the bound wire" do
       stub_status(transactions: [mercury_transaction, mercury_transaction("id" => "other", "status" => "failed")])
       refreshed = refresh(leg)
-      expect(refreshed.transaction_status).to eq("failed")
+      expect(refreshed.transaction_status).to eq("sent")
+      expect(refreshed.provider_transaction_id).to eq(leg.provider_transaction_id)
+      expect(refreshed.held_reason).to eq("multiple_transactions")
       expect(refreshed.credit_recordable?).to be(false)
     end
   end

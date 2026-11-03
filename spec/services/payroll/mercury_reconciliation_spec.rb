@@ -96,6 +96,84 @@ RSpec.describe Payroll::MercuryReconciliation do
   end
 
   describe "transaction linkage" do
+    [false, true].each do |reverse_order|
+      it "does not establish a return from ambiguous unbound wires, reverse order: #{reverse_order}" do
+        leg = accepted_instruction
+        transactions = [mercury_transaction("status" => "reversed"), mercury_transaction("id" => "other-wire", "status" => "sent")]
+        stub_status(transactions: reverse_order ? transactions.reverse : transactions)
+        held = refresh(leg)
+        expect(held.transaction_status).not_to eq("reversed")
+        expect(held.held_reason).to eq("multiple_transactions")
+        expect(held.provider_transaction_id).to be_nil
+
+        stub_status(transactions: [transactions.last])
+        recovered = refresh(leg)
+        expect(recovered.transaction_status).to eq("sent")
+        expect(recovered.provider_transaction_id).to eq("other-wire")
+        expect(recovered.held_reason).to be_nil
+      end
+    end
+
+    %w[failed cancelled].each do |status|
+      it "releases an uncredited #{status} wire after an incomplete list recovers" do
+        leg = accepted_instruction
+        stub_status(transactions: [mercury_transaction])
+        refresh(leg)
+        stub_status(transactions: [mercury_transaction], total: 2)
+        refresh(leg)
+        stub_status(transactions: [mercury_transaction("status" => status)])
+        closed = refresh(leg)
+        expect(closed.released_at).to be_present
+        expect(closed.held_reason).to be_nil
+        expect(closed.last_error_code).to be_nil
+        expect(refresh(leg).held_reason).to be_nil
+        expect(leg.reload.released_at).to eq(closed.released_at)
+      end
+    end
+
+    it "releases an unapproved cancelled request after its incomplete empty list recovers" do
+      leg = accepted_instruction
+      request = mercury_request("status" => "cancelled")
+      stub_status(request:, total: 1)
+      refresh(leg)
+      stub_status(request:)
+      closed = refresh(leg)
+      expect(closed.released_at).to be_present
+      expect(closed.held_reason).to be_nil
+      expect(closed.display_state).to eq("bank_cancelled")
+      stub_status(request:, total: 1)
+      expect(refresh(leg).held_reason).to be_nil
+      stub_status(request:)
+      expect(refresh(leg).display_state).to eq("bank_cancelled")
+    end
+
+    it "does not bind a reversal after an ambiguous unbound list narrows temporarily" do
+      leg = accepted_instruction
+      reversed = mercury_transaction("status" => "reversed")
+      sent = mercury_transaction("id" => "other-wire", "status" => "sent")
+      stub_status(transactions: [reversed, sent])
+      refresh(leg)
+      stub_status(transactions: [reversed])
+      held = refresh(leg)
+      expect(held.provider_transaction_id).to be_nil
+      expect(held.transaction_status).not_to eq("reversed")
+      stub_status(transactions: [sent])
+      expect(refresh(leg).provider_transaction_id).to eq("other-wire")
+    end
+
+    it "keeps cancellation-after-approval held despite a later sent snapshot" do
+      leg = accepted_instruction
+      stub_status
+      refresh(leg)
+      stub_status(request: mercury_request("status" => "cancelled"))
+      refresh(leg)
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      held = refresh(leg)
+      expect(held.held_reason).to eq("cancelled_after_approval")
+      expect(held.transaction_status).to be_nil
+      expect(held.credit_recordable?).to be(false)
+    end
+
     [
       ["a returned or incoming payment of the same magnitude", { "amount" => 744.05, "kind" => "incomingDomesticWire" }],
       ["a positive outgoing amount", { "amount" => 744.05 }],
@@ -108,8 +186,26 @@ RSpec.describe Payroll::MercuryReconciliation do
         stub_status(transactions: [mercury_transaction(change)])
         refreshed = refresh(leg)
         expect(refreshed.provider_transaction_id).to be_nil
+        expect(refreshed.transaction_status).to be_nil
         expect(refreshed.transaction_link_state).to eq("reconciliation_required")
       end
+    end
+
+    it "keeps manual bank proof separate from unlinkable provider statuses" do
+      leg = accepted_instruction
+      incoming = mercury_transaction("kind" => "incomingDomesticWire", "amount" => 744.05, "status" => "sent")
+      stub_status(transactions: [incoming])
+      refresh(leg)
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00",
+        credited_on: company.resolved_time_zone.today.iso8601, reference: "MANUAL-BANK-PROOF")
+
+      stub_status(transactions: [incoming.merge("status" => "pending")])
+      unlinked = refresh(leg)
+      expect(unlinked.provider_transaction_id).to be_nil
+      expect(unlinked.transaction_status).to be_nil
+      expect(unlinked.credited_minor).to eq(6_250_000)
+      expect(unlinked.display_state).to eq("credited_unlinked")
+      expect(unlinked.payroll_payment_events.where(kind: "credit_recorded").count).to eq(1)
     end
 
     it "ignores transactions with a different request ID" do
@@ -313,6 +409,154 @@ RSpec.describe Payroll::MercuryReconciliation do
       expect(refreshed.credited_minor).to eq(6_250_000)
       expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
       expect(refreshed.payroll_payment_events.pluck(:kind)).to include("credit_recorded", "group_credit_reopened")
+    end
+
+    %w[pending sent cancelled failed blocked].each do |status|
+      it "does not replace a recorded return with a later #{status} response", :aggregate_failures do
+        credit
+        stub_status(transactions: [mercury_transaction("status" => "reversed")])
+        refresh(leg)
+
+        stub_status(transactions: [mercury_transaction("status" => status)])
+        refreshed = refresh(leg)
+
+        expect(refreshed.transaction_status).to eq("reversed")
+        expect(refreshed.display_state).to eq("returned")
+        expect(refreshed.credited_minor).to eq(6_250_000)
+        expect(refreshed.released_at).to be_nil
+        expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
+        expect(refreshed.payroll_payment_events.where(kind: "group_fully_credited").count).to eq(1)
+      end
+    end
+
+    it "keeps the existing hold when a returned wire has multiple transactions" do
+      credit
+      returned = mercury_transaction("id" => "return-tx", "kind" => "incomingDomesticWire", "amount" => 744.05, "status" => "sent")
+      stub_status(transactions: [mercury_transaction("status" => "reversed"), returned])
+      refresh(leg)
+
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refreshed = refresh(leg)
+
+      expect(refreshed.transaction_status).to eq("reversed")
+      expect(refreshed.held_reason).to eq("multiple_transactions")
+      expect(refreshed.last_error_code).to eq("multiple_transactions")
+      expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    %w[reversed failed cancelled blocked].product([false, true]).each do |status, include_original|
+      it "recovers a hold for an unrelated #{status} with original wire present: #{include_original}" do
+        credit
+        unrelated = mercury_transaction("id" => "unrelated-adverse", "status" => status)
+        transactions = [unrelated]
+        transactions << mercury_transaction("status" => "sent") if include_original
+        stub_status(transactions:)
+        held = refresh(leg)
+
+        expect(held.transaction_status).to eq("sent")
+        expect(held.held_reason).to be_present
+        expect(held.payroll_payment_group.reload.fully_credited_at).to be_nil
+
+        stub_status(transactions: [mercury_transaction("status" => "sent")])
+        recovered = refresh(leg)
+        expect(recovered.transaction_status).to eq("sent")
+        expect(recovered.held_reason).to be_nil
+        expect(recovered.credited_minor).to eq(6_250_000)
+        expect(recovered.payroll_payment_group.reload.fully_credited_at).to be_present
+      end
+    end
+
+    it "does not reopen credit or shortfall actions after a partially credited wire returns" do
+      credit(amount: "62000.00")
+      stub_status(transactions: [mercury_transaction("status" => "reversed")])
+      refresh(leg)
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refreshed = refresh(leg)
+
+      expect(refreshed.transaction_status).to eq("reversed")
+      expect(refreshed.credited_minor).to eq(6_200_000)
+      expect(blocked_codes { credit(amount: "500.00", reference: "NEW-CREDIT") }).to eq(["credit_not_recordable"])
+      expect(blocked_codes { service.resolve_shortfall!(actor: accounts, instruction_id: leg.id, reason: "Bank fee") })
+        .to eq(["no_open_shortfall"])
+      expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    it "retains a known wire's return even when the transaction list is incomplete" do
+      credit
+      stub_status(transactions: [mercury_transaction("status" => "reversed")], total: 2)
+      returned = refresh(leg)
+      expect(returned.transaction_status).to eq("reversed")
+      expect(returned.payroll_payment_group.reload.fully_credited_at).to be_nil
+
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      expect(refresh(leg).display_state).to eq("returned")
+      expect(returned.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    it "holds completed credit on an incomplete list until the bound wire can be reconciled" do
+      credit
+      stub_status(transactions: [mercury_transaction("status" => "sent")], total: 2)
+      held = refresh(leg)
+      expect(held.held_reason).to eq("transaction_list_incomplete")
+      expect(held.payroll_payment_group.reload.fully_credited_at).to be_nil
+
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      recovered = refresh(leg)
+      expect(recovered.held_reason).to be_nil
+      expect(recovered.payroll_payment_group.reload.fully_credited_at).to be_present
+    end
+
+    [false, true].each do |reverse_order|
+      it "retains the bound return beside another reversal, reverse order: #{reverse_order}" do
+        credit
+        transactions = [mercury_transaction("id" => "unrelated-reversal", "status" => "reversed"), mercury_transaction("status" => "reversed")]
+        stub_status(transactions: reverse_order ? transactions.reverse : transactions)
+        expect(refresh(leg).transaction_status).to eq("reversed")
+        stub_status(transactions: [mercury_transaction("status" => "sent")])
+        returned = refresh(leg)
+        expect(returned.display_state).to eq("returned")
+        expect(returned.payroll_payment_group.reload.fully_credited_at).to be_nil
+      end
+    end
+
+    %w[failed cancelled].each do |status|
+      it "keeps credited funds held with the real reason after incomplete then #{status}" do
+        credit
+        stub_status(transactions: [mercury_transaction("status" => "sent")], total: 2)
+        refresh(leg)
+        stub_status(transactions: [mercury_transaction("status" => status)])
+        held = refresh(leg)
+        expect(held.released_at).to be_nil
+        expect(held.held_reason).to eq("failed_after_sent")
+        expect(held.last_error_code).to eq("failed_after_sent")
+        expect(held.payroll_payment_group.reload.fully_credited_at).to be_nil
+      end
+    end
+
+    %w[failed cancelled].product(%w[sent pending]).each do |failure, later_status|
+      it "does not clear credited #{failure} from a later #{later_status} snapshot" do
+        credit
+        stub_status(transactions: [mercury_transaction("status" => failure)])
+        refresh(leg)
+        stub_status(transactions: [mercury_transaction("status" => later_status)])
+        held = refresh(leg)
+        expect(held.transaction_status).to eq(failure)
+        expect(held.held_reason).to eq("failed_after_sent")
+        expect(held.payroll_payment_group.reload.fully_credited_at).to be_nil
+      end
+    end
+
+    it "does not clear an incomplete-list hold using a stale pending snapshot after credit" do
+      credit
+      stub_status(transactions: [mercury_transaction("status" => "sent")], total: 2)
+      refresh(leg)
+      stub_status(transactions: [mercury_transaction("status" => "pending")])
+      held = refresh(leg)
+      expect(held.transaction_status).to eq("sent")
+      expect(held.held_reason).to be_present
+      expect(held.payroll_payment_group.reload.fully_credited_at).to be_nil
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      expect(refresh(leg).payroll_payment_group.reload.fully_credited_at).to be_present
     end
 
     it "does not allow credit before the wire is sent" do

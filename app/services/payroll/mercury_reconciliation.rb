@@ -10,6 +10,7 @@ module Payroll
     MONEY_FORMAT = /\A\d{1,12}(\.\d{1,2})?\z/
     REFERENCE_FORMAT = %r{\A[\w .,:/#-]{1,100}\z}
     TERMINAL_REQUEST_STATUSES = %w[rejected cancelled].freeze
+    RECOVERABLE_HOLDS = %w[transaction_list_incomplete multiple_transactions transaction_mismatch].freeze
 
     def self.accept!(instruction, parsed, actor:, event:)
       instruction.with_lock do
@@ -224,6 +225,8 @@ module Payroll
 
       def apply_request(instruction, parsed, actor)
         instruction.with_lock do
+          next false if instruction.released_at
+
           unless instruction.provider_request_id == parsed.request_id && instruction.matches_request?(parsed)
             flag_reconciliation(instruction, actor, "request_mismatch")
             next false
@@ -249,16 +252,36 @@ module Payroll
       end
 
       def apply_linkage(instruction, transactions, total, actor)
-        return flag_reconciliation(instruction, actor, "transaction_list_incomplete") if total > transactions.size
+        # Only explicit reconciliation may change a closed or held terminal outcome.
+        return if instruction.released_at || instruction.transaction_status == "reversed"
+        return if PayrollPaymentInstruction::NO_FUNDS_MOVED_TRANSACTIONS.include?(instruction.transaction_status) && instruction.held_reason.present?
+        return if instruction.held_reason.present? && RECOVERABLE_HOLDS.exclude?(instruction.held_reason)
 
         matches = transactions.select { |transaction| transaction.request_id == instruction.provider_request_id && transaction.kind != Contract::FEE_KIND }
+        returned = matches.find do |transaction|
+          instruction.provider_transaction_id == transaction.id && transaction.status == "reversed" && linkable?(instruction, transaction)
+        end
+        link_transaction(instruction, returned, actor) if returned
+        return flag_reconciliation(instruction, actor, "transaction_list_incomplete", hold: true) if total > transactions.size
+
         return apply_no_transaction(instruction, actor) if matches.empty?
 
-        observe_unlinked_status(instruction, matches, actor)
+        observe_unlinked_status(instruction, matches, actor) unless returned
         return flag_reconciliation(instruction, actor, "multiple_transactions", hold: true) if matches.many?
+        return if returned
 
-        transaction = matches.first
+        apply_transaction(instruction, matches.first, actor)
+      end
+
+      def apply_transaction(instruction, transaction, actor)
         return flag_reconciliation(instruction, actor, "transaction_mismatch") unless linkable?(instruction, transaction)
+        if instruction.provider_transaction_id.nil? && instruction.held_reason == "multiple_transactions" &&
+            PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.include?(transaction.status)
+          return flag_reconciliation(instruction, actor, "multiple_transactions", hold: true)
+        end
+        if transaction.status == "pending" && (instruction.transaction_status == "sent" || instruction.credited_minor.positive?)
+          return flag_reconciliation(instruction, actor, bank_activity_hold(instruction) || "transaction_mismatch", hold: true)
+        end
 
         link_transaction(instruction, transaction, actor)
       end
@@ -270,11 +293,20 @@ module Payroll
       end
 
       def observe_unlinked_status(instruction, matches, actor)
-        worst = PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.reverse_each.filter_map do |status|
+        worst = matches.find do |transaction|
+          transaction.id == instruction.provider_transaction_id && PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.include?(transaction.status) &&
+            linkable?(instruction, transaction)
+        end
+        worst ||= PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.reverse_each.filter_map do |status|
           matches.find { |transaction| transaction.status == status }
         end.first
-        worst ||= matches.first if matches.one? && instruction.provider_transaction_id.nil?
         return unless worst && !linkable?(instruction, worst) || (worst && matches.many?)
+
+        if PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.include?(worst.status) &&
+            (worst.id != instruction.provider_transaction_id || !linkable?(instruction, worst))
+          code = matches.many? ? "multiple_transactions" : "transaction_mismatch"
+          return flag_reconciliation(instruction, actor, code, hold: true)
+        end
 
         previous = instruction.transaction_status
         instruction.update!(transaction_status: worst.status, transaction_failure_reason: worst.failure_reason)
@@ -283,11 +315,11 @@ module Payroll
 
       def apply_no_transaction(instruction, actor)
         if TERMINAL_REQUEST_STATUSES.include?(instruction.request_status)
-          if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status || instruction.held_reason
-            return flag_reconciliation(instruction, actor, instruction.held_reason || "cancelled_after_approval", hold: true)
+          if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status || bank_activity_hold(instruction)
+            return flag_reconciliation(instruction, actor, bank_activity_hold(instruction) || "cancelled_after_approval", hold: true)
           end
 
-          return instruction.update!(released_at: Time.current) unless instruction.released_at
+          return instruction.update!(released_at: Time.current, held_reason: nil, last_error_code: nil, transaction_link_state: "none") unless instruction.released_at
         end
         return unless instruction.request_approved_at && instruction.request_approved_at < TRANSACTION_WAIT.ago
 
@@ -297,12 +329,17 @@ module Payroll
       def link_transaction(instruction, transaction, actor)
         previous = instruction.transaction_status
         no_funds = PayrollPaymentInstruction::NO_FUNDS_MOVED_TRANSACTIONS.include?(transaction.status)
-        unexplained = no_funds && ([nil, "pending"].exclude?(previous) || instruction.credited_minor.positive? || instruction.held_reason.present?)
+        unexplained = no_funds && ([nil, "pending"].exclude?(previous) || instruction.credited_minor.positive? || bank_activity_hold(instruction))
+        linkage = { transaction_link_state: "linked" }
+        unless transaction.status == "reversed"
+          linkage[:last_error_code] = nil
+          linkage[:held_reason] = nil
+        end
         instruction.update!({ provider_transaction_id: transaction.id, transaction_status: transaction.status,
           transaction_failure_reason: transaction.failure_reason, last_checked_at: Time.current }
-          .merge(unexplained ? {} : { transaction_link_state: "linked", last_error_code: nil, held_reason: nil }))
+          .merge(unexplained ? {} : linkage))
         record_change(instruction, actor, "transaction_status_changed", previous, transaction.status)
-        return flag_reconciliation(instruction, actor, instruction.held_reason || "failed_after_sent", hold: true) if unexplained
+        return flag_reconciliation(instruction, actor, bank_activity_hold(instruction) || "failed_after_sent", hold: true) if unexplained
 
         instruction.update!(released_at: Time.current) if no_funds && instruction.released_at.nil?
       end
@@ -310,8 +347,12 @@ module Payroll
       def flag_reconciliation(instruction, actor, code, hold: false)
         changed = instruction.transaction_link_state != "reconciliation_required" || instruction.last_error_code != code
         instruction.update!({ transaction_link_state: "reconciliation_required", last_error_code: code, last_checked_at: Time.current }
-          .merge(hold ? { held_reason: code } : {}))
+          .merge(hold ? { held_reason: bank_activity_hold(instruction) || code } : {}))
         instruction.payroll_payment_events.create!(kind: "reconciliation_required", actor:, data: { "code" => code }) if changed
+      end
+
+      def bank_activity_hold(instruction)
+        instruction.held_reason.presence unless instruction.held_reason == "transaction_list_incomplete"
       end
 
       def record_change(instruction, actor, kind, previous, current)
