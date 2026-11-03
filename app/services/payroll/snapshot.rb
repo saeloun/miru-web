@@ -132,12 +132,32 @@ module Payroll
       end
 
       def valid_line_metadata?(line)
-        return false unless keys?(line, %w[employment_id pay_type currency source_snapshot source_resolutions calculation_snapshot amounts extras reimbursements deductions])
+        return false unless keys?(line.is_a?(Hash) ? line.except("preparation") : line,
+          %w[employment_id pay_type currency source_snapshot source_resolutions calculation_snapshot amounts extras reimbursements deductions])
+        return false unless valid_preparation?(line["preparation"])
         return false unless line["employment_id"].is_a?(Integer) && %w[employee consultant].include?(line["pay_type"])
         return false unless line["currency"] == @run.currency
         return false unless valid_source_snapshot?(line)
         return false unless line["calculation_snapshot"].nil? || PayrollCalculation::Calculator.verify_snapshot?(line["calculation_snapshot"])
         line["source_resolutions"].is_a?(Array) && line["source_resolutions"].all? { |resolution| valid_resolution?(resolution) }
+      end
+
+      def valid_preparation?(preparation)
+        return true if preparation.nil?
+
+        keys?(preparation, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && preparation.values.all? { |value| value.nil? || value.is_a?(String) }
+      end
+
+      def consultant_terms_issues(line, employment, calculation)
+        return [] unless line["pay_type"] == "consultant"
+
+        sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
+        terms = sources.terms(employment.id)
+        amount = calculation.dig("input", "compensation", "amount")
+        frozen_terms = line.dig("preparation", "terms_id")
+        current = terms && BigDecimal(amount) == terms.monthly_fee && !sources.terms_changed?(employment.id) &&
+          (frozen_terms.nil? || frozen_terms == terms.id.to_s)
+        current ? [] : ["terms_changed"]
       end
 
       def valid_source_snapshot?(line)
@@ -166,6 +186,8 @@ module Payroll
         return ["calculation_missing_or_inconsistent"] unless calculation && calculation_matches?(calculation, line, employment)
 
         issues = calculation["review_ready"] ? [] : ["calculation_requires_review"]
+        issues.concat(ClaimReference.issues(@run, line, employment))
+        issues.concat(consultant_terms_issues(line, employment, calculation))
         source.fetch("review_exceptions").each do |exception|
           unless resolved?(exception, line, source, calculation)
             issues << "source_exception:#{exception.fetch('code')}"

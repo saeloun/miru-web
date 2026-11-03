@@ -17,11 +17,22 @@ class ConsultantCompensation < ApplicationRecord
   validates :monthly_fee, numericality: { greater_than: 0, less_than: 10_000_000_000 }
   validates :hours_per_day, numericality: { greater_than: 0, less_than_or_equal_to: 24 }
   validate :valid_terms
+  validate :no_bank_activity_for_month, on: :create
 
   private
 
     def require_payroll_entitlement
       Payroll::Entitlement.require!(employment&.company_id)
+    end
+
+    def no_bank_activity_for_month
+      return unless effective_on && employment_id
+
+      groups = PayrollPaymentGroup.joins(:payroll_run).where(employment_id:)
+        .where("payroll_runs.period >= ?", effective_on.beginning_of_month)
+      return unless groups.any? { |group| group.in_flight_legs.exists? }
+
+      errors.add(:effective_on, "falls in a month with bank activity; start the new terms in a later month")
     end
 
     def valid_terms

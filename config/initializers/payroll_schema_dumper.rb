@@ -7,7 +7,7 @@ module PayrollSchemaDumper
       super
       return unless @connection.adapter_name == "PostgreSQL"
 
-      tables = %w[payroll_runs payroll_revisions payroll_approvals].select { |table| @connection.table_exists?(table) }
+      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
       stream.puts <<~RUBY.indent(2)

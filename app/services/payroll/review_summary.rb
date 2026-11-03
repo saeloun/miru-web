@@ -79,7 +79,7 @@ module Payroll
       end
 
       def line_detail(line, employment)
-        result = line.slice("employment_id", "pay_type", "currency", "amounts", "extras", "reimbursements", "deductions", "source_resolutions")
+        result = line.slice("employment_id", "pay_type", "currency", "amounts", "extras", "reimbursements", "deductions", "source_resolutions", "preparation")
         result = precise_values(result)
         result.merge("payee_name" => employment&.user&.full_name || "Unavailable payee",
           "source" => source_detail(line["source_snapshot"]), "calculation" => calculation_detail(line["calculation_snapshot"]))
