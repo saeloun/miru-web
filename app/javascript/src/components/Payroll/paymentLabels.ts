@@ -75,7 +75,8 @@ const labels: Record<string, string> = {
   account_number_mismatch: "The account numbers do not match",
   split_not_verified: "Accounts must verify this split first",
   split_approver_must_differ: "The approver must differ from the verifier",
-  split_not_current: "A newer split exists. Reload",
+  split_not_current:
+    "A newer split exists. Reload, and withdraw any pending correction first",
   rate_unavailable: "No fresh stored USD to INR rate. Enter one manually",
   rate_invalid: "Enter a valid rate and time",
   rate_source_missing: "Name the rate source",

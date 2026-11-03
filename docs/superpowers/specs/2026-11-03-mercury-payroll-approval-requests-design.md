@@ -119,7 +119,7 @@ Each is a later unit with its integration point. None is dropped.
 | 3–5 | PTO ledger and exception decisions | Unpaid hours are explicit input today |
 | 8 | India handoff | Separate parallel unit; non-Mercury lines stay blocked here |
 | 9 | Consultant self-request, reallocating reimbursements | Arrangement versions |
-| 12 | Overriding a held transfer | Multi-transaction and cancelled-after-approval holds have no in-app exit, like returned wires. They need Mercury's real response shapes from sandbox acceptance before an override is designed |
+| 12 | Overriding a held transfer | These have no in-app exit, like returned wires, and holding them is the safe behaviour: multi-transaction holds, cancelled-after-approval holds, an accepted leg whose request stopped matching, and an uncertain leg whose mismatched request is still active or has a transaction. They also keep a split's allocation locked, though same-allocation bank corrections stay possible. They need Mercury's real response shapes from sandbox acceptance before an override is designed |
 | 12 | Replacing a departed assigned reviewer | Runs are immutable, so this needs append-only reassignment |
 | 7 | Date-bounded request scans | An account with over 2,000 requests reports an incomplete scan, which blocks attestation |
 

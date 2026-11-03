@@ -49,8 +49,8 @@ module Payroll
       authorize_owner!(actor)
       arrangement = find(arrangement_id)
       arrangement.employment.with_lock do
-        guard_bank_activity!(arrangement.employment) if arrangement.approved_at
         arrangement.lock!
+        guard_bank_activity!(arrangement.employment) if arrangement.approved_at
         raise MercuryPayment::Blocked.new("split_not_current") unless current?(arrangement) && !arrangement.withdrawn?
 
         arrangement.update!(withdrawn_by: actor, withdrawn_at: Time.current)

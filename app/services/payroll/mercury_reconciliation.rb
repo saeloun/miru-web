@@ -284,7 +284,7 @@ module Payroll
       def apply_no_transaction(instruction, actor)
         if TERMINAL_REQUEST_STATUSES.include?(instruction.request_status)
           if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status || instruction.held_reason
-            return flag_reconciliation(instruction, actor, "cancelled_after_approval", hold: true)
+            return flag_reconciliation(instruction, actor, instruction.held_reason || "cancelled_after_approval", hold: true)
           end
 
           return instruction.update!(released_at: Time.current) unless instruction.released_at

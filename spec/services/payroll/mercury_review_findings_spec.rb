@@ -629,6 +629,15 @@ RSpec.describe "Mercury payroll review findings" do
       expect(blocked_codes { split_service.withdraw!(actor: owner, arrangement_id: arrangement.id) }).to eq(["split_locked_by_bank_activity"])
     end
 
+    it "keeps a multi-transaction hold's reason when the list later comes back empty" do
+      leg = accepted_instruction
+      cancelled = mercury_request("status" => "cancelled")
+      stub_status(request: cancelled, transactions: [mercury_transaction("status" => "sent"), mercury_transaction("id" => "other", "status" => "sent")])
+      refresh(leg)
+      stub_status(request: cancelled)
+      expect(refresh(leg).held_reason).to eq("multiple_transactions")
+    end
+
     it "does not bring back a superseded split when an approved one is withdrawn" do
       approve_revision
       approved_split(value: "50")
