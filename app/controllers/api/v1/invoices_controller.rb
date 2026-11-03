@@ -213,7 +213,7 @@ class Api::V1::InvoicesController < Api::V1::ApplicationController
       )
 
       @_razorpay_provider =
-        if provider&.enabled_on_invoices? && provider.razorpay_configured?
+        if provider&.razorpay_collectable?
           provider
         end
     end

@@ -40,7 +40,9 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     expect(connection.complete!(state:, browser_state: state, code: "synthetic_code")).to eq(:connected)
     expect(provider.reload.settings.to_json).not_to include("synthetic_access", "synthetic_refresh", "synthetic_code")
     expect(connection.access_token).to eq("synthetic_access")
-    expect(connection.status).to eq(status: "connected", account_id: "acc_synthetic", mode: "test", collections_ready: false, payouts_ready: false)
+    expect(connection.status).to eq(status: "connected", account_id: "acc_synthetic", mode: "test", merchant_status: nil, collections_enabled: false,
+      collections_ready: false, collections_blocker: "collections_disabled", payouts_ready: false, recovery_available: false,
+      cleanup_pending: false, payments_needing_review: [])
     expect(provider).not_to be_enabled
     expect(provider).not_to be_razorpay_configured
     expect(provider.settings["authentication_mode"]).to eq("oauth")
@@ -265,7 +267,8 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     complete
     allow(client).to receive(:refresh).and_return(tokens.merge("refresh_token" => "rotated_after_save_failure"))
     allow(provider).to receive(:save!).and_wrap_original do |original, *arguments|
-      raise ActiveRecord::StatementInvalid, "synthetic database failure" if provider.connected?
+      rotated = provider.razorpay_oauth_credentials&.dig("refresh_token") == "rotated_after_save_failure"
+      raise ActiveRecord::StatementInvalid, "synthetic database failure" if provider.connected? && rotated
 
       original.call(*arguments)
     end
@@ -277,11 +280,14 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     expect(client).to have_received(:revoke).with("rotated_after_save_failure").once
   end
 
-  it "requires the same application identity for a stored token" do
+  it "refuses a stored token under another application without destroying the connection" do
     complete
     allow(client).to receive(:identity).and_return(identity.merge("client_id" => "different_app"))
     expect { connection.access_token }.to raise_error(described_class::Error)
-    expect(provider.reload).not_to be_connected
+    expect(provider.reload).to be_connected
+    expect(provider.settings["oauth_status"]).to eq("connected")
+    allow(client).to receive(:identity).and_return(identity)
+    expect(connection.access_token).to eq("synthetic_access")
   end
 
   it "retains the rotated cleanup token when identity changes after refresh" do

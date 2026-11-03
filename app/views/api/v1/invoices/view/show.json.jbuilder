@@ -54,8 +54,7 @@ bank_payment_title =
 json.upi_payment upi_payment
 json.razorpay_payment do
   json.enabled !!(
-    razorpay_provider&.enabled_on_invoices? &&
-    razorpay_provider&.razorpay_configured? &&
+    razorpay_provider&.razorpay_collectable? &&
     invoice.currency == "INR"
   )
   json.provider "razorpay"

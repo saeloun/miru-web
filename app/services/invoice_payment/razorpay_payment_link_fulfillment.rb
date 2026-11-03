@@ -17,6 +17,7 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
     payment = nil
     invoice.with_lock do
       return true if invoice.paid?
+      return false unless oauth_payment_verified?(payment_link)
 
       payment = InvoicePayment::Settle.process(payment_params(payment_link), invoice)
       invoice.update!(razorpay_payment_id:)
@@ -33,11 +34,31 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
 
   private
 
+    # Razorpay documents the Payment Link callback signature only with an API key secret, which
+    # OAuth merchants never share. OAuth callbacks are untrusted hints until the authenticated fetch.
     def valid_payment?
-      provider&.razorpay_configured? &&
-        invoice.razorpay_payment_link_id == payment_link_id &&
-        payment_status == "paid" &&
-        client.verify_payment_link_signature(payment_link_signature_attributes)
+      return false unless provider.present? && invoice.razorpay_payment_link_id == payment_link_id && payment_status == "paid"
+      return provider.razorpay_oauth_collections_ready? && razorpay_payment_id.present? if provider.razorpay_oauth?
+
+      provider.razorpay_configured? && client.verify_payment_link_signature(payment_link_signature_attributes)
+    end
+
+    def flag_for_review(payment_link)
+      verification = PaymentProviders::RazorpayPaymentLinkVerification.new(invoice:, payment_link:, account_id: provider.settings["oauth_account_id"])
+      return unless verification.bound_to_invoice? && verification.captured_payment_id.present?
+
+      PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: verification.captured_payment_id, payment_link_id:,
+        amount: payment_link["amount_paid"], reason: "callback_mismatch")
+    end
+
+    def oauth_payment_verified?(payment_link)
+      return true unless provider.razorpay_oauth?
+
+      verified = PaymentProviders::RazorpayPaymentLinkVerification.new(
+        invoice:, payment_link:, account_id: provider.settings["oauth_account_id"]
+      ).captured?(razorpay_payment_id)
+      flag_for_review(payment_link) unless verified
+      verified
     end
 
     def payment_link_signature_attributes
@@ -76,7 +97,7 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
     end
 
     def enqueue_auto_payout(payment)
-      return if payment.blank?
+      return if payment.blank? || provider.razorpay_oauth?
 
       RazorpayPayoutJob.perform_later(payment.id)
     end

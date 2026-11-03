@@ -5,6 +5,8 @@ class Webhooks::RazorpayController < ApplicationController
   RAZORPAY_SIGNATURE_HEADER = "HTTP_X_RAZORPAY_SIGNATURE"
   PAYMENT_LINKS_WEBHOOK = "razorpay_payment_links"
   PAYOUTS_WEBHOOK = "razorpay_payouts"
+  OAUTH_WEBHOOK = "razorpay_oauth"
+  RAZORPAY_EVENT_ID_HEADER = "HTTP_X_RAZORPAY_EVENT_ID"
   MAX_WEBHOOK_BODY_BYTES = 1.megabyte
 
   # Razorpay calls this endpoint server-to-server without a Miru user session.
@@ -44,10 +46,26 @@ class Webhooks::RazorpayController < ApplicationController
     render json: { error: "Unable to process Razorpay webhook" }, status: 500
   end
 
+  def oauth
+    payload = bounded_payload
+    return if performed?
+
+    fulfillment = PaymentProviders::RazorpayOauthWebhook.new(
+      payload:,
+      signature: request.get_header(RAZORPAY_SIGNATURE_HEADER),
+      event_id: request.get_header(RAZORPAY_EVENT_ID_HEADER)
+    )
+
+    render_fulfillment_result(fulfillment)
+  rescue StandardError => exception
+    log_processing_error(exception, OAUTH_WEBHOOK)
+    render json: { error: "Unable to process Razorpay webhook" }, status: 500
+  end
+
   private
 
     def bounded_payload
-      payload = request.body.read(MAX_WEBHOOK_BODY_BYTES + 1)
+      payload = request.body.read(MAX_WEBHOOK_BODY_BYTES + 1).to_s
       return payload if payload.bytesize <= MAX_WEBHOOK_BODY_BYTES
 
       render json: { error: "Razorpay webhook payload is too large" }, status: 413

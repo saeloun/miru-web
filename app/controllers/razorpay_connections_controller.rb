@@ -7,16 +7,19 @@ class RazorpayConnectionsController < ApplicationController
   skip_before_action :track_ahoy_visit, only: :callback
   before_action :authenticate_callback, only: :callback
   before_action :authorize_management
-  rate_limit to: 10, within: 1.minute, only: :create, by: -> { current_user.id }
+  rate_limit to: 10, within: 1.minute, name: "mutation", by: -> { current_user.id },
+    only: %i[create update destroy recovery recovery_evidence resolve_payment_review]
+  rate_limit to: 20, within: 1.minute, name: "callback", by: -> { current_user.id }, only: :callback,
+    with: -> { redirect_to "/settings/payment?razorpay=failed" }
+
+  rescue_from PaymentProviders::RazorpayOauthConnection::Error, with: :render_conflict
 
   def show
-    available = begin
-      PaymentProviders::RazorpayOauthClient.new
-      true
-    rescue PaymentProviders::RazorpayOauthClient::Unavailable
-      false
-    end
-    render json: { connection: connection.status, connect_available: available }
+    unavailable_reason = connect_unavailable_reason
+    render json: {
+      connection: connection.status, connect_available: unavailable_reason.nil?, unavailable_reason:,
+      api_keys_blocked: provider.razorpay_oauth_in_use?
+    }
   end
 
   def create
@@ -30,8 +33,11 @@ class RazorpayConnectionsController < ApplicationController
     render json: { url: client.authorization_url(state:) }
   rescue PaymentProviders::RazorpayOauthClient::Unavailable => error
     render json: { errors: error.message }, status: 503
-  rescue PaymentProviders::RazorpayOauthConnection::Error => error
-    render json: { errors: error.message }, status: 409
+  end
+
+  def update
+    connection.update_collections!(enabled: ActiveModel::Type::Boolean.new.cast(params[:enabled]) == true)
+    render_connection
   end
 
   def callback
@@ -39,21 +45,34 @@ class RazorpayConnectionsController < ApplicationController
     unless browser.is_a?(Hash) && browser["company_id"] == current_company.id && browser["user_id"] == current_user.id &&
         params[:state].is_a?(String) && browser["state"].is_a?(String) &&
         ActiveSupport::SecurityUtils.secure_compare(browser["state"], params[:state])
-      return redirect_to "/payments/settings?razorpay=failed"
+      return redirect_to "/settings/payment?razorpay=failed"
     end
     session.delete(:razorpay_oauth)
     result = connection.complete!(state: params[:state], browser_state: browser["state"], code: params[:code], error: params[:error])
-    redirect_to "/payments/settings?razorpay=#{result}"
+    redirect_to "/settings/payment?razorpay=#{result}"
   rescue PaymentProviders::RazorpayOauthConnection::Error, PaymentProviders::RazorpayOauthClient::Error
-    redirect_to "/payments/settings?razorpay=failed"
+    redirect_to "/settings/payment?razorpay=failed"
   end
 
   def destroy
     result = connection.disconnect!
     session.delete(:razorpay_oauth)
     render json: { connection: connection.status, remote_revocation_confirmed: result.fetch(:remote_revocation_confirmed) }
-  rescue PaymentProviders::RazorpayOauthConnection::Error => error
-    render json: { errors: error.message }, status: 409
+  end
+
+  def recovery
+    connection.request_recovery!(account_id: params[:account_id])
+    render_connection
+  end
+
+  def recovery_evidence
+    connection.finish_recovery_with_evidence!(provider_reference: params[:provider_reference])
+    render_connection
+  end
+
+  def resolve_payment_review
+    PaymentProviders::RazorpayPaymentReview.resolve!(current_company, params[:invoice_id], actor: current_user)
+    render_connection
   end
 
   private
@@ -69,6 +88,23 @@ class RazorpayConnectionsController < ApplicationController
     def prevent_caching
       response.headers["Cache-Control"] = "private, no-store"
       response.headers["Referrer-Policy"] = "no-referrer"
+    end
+
+    def render_connection
+      render json: { connection: connection.status }
+    end
+
+    def render_conflict(error)
+      render json: { errors: error.message }, status: 409
+    end
+
+    def connect_unavailable_reason
+      return "legacy_api_keys" if connection.legacy?
+
+      PaymentProviders::RazorpayOauthClient.new
+      nil
+    rescue PaymentProviders::RazorpayOauthClient::Unavailable
+      "not_configured"
     end
 
     def provider

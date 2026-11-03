@@ -13,17 +13,12 @@ module PaymentProviders
     end
 
     def process
-      return existing_payment_link if existing_payment_link?
+      return create_or_reuse_link unless provider.razorpay_oauth?
 
-      response = create_payment_link_with_fallback
-      invoice.update!(
-        razorpay_payment_link_id: response.fetch("id"),
-        razorpay_payment_link_url: response.fetch("short_url"),
-        razorpay_payment_link_status: response["status"].presence || "created"
-      )
-      @sms_sent = notify_sms?
-
-      response.fetch("short_url")
+      # Raised after the lock so a settlement or review recorded inside it is committed.
+      invoice.with_lock { create_or_reuse_link }.tap do
+        raise PaymentProviders::RazorpayClient::Error, @paid_link_outcome if @paid_link_outcome
+      end
     end
 
     def sms_sent?
@@ -32,12 +27,32 @@ module PaymentProviders
 
     private
 
+      def create_or_reuse_link
+        return existing_payment_link if existing_payment_link?
+
+        response = create_payment_link_with_fallback
+        invoice.update!({
+          razorpay_payment_link_id: response.fetch("id"),
+          razorpay_payment_link_url: response.fetch("short_url"),
+          razorpay_payment_link_status: response["status"].presence || "created",
+          razorpay_payment_link_account_id: oauth_account_id
+        }.compact)
+        @sms_sent = notify_sms?
+
+        response.fetch("short_url")
+      end
+
       def existing_payment_link?
+        raise PaymentProviders::RazorpayClient::Error, "Razorpay payment needs review" if invoice.razorpay_payment_review.present?
+
         invoice.razorpay_payment_link_id.present? && invoice.razorpay_payment_link_url.present?
       end
 
       def existing_payment_link
         payment_link = client.fetch_payment_link(invoice.razorpay_payment_link_id)
+        prepare_oauth_link(payment_link) if provider.razorpay_oauth?
+        return if @paid_link_outcome
+
         if payment_link["status"].in?(["created", "partially_paid"])
           invoice.update!(razorpay_payment_link_status: payment_link["status"]) if invoice.razorpay_payment_link_status != payment_link["status"]
           notify_existing_payment_link if notify_sms?
@@ -49,9 +64,36 @@ module PaymentProviders
           razorpay_payment_link_url: nil,
           razorpay_payment_link_status: payment_link["status"]
         )
-        process
+        create_or_reuse_link
       rescue PaymentProviders::RazorpayClient::Error
+        raise if provider.razorpay_oauth?
+
         invoice.razorpay_payment_link_url
+      end
+
+      def prepare_oauth_link(payment_link)
+        verification = PaymentProviders::RazorpayPaymentLinkVerification.new(invoice:, payment_link:, account_id: oauth_account_id)
+        reconcile_paid_link(payment_link, verification) if payment_link["status"] == "paid"
+        return if payment_link["status"] != "created" || verification.reusable?
+
+        client.cancel_payment_link(invoice.razorpay_payment_link_id)
+        payment_link["status"] = "cancelled"
+      end
+
+      def reconcile_paid_link(payment_link, verification)
+        payment_id = verification.captured_payment_id
+        if verification.fully_paid? && payment_id.present?
+          InvoicePayment::RazorpayPaymentLinkFulfillment.process(invoice:, params: {
+            razorpay_payment_link_id: payment_link["id"], razorpay_payment_link_status: "paid", razorpay_payment_id: payment_id
+          })
+        else
+          PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id:, payment_link_id: payment_link["id"], amount: payment_link["amount"], reason: "paid_link_mismatch")
+        end
+        @paid_link_outcome = "Razorpay payment is being confirmed"
+      end
+
+      def oauth_account_id
+        provider.settings["oauth_account_id"] if provider.razorpay_oauth?
       end
 
       def payment_link_payload
@@ -92,7 +134,7 @@ module PaymentProviders
       def create_payment_link_with_fallback
         client.create_payment_link(payment_link_payload)
       rescue PaymentProviders::RazorpayClient::Error => error
-        raise error unless amount_whole_number_error?(error)
+        raise error if provider.razorpay_oauth? || !amount_whole_number_error?(error)
 
         Rails.logger.warn(
           "Retrying Razorpay payment link creation with minimal payload for invoice #{invoice.id}: #{error.message}"
@@ -127,12 +169,12 @@ module PaymentProviders
           miru_invoice_id: invoice.id.to_s,
           invoice_number: invoice.invoice_number.to_s,
           company_id: invoice.company_id.to_s,
-          platform_fee_percent: platform_fee_percent.to_s
-        }
+          platform_fee_percent: provider.razorpay_oauth? ? nil : platform_fee_percent.to_s
+        }.compact
       end
 
       def route_transfer_options
-        return unless provider.route_transfers_enabled?
+        return if provider.razorpay_oauth? || !provider.route_transfers_enabled?
 
         transfer_amount = amount_subunits - platform_fee_subunits
         return if transfer_amount <= 0
@@ -155,7 +197,7 @@ module PaymentProviders
       end
 
       def amount_subunits
-        (invoice.amount_due.to_d * subunit_to_unit).round.to_i
+        PaymentProviders::RazorpayPaymentLinkVerification.amount_subunits(invoice)
       end
 
       def platform_fee_subunits
@@ -166,12 +208,10 @@ module PaymentProviders
         BigDecimal(provider.platform_fee_percent.presence || "0")
       end
 
-      def subunit_to_unit
-        Money::Currency.new(invoice.currency).subunit_to_unit
-      end
-
       def reference_id
-        "miru-inv-#{invoice.id}"
+        return "miru-inv-#{invoice.id}" unless provider.razorpay_oauth?
+
+        "miru-inv-#{invoice.id}-#{SecureRandom.hex(4)}"
       end
 
       def client

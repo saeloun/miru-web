@@ -44,7 +44,7 @@ class Rack::Attack
   end
 
   throttle("invoice/checkout/ip", limit: 10, period: 1.minute) do |req|
-    req.ip if req.get? && req.path.match?(%r{\A/invoices/[^/]+/payments/(new|paypal_return)\z})
+    req.ip if req.get? && req.path.match?(%r{\A/invoices/[^/]+/payments/(new|paypal_return|razorpay_success)\z})
   end
 
   throttle("webhooks/paypal/ip", limit: 120, period: 1.minute) do |req|

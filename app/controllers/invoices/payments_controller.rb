@@ -131,6 +131,6 @@ class Invoices::PaymentsController < ApplicationController
     end
 
     def enabled_and_configured_for_invoices?(provider)
-      provider&.enabled_on_invoices? && provider.razorpay_configured?
+      provider&.razorpay_collectable?
     end
 end

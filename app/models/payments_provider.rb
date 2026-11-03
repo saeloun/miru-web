@@ -118,6 +118,18 @@ class PaymentsProvider < ApplicationRecord
     razorpay? && key_id.present? && key_secret.present?
   end
 
+  def razorpay_oauth?
+    razorpay? && settings.to_h["authentication_mode"] == "oauth"
+  end
+
+  def razorpay_oauth_collections_ready?
+    razorpay_oauth? && PaymentProviders::RazorpayOauthConnection.new(provider: self, actor: nil).collections_ready?
+  end
+
+  def razorpay_collectable?
+    enabled_on_invoices? && (razorpay_configured? || razorpay_oauth_collections_ready?)
+  end
+
   def razorpay_oauth_in_use?
     settings.to_h.values_at(
       "razorpay_oauth_credentials", "razorpay_oauth_credentials_ciphertext",
@@ -196,6 +208,7 @@ class PaymentsProvider < ApplicationRecord
 
     def razorpay_enabled_requires_credentials
       return unless enabled? && !razorpay_configured?
+      return if razorpay_oauth? && (!enabled_changed? || razorpay_oauth_collections_ready?)
 
       errors.add(:base, "Razorpay key id and key secret are required")
     end

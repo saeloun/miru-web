@@ -56,7 +56,7 @@ RSpec.describe "Razorpay merchant connection", type: :request do
   it "completes consent in the initiating session, encrypts tokens and exposes only redacted connection status" do
     state = start_connection
     get callback, params: { state:, code: "synthetic-code", return_to: "https://untrusted.example" }
-    expect(response).to redirect_to("/payments/settings?razorpay=connected")
+    expect(response).to redirect_to("/settings/payment?razorpay=connected")
     record = company.payments_providers.find_by!(name: "razorpay")
     expect(record).to be_connected
     expect(record).not_to be_enabled
@@ -70,14 +70,14 @@ RSpec.describe "Razorpay merchant connection", type: :request do
     expect(response.body).not_to include("synthetic-access", "synthetic-refresh", "synthetic-secret", "ciphertext", state)
 
     get callback, params: { state:, code: "synthetic-code" }
-    expect(response).to redirect_to("/payments/settings?razorpay=failed")
+    expect(response).to redirect_to("/settings/payment?razorpay=failed")
     expect(a_request(:post, "https://auth.razorpay.com/token")).to have_been_made.once
   end
 
   it "requires both browser and database state before exchanging a code" do
     start_connection
     get callback, params: { state: "a" * 64, code: "synthetic-code" }
-    expect(response).to redirect_to("/payments/settings?razorpay=failed")
+    expect(response).to redirect_to("/settings/payment?razorpay=failed")
     expect(WebMock).not_to have_requested(:post, "https://auth.razorpay.com/token")
   end
 
@@ -85,16 +85,16 @@ RSpec.describe "Razorpay merchant connection", type: :request do
     old_state = start_connection
     new_state = start_connection
     get callback, params: { state: old_state, code: "old-code" }
-    expect(response).to redirect_to("/payments/settings?razorpay=failed")
+    expect(response).to redirect_to("/settings/payment?razorpay=failed")
     get callback, params: { state: new_state, code: "new-code" }
-    expect(response).to redirect_to("/payments/settings?razorpay=connected")
+    expect(response).to redirect_to("/settings/payment?razorpay=connected")
     expect(a_request(:post, "https://auth.razorpay.com/token")).to have_been_made.once
   end
 
   it "handles denied consent without an upstream token request" do
     state = start_connection
     get callback, params: { state:, error: "access_denied", error_description: "Do not reflect this" }
-    expect(response).to redirect_to("/payments/settings?razorpay=denied")
+    expect(response).to redirect_to("/settings/payment?razorpay=denied")
     expect(WebMock).not_to have_requested(:post, "https://auth.razorpay.com/token")
   end
 
@@ -158,7 +158,7 @@ RSpec.describe "Razorpay merchant connection", type: :request do
       state = start_connection
       cookies.delete("ahoy_visit")
       get callback, params: { state:, code: "synthetic-code" }, headers: browser
-      expect(response).to redirect_to("/payments/settings?razorpay=connected")
+      expect(response).to redirect_to("/settings/payment?razorpay=connected")
       expect(Ahoy::Visit.pluck(:landing_page).compact.join).not_to include("synthetic-code", state)
     end
 
@@ -196,6 +196,124 @@ RSpec.describe "Razorpay merchant connection", type: :request do
     get endpoint, as: :json
     expect(response).to have_http_status(:forbidden)
     expect(response.body).not_to include("NoMethodError", "undefined")
+  end
+
+  context "when reporting availability" do
+    it "never offers connect to an API-key provider" do
+      create(:payments_provider, company:, name: "razorpay", settings: { key_id: "rzp_test_existing" })
+      get endpoint, as: :json
+      expect(response.parsed_body).to include("connect_available" => false, "unavailable_reason" => "legacy_api_keys", "api_keys_blocked" => false)
+    end
+
+    it "explains missing application credentials without creating a provider" do
+      allow(ENV).to receive(:[]).with("RAZORPAY_OAUTH_CLIENT_ID").and_return(nil)
+      expect { get endpoint, as: :json }.not_to change(PaymentsProvider, :count)
+      expect(response.parsed_body).to include("connect_available" => false, "unavailable_reason" => "not_configured")
+    end
+
+    it "reports a clean workspace as connectable and never reports payouts" do
+      get endpoint, as: :json
+      expect(response.parsed_body).to include("connect_available" => true, "unavailable_reason" => nil)
+      expect(response.parsed_body.fetch("connection")).to include("status" => "disconnected", "payouts_ready" => false, "collections_ready" => false)
+    end
+  end
+
+  context "when mutations are rate limited" do
+    before { allow(RazorpayConnectionsController.cache_store).to receive(:increment).and_return(100) }
+
+    {
+      "POST connection" => [:post, "/payments/razorpay/connection"],
+      "PATCH connection" => [:patch, "/payments/razorpay/connection"],
+      "DELETE connection" => [:delete, "/payments/razorpay/connection"],
+      "POST recovery" => [:post, "/payments/razorpay/connection/recovery"],
+      "POST recovery evidence" => [:post, "/payments/razorpay/connection/recovery/evidence"],
+      "POST payment review" => [:post, "/payments/razorpay/connection/payment_review"]
+    }.each do |label, (verb, path)|
+      it "throttles #{label}" do
+        public_send(verb, path, as: :json)
+        expect(response).to have_http_status(:too_many_requests)
+      end
+    end
+
+    it "throttles the callback with a safe redirect" do
+      get callback, params: { state: "a" * 64, code: "synthetic-code" }
+      expect(response).to redirect_to("/settings/payment?razorpay=failed")
+      expect(WebMock).not_to have_requested(:post, "https://auth.razorpay.com/token")
+    end
+  end
+
+  context "when managing collections and recovery over HTTP" do
+    let(:recovery) { "#{endpoint}/recovery" }
+
+    before do
+      allow(ENV).to receive(:[]).with("RAZORPAY_OAUTH_COLLECTIONS_ENABLED").and_return("true")
+      allow(ENV).to receive(:[]).with("RAZORPAY_OAUTH_WEBHOOK_SECRET").and_return("synthetic-webhook-secret")
+    end
+
+    it "lets an owner turn collection on and off once ready" do
+      state = start_connection
+      get callback, params: { state:, code: "synthetic-code" }
+      patch endpoint, params: { enabled: true }, as: :json
+      expect(response.parsed_body.fetch("connection")).to include("collections_enabled" => true, "payouts_ready" => false)
+      expect(company.payments_providers.find_by!(name: "razorpay")).to be_enabled
+      patch endpoint, params: { enabled: false }, as: :json
+      expect(response.parsed_body.fetch("connection")).to include("collections_enabled" => false)
+    end
+
+    it "refuses to enable collection before the account is ready" do
+      start_connection
+      patch endpoint, params: { enabled: true }, as: :json
+      expect(response).to have_http_status(:conflict)
+      expect(company.payments_providers.find_by!(name: "razorpay")).not_to be_enabled
+    end
+
+    it "walks an owner through recovery with no console step" do
+      stub_request(:post, "https://auth.razorpay.com/token").to_timeout
+      state = start_connection
+      get callback, params: { state:, code: "synthetic-code" }
+      expect(response).to redirect_to("/settings/payment?razorpay=failed")
+      get endpoint, as: :json
+      expect(response.parsed_body.fetch("connection")).to include("status" => "reconciliation_required")
+      post endpoint, as: :json
+      expect(response).to have_http_status(:conflict)
+
+      post recovery, params: { account_id: "acc_recovery" }, as: :json
+      expect(response.parsed_body.fetch("connection")).to include("status" => "recovery_pending", "account_id" => "acc_recovery")
+      post "#{recovery}/evidence", params: { provider_reference: "RZP-12345" }, as: :json
+      expect(response.parsed_body.fetch("connection")).to include("status" => "reconnect_required")
+      post endpoint, as: :json
+      expect(response).to have_http_status(:ok)
+    end
+
+    %i[employee client].each do |role|
+      it "denies #{role} access to collection and recovery" do
+        owner.remove_role(:owner, company)
+        owner.add_role(role, company)
+        [[:patch, endpoint], [:post, recovery], [:post, "#{recovery}/evidence"], [:post, "#{endpoint}/payment_review"], [:delete, endpoint]].each do |verb, path|
+          public_send(verb, path, as: :json)
+          expect(response).to have_http_status(:forbidden)
+        end
+      end
+    end
+
+    it "requires CSRF protection on every mutation" do
+      original = RazorpayConnectionsController.allow_forgery_protection
+      RazorpayConnectionsController.allow_forgery_protection = true
+      [[:patch, endpoint], [:delete, endpoint], [:post, recovery], [:post, "#{recovery}/evidence"], [:post, "#{endpoint}/payment_review"]].each do |verb, path|
+        public_send(verb, path, as: :json)
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    ensure
+      RazorpayConnectionsController.allow_forgery_protection = original
+    end
+
+    it "shows OAuth audit entries to owners without token material" do
+      state = start_connection
+      get callback, params: { state:, code: "synthetic-code" }
+      patch endpoint, params: { enabled: true }, as: :json
+      get "/api/v1/audit_logs", headers: auth_headers(owner), as: :json
+      expect(response.body).not_to include("synthetic-access", "synthetic-refresh", "synthetic-code", state)
+    end
   end
 
   context "when disconnecting and returning to API-key setup" do
@@ -263,7 +381,7 @@ RSpec.describe "Razorpay merchant connection", type: :request do
       it "allows a clean restart after the unusable code #{invalid[:code].class}" do
         state = start_connection
         get callback, params: { state: }.merge(invalid)
-        expect(response).to redirect_to("/payments/settings?razorpay=failed")
+        expect(response).to redirect_to("/settings/payment?razorpay=failed")
         expect(WebMock).not_to have_requested(:post, "https://auth.razorpay.com/token")
         get endpoint, as: :json
         expect(response.parsed_body.fetch("connection")).to include("status" => "reconnect_required")
@@ -277,7 +395,7 @@ RSpec.describe "Razorpay merchant connection", type: :request do
     stub_request(:post, "https://auth.razorpay.com/token").to_raise(Zlib::DataError.new("incorrect header check"))
     state = start_connection
     get callback, params: { state:, code: "synthetic-code" }
-    expect(response).to redirect_to("/payments/settings?razorpay=failed")
+    expect(response).to redirect_to("/settings/payment?razorpay=failed")
     get endpoint, as: :json
     expect(response.parsed_body.fetch("connection")).to include("status" => "reconciliation_required")
   end
