@@ -185,8 +185,10 @@ taking the remainder. The assigned accounts reviewer verifies it and a different
 an owner, approves it. Any change needs verifying and approving again. While a month's
 transfers can still complete, a split's amounts can't change and it can't be withdrawn. You
 can still correct the spouse's bank details by requesting a split with the same allocation,
-which is how to fix a failed wire to a closed account. A returned or held transfer doesn't
-block a change, but anything left unsent in that month can't be sent afterwards.
+which is how to fix a failed wire to a closed account. A correction that hasn't been
+approved yet can be withdrawn, which restores the approved split. A returned or held transfer
+doesn't block a change. If the amounts change, anything left unsent in that month can't be
+sent afterwards.
 
 The split applies to the fee after adjustments. Reimbursements stay with the
 consultant. Each transfer has its own principal, OUR fee, key and status, so a failed

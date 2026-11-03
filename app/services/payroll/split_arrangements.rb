@@ -49,16 +49,22 @@ module Payroll
       authorize_owner!(actor)
       arrangement = find(arrangement_id)
       arrangement.employment.with_lock do
-        guard_bank_activity!(arrangement.employment)
+        guard_bank_activity!(arrangement.employment) if arrangement.approved_at
         arrangement.lock!
         raise MercuryPayment::Blocked.new("split_not_current") unless current?(arrangement) && !arrangement.withdrawn?
 
         arrangement.update!(withdrawn_by: actor, withdrawn_at: Time.current)
+        retire_earlier_arrangements(arrangement, actor) if arrangement.approved_at
       end
       arrangement
     end
 
     private
+
+      def retire_earlier_arrangements(arrangement, actor)
+        PayrollSplitArrangement.where(employment_id: arrangement.employment_id, withdrawn_at: nil).where(id: ...arrangement.id)
+          .find_each { |earlier| earlier.update!(withdrawn_by: actor, withdrawn_at: Time.current) }
+      end
 
       def same_allocation?(arrangement, employment)
         current = PayrollSplitArrangement.current_for(employment)

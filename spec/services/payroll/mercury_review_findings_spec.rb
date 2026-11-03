@@ -603,6 +603,54 @@ RSpec.describe "Mercury payroll review findings" do
     end
   end
 
+  describe "verification H1 to H3" do
+    it "does not release a held leg when the transaction list later comes back empty" do
+      leg = accepted_instruction
+      cancelled = mercury_request("status" => "cancelled")
+      stub_status(request: cancelled, transactions: [mercury_transaction("status" => "sent"), mercury_transaction("id" => "other", "status" => "sent")])
+      refresh(leg)
+      stub_status(request: cancelled)
+      expect(refresh(leg).released_at).to be_nil
+    end
+
+    it "lets someone abandon a pending correction while a transfer can complete, restoring the approved split" do
+      revision = approve_revision
+      arrangement = approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:).first
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => leg.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
+      pending = request_split(value: "50")
+      expect(split_service.withdraw!(actor: owner, arrangement_id: pending.id).withdrawn?).to be(true)
+      expect(PayrollSplitArrangement.current_for(employment)).to eq(arrangement)
+      expect(blocked_codes { split_service.withdraw!(actor: owner, arrangement_id: arrangement.id) }).to eq(["split_locked_by_bank_activity"])
+    end
+
+    it "does not bring back a superseded split when an approved one is withdrawn" do
+      approve_revision
+      approved_split(value: "50")
+      newer = approved_split(value: "30")
+      split_service.withdraw!(actor: owner, arrangement_id: newer.id)
+      expect(PayrollSplitArrangement.current_for(employment)).to be_nil
+    end
+
+    it "keeps the original hold reason when a held wire later shows cancelled" do
+      leg = accepted_instruction
+      stub_status
+      refresh(leg)
+      stub_status(request: mercury_request("status" => "cancelled"))
+      refresh(leg)
+      stub_status(request: mercury_request("status" => "cancelled"), transactions: [mercury_transaction("status" => "cancelled")])
+      refreshed = refresh(leg)
+      expect(refreshed.held_reason).to eq("cancelled_after_approval")
+      expect(refreshed.last_error_code).to eq("cancelled_after_approval")
+      expect(refreshed.released_at).to be_nil
+    end
+  end
+
   describe "verification: known request read uses the request's own account" do
     it "reads transactions on the account Mercury reports" do
       other_account = "99999999-9999-4999-8999-999999999999"

@@ -29,7 +29,7 @@ class PayrollSplitArrangement < ApplicationRecord
   validate :employment_in_company, on: :create
 
   def self.current_for(employment)
-    where(employment_id: employment.id, company_id: employment.company_id).order(id: :desc).first
+    where(employment_id: employment.id, company_id: employment.company_id, withdrawn_at: nil).order(id: :desc).first
   end
 
   def active?

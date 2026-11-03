@@ -283,7 +283,7 @@ module Payroll
 
       def apply_no_transaction(instruction, actor)
         if TERMINAL_REQUEST_STATUSES.include?(instruction.request_status)
-          if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status
+          if instruction.request_approved_at || instruction.provider_transaction_id || instruction.transaction_status || instruction.held_reason
             return flag_reconciliation(instruction, actor, "cancelled_after_approval", hold: true)
           end
 
@@ -302,7 +302,7 @@ module Payroll
           transaction_failure_reason: transaction.failure_reason, last_checked_at: Time.current }
           .merge(unexplained ? {} : { transaction_link_state: "linked", last_error_code: nil, held_reason: nil }))
         record_change(instruction, actor, "transaction_status_changed", previous, transaction.status)
-        return flag_reconciliation(instruction, actor, "failed_after_sent", hold: true) if unexplained
+        return flag_reconciliation(instruction, actor, instruction.held_reason || "failed_after_sent", hold: true) if unexplained
 
         instruction.update!(released_at: Time.current) if no_funds && instruction.released_at.nil?
       end
