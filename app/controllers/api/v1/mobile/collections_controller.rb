@@ -5,6 +5,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
 
   skip_after_action :verify_authorized
   before_action :authorize_mobile_collection!
+  before_action :validate_collection_creation, only: :create
 
   def index
     invoices = mobile_collection_scope.includes(:client, :payments).order(created_at: :desc).limit(50).to_a
@@ -18,61 +19,23 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
   end
 
   def create
-    if manual_paid? && collection_amount <= 0
-      return render json: { error: "Enter an amount to record a payment" }, status: 422
-    end
-
-    if manual_paid? && !MANUAL_PAYMENT_METHODS.include?(manual_payment_method)
-      return render json: { error: "Payment method must be cash or upi" }, status: 422
-    end
-
-    if (invoice = idempotent_invoice)
-      payment_link_url = invoice.payable_razorpay_payment_link_url
-      sms_sent = false
-      payment_link_url, sms_sent = create_razorpay_payment_link!(invoice) if invoice && create_payment_link? && !invoice.paid?
-
-      return render_collection_response(
-        client: invoice.client,
-        customer_user: customer_user_for(invoice.client),
-        invoice:,
-        payment: invoice.payments.order(created_at: :desc).first,
-        payment_link_url:,
-        sms_sent:,
-        status: sms_sent ? :accepted : :ok
-      )
-    end
-
-    client = nil
-    customer_user = nil
-    invoice = nil
-    payment = nil
-
-    ActiveRecord::Base.transaction do
-      client = find_or_create_client!
-      customer_user = ensure_customer_login!(client)
-      invoice = create_invoice!(client) if collection_amount.positive?
-      payment = record_manual_payment!(invoice) if invoice && manual_paid?
-    end
-
-    payment_link_url = nil
+    details = find_or_create_collection!
+    invoice = details.fetch(:invoice)
+    replayed = details.delete(:replayed)
+    payment_link_url = invoice&.payable_razorpay_payment_link_url
     sms_sent = false
-
-    if invoice && create_payment_link?
-      payment_link_url, sms_sent = create_razorpay_payment_link!(invoice)
+    if invoice && create_payment_link? && !invoice.paid?
+      payment_link_url, sms_sent = create_razorpay_payment_link!(invoice, notify_sms: notify_sms? && !replayed)
     end
-
     render_collection_response(
-      client:,
-      customer_user:,
-      invoice:,
-      payment:,
+      **details,
       payment_link_url:,
       sms_sent:,
-      status: sms_sent ? :accepted : :created
+      status: sms_sent ? :accepted : (replayed ? :ok : :created)
     )
   rescue PaymentProviders::RazorpayClient::Error => error
     Rails.logger.warn("Mobile collection payment link failed: #{error.message}")
-    render json: { error: error.message.presence || "Unable to create Razorpay payment link" }, status: 422
+    render_collection_link_error(invoice, error)
   end
 
   def manual_payment
@@ -129,6 +92,47 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
   end
 
   private
+
+    def validate_collection_creation
+      if manual_paid? && collection_amount <= 0
+        return render json: { error: "Enter an amount to record a payment" }, status: 422
+      end
+      if manual_paid? && !MANUAL_PAYMENT_METHODS.include?(manual_payment_method)
+        return render json: { error: "Payment method must be cash or upi" }, status: 422
+      end
+      return unless create_payment_link? && razorpay_provider&.razorpay_oauth?
+
+      key = collection_params[:idempotency_key]
+      unless key.is_a?(String) && key.strip.length.between?(1, 100)
+        render json: { code: "idempotency_key_required", error: "A stable idempotency_key of 1 to 100 characters is required before creating a connected-account payment link." }, status: 422
+      end
+    end
+
+    def find_or_create_collection!
+      current_company.with_lock("FOR NO KEY UPDATE") do
+        if (invoice = idempotent_invoice)
+          next { client: invoice.client, customer_user: customer_user_for(invoice.client), invoice:,
+            payment: invoice.payments.order(created_at: :desc).first, replayed: true }
+        end
+
+        client = find_or_create_client!
+        customer_user = ensure_customer_login!(client)
+        invoice = create_invoice!(client) if collection_amount.positive?
+        payment = record_manual_payment!(invoice) if invoice && manual_paid?
+        { client:, customer_user:, invoice:, payment:, replayed: false }
+      end
+    end
+
+    def render_collection_link_error(invoice, error)
+      if invoice && PaymentProviders::RazorpayPaymentLinkCreation.pending?(invoice.reload)
+        render json: { code: "razorpay_link_unconfirmed", invoice: { id: invoice.id },
+          error: "The payment link outcome is unknown. Invoice #{invoice.invoice_number} was saved. Do not create another collection. Ask a workspace owner or admin to check Payment Settings." }, status: 422
+      else
+        payload = { error: error.message.presence || "Unable to create Razorpay payment link" }
+        payload[:invoice] = { id: invoice.id } if invoice
+        render json: payload, status: 422
+      end
+    end
 
     def collection_params
       params.require(:collection).permit(

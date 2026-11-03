@@ -62,6 +62,20 @@ Webhooks recheck the stored binding under the invoice lock before clearing it. R
 
 An open review blocks checkout through other providers as well as Razorpay. Checkout rechecks after provider IO, and payment-start failures never promise the customer was not charged. Captures on invalid, waived or deleted invoices stay in review. OAuth evidence blocks permanent invoice destruction; use soft deletion to retain the audit trail.
 
+### Uncertain link creation
+
+`payment_infos["razorpay_link_creation"]` commits before the connected-account POST. Its unique reference, original account/mode/application and invoice amount are retained after an uncertain response. A retry queries that reference instead of creating again. An empty lookup is not proof of rejection. A found or manually supplied `plink_` ID must match the full original snapshot before adoption; its capture must be reconciled before the intent clears.
+
+`ReconcileRazorpayPaymentLinksJob` runs every five minutes in the default and production schedules. Restart the Solid Queue dispatcher when deploying this entry. It confirms uncertain links and repairs failed cancellation enqueue while `RAZORPAY_OAUTH_ENABLED` is on and the original account is connected, even when invoice collection is disabled. Changed or closed invoices retain the returned reference and queue closure. Captures on closed links remain in review.
+
+An owner/admin can check the original account, mode and reference in Payment Settings, or provide the actual link ID found in Razorpay. If it cannot be located, contact Razorpay support with that reference. Keep the invoice blocked until its outcome is established; do not clear its JSON marker or create a replacement invoice to bypass it.
+
+### Mobile collection retries
+
+For connected-account links, `POST /api/v1/mobile/collections` requires a stable string `collection.idempotency_key` of 1 to 100 characters. Reuse the key on retries. A missing or invalid key returns 422 with `code: "idempotency_key_required"` before saving an invoice. Collection creation and replay lookup are serialized within the company; no Razorpay HTTP is performed under that company lock.
+
+If the invoice was saved but link creation is uncertain, the response is 422 with `code: "razorpay_link_unconfirmed"` and `invoice.id`. Keep that invoice and ask a workspace owner/admin to check Payment Settings. No SMS delivery result is asserted for an unknown outcome. Replays reuse the invoice without resending SMS. The explicit collection payment-link action remains available for an intentional resend.
+
 ### Payments needing review
 
 The amount check fails closed, so a customer can pay an old link for an invoice that has since changed. Miru never settles that payment: it records it on the invoice, audits it, logs an error and lists it in settings with its payment ID, link ID, reason, amount and invoice state. Each distinct captured payment gets its own entry in `payment_infos["razorpay_payment_reviews"]`, including on paid and deleted invoices, and settled, already listed or already reviewed payment IDs are not added again. A singular `razorpay_payment_review` from earlier code is read as one entry and migrated on the next write. An unpaid invoice cannot start a new link while any entry is pending. A signed capture for a link Miru no longer tracks is flagged the same way, only when the signing account is the invoice company's connected account.
@@ -79,7 +93,7 @@ These cannot be proved without real Razorpay access:
 - Technology Partner status and KYC, the co-branded UI capability, a registered application, callback allowlists and webhook subscriptions.
 - A test-mode run of consent, hosted sign-up, token exchange, refresh, revocation, a paid Payment Link and each webhook.
 
-Implementation hold before activation: link creation still needs durable intent and reconciliation for a worker death, database rollback or ambiguous provider response after remote creation. In particular, do not enable OAuth SMS collection while retrying could send a second payable link. Cancellation enqueue is best effort and still needs a durable repair path. Late-capture/partial-payment webhook shapes and retained raw URLs in mobile/API serializers also need provider and consumer validation.
+Connected-account creation now retains durable intent and has periodic reconciliation; cancellation enqueue failures have a repair sweep. Keep activation off until live late/partial-capture payloads, the native mobile client's stable-key retry behavior and provider acceptance have been verified. Mobile/API responses filter held or stale link URLs.
 - The token error response shape described above.
 - Which event, if any, an already-active merchant receives after connecting. Until confirmed, such a live merchant shows `merchant_unconfirmed` and cannot enable invoices.
 - That Payment Link and account webhooks reach the application-level endpoint with `account_id`, and whether they still arrive after a merchant revokes.
@@ -155,6 +169,6 @@ Implementation hold before activation: link creation still needs durable intent 
 
 ## Rollback
 
-- Fast product rollback: disable `Show Razorpay on INR invoices` or disable the Razorpay provider in Payment Settings.
-- Webhook rollback: remove or disable the Razorpay webhook in Dashboard, then monitor invoice payments for manual reconciliation.
-- Code rollback: revert the Razorpay SDK integration commit and redeploy, then confirm `/invoices/:id/payments/new` falls back to the previous provider behavior.
+- Stop new collections using `Show Razorpay on INR invoices` or `RAZORPAY_OAUTH_COLLECTIONS_ENABLED`. Keep the original connection, signed webhook endpoint and recovery workers available for already-issued links.
+- Switching off `RAZORPAY_OAUTH_ENABLED` also stops background recovery. If this is necessary, assign manual follow-up for every unresolved link; an already-issued bank URL may still be payable.
+- Do not revert to code that ignores retained intents or bound financial evidence while any remain unresolved. A rollback must preserve the checkout holds and capture/review processing; never use fallback checkout or a new invoice to bypass them.
