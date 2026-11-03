@@ -49,4 +49,24 @@ RSpec.describe Payroll::MercuryStatusRefreshJob do
     described_class.perform_now
     expect(a_request(:get, %r{/request-send-money/})).to have_been_made.once
   end
+
+  it "reports an unexpected failure and recovers on the next sweep without changing money state" do
+    leg.update!(held_reason: "failed_after_sent")
+    attempts = 0
+    allow_any_instance_of(Payroll::MercuryReconciliation).to receive(:refresh_from_job!).and_wrap_original do |original, instruction|
+      attempts += 1
+      raise RuntimeError, "synthetic refresh failure" if attempts == 1
+
+      original.call(instruction)
+    end
+    allow(Rails.error).to receive(:report)
+    expect { described_class.perform_now }.not_to raise_error
+    expect(leg.reload).to have_attributes(last_error_code: "status_refresh_failed", request_status: "pendingApproval", credited_minor: 0,
+      held_reason: "failed_after_sent")
+    expect(Rails.error).to have_received(:report).with(have_attributes(message: "Mercury status refresh failed", cause: nil), hash_including(handled: true,
+      context: hash_including(company_id: company.id, payroll_payment_instruction_id: leg.id, error_class: "RuntimeError")))
+    described_class.perform_now
+    expect(leg.reload).to have_attributes(last_error_code: nil, request_status: "approved", credited_minor: 0, held_reason: "failed_after_sent")
+    expect(a_request(:post, /mercury/)).not_to have_been_made
+  end
 end
