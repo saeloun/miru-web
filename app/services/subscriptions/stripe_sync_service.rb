@@ -6,6 +6,10 @@ module Subscriptions
       new(...).process
     end
 
+    def self.reconcile(...)
+      new(...).process(reconcile: true)
+    end
+
     def initialize(company: nil, stripe_customer_id: nil, stripe_subscription_id: nil, subscription: nil, notify_plan_purchase: false)
       @company = company
       @stripe_customer_id = stripe_customer_id
@@ -14,14 +18,19 @@ module Subscriptions
       @notify_plan_purchase = notify_plan_purchase
     end
 
-    def process
+    def process(reconcile: false)
       target_company = company || find_company
       return false if target_company.blank?
 
-      stripe_subscription = subscription || fetch_subscription(target_company)
-      return disable_company!(target_company) if stripe_subscription.blank?
-
-      sync_company!(target_company, stripe_subscription)
+      target_company.with_lock do
+        reconcile ||= subscription.nil? && stripe_subscription_id.blank? && target_company.stripe_customer_id.present?
+        stripe_subscription = reconcile ? fetch_current_subscription(target_company) : subscription || fetch_subscription(target_company)
+        if stripe_subscription.blank?
+          disable_company!(target_company)
+        else
+          sync_company!(target_company, stripe_subscription)
+        end
+      end
       true
     rescue Stripe::StripeError
       false
@@ -53,11 +62,25 @@ module Subscriptions
         end
       end
 
-      def sync_company!(target_company, stripe_subscription)
-        became_paid = false
+      # Fetch under the same row lock as projection writes. Replayed or out-of-order
+      # webhook snapshots must not overwrite the current customer subscription.
+      def fetch_current_subscription(target_company)
+        customer_id = target_company.stripe_customer_id.presence || stripe_customer_id
+        return if customer_id.blank?
+        if stripe_customer_id.present? && stripe_customer_id != customer_id
+          raise Stripe::InvalidRequestError.new("Subscription customer mismatch", "customer")
+        end
 
+        Stripe::Subscription.list(customer: customer_id, status: "all", limit: 100)
+          .auto_paging_each.max_by do |item|
+            [(%w[active trialing past_due].include?(item.status) ? 1 : 0), item.created.to_i, item.id]
+          end
+      end
+
+      def sync_company!(target_company, stripe_subscription)
         target_company.with_lock do
           was_paid = target_company.plan_tier == "paid"
+          established = was_paid || established_subscription?(target_company, stripe_subscription)
           subscription_period_end = stripe_subscription_period_end(stripe_subscription)
 
           target_company.apply_stripe_subscription!(
@@ -69,17 +92,43 @@ module Subscriptions
             cancel_at_period_end: subscription_boolean_value(stripe_subscription, :cancel_at_period_end)
           )
 
-          became_paid = !was_paid && target_company.plan_tier == "paid"
+          event = purchase_event_to_deliver(target_company, stripe_subscription, established:, was_paid:)
+          ActiveRecord.after_all_transactions_commit { event.enqueue_delivery } if event
         end
+      end
 
-        return unless became_paid
+      def established_subscription?(target_company, stripe_subscription)
+        status = target_company.subscription_status
+        target_company.stripe_subscription_id == subscription_value(stripe_subscription, :id) &&
+          status.present? && %w[incomplete incomplete_expired].exclude?(status)
+      end
 
-        Analytics::TrackingService.new.track_subscription_purchased(
-          target_company,
-          subscription_id: subscription_value(stripe_subscription, :id),
-          subscription_status: subscription_value(stripe_subscription, :status)
-        )
-        notify_plan_purchase!(target_company, stripe_subscription) if notify_plan_purchase
+      def purchase_event_to_deliver(target_company, stripe_subscription, established:, was_paid:)
+        return unless target_company.plan_tier == "paid"
+
+        events = target_company.subscription_purchase_events
+        subscription_id = subscription_value(stripe_subscription, :id)
+        event = if established
+          events.find_by(stripe_subscription_id: subscription_id)
+        else
+          events.create_or_find_by!(stripe_subscription_id: subscription_id) do |record|
+            record.assign_attributes(purchase_snapshot(target_company, stripe_subscription))
+          end
+        end
+        return unless event
+
+        newly_required = notify_plan_purchase && !event.notification_required? && (was_paid || event.previously_new_record?)
+        event.update!(notification_required: true) if newly_required
+        event if event.previously_new_record? || newly_required
+      end
+
+      def purchase_snapshot(target_company, stripe_subscription)
+        {
+          subscription_status: subscription_value(stripe_subscription, :status),
+          subscription_interval: stripe_subscription_interval(stripe_subscription),
+          seat_quantity: target_company.billable_team_seats,
+          plan_label: target_company.current_plan_label.to_s.humanize.titleize
+        }
       end
 
       def disable_company!(target_company)
@@ -130,24 +179,6 @@ module Subscriptions
         object.public_send(key) if object.respond_to?(key)
       rescue NoMethodError, TypeError, IndexError
         nil
-      end
-
-      def notify_plan_purchase!(target_company, stripe_subscription)
-        alert_email = ENV["PLAN_PURCHASE_ALERT_EMAIL"].to_s.presence
-        unless alert_email
-          Rails.logger.warn("PLAN_PURCHASE_ALERT_EMAIL is not configured; skipping plan purchase alert")
-          return
-        end
-
-        SubscriptionMailer.with(
-          company_id: target_company.id,
-          alert_email:,
-          plan_label: target_company.current_plan_label.to_s.humanize.titleize,
-          stripe_subscription_id: subscription_value(stripe_subscription, :id),
-          subscription_interval: stripe_subscription_interval(stripe_subscription),
-          seat_quantity: target_company.billable_team_seats,
-          billing_url: "#{ENV['APP_BASE_URL']}/settings/billing"
-        ).plan_purchased.deliver_later
       end
   end
 end

@@ -7,9 +7,11 @@
 # See the ActiveSupport::ParameterFilter documentation for supported notations and behaviors.
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc,
+  :code_verifier, :code_challenge, /\Astate\z/, :request_id,
   /\A(code|recovery_code)\z/, /\Acredential\z/, :provisioning_uri,
   :tax_declaration, "review.approved_amount", "review.reason", :consultant_compensation, :payroll_preview,
   :payroll_payload, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
   :salary_details, :profitability_billing_rate, :profitability_scenario, :payroll_mercury_connection,
-  :mercury_payment, :payroll_split_arrangement, :consultants
+  :mercury_payment, :payroll_split_arrangement, :consultants, :agreement, :agreement_template, :signature_request,
+  :signature_review, :signature_connection, :files, :payload, :webhookEndpoint
 ]

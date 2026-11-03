@@ -39,6 +39,8 @@ RUN apt-get update -qq && \
     # PostgreSQL
     libpq-dev \
     postgresql-client \
+    poppler-utils \
+    qpdf \
     # Version control
     git \
     # Network tools

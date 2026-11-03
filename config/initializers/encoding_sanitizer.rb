@@ -34,7 +34,7 @@ class EncodingSanitizer
 
       # Wrap rack.input to sanitize POST body
       if env["rack.input"] && sanitize_request_body?(env)
-        env["rack.input"] = SanitizedInput.new(env["rack.input"])
+        env["rack.input"] = SanitizedInput.new(env["rack.input"], content_length: env["CONTENT_LENGTH"])
       end
     rescue => e
       # Log error but don't crash the request
@@ -62,6 +62,7 @@ class EncodingSanitizer
     end
 
     def force_utf8(value)
+      value = value.dup.force_encoding(Encoding::UTF_8) if value.encoding == Encoding::ASCII_8BIT
       value
         .encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
     rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
@@ -82,20 +83,29 @@ class EncodingSanitizer
 
     # Wrapper for rack.input that sanitizes encoding on read
     class SanitizedInput < SimpleDelegator
-      def initialize(input)
+      def initialize(input, content_length: 0)
         super(input)
+        @content_length = content_length.to_i
       end
 
       def read(*args)
         data = __getobj__.read(*args)
         return data unless data.is_a?(String)
 
+        if args.any?(Integer)
+          # Decode a complete body; partial byte reads must stay untouched.
+          return data unless @content_length.positive? && data.bytesize == @content_length
+
+          encoding = __getobj__.external_encoding if __getobj__.respond_to?(:external_encoding)
+          data = data.dup.force_encoding(encoding) if encoding
+        end
+
         sanitize(data)
       end
 
       def gets(*args)
         data = __getobj__.gets(*args)
-        return data unless data.is_a?(String)
+        return data if !data.is_a?(String) || args.any?(Integer)
 
         sanitize(data)
       end
@@ -109,9 +119,8 @@ class EncodingSanitizer
         def sanitize(data)
           return data if data.encoding == Encoding::UTF_8 && data.valid_encoding?
 
-          # Force to binary first, then encode to UTF-8
-          data.dup.force_encoding(Encoding::ASCII_8BIT)
-            .encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
+          data = data.dup.force_encoding(Encoding::UTF_8) if data.encoding == Encoding::ASCII_8BIT
+          data.encode(Encoding::UTF_8, invalid: :replace, undef: :replace, replace: "")
         rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
           data.dup.force_encoding(Encoding::UTF_8).scrub("")
         end

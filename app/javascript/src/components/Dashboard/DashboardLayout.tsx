@@ -146,6 +146,25 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           roles: ["admin", "owner", "book_keeper", "employee", "manager"],
         },
         {
+          label: t("agreements.title"),
+          href: "/agreements",
+          icon: Receipt,
+          roles: ["admin", "owner"],
+        },
+        {
+          label: "Signed documents",
+          href: "/signed-documents",
+          icon: Receipt,
+          roles: [
+            "admin",
+            "owner",
+            "book_keeper",
+            "employee",
+            "manager",
+            "client",
+          ],
+        },
+        {
           label: t("taxDeclarations.title"),
           href: "/tax-declarations",
           icon: Receipt,

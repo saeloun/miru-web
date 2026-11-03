@@ -231,16 +231,16 @@ RSpec.describe "Reports Currency Calculations", type: :model do
     let!(:multi_currency_invoices) do
       [
         # EUR client with multiple invoices
-        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 1000.00, status: :paid),
-        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid),
-        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 1500.00, status: :sent),
+        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 1000.00, status: :paid, issue_date: Date.current),
+        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid, issue_date: Date.current),
+        create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 1500.00, status: :sent, issue_date: Date.current),
 
         # GBP client
-        create(:invoice, client: gbp_client, company: company, currency: "GBP", amount: 3000.00, status: :paid),
-        create(:invoice, client: gbp_client, company: company, currency: "GBP", amount: 1000.00, status: :overdue),
+        create(:invoice, client: gbp_client, company: company, currency: "GBP", amount: 3000.00, status: :paid, issue_date: Date.current),
+        create(:invoice, client: gbp_client, company: company, currency: "GBP", amount: 1000.00, status: :overdue, issue_date: Date.current),
 
         # USD client
-        create(:invoice, client: usd_client, company: company, currency: "USD", amount: 5000.00, status: :paid)
+        create(:invoice, client: usd_client, company: company, currency: "USD", amount: 5000.00, status: :paid, issue_date: Date.current)
       ]
     end
 
@@ -298,7 +298,7 @@ RSpec.describe "Reports Currency Calculations", type: :model do
     end
 
     let!(:project_invoice) do
-      invoice = create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid)
+      invoice = create(:invoice, client: eur_client, company: company, currency: "EUR", amount: 2000.00, status: :paid, issue_date: Date.current)
       invoice.invoice_line_items.create!(
         name: "Development Work",
         description: "14 hours of development",

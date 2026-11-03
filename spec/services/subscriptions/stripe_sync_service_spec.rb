@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Subscriptions::StripeSyncService do
+  include ActiveJob::TestHelper
+
   describe ".process" do
     let(:company) { create(:company, plan_tier: "free") }
 
@@ -31,7 +33,8 @@ RSpec.describe Subscriptions::StripeSyncService do
           result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
           expect(result).to eq(true)
-        end.to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+        end.to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
+        perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob)
       end.to change { Ahoy::Event.where(name: "subscription_purchased").count }.by(1)
 
       expect(company.reload.plan_tier).to eq("paid")
@@ -78,7 +81,7 @@ RSpec.describe Subscriptions::StripeSyncService do
         result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
         expect(result).to eq(true)
-      end.to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      end.to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
 
       expect(company.reload.plan_tier).to eq("paid")
       expect(company.stripe_customer_id).to eq("cus_hash_123")
@@ -121,7 +124,7 @@ RSpec.describe Subscriptions::StripeSyncService do
           result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
           expect(result).to eq(true)
-        end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+        end.not_to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
       }.not_to change { Ahoy::Event.where(name: "subscription_purchased").count }
     end
 
@@ -147,11 +150,10 @@ RSpec.describe Subscriptions::StripeSyncService do
 
       expect(Rails.logger).to receive(:warn).with(/PLAN_PURCHASE_ALERT_EMAIL/)
 
-      expect do
-        result = described_class.process(company:, subscription:, notify_plan_purchase: true)
+      expect(described_class.process(company:, subscription:, notify_plan_purchase: true)).to eq(true)
 
-        expect(result).to eq(true)
-      end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      expect { perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob) }
+        .not_to change { ActionMailer::Base.deliveries.size }
     end
 
     it "does not send a purchase alert for generic subscription reconciliation" do
@@ -174,11 +176,10 @@ RSpec.describe Subscriptions::StripeSyncService do
         )
       )
 
-      expect do
-        result = described_class.process(company:, subscription:)
+      expect(described_class.process(company:, subscription:)).to eq(true)
 
-        expect(result).to eq(true)
-      end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      expect { perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob) }
+        .not_to change { ActionMailer::Base.deliveries.size }
     end
 
     it "revokes access when no subscription can be found" do
@@ -190,7 +191,7 @@ RSpec.describe Subscriptions::StripeSyncService do
         subscription_interval: "month"
       )
 
-      allow(Stripe::Subscription).to receive(:retrieve).and_raise(Stripe::InvalidRequestError.new("missing", "id"))
+      allow(Stripe::Subscription).to receive(:list).and_raise(Stripe::InvalidRequestError.new("missing", "customer"))
 
       result = described_class.process(company:)
 
@@ -221,6 +222,61 @@ RSpec.describe Subscriptions::StripeSyncService do
       expect(company.reload.plan_tier).to eq("free")
       expect(company.subscription_status).to eq("canceled")
       expect(company.subscription_interval).to eq("year")
+    end
+  end
+
+  describe "current customer reconciliation" do
+    let(:company) { create(:company, stripe_customer_id: "cus_current", billing_exempt: true) }
+    let(:active_subscription) do
+      Stripe::Subscription.construct_from(
+        id: "sub_active", customer: "cus_current", status: "active", created: 1,
+        current_period_end: 1.month.from_now.to_i, items: { data: [] }
+      )
+    end
+    let(:canceled_subscription) do
+      Stripe::Subscription.construct_from(
+        id: "sub_canceled", customer: "cus_current", status: "canceled", created: 2,
+        current_period_end: 1.month.from_now.to_i, items: { data: [] }
+      )
+    end
+
+    it "keeps the active subscription when a newer canceled duplicate event is replayed" do
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [canceled_subscription, active_subscription], has_more: false)
+      )
+      2.times do
+        expect(described_class.reconcile(company:, subscription: canceled_subscription)).to be(true)
+      end
+      expect(company.reload).to have_attributes(plan_tier: "paid", stripe_subscription_id: "sub_active", billing_exempt: true)
+    end
+
+    it "reads additional pages rather than downgrading after three canceled duplicates" do
+      page = Stripe::ListObject.construct_from(data: [canceled_subscription], has_more: true, url: "/v1/subscriptions")
+      allow(page).to receive(:next_page).and_return(
+        Stripe::ListObject.construct_from(data: [active_subscription], has_more: false)
+      )
+      allow(Stripe::Subscription).to receive(:list).and_return(page)
+      expect(described_class.process(company:)).to be(true)
+      expect(page).to have_received(:next_page)
+      expect(company.reload.stripe_subscription_id).to eq("sub_active")
+    end
+
+    it "ignores a stale active snapshot after cancellation while preserving complimentary access" do
+      company.update!(plan_tier: "paid")
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [canceled_subscription], has_more: false)
+      )
+      expect(described_class.reconcile(company:, subscription: active_subscription)).to be(true)
+      expect(company.reload.plan_tier).to eq("free")
+      expect(company.pro_access?).to be(true)
+      expect(company.current_plan_label).to eq("free_pro")
+    end
+
+    it "rejects mismatched customer input before reading or projecting another customer" do
+      allow(Stripe::Subscription).to receive(:list)
+      expect(described_class.reconcile(company:, stripe_customer_id: "cus_other")).to be(false)
+      expect(Stripe::Subscription).not_to have_received(:list)
+      expect(company.reload.stripe_customer_id).to eq("cus_current")
     end
   end
 end

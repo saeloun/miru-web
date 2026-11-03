@@ -1,0 +1,6 @@
+<p>Hello <%= @invitation.recipient.fetch("name") %>,</p>
+<p><%= @invitation.invited_by.full_name %> invited you to review a document for <%= @company.name %>.</p>
+<p>This private link opens version <%= @invitation.revision.number %>. You can comment, request changes or approve this version for signing. Review approval is not a signature.</p>
+<p><a href="<%= @review_url %>" data-review-link="true">Review document</a></p>
+<p>The link expires <%= @invitation.expires_at.utc.strftime("%d %B %Y at %H:%M UTC") %>. Anyone with this link can access this version until it expires or is revoked. Please do not forward it.</p>
+<p>If the document changes, ask the sender for a new review link.</p>

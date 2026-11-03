@@ -247,7 +247,13 @@ const Sidebar: React.FC<SidebarProps> = ({
 
   const handleWorkspaceSwitch = async (workspaceId: number) => {
     setIsSwitchingWorkspaceId(workspaceId);
-    await WorkspaceApi.update(workspaceId);
+    const response = await WorkspaceApi.update(workspaceId);
+    if (!response) {
+      setIsSwitchingWorkspaceId(null);
+      setIsWorkspaceDialogOpen(false);
+
+      return;
+    }
     window.location.reload();
   };
 

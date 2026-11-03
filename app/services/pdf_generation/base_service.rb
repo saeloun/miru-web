@@ -11,6 +11,10 @@ module PdfGeneration
 
     def process
       generate_pdf
+    rescue Ferrum::StatusError => error
+      failure = Ferrum::StatusError.new("PDF renderer", "PDF navigation failed")
+      failure.set_backtrace(error.backtrace)
+      raise failure, cause: nil
     end
 
     private

@@ -821,6 +821,7 @@ en:
     unlock_instruction: didn't receive unlock instructions?
   subscriptions:
     already_subscribed: "Your workspace already has an active paid subscription. Use Manage billing to make changes."
+    payment_recovery_required: "Your workspace has a subscription waiting for payment. Use Manage billing to complete or cancel it."
     no_billing_customer: No billing customer exists for this company
     pricing_not_configured: Stripe subscription pricing is not configured
     trial_not_eligible: Your workspace is not eligible for a Pro trial

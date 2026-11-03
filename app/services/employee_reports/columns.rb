@@ -29,6 +29,7 @@ module EmployeeReports
       "salary_effective_on" => ["Current salary effective date", "Effective date of current recorded salary; no salary history."],
       "recorded_time_off_minutes" => ["Month recorded time off (minutes)", "Kept TimeoffEntry duration in selected month, scoped through workspace leave/holiday sources. Records have no approval status; includes recorded holidays."],
       "recorded_work_minutes" => ["Month recorded work (minutes)", "Kept timesheet duration for company projects in selected month; not approved attendance or payable time."],
+      "recorded_work_day_equivalents" => ["Month recorded work (8-hour days)", "Recorded work minutes divided by 480, rounded to four decimal places. Includes billable and nonbillable work; excludes time off. Not approved attendance or payable days."],
       "recorded_working_days" => ["Month recorded working days", "Distinct dates with kept timesheet entries for company projects in selected month; not approved attendance or payable days."],
       "calendar_weekdays" => ["Month calendar weekdays (Mon–Fri)", "Monday–Friday dates in selected month within employment dates, before holiday/time-off deductions. Blank when joining date is unknown. Not an approved work schedule or paid days."],
       "national_holiday_dates" => ["Month configured national holiday dates (JSON)", "Kept company national holiday dates in selected month, encoded as JSON. No assumption about attendance."],
@@ -39,7 +40,7 @@ module EmployeeReports
     PRESETS = {
       insurance: %w[name date_of_birth family_members joined_at employee_id designation phone],
       salary: %w[name employee_id bank_account_name bank_name bank_branch bank_account_number bank_ifsc bank_swift
-        recorded_time_off_minutes recorded_work_minutes recorded_working_days calendar_weekdays national_holiday_dates salary_amount
+        recorded_time_off_minutes recorded_work_minutes recorded_work_day_equivalents recorded_working_days calendar_weekdays national_holiday_dates salary_amount
         salary_currency salary_frequency salary_effective_on paid_reimbursements approved_reimbursements]
     }.freeze
 

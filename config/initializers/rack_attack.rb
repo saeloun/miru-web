@@ -18,6 +18,17 @@ class Rack::Attack
     req.ip if req.post? && req.path == "/api/v1/users/signup"
   end
 
+  throttle("auth/native/google/ip", limit: 10, period: 1.minute) do |req|
+    req.ip if (req.post? && [
+      "/api/v1/native/auth/google/requests",
+      "/api/v1/native/auth/google/exchanges"
+    ].include?(req.path)) || (req.get? && req.path.start_with?("/native/auth/google/"))
+  end
+
+  throttle("documents/review/ip", limit: 60, period: 1.minute) do |req|
+    req.ip if req.post? && req.path.match?(%r{\A/document-review/(open|comments|original)\z})
+  end
+
   throttle("analytics/pdf/ip", limit: 5, period: 1.minute) do |req|
     req.ip if req.get? && req.path.match?(%r{\A/internal_api/v1/analytics/exports/[^/]+\.pdf\z})
   end

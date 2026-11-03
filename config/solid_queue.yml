@@ -36,6 +36,12 @@ default: &default
         mercury_payroll_status_refresh:
           class: Payroll::MercuryStatusRefreshJob
           schedule: '*/30 * * * *'
+        signature_reminders:
+          class: SignatureRemindersJob
+          schedule: '17 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -93,6 +99,12 @@ production:
         database_backup:
           class: DatabaseBackupJob
           schedule: '<%= ENV.fetch("DATABASE_BACKUP_CRON", "*/30 * * * *") %>'
+        signature_reminders:
+          class: SignatureRemindersJob
+          schedule: '17 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>

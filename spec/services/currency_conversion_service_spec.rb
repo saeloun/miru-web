@@ -192,15 +192,17 @@ RSpec.describe CurrencyConversionService do
 
     {
       "https://api.exchangerate-api.com/v4/latest/EUR" => { rates: { USD: 1.18 } },
-      "https://api.frankfurter.app/#{Date.current}?from=EUR&to=USD" => { rates: { USD: 1.18 } },
+      "https://api.frankfurter.app/:date?from=EUR&to=USD" => { rates: { USD: 1.18 } },
       "https://data.fixer.io/api/latest?access_key=fixer-key&base=EUR&symbols=USD" =>
         { success: true, rates: { USD: 1.18 } }
     }.each do |earlier_url, body|
       it "prefers the existing provider at #{URI(earlier_url).host}" do
-        stub_request(:get, earlier_url).to_return(status: 200, body: body.to_json)
+        travel_to(1.day.from_now) do
+          stub_request(:get, earlier_url.sub(":date", Date.current.iso8601)).to_return(status: 200, body: body.to_json)
 
-        expect(described_class.get_exchange_rate("EUR", "USD")).to eq(1.18)
-        expect(provider_request).not_to have_been_requested
+          expect(described_class.get_exchange_rate("EUR", "USD")).to eq(1.18)
+          expect(provider_request).not_to have_been_requested
+        end
       end
     end
 
