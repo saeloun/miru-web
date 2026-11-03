@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1514,6 +1514,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.index ["company_id"], name: "index_stripe_connected_accounts_on_company_id", unique: true
   end
 
+  create_table "subscription_purchase_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "stripe_subscription_id", null: false
+    t.string "subscription_status"
+    t.string "subscription_interval"
+    t.integer "seat_quantity"
+    t.string "plan_label"
+    t.boolean "notification_required", default: false, null: false
+    t.integer "enqueue_count", default: 0, null: false
+    t.datetime "enqueued_at"
+    t.datetime "tracked_at"
+    t.datetime "notified_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "stripe_subscription_id"], name: "index_subscription_purchase_events_on_purchase", unique: true
+    t.index ["id"], name: "index_subscription_purchase_events_pending", where: "((tracked_at IS NULL) OR (notification_required AND (notified_at IS NULL)))"
+  end
+
   create_table "tax_configurations", force: :cascade do |t|
     t.integer "calculation_method", default: 0, null: false
     t.bigint "company_id", null: false
@@ -1849,6 +1867,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "stripe_connected_accounts", "companies"
+  add_foreign_key "subscription_purchase_events", "companies"
   add_foreign_key "tax_configurations", "companies"
   add_foreign_key "tax_declarations", "employments"
   add_foreign_key "tax_declarations", "tax_declarations", column: "supersedes_id"

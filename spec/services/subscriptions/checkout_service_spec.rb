@@ -105,7 +105,7 @@ RSpec.describe Subscriptions::CheckoutService do
     allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
 
     expect { expect(checkout).to be_nil }
-      .to have_enqueued_mail(SubscriptionMailer, :plan_purchased).once
+      .to have_enqueued_job(SubscriptionPurchaseDeliveryJob).once
   end
 
   it "fails closed when Stripe cannot verify existing subscriptions" do

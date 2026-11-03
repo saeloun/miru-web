@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe HandleStripeCheckoutEventService do
+  include ActiveJob::TestHelper
+
   let(:company) { create(:company, stripe_customer_id: "cus_webhook") }
   let(:active_subscription) do
     Stripe::Subscription.construct_from(
@@ -32,7 +34,9 @@ RSpec.describe HandleStripeCheckoutEventService do
       metadata: { company_id: company.id }, client_reference_id: nil
     }
     expect {
-      2.times { deliver("checkout.session.completed", object) }
+      perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob) do
+        2.times { deliver("checkout.session.completed", object) }
+      end
     }.to change { Ahoy::Event.where(name: "subscription_purchased").count }.by(1)
     expect(company.reload.stripe_subscription_id).to eq("sub_current")
   end

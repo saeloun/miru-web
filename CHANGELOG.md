@@ -32,6 +32,10 @@
 - Mailer layout branding now uses asset helper URLs with production `action_mailer.asset_host` to keep email logo assets resolvable in production mail clients
 - Razorpay Payment Settings now copies the production webhook URLs with the required event names for faster dashboard setup
 
+### Fixed
+
+- Purchase analytics and plan purchase alerts are no longer lost when queueing fails or a process dies after a subscription becomes paid. Run the migration and restart the Solid Queue dispatcher to load the new recovery job.
+
 ## 3.0.6 - 2026-10-23
 
 ### Security

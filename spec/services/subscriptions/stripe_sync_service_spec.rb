@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Subscriptions::StripeSyncService do
+  include ActiveJob::TestHelper
+
   describe ".process" do
     let(:company) { create(:company, plan_tier: "free") }
 
@@ -31,7 +33,8 @@ RSpec.describe Subscriptions::StripeSyncService do
           result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
           expect(result).to eq(true)
-        end.to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+        end.to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
+        perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob)
       end.to change { Ahoy::Event.where(name: "subscription_purchased").count }.by(1)
 
       expect(company.reload.plan_tier).to eq("paid")
@@ -78,7 +81,7 @@ RSpec.describe Subscriptions::StripeSyncService do
         result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
         expect(result).to eq(true)
-      end.to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      end.to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
 
       expect(company.reload.plan_tier).to eq("paid")
       expect(company.stripe_customer_id).to eq("cus_hash_123")
@@ -121,7 +124,7 @@ RSpec.describe Subscriptions::StripeSyncService do
           result = described_class.process(company:, subscription:, notify_plan_purchase: true)
 
           expect(result).to eq(true)
-        end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+        end.not_to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
       }.not_to change { Ahoy::Event.where(name: "subscription_purchased").count }
     end
 
@@ -147,11 +150,10 @@ RSpec.describe Subscriptions::StripeSyncService do
 
       expect(Rails.logger).to receive(:warn).with(/PLAN_PURCHASE_ALERT_EMAIL/)
 
-      expect do
-        result = described_class.process(company:, subscription:, notify_plan_purchase: true)
+      expect(described_class.process(company:, subscription:, notify_plan_purchase: true)).to eq(true)
 
-        expect(result).to eq(true)
-      end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      expect { perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob) }
+        .not_to change { ActionMailer::Base.deliveries.size }
     end
 
     it "does not send a purchase alert for generic subscription reconciliation" do
@@ -174,11 +176,10 @@ RSpec.describe Subscriptions::StripeSyncService do
         )
       )
 
-      expect do
-        result = described_class.process(company:, subscription:)
+      expect(described_class.process(company:, subscription:)).to eq(true)
 
-        expect(result).to eq(true)
-      end.not_to have_enqueued_mail(SubscriptionMailer, :plan_purchased)
+      expect { perform_enqueued_jobs(only: SubscriptionPurchaseDeliveryJob) }
+        .not_to change { ActionMailer::Base.deliveries.size }
     end
 
     it "revokes access when no subscription can be found" do
