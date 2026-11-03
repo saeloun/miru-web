@@ -120,7 +120,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
           expect(page).not_to have_content("INV-SENT-002")
         end
         expect(page).to have_content(
-          "Viewing 1 matching invoices from 5 loaded",
+          "Viewing 1 matching invoice(s) from 5 loaded",
           wait: 10
         )
       end
@@ -139,15 +139,14 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       end
     end
 
-    it "displays invoice summary with overdue and outstanding amounts" do
+    it "displays invoice summary with overdue and unpaid amounts" do
       with_forgery_protection do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("OVERDUE", wait: 10)
           .or have_content("Overdue", wait: 10)
-        expect(page).to have_content("OUTSTANDING")
-          .or have_content("Outstanding")
+        expect(page).to have_content("UNPAID")
         expect(page).to have_content("DRAFT")
           .or have_content("Draft")
       end
@@ -166,7 +165,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
           expect(page).not_to have_content("INV-PAID-003")
         end
         expect(page).to have_content(
-          "Viewing 1 matching invoices from 5 loaded",
+          "Viewing 1 matching invoice(s) from 5 loaded",
           wait: 10
         )
       end
@@ -238,7 +237,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
           expect(page).not_to have_content("INV-SI-001")
         end
         expect(page).to have_content(
-          "Viewing 1 matching invoices from 2 loaded",
+          "Viewing 1 matching invoice(s) from 2 loaded",
           wait: 10
         )
 
@@ -271,7 +270,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
 
   context "with more invoices than the first table page" do
     before do
-      55.times do |index|
+      105.times do |index|
         create(:invoice,
           company:,
           client:,
@@ -286,11 +285,11 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         visit "/invoices"
 
         expect(page).to have_css("#react-root", wait: 10)
-        expect(page).to have_content("Loaded 50 of 55", wait: 10)
+        expect(page).to have_content("Loaded 100 of 105", wait: 10)
 
         page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
 
-        expect(page).to have_content("Loaded 55 of 55", wait: 10)
+        expect(page).to have_content("Loaded 105 of 105", wait: 10)
         expect(page).to have_content("All invoices loaded", wait: 10)
       end
     end
