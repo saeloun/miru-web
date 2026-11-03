@@ -184,6 +184,17 @@ RSpec.describe "Mercury payroll API", type: :request do
       expect(data.dig("consultants", 0, "blockers")).to include("recipient_not_linked")
     end
 
+    it "rejects arbitrary beneficiary labels before reading or saving a recipient" do
+      verified_connection
+      post "/api/v1/payroll_mercury_connection/recipients",
+        params: { company_id: company.id, employment_id: employment.id, recipient_id:, beneficiary: "other" }, as: :json
+
+      expect(response).to have_http_status(422)
+      expect(json_response["codes"]).to eq(["beneficiary_invalid"])
+      expect(PayrollMercuryRecipientLink.count).to eq(0)
+      expect(a_request(:get, "#{mercury_base}/recipient/#{recipient_id}")).not_to have_been_made
+    end
+
     {
       "swiftCode" => "recipient_swift_mismatch", "iban" => "recipient_account_mismatch"
     }.each do |field, code|
