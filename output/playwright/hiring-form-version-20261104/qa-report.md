@@ -22,6 +22,17 @@ before a new private link is issued, without requiring a manual refresh.
 - Desktop/mobile screenshots were opened and inspected:
   [desktop](screening-to-form-1440.png), [mobile](screening-to-form-390.png).
 
-This verifies a local UI fix, not a deployment, provider integration or the whole
-ATS feature. The separate company-lock review comment and develop conflict remain
-open. These screenshots contain synthetic records and synthetic private links.
+## Develop integration
+
+Merged current `origin/develop` locally, retaining hiring delivery recovery every
+five minutes and purchase delivery recovery every ten minutes in both default
+and production configuration. Added the missing hiring schedule assertion.
+
+- Combined recovery specs: **92 examples, 0 failures** (schedule, purchase
+  durability/queue integration, hiring receipt and acknowledgement recovery).
+- Required Vite build and forced test build passed after integration.
+- The same nine form/screening browser examples passed after integration.
+
+This verifies local changes, not a deployment, provider integration or the whole
+ATS feature. The separate company-lock review comment remains open. Screenshots
+contain synthetic records and synthetic private links.

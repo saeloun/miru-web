@@ -39,6 +39,9 @@ default: &default
         hiring_delivery_recovery:
           class: HiringDeliveryRecoveryJob
           schedule: '*/5 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -99,6 +102,9 @@ production:
         hiring_delivery_recovery:
           class: HiringDeliveryRecoveryJob
           schedule: '*/5 * * * *'
+        subscription_purchase_delivery_recovery:
+          class: SubscriptionPurchaseDeliveryRecoveryJob
+          schedule: '*/10 * * * *'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>

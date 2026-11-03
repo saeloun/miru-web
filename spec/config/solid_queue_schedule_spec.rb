@@ -62,4 +62,20 @@ RSpec.describe "Solid Queue schedule" do
       "schedule" => "*/30 * * * *"
     )
   end
+
+  it "runs purchase delivery recovery every 10 minutes in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "subscription_purchase_delivery_recovery")
+
+      expect(task).to include("class" => "SubscriptionPurchaseDeliveryRecoveryJob", "schedule" => "*/10 * * * *")
+    end
+  end
+
+  it "runs hiring delivery recovery every 5 minutes alongside purchase recovery" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_delivery_recovery")
+
+      expect(task).to include("class" => "HiringDeliveryRecoveryJob", "schedule" => "*/5 * * * *")
+    end
+  end
 end

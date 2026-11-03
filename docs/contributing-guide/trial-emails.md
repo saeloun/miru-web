@@ -15,7 +15,7 @@ reminders 7, 2, and 1 days before the trial ends.
 ## Self-hosted instances
 
 Trial emails only send when Stripe billing is configured. If none of
-`STRIPE_PLAN_PAGE_URL`, `STRIPE_SUBSCRIPTION_PRICE_ID`,
+`STRIPE_SUBSCRIPTION_PRICE_ID`,
 `STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY`, or `STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY`
 is set, `TrialEmailsJob` is a no-op — self-hosted instances without a checkout
 path never receive upgrade emails.

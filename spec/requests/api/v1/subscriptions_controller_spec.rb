@@ -143,6 +143,72 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
       expect(body["pro_access"]).to eq(true)
       expect(body["trial_available"]).to eq(false)
     end
+
+    it "alerts once when polling activates a purchase before the webhook arrives" do
+      company.update!(stripe_customer_id: "cus_123")
+      subscription = Stripe::Subscription.construct_from(
+        id: "sub_123", customer: "cus_123", status: "active", created: 1, items: { data: [] }
+      )
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [subscription], has_more: false)
+      )
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
+
+      expect { get "/api/v1/subscription", headers: headers }
+        .to have_enqueued_job(SubscriptionPurchaseDeliveryJob).once
+      expect(company.reload.plan_tier).to eq("paid")
+
+      expect {
+        Subscriptions::StripeSyncService.reconcile(
+          company:, stripe_customer_id: "cus_123", stripe_subscription_id: "sub_123", notify_plan_purchase: true
+        )
+      }.not_to have_enqueued_job(SubscriptionPurchaseDeliveryJob)
+    end
+  end
+
+  describe "billing summary reconciliation" do
+    let(:active_subscription) do
+      Stripe::Subscription.construct_from(
+        id: "sub_123", customer: "cus_123", status: "active", created: 1, items: { data: [] }
+      )
+    end
+
+    before do
+      company.update!(stripe_customer_id: "cus_123")
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("PLAN_PURCHASE_ALERT_EMAIL").and_return("alerts@example.test")
+    end
+
+    it "contacts Stripe at most once per company in the throttle window" do
+      allow(Rails).to receive(:cache).and_return(ActiveSupport::Cache::MemoryStore.new)
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [], has_more: false)
+      )
+
+      3.times { get "/api/v1/subscription", headers: headers }
+
+      expect(response).to have_http_status(:ok)
+      expect(Stripe::Subscription).to have_received(:list).once
+    end
+
+    it "keeps a recovered purchase when its alert cannot be queued" do
+      allow(Stripe::Subscription).to receive(:list).and_return(
+        Stripe::ListObject.construct_from(data: [active_subscription], has_more: false)
+      )
+      allow_any_instance_of(SubscriptionPurchaseDeliveryJob).to receive(:enqueue)
+        .and_raise(SolidQueue::Job::EnqueueError, "queue unavailable")
+      allow(Rails.error).to receive(:report)
+
+      get "/api/v1/subscription", headers: headers
+
+      expect(response).to have_http_status(:ok)
+      expect(company.reload.plan_tier).to eq("paid")
+      expect(Rails.error).to have_received(:report).with(
+        an_instance_of(SolidQueue::Job::EnqueueError), hash_including(handled: true)
+      )
+      expect(SubscriptionPurchaseEvent.pending.where(company:).count).to eq(1)
+    end
   end
 
   describe "POST /api/v1/subscription/trial" do
@@ -187,33 +253,22 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
   end
 
   describe "POST /api/v1/subscription/checkout" do
-    it "returns stripe plan page url when configured" do
+    before do
+      allow(Stripe::Subscription).to receive(:list).and_return(Stripe::ListObject.construct_from(data: [], has_more: false))
+      allow(Stripe::Checkout::Session).to receive(:list).and_return(Stripe::ListObject.construct_from(data: [], has_more: false))
+    end
+
+    it "does not bypass managed checkout with a reusable plan page" do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with("STRIPE_PLAN_PAGE_URL").and_return("https://buy.stripe.com/test_plan")
-      extra_user = create(:user, current_workspace_id: company.id)
-      create(:employment, company:, user: extra_user)
+      %w[STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY STRIPE_YEARLY_PRICE_ID STRIPE_SUBSCRIPTION_PRICE_ID].each do |key|
+        allow(ENV).to receive(:[]).with(key).and_return(nil)
+      end
 
       post "/api/v1/subscription/checkout", params: { interval: "yearly" }, headers: headers
 
-      expect(response).to have_http_status(:ok)
-      url = JSON.parse(response.body)["url"]
-      expect(url).to include("https://buy.stripe.com/test_plan")
-      expect(url).to include("prefilled_email=#{CGI.escape(user.email)}")
-      expect(url).to include("client_reference_id=#{company.id}")
-      expect(url).to include("billing_interval=yearly")
-      expect(url).to include("quantity=2")
-      expect(JSON.parse(response.body).dig("agent_payment_options", "stripe_link_cli")).to include(
-        "provider" => "stripe_link_cli",
-        "supported" => true,
-        "credential_type" => "virtual_card"
-      )
-      expect(Ahoy::Event.where(name: "subscription_checkout_started").last.properties).to include(
-        "company_id" => company.id,
-        "user_id" => user.id,
-        "billing_interval" => "yearly",
-        "seat_quantity" => 2,
-        "provider" => "stripe_plan_page"
-      )
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(JSON.parse(response.body)).not_to have_key("url")
     end
 
     it "returns 422 when stripe price is not configured" do
@@ -249,7 +304,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_render_monthly", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_render_monthly", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -270,7 +325,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_render_yearly", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_render_yearly", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -291,7 +346,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
 
       expect(response).to have_http_status(:ok)
       expect(Stripe::Checkout::Session).to have_received(:create).with(
-        hash_including(line_items: [{ price: "price_shared", quantity: 1 }])
+        hash_including(line_items: [{ price: "price_shared", quantity: 1 }]), hash_including(:idempotency_key)
       )
     end
 
@@ -334,7 +389,7 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
             billing_interval: "monthly",
             seat_quantity: 1
           )
-        )
+        ), hash_including(:idempotency_key)
       )
     end
 
@@ -367,8 +422,30 @@ RSpec.describe Api::V1::SubscriptionsController, type: :request do
             billing_interval: "yearly",
             seat_quantity: 2
           )
-        )
+        ), hash_including(:idempotency_key)
       )
+    end
+  end
+
+  describe "POST /api/v1/subscription/checkout with a subscription awaiting payment" do
+    %w[incomplete unpaid].each do |status|
+      it "asks for payment recovery when the subscription is #{status}" do
+        company.update!(stripe_customer_id: "cus_123")
+        subscription = Stripe::Subscription.construct_from(
+          id: "sub_123", customer: "cus_123", status:, created: 1, items: { data: [] }
+        )
+        allow(Stripe::Subscription).to receive(:list).and_return(
+          Stripe::ListObject.construct_from(data: [subscription], has_more: false)
+        )
+        allow(ENV).to receive(:[]).and_call_original
+        allow(ENV).to receive(:[]).with("STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY").and_return("price_monthly")
+
+        post "/api/v1/subscription/checkout", params: { interval: "monthly" }, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)["errors"]).to eq(I18n.t("subscriptions.payment_recovery_required"))
+        expect(company.reload.plan_tier).not_to eq("paid")
+      end
     end
   end
 

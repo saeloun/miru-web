@@ -10,7 +10,6 @@ class TrialEmailsJob < ApplicationJob
   # trial emails would only nag admins about a checkout that cannot succeed.
   def self.billing_configured?
     %w[
-      STRIPE_PLAN_PAGE_URL
       STRIPE_SUBSCRIPTION_PRICE_ID
       STRIPE_SUBSCRIPTION_PRICE_ID_MONTHLY
       STRIPE_SUBSCRIPTION_PRICE_ID_YEARLY
