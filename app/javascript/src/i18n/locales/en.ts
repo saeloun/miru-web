@@ -2385,9 +2385,38 @@ const en = {
       disconnected: "Razorpay disconnected.",
       reviewTitle: "Razorpay payments need your review",
       reviewDescription:
-        "Razorpay captured these payments, but Miru could not match them to the invoice, usually because the invoice changed after its payment link was issued. They were not recorded. Check the payment in Razorpay, record it on the invoice if it is correct, then clear it here so the customer can use a new link.",
+        "Razorpay captured these payments, but Miru could not record them. Check each one, then record it on the invoice or refund it in Razorpay before marking it as reviewed.",
       reviewInvoice: "Invoice {{number}}: {{currency}} {{amount}}",
       reviewResolve: "Mark as reviewed",
+      reviewReferences: "Payment {{payment}}, payment link {{link}}",
+      reviewPaymentUnknown: "not provided",
+      reviewLimit:
+        "Showing the first 20 payments. Review these to see any remaining payments.",
+      reviewState: {
+        open: "Invoice is unpaid.",
+        paid: "Invoice is already paid.",
+        deleted: "Invoice was deleted.",
+        waived: "Invoice was waived.",
+      },
+      reviewReason: {
+        webhook_mismatch: "The payment did not match the invoice.",
+        callback_mismatch: "The payment did not match the invoice.",
+        paid_link_mismatch: "The paid link did not match the invoice.",
+        untracked_link: "It was paid through a link Miru no longer tracks.",
+        invoice_paid: "It was paid after the invoice was settled.",
+        invoice_deleted: "It was paid after the invoice was deleted.",
+        invoice_waived: "It was paid after the invoice was waived.",
+        invoice_invalid:
+          "The invoice could not be updated. Check its details before reconciling this payment.",
+        partial_payment:
+          "Razorpay reported a partial payment. Reconcile it before collecting again.",
+        unknown: "It could not be matched to the invoice.",
+      },
+      reviewConfirmTitle: "Mark this payment as reviewed?",
+      reviewConfirmDescription:
+        "This does not record or refund a payment. If this is the last review on an unpaid invoice, Miru closes its old payment link before allowing another checkout. Other payments stay listed.",
+      reviewKeep: "Keep in review",
+      reviewConfirm: "Confirm reviewed",
       disconnectUnconfirmed:
         "Razorpay is disconnected in Miru, but Razorpay has not confirmed the revocation.",
       status: {

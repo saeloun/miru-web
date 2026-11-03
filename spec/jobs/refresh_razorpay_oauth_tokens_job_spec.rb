@@ -3,6 +3,12 @@
 require "rails_helper"
 
 RSpec.describe RefreshRazorpayOauthTokensJob do
+  before do
+    # Refresh intent must be tested with real commits, not a surrounding example transaction.
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+  end
+
   around do |example|
     VCR.turned_off do
       WebMock.disable_net_connect!

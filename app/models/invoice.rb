@@ -65,6 +65,8 @@ class Invoice < ApplicationRecord
   after_discard :unlock_timesheet_entries, if: :draft?
   after_discard :update_invoice_number
   after_commit :reset_skip_line_item_total_sync
+  before_destroy :preserve_razorpay_payment_evidence, prepend: true
+  after_commit :enqueue_razorpay_link_cancellation, on: :update, if: :razorpay_link_cancellation_due?
   after_rollback :reset_skip_line_item_total_sync
   after_create { Rails.event.notify(Invoices::Created.new(self)) }
   after_update(if: :saved_change_to_status?) do
@@ -187,6 +189,27 @@ class Invoice < ApplicationRecord
       if status_changed? && status_was == "paid"
         errors.add(:status, t("errors.can't change status"))
       end
+    end
+
+    # Only OAuth links store an account. The job records a final status, which ends this check.
+    def razorpay_link_cancellation_due?
+      (paid? || waived? || discarded?) && razorpay_payment_link_id.present? && razorpay_payment_link_account_id.present? &&
+        [nil, "created", "partially_paid"].include?(razorpay_payment_link_status)
+    end
+
+    def preserve_razorpay_payment_evidence
+      return unless razorpay_payment_link_account_id.present? || PaymentProviders::RazorpayPaymentReview.pending?(self) ||
+        Array((payment_infos || {})[PaymentProviders::RazorpayPaymentReview::RESOLVED_KEY]).any?
+
+      errors.add(:base, "Invoices with Razorpay payment evidence must be archived instead of permanently deleted")
+      throw :abort
+    end
+
+    # Best effort: a failure here must not fail a payment or deletion that has already committed.
+    def enqueue_razorpay_link_cancellation
+      CancelRazorpayPaymentLinkJob.perform_later(id, razorpay_payment_link_id, razorpay_payment_link_account_id)
+    rescue StandardError => error
+      Rails.error.report(error, handled: true, context: { invoice_id: id })
     end
 
     def not_waived

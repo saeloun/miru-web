@@ -187,18 +187,52 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
     connected_provider
     invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR", amount: 600, amount_due: 600,
       amount_paid: 0, status: "sent")
-    PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: "pay_synthetic", payment_link_id: "plink_synthetic", amount: 100_000, reason: "webhook_mismatch")
+    PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: "pay_synthetic", payment_link_id: "plink_synthetic", amount: 100_000, reason: "webhook_mismatch", currency: "INR")
     visit_settings
     within(connection_panel) do
       expect(page).to have_content("Razorpay payments need your review")
-      expect(page).to have_content("Invoice #{invoice.invoice_number}: INR 1000")
+      expect(page).to have_content("Invoice #{invoice.invoice_number}: INR 1000.00")
+      expect(page).to have_content("Payment pay_synthetic, payment link plink_synthetic")
+      expect(page).to have_content("Invoice is unpaid.")
     end
     capture("12-payment-needs-review")
+    within(connection_panel) { click_button "Mark as reviewed" }
+    expect(page).to have_content("Mark this payment as reviewed?")
+    click_button "Keep in review"
+    expect(PaymentProviders::RazorpayPaymentReview.pending?(invoice.reload)).to be(true)
+    within(connection_panel) { click_button "Mark as reviewed" }
+    click_button "Confirm reviewed"
+    within(connection_panel) { expect(page).to have_no_content("Razorpay payments need your review", wait: 10) }
+    expect(PaymentProviders::RazorpayPaymentReview.pending?(invoice.reload)).to be(false)
+  end
+
+  it "shows unknown captured money as unavailable instead of zero" do
+    connected_provider
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR", amount: 600, amount_due: 600,
+      amount_paid: 0, status: "sent")
+    PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: "pay_unknown", payment_link_id: "plink_synthetic", amount: nil, reason: "webhook_mismatch")
+    visit_settings
     within(connection_panel) do
-      click_button "Mark as reviewed"
-      expect(page).to have_no_content("Razorpay payments need your review", wait: 10)
+      expect(page).to have_content("Invoice #{invoice.invoice_number}: N/A")
+      expect(page).to have_content("Payment pay_unknown, payment link plink_synthetic")
+      expect(page).to have_no_content("INR 0")
     end
-    expect(invoice.reload.razorpay_payment_review).to be_nil
+    capture("13-payment-unknown-amount")
+  end
+
+  it "explains when the review list is limited" do
+    connected_provider
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR", amount: 600, amount_due: 600,
+      amount_paid: 0, status: "sent")
+    21.times do |index|
+      PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: "pay_#{index}", payment_link_id: "plink_synthetic", amount: 100,
+        reason: "webhook_mismatch", currency: "INR")
+    end
+    visit_settings
+    within(connection_panel) do
+      expect(page).to have_css("li", count: 20)
+      expect(page).to have_content("Showing the first 20 payments. Review these to see any remaining payments.")
+    end
   end
 
   it "keeps recovery and revocation both reachable after an ambiguous refresh" do

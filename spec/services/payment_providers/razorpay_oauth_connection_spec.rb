@@ -3,6 +3,12 @@
 require "rails_helper"
 
 RSpec.describe PaymentProviders::RazorpayOauthConnection do
+  before do
+    # Refresh intent must be tested with real commits, not a surrounding example transaction.
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+  end
+
   let(:company) { create(:company) }
   let(:actor) { create(:user, current_workspace: company) }
   let!(:employment) { create(:employment, user: actor, company:, resigned_at: nil) }

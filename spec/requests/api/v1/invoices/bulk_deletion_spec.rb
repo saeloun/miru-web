@@ -34,6 +34,21 @@ RSpec.describe "Api::V1::Invoices::BulkDeletion#create", type: :request do
       expect(response).to have_http_status(:no_content)
     end
 
+    it "retains invoices with an OAuth link or captured-payment review" do
+      linked = create(:invoice, company:, client:, payment_infos: { "razorpay_payment_link_account_id" => "acc_synthetic",
+        "razorpay_payment_link_id" => "plink_synthetic" })
+      reviewed = create(:invoice, company:, client:)
+      PaymentProviders::RazorpayPaymentReview.flag!(reviewed, payment_id: "pay_synthetic", payment_link_id: "plink_old",
+        amount: 100, currency: "INR", reason: "untracked_link")
+      send_request :post, api_v1_invoices_bulk_deletion_index_path,
+        params: { invoices_ids: [linked.id, reviewed.id] }, headers: auth_headers(user)
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json_response["undeletable_invoice_ids"]).to match_array([linked.id, reviewed.id])
+      expect(json_response["error"]).to include("pending payment evidence")
+      expect(Invoice.where(id: [linked.id, reviewed.id]).count).to eq(2)
+      expect(PaymentProviders::RazorpayPaymentReview.pending?(reviewed.reload)).to be(true)
+    end
+
     it "deletes payment-free invoices but reports the ones that have payments" do
       deletable = create(:invoice, company:, client:)
       with_payment = create(:invoice, company:, client:, amount_due: 300)

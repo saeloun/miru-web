@@ -31,10 +31,16 @@ type ConnectionStatus =
   | "recovery_pending";
 
 interface PaymentNeedingReview {
+  review_id: string;
   invoice_id: number;
   invoice_number: string;
-  currency: string;
-  amount: number;
+  invoice_state: "open" | "paid" | "deleted" | "waived";
+  payment_id: string | null;
+  payment_link_id: string | null;
+  reason: string;
+  currency: string | null;
+  amount: number | null;
+  display_amount: string | null;
 }
 
 interface Connection {
@@ -87,6 +93,8 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
   const [details, setDetails] = useState<ConnectionResponse | null>(null);
   const [isWorking, setIsWorking] = useState(false);
   const [showDisconnectDialog, setShowDisconnectDialog] = useState(false);
+  const [reviewToConfirm, setReviewToConfirm] =
+    useState<PaymentNeedingReview | null>(null);
   const [accountId, setAccountId] = useState("");
   const [providerReference, setProviderReference] = useState("");
 
@@ -175,6 +183,20 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
 
   if (!details) return null;
 
+  const resolveReview = () => {
+    if (!reviewToConfirm) return;
+
+    const { invoice_id: invoiceId, review_id: reviewId } = reviewToConfirm;
+    setReviewToConfirm(null);
+    run(() => razorpayConnectionApi.resolvePaymentReview(invoiceId, reviewId));
+  };
+
+  const reviewReferences = (payment: PaymentNeedingReview) =>
+    text("reviewReferences", {
+      payment: payment.payment_id || text("reviewPaymentUnknown"),
+      link: payment.payment_link_id || text("reviewPaymentUnknown"),
+    });
+
   const { connection, connect_available: connectAvailable } = details;
   const { status } = connection;
   const canConnect = connectAvailable && CONNECTABLE_STATUSES.includes(status);
@@ -237,32 +259,40 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
                 {connection.payments_needing_review.map(payment => (
                   <li
                     className="flex flex-wrap items-center justify-between gap-2"
-                    key={payment.invoice_id}
+                    key={`${payment.invoice_id}:${payment.review_id}`}
                   >
-                    <span>
-                      {text("reviewInvoice", {
-                        number: payment.invoice_number,
-                        amount: (payment.amount || 0) / 100,
-                        currency: payment.currency,
-                      })}
-                    </span>
+                    <div className="min-w-0 space-y-1">
+                      <p>
+                        {text("reviewInvoice", {
+                          number: payment.invoice_number,
+                          amount: payment.display_amount ?? "N/A",
+                          currency: payment.currency ?? "",
+                        })}
+                      </p>
+                      <p className="break-words text-xs">
+                        {reviewReferences(payment)}
+                      </p>
+                      <p className="text-xs">
+                        {text(`reviewState.${payment.invoice_state}`)}{" "}
+                        {text(`reviewReason.${payment.reason}`, {
+                          defaultValue: text("reviewReason.unknown"),
+                        })}
+                      </p>
+                    </div>
                     <Button
                       className={actionButtonClass}
                       disabled={isWorking}
                       variant="outline"
-                      onClick={() =>
-                        run(() =>
-                          razorpayConnectionApi.resolvePaymentReview(
-                            payment.invoice_id
-                          )
-                        )
-                      }
+                      onClick={() => setReviewToConfirm(payment)}
                     >
                       {text("reviewResolve")}
                     </Button>
                   </li>
                 ))}
               </ul>
+              {connection.payments_needing_review.length >= 20 && (
+                <p className="mt-2 text-xs">{text("reviewLimit")}</p>
+              )}
             </AlertDescription>
           </Alert>
         )}
@@ -459,6 +489,35 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
             </Button>
             <Button variant="destructive" onClick={disconnect}>
               {text("confirmDisconnect")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={reviewToConfirm !== null}
+        onOpenChange={open => {
+          if (!open) setReviewToConfirm(null);
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{text("reviewConfirmTitle")}</DialogTitle>
+            <DialogDescription>
+              {text("reviewConfirmDescription")}
+            </DialogDescription>
+          </DialogHeader>
+          {reviewToConfirm && (
+            <p className="break-all text-sm">
+              {reviewReferences(reviewToConfirm)}
+            </p>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setReviewToConfirm(null)}>
+              {text("reviewKeep")}
+            </Button>
+            <Button variant="destructive" onClick={resolveReview}>
+              {text("reviewConfirm")}
             </Button>
           </DialogFooter>
         </DialogContent>

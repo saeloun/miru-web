@@ -17,15 +17,23 @@ module PaymentProviders
     end
 
     def bound_to_invoice?
+      belongs_to_invoice? && @payment_link["currency"] == @invoice.currency
+    end
+
+    def belongs_to_invoice?
       notes = @payment_link["notes"]
       @account_id.present? && @invoice.razorpay_payment_link_account_id == @account_id &&
-        @payment_link["id"] == @invoice.razorpay_payment_link_id && @payment_link["currency"] == @invoice.currency &&
+        @payment_link["id"] == @invoice.razorpay_payment_link_id &&
         notes.is_a?(Hash) && notes["miru_invoice_id"] == @invoice.id.to_s && notes["company_id"] == @invoice.company_id.to_s &&
         @payment_link["reference_id"].to_s.start_with?("miru-inv-#{@invoice.id}-")
     end
 
     def captured_payment_id
-      Array(@payment_link["payments"]).find { |payment| payment.is_a?(Hash) && payment["status"] == "captured" }&.fetch("payment_id", nil)
+      captured_payments.first&.fetch("payment_id")
+    end
+
+    def captured_payments
+      Array(@payment_link["payments"]).select { |payment| payment.is_a?(Hash) && payment["status"] == "captured" && payment["payment_id"].present? }
     end
 
     def fully_paid?

@@ -339,9 +339,13 @@ module PaymentProviders
       # Commits refresh intent before the call, so a worker that dies after Razorpay rotates the
       # token leaves evidence. A successful or classified refresh clears it under the row lock.
       def reserve_refresh!(attempt)
+        caller_transaction = @provider.class.connection_pool.with_connection(&:transaction_open?)
         @provider.with_lock do
           next unless connection_usable? && application_unchanged? &&
               credentials_expiring?(@provider.razorpay_oauth_credentials) && settings["oauth_refresh_reservation"].blank?
+
+          # A savepoint cannot preserve intent if the caller later rolls back.
+          raise RefreshInProgress, "Refresh Razorpay before starting a transaction" if caller_transaction
 
           attempt[:reservation] = SecureRandom.hex(8)
           settings.merge!("oauth_refresh_reservation" => attempt[:reservation], "oauth_refresh_reserved_at" => Time.current.to_i)
@@ -351,7 +355,8 @@ module PaymentProviders
 
       def verify_refresh_reservation!(attempt)
         reservation = settings["oauth_refresh_reservation"]
-        return if reservation.blank? || reservation == attempt[:reservation]
+        return if reservation.present? && reservation == attempt[:reservation]
+        raise RefreshInProgress, "Razorpay refresh must reserve its intent first" if reservation.blank?
         raise RefreshInProgress, "Razorpay account connection is refreshing" if settings["oauth_refresh_reserved_at"].to_i > REFRESH_RESERVATION_TTL.seconds.ago.to_i
 
         attempt[:refreshing] = true

@@ -14,13 +14,12 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
     payment_link = client.fetch_payment_link(payment_link_id)
     return false unless payment_link["status"] == "paid"
 
-    payment = nil
-    invoice.with_lock do
-      return true if invoice.paid?
+    payment = invoice.with_lock do
+      return record_capture_on_closed_invoice(payment_link) if PaymentProviders::RazorpayPaymentReview.closed_reason(invoice)
+      return false if provider.razorpay_oauth? && PaymentProviders::RazorpayPaymentReview.resolved?(invoice, razorpay_payment_id)
       return false unless oauth_payment_verified?(payment_link)
 
-      payment = InvoicePayment::Settle.process(payment_params(payment_link), invoice)
-      invoice.update!(razorpay_payment_id:)
+      record_payment(payment_link)
     end
 
     enqueue_auto_payout(payment)
@@ -30,9 +29,31 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
   rescue PaymentProviders::RazorpayClient::Error => error
     Rails.logger.warn("Razorpay fulfillment failed for invoice #{invoice.id}: #{error.message}")
     false
+  rescue ActiveRecord::RecordInvalid
+    record_failed_settlement(payment_link)
   end
 
   private
+
+    def record_failed_settlement(payment_link)
+      raise unless provider.razorpay_oauth?
+
+      invoice.reload
+      flag_for_review(payment_link, reason: "invoice_invalid")
+      false
+    end
+
+    def record_payment(payment_link)
+      Invoice.transaction(requires_new: true) do
+        InvoicePayment::Settle.process(payment_params(payment_link), invoice).tap do
+          invoice.update!(razorpay_payment_id:)
+          if provider.razorpay_oauth?
+            PaymentProviders::RazorpayPaymentReview.discharge_settled!(invoice, razorpay_payment_id)
+            flag_for_review(payment_link, reason: "invoice_paid")
+          end
+        end
+      end
+    end
 
     # Razorpay documents the Payment Link callback signature only with an API key secret, which
     # OAuth merchants never share. OAuth callbacks are untrusted hints until the authenticated fetch.
@@ -43,12 +64,16 @@ class InvoicePayment::RazorpayPaymentLinkFulfillment < ApplicationService
       provider.razorpay_configured? && client.verify_payment_link_signature(payment_link_signature_attributes)
     end
 
-    def flag_for_review(payment_link)
-      verification = PaymentProviders::RazorpayPaymentLinkVerification.new(invoice:, payment_link:, account_id: provider.settings["oauth_account_id"])
-      return unless verification.bound_to_invoice? && verification.captured_payment_id.present?
+    def record_capture_on_closed_invoice(payment_link)
+      flag_for_review(payment_link, reason: PaymentProviders::RazorpayPaymentReview.closed_reason(invoice)) if provider.razorpay_oauth?
+      invoice.paid?
+    end
 
-      PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: verification.captured_payment_id, payment_link_id:,
-        amount: payment_link["amount_paid"], reason: "callback_mismatch")
+    def flag_for_review(payment_link, reason: "callback_mismatch")
+      verification = PaymentProviders::RazorpayPaymentLinkVerification.new(invoice:, payment_link:, account_id: provider.settings["oauth_account_id"])
+      return unless verification.belongs_to_invoice?
+
+      PaymentProviders::RazorpayPaymentReview.flag_link_captures!(invoice, payment_link, reason:)
     end
 
     def oauth_payment_verified?(payment_link)

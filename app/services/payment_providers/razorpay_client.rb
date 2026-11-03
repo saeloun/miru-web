@@ -13,23 +13,24 @@ module PaymentProviders
       @provider = provider
     end
 
+    def prepare_oauth!
+      oauth_access_token if provider.razorpay_oauth?
+    end
+
     def create_payment_link(payload)
-      with_sdk(headers: { "Content-Type" => "application/json" }, oauth: true) do
-        request = Razorpay::Request.new("payment_links")
-        normalize_response(request.request(:post, "/v1/payment_links", JSON.generate(payload)))
-      end
+      payment_link_request(:post, "", JSON.generate(payload))
     end
 
     def fetch_payment_link(payment_link_id)
-      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.fetch(payment_link_id)) }
+      payment_link_request(:get, "/#{payment_link_id}")
     end
 
     def notify_payment_link(payment_link_id, medium)
-      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.notify_by(payment_link_id, medium)) }
+      payment_link_request(:post, "/#{payment_link_id}/notify_by/#{medium}")
     end
 
     def cancel_payment_link(payment_link_id)
-      with_sdk(oauth: true) { normalize_response(Razorpay::PaymentLink.cancel(payment_link_id)) }
+      payment_link_request(:post, "/#{payment_link_id}/cancel")
     end
 
     def create_upi_payout(payload, idempotency_key:)
@@ -56,6 +57,22 @@ module PaymentProviders
 
     private
 
+      # The SDK's entity parser crashes on HTML gateway errors; validate the response at its request layer.
+      def payment_link_request(method, path, payload = {})
+        with_sdk(headers: { "Content-Type" => "application/json" }, oauth: true) do
+          response = Razorpay::Request.new("payment_links").raw_request(method, "/v1/payment_links#{path}", payload)
+          body = response.parsed_response
+          unless response.code == 200 && body.is_a?(Hash) && !body.key?("error")
+            description = body.dig("error", "description") if body.is_a?(Hash) && body["error"].is_a?(Hash)
+            raise Error, description.is_a?(String) && description.present? ? description : "Razorpay request could not be confirmed", cause: nil
+          end
+
+          body
+        end
+      rescue JSON::ParserError
+        raise Error, "Razorpay request could not be confirmed", cause: nil
+      end
+
       def with_sdk(headers: {}, oauth: false)
         access_token = oauth_access_token if oauth && provider.razorpay_oauth?
         raise Error, "Razorpay key id and key secret are required" unless access_token || provider.razorpay_configured?
@@ -78,6 +95,8 @@ module PaymentProviders
         end
       rescue Razorpay::Error => error
         raise Error, error.message.presence || "Razorpay request failed"
+      rescue IOError, SystemCallError, SocketError, Timeout::Error, OpenSSL::SSL::SSLError, Net::ProtocolError, HTTParty::Error
+        raise Error, "Razorpay request could not be confirmed", cause: nil
       end
 
       def configure_sdk(access_token, headers)

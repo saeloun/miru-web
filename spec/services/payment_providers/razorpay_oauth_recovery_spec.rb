@@ -3,6 +3,12 @@
 require "rails_helper"
 
 RSpec.describe "Razorpay OAuth failure classification and recovery" do
+  before do
+    # Refresh intent must be tested with real commits, not a surrounding example transaction.
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+  end
+
   let(:company) { create(:company) }
   let(:actor) { create(:user, current_workspace: company) }
   let!(:employment) { create(:employment, user: actor, company:, resigned_at: nil) }
@@ -513,6 +519,35 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection, "provider revocation c
       expect { described_class.new(provider: PaymentsProvider.find(provider.id), actor: nil, client:).access_token }.to raise_error(described_class::Error)
     end
     expect(described_class.new(provider: provider.reload, actor: nil, client:).status).to include(status: "reconciliation_required")
+  end
+
+  it "does not rotate a token inside a caller transaction that could roll back its intent" do
+    travel 2.hours do
+      connection = described_class.new(provider: PaymentsProvider.find(provider.id), actor: nil, client:)
+      expect { Invoice.transaction { connection.access_token } }.to raise_error(described_class::RefreshInProgress)
+    end
+    expect(client).not_to have_received(:refresh)
+    expect(provider.reload.settings).not_to have_key("oauth_refresh_reservation")
+    expect(provider).to be_connected
+  end
+
+  it "does not rotate without a reservation when the token reaches its refresh boundary between locks" do
+    travel_to(Time.current.change(usec: 0)) do
+      record = provider.reload
+      record.razorpay_oauth_credentials = record.razorpay_oauth_credentials.merge("expires_at" => 61.seconds.from_now.to_i)
+      record.save!
+      locks = 0
+      allow(record).to receive(:with_lock).and_wrap_original do |original, &block|
+        locks += 1
+        travel 2.seconds if locks == 2
+        original.call(&block)
+      end
+      connection = described_class.new(provider: record, actor: nil, client:)
+      expect { connection.access_token }.to raise_error(described_class::RefreshInProgress)
+    end
+    expect(client).not_to have_received(:refresh)
+    expect(provider.reload.settings).not_to have_key("oauth_refresh_reservation")
+    expect(provider).to be_connected
   end
 
   it "waits for an in-flight refresh and leaves no usable token behind" do

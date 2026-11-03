@@ -56,11 +56,17 @@ Support references cannot be verified by Miru. They are an accountable owner sta
 
 ### Invoice collection
 
-Payment Links use the merchant's access token as a Bearer token through the existing SDK mutex, which restores global auth and headers afterwards. Tokens refresh before the mutex is taken. Each link is bound to the invoice and the merchant account, and creation holds the invoice row lock so concurrent requests cannot leave an orphan link. When Miru next opens a link that no longer matches the invoice it cancels it before creating a replacement, but an issued link stays payable until then, including after a disconnect. A paid link whose callback and webhook were lost is settled when the link is next opened, not replaced.
+Payment Links use the merchant's Bearer token through the SDK mutex, which restores global auth and headers afterwards. Refresh happens before the invoice lock and SDK mutex. A refresh cannot start inside a caller transaction or without its own committed reservation. Each link is bound to the invoice and merchant account. The invoice lock serializes ordinary concurrent creation requests; it does not guarantee recovery from an unknown remote creation outcome.
+
+Webhooks recheck the stored binding under the invoice lock before clearing it. Replacing a stale link requires a confirmed cancellation; a capture returned during cancellation stays in review. Paid links are reconciled rather than replaced. When an invoice becomes paid, waived or deleted, an after-commit job makes a best-effort cancellation attempt while keeping its references. An issued link remains payable until Razorpay closes it, including after a disconnect.
+
+An open review blocks checkout through other providers as well as Razorpay. Checkout rechecks after provider IO, and payment-start failures never promise the customer was not charged. Captures on invalid, waived or deleted invoices stay in review. OAuth evidence blocks permanent invoice destruction; use soft deletion to retain the audit trail.
 
 ### Payments needing review
 
-The amount check fails closed, so a customer can pay an old link for an invoice that has since changed. Miru never settles that payment and never drops it silently: it records it on the invoice, audits it, logs an error and lists it in settings. The invoice cannot start a new link until an owner checks the payment in Razorpay, records it on the invoice if correct, and marks it reviewed. A signed capture for a link Miru no longer tracks is flagged the same way, only when the signing account is the invoice company's connected account.
+The amount check fails closed, so a customer can pay an old link for an invoice that has since changed. Miru never settles that payment: it records it on the invoice, audits it, logs an error and lists it in settings with its payment ID, link ID, reason, amount and invoice state. Each distinct captured payment gets its own entry in `payment_infos["razorpay_payment_reviews"]`, including on paid and deleted invoices, and settled, already listed or already reviewed payment IDs are not added again. A singular `razorpay_payment_review` from earlier code is read as one entry and migrated on the next write. An unpaid invoice cannot start a new link while any entry is pending. A signed capture for a link Miru no longer tracks is flagged the same way, only when the signing account is the invoice company's connected account.
+
+An owner or admin clears one entry at a time by its ID after a confirmation. Other entries are never touched, and a paid invoice is never reopened. Clearing the last entry on an unpaid invoice first closes the tracked link: if Razorpay does not confirm a final status, including when the account is disconnected, the review and the link binding are both kept. If another capture arrives meanwhile, it stays listed and the binding is kept. Resolved payment IDs cannot settle an invoice on replay. The list shows the first 20 entries and identifies that limit.
 
 Razorpay documents the Payment Link callback signature only with an API key secret, which OAuth merchants do not share. Public tokens and client secrets are never used to verify it. An OAuth callback is an untrusted hint: Miru fetches the invoice's stored link with the merchant's token and settles only if the account, invoice, company, reference, currency, full amount and captured payment all match.
 
@@ -72,6 +78,8 @@ These cannot be proved without real Razorpay access:
 
 - Technology Partner status and KYC, the co-branded UI capability, a registered application, callback allowlists and webhook subscriptions.
 - A test-mode run of consent, hosted sign-up, token exchange, refresh, revocation, a paid Payment Link and each webhook.
+
+Implementation hold before activation: link creation still needs durable intent and reconciliation for a worker death, database rollback or ambiguous provider response after remote creation. In particular, do not enable OAuth SMS collection while retrying could send a second payable link. Cancellation enqueue is best effort and still needs a durable repair path. Late-capture/partial-payment webhook shapes and retained raw URLs in mobile/API serializers also need provider and consumer validation.
 - The token error response shape described above.
 - Which event, if any, an already-active merchant receives after connecting. Until confirmed, such a live merchant shows `merchant_unconfirmed` and cannot enable invoices.
 - That Payment Link and account webhooks reach the application-level endpoint with `account_id`, and whether they still arrive after a merchant revokes.

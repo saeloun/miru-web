@@ -454,10 +454,10 @@ export const razorpayConnectionApi = {
       { account_id: accountId.trim() },
       siteRootRequest
     ),
-  resolvePaymentReview: (invoiceId: number) =>
+  resolvePaymentReview: (invoiceId: number, reviewId: string) =>
     http.post(
       `${razorpayConnectionPath}/payment_review`,
-      { invoice_id: invoiceId },
+      { invoice_id: invoiceId, review_id: reviewId },
       siteRootRequest
     ),
   submitRecoveryEvidence: (providerReference: string) =>

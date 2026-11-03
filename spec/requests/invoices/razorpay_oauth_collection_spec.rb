@@ -3,6 +3,12 @@
 require "rails_helper"
 
 RSpec.describe "Razorpay OAuth invoice collection", type: :request do
+  before do
+    # Exercise token rotation with durable commits, matching real requests.
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+  end
+
   let(:company) { create(:india_company, base_currency: "INR") }
   let(:owner) { create(:user, current_workspace: company) }
   let!(:employment) { create(:employment, company:, user: owner, resigned_at: nil) }
@@ -49,6 +55,10 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
 
   def paid_link(**overrides)
     link.merge(status: "paid", amount_paid: 100_000, payments: [{ payment_id: "pay_oauth", status: "captured", amount: 100_000 }]).merge(overrides)
+  end
+
+  def payment_review
+    PaymentProviders::RazorpayPaymentReview.reviews_for(invoice.reload).values.first
   end
 
   def stub_fetch(body)
@@ -140,9 +150,9 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       invoice.update!(amount_due: 600)
       stub_fetch(paid_link)
       start_payment
-      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "start"))
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
       expect(invoice.reload).not_to be_paid
-      expect(invoice.razorpay_payment_review).to include("payment_id" => "pay_oauth", "reason" => "paid_link_mismatch")
+      expect(payment_review).to include("payment_id" => "pay_oauth", "reason" => "paid_link_mismatch")
 
       start_payment
       expect(a_request(:get, "#{links_url}/plink_oauth")).to have_been_made.once
@@ -151,7 +161,7 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       sign_in owner
       get "/payments/razorpay/connection", as: :json
       expect(response.parsed_body.dig("connection", "payments_needing_review").first).to include("invoice_id" => invoice.id, "amount" => 100_000)
-      post "/payments/razorpay/connection/payment_review", params: { invoice_id: invoice.id }, as: :json
+      post "/payments/razorpay/connection/payment_review", params: { invoice_id: invoice.id, review_id: "pay_oauth" }, as: :json
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.dig("connection", "payments_needing_review")).to eq([])
       expect(Audited::Audit.where(auditable: invoice).pluck(:action)).to include("razorpay_oauth_payment_needs_review", "razorpay_oauth_payment_review_resolved")
@@ -169,9 +179,9 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       create(:employment, company: other_company, user: other_owner, resigned_at: nil)
       other_owner.add_role(:owner, other_company)
       sign_in other_owner
-      post "/payments/razorpay/connection/payment_review", params: { invoice_id: invoice.id }, as: :json
+      post "/payments/razorpay/connection/payment_review", params: { invoice_id: invoice.id, review_id: "pay_oauth" }, as: :json
       expect(response).to have_http_status(:not_found)
-      expect(invoice.reload.razorpay_payment_review).to be_present
+      expect(payment_review).to be_present
     end
 
     it "shows the public invoice as payable through Razorpay only when collectable" do
@@ -240,13 +250,13 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       stub_fetch(paid_link)
       return_from_razorpay
       expect(invoice.reload).not_to be_paid
-      expect(invoice.razorpay_payment_review).to include("payment_id" => "pay_oauth", "reason" => "callback_mismatch")
+      expect(payment_review).to include("payment_id" => "pay_oauth", "reason" => "callback_mismatch")
     end
 
     it "does not flag a link from another invoice or company" do
       stub_fetch(paid_link(notes: { miru_invoice_id: "0", company_id: "0" }))
       return_from_razorpay
-      expect(invoice.reload.razorpay_payment_review).to be_nil
+      expect(payment_review).to be_nil
     end
 
     it "throttles the unauthenticated callback that triggers provider requests" do
@@ -315,20 +325,20 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       post_razorpay_oauth_event(event)
       expect(response).to have_http_status(:ok)
       expect(invoice.reload).not_to be_paid
-      expect(invoice.razorpay_payment_review).to include("payment_id" => "pay_oauth", "reason" => "webhook_mismatch", "amount" => 100_000)
+      expect(payment_review).to include("payment_id" => "pay_oauth", "reason" => "webhook_mismatch", "amount" => 100_000)
       expect(razorpay_oauth_status(provider)[:payments_needing_review].first).to include(invoice_id: invoice.id)
     end
 
     it "surfaces a capture on a link Miru no longer tracks for this merchant" do
       post_razorpay_oauth_event(event(entity: paid_link.except(:payments).merge(id: "plink_replaced")))
       expect(invoice.reload).not_to be_paid
-      expect(invoice.razorpay_payment_review).to include("payment_link_id" => "plink_replaced", "reason" => "untracked_link")
+      expect(payment_review).to include("payment_link_id" => "plink_replaced", "reason" => "untracked_link")
     end
 
     it "ignores another merchant claiming this invoice in link notes" do
       post_razorpay_oauth_event(event(account_id: "acc_attacker", entity: paid_link.except(:payments).merge(id: "plink_attacker")))
       expect(response).to have_http_status(:ok)
-      expect(invoice.reload.razorpay_payment_review).to be_nil
+      expect(payment_review).to be_nil
     end
 
     it "does not process an OAuth invoice through the legacy endpoint with a stale saved secret" do

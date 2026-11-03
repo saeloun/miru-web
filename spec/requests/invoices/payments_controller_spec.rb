@@ -141,7 +141,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
         expect(response).to redirect_to(success_path)
       end
 
-      it "tells the payer the payment never started when PayPal rejects the order" do
+      it "shows payment-start failure without promising the payer was not charged" do
         allow_any_instance_of(PaymentProviders::PaypalOrderService).to receive(:process).and_raise(PaymentProviders::PaypalClient::Error.new("Currency not supported"))
 
         send_request :get, new_invoice_payment_path(params.merge(provider: "paypal"))
@@ -150,7 +150,7 @@ RSpec.describe Invoices::PaymentsController, type: :request do
 
         follow_redirect!
         expect(response.body).to include("We could not start your payment")
-        expect(response.body).to include("You have not been charged")
+        expect(response.body).to include("If your account was charged, do not pay again")
       end
 
       it "hides PayPal for a fractional amount in a currency PayPal charges in whole units" do

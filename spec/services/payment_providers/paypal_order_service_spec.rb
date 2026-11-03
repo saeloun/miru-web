@@ -69,6 +69,18 @@ RSpec.describe PaymentProviders::PaypalOrderService do
     expect(service.process).to eq("https://www.sandbox.paypal.com/checkoutnow?token=ORDER-2")
   end
 
+  it "does not erase a payment review added while creating the order" do
+    invoice
+    allow(client).to receive(:create_order) do
+      PaymentProviders::RazorpayPaymentReview.flag!(Invoice.find(invoice.id), payment_id: "pay_racing", payment_link_id: "plink_old",
+        amount: 1000, currency: "USD", reason: "untracked_link")
+      { "id" => "ORDER-2", "links" => [{ "rel" => "approve", "href" => "https://paypal.test/ORDER-2" }] }
+    end
+    service.process
+    expect(PaymentProviders::RazorpayPaymentReview.pending?(invoice.reload, "pay_racing")).to be(true)
+    expect(invoice.paypal_order_id).to eq("ORDER-2")
+  end
+
   it "reuses the request id for the same checkout and rotates it when the balance changes" do
     request_ids = []
     allow(client).to receive(:create_order) do |_payload, request_id:|

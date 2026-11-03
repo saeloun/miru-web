@@ -71,8 +71,10 @@ class RazorpayConnectionsController < ApplicationController
   end
 
   def resolve_payment_review
-    PaymentProviders::RazorpayPaymentReview.resolve!(current_company, params[:invoice_id], actor: current_user)
+    PaymentProviders::RazorpayPaymentReview.resolve!(current_company, params[:invoice_id], params[:review_id].to_s, actor: current_user)
     render_connection
+  rescue PaymentProviders::RazorpayClient::Error
+    render json: { errors: "Review kept. Check that this link is closed in Razorpay and this account is connected to Miru before retrying. No payment was recorded or refunded." }, status: 409
   end
 
   private
