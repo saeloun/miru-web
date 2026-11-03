@@ -25,6 +25,24 @@ RSpec.describe "Api::V1::Invoices#show", type: :request do
       expect(json_response.dig("client", "ein")).to eq("12-3456789")
     end
 
+    {
+      "DD-MM-YYYY" => ["23.08.2025", "06.09.2025"],
+      "MM-DD-YYYY" => ["08.23.2025", "09.06.2025"],
+      "YYYY-MM-DD" => ["2025.08.23", "2025.09.06"]
+    }.each do |date_format, display_dates|
+      it "provides canonical calendar dates while retaining #{date_format} display dates" do
+        company.update!(date_format:)
+        invoice = company.invoices.first
+        invoice.update!(issue_date: Date.new(2025, 8, 23), due_date: Date.new(2025, 9, 6))
+
+        send_request :get, api_v1_invoice_path(invoice.id), headers: auth_headers(user)
+
+        expect(response).to have_http_status(:ok)
+        expect(json_response.values_at("issueDate", "dueDate")).to eq(display_dates)
+        expect(json_response.values_at("issueDateIso", "dueDateIso")).to eq(["2025-08-23", "2025-09-06"])
+      end
+    end
+
     it "returns the client's current currency for a reopened draft invoice" do
       company.update!(base_currency: "USD")
       client = create(:client, company:, currency: "USD")

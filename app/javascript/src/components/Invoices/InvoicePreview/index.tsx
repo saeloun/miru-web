@@ -4,6 +4,7 @@ import { Badge } from "../../ui/badge";
 import { Separator } from "../../ui/separator";
 import { currencyFormat } from "../../../helpers/currency";
 import { format } from "date-fns";
+import dayjs from "dayjs";
 import {
   Download,
   PaperPlaneTilt,
@@ -101,7 +102,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
     if (!date) return "";
 
     try {
-      const dateObj = date instanceof Date ? date : new Date(date);
+      const dateObj = date instanceof Date ? date : dayjs(date).toDate();
       if (isNaN(dateObj.getTime())) {
         return ""; // Return empty string for invalid dates
       }
@@ -339,7 +340,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               <span className="text-sm text-red-600 font-medium">
                 Overdue by{" "}
                 {Math.floor(
-                  (new Date().getTime() - new Date(invoice.dueDate).getTime()) /
+                  (new Date().getTime() -
+                    dayjs(invoice.dueDate || "").valueOf()) /
                     (1000 * 60 * 60 * 24)
                 )}{" "}
                 days
