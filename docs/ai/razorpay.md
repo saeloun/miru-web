@@ -16,7 +16,7 @@ Keep credentials in deployment secrets; never paste them into issue descriptions
 
 ### Status
 
-`collections_ready` is true only when the connection is usable, both switches are on, the webhook secret is set, the current application configuration exactly matches the one that issued the stored tokens, and the merchant is confirmed. A config change never destroys a connection: restoring it restores the connection. In live mode a merchant is confirmed only by a signed `account.activated`, `account.instantly_activated` or `account.payments_enabled` event for the connected account whose payload does not say `activated: false`. `account.funds_unhold` only restores the status from before a hold. Status from another mode does not survive a reconnect. Consent alone never confirms a merchant. `payouts_ready` is always false: merchant OAuth requests `read_write` only and never enables RazorpayX, Payroll or payouts, and `create_upi_payout` still requires API keys.
+`collections_ready` is true only when the connection is usable, both switches are on, the webhook secret is set, the current client ID and mode match the stored tokens, the application is configured, and the merchant is confirmed. Pending consent also binds the exact callback URL; existing tokens can still be used, refreshed and revoked after only that URL changes. A bad client configuration never destroys a connection: restoring it restores the connection. In live mode a merchant is confirmed only by a signed `account.activated`, `account.instantly_activated` or `account.payments_enabled` event for the connected account whose payload does not say `activated: false`. `account.funds_unhold` only restores the status from before a hold. Status from another mode does not survive a reconnect. Consent alone never confirms a merchant. `payouts_ready` is always false: merchant OAuth requests `read_write` only and never enables RazorpayX, Payroll or payouts, and `create_upi_payout` still requires API keys.
 
 | Status | Meaning | Owner action |
 | --- | --- | --- |
@@ -28,6 +28,14 @@ Keep credentials in deployment secrets; never paste them into issue descriptions
 | `recovery_pending` | Recovery started; reconnect and API-key changes stay blocked. | See below. |
 
 An account with stored OAuth credentials must be disconnected before starting again, and a workspace can only reconnect the same merchant, so moving to a different merchant is not supported yet. Razorpay's revocation is per merchant and application, so if two workspaces connected the same merchant, one signed revocation stops both. The API-key endpoint returns 409 while credentials, cleanup material, a pending consent or an in-flight exchange exist.
+
+### Token maintenance
+
+`RefreshRazorpayOauthTokensJob` runs daily at 03:23 UTC in the default and production schedules. Restart the Solid Queue dispatcher when deploying the new entry. It maintains connected OAuth accounts even when invoice collection is disabled, rotates only stale access tokens through the existing serialized refresh, and does nothing while `RAZORPAY_OAUTH_ENABLED` is off. This keeps quiet accounts rotating before the documented 180-day refresh-token expiry without enabling invoice collection or payouts.
+
+A failed connection is reported through `Rails.error` with company/provider IDs and recovery guidance; it does not stop the remaining accounts. Ambiguous rotation still requires recovery rather than retrying a possibly consumed token. An in-progress refresh is left to its current worker. Changed application configuration preserves the connection without creating a refresh reservation, so restoring the configuration allows maintenance to resume.
+
+Disconnect treats any outstanding refresh reservation as uncertain, even if revoking the old token succeeds: the worker may have died after Razorpay issued a replacement. Reconnection and API-key changes stay blocked pending recovery. A signed revocation must be dated after the uncertainty began; older events cannot clear a newer unknown grant. Older records without that timestamp require starting recovery first. Confirmed revocation or completed recovery clears the old reservation, so it cannot poison a later connection.
 
 ### Failure classification
 
@@ -68,7 +76,7 @@ These cannot be proved without real Razorpay access:
 - Which event, if any, an already-active merchant receives after connecting. Until confirmed, such a live merchant shows `merchant_unconfirmed` and cannot enable invoices.
 - That Payment Link and account webhooks reach the application-level endpoint with `account_id`, and whether they still arrive after a merchant revokes.
 - That revoking a refresh token also ends its access token. Razorpay's sample revokes an access token, and Miru sends the refresh token because it does not keep access tokens after failing closed, so "access revoked" rests on this assumption.
-- What happens when a merchant's refresh token reaches its 180-day limit. Miru refreshes only when a token is needed, so a quiet merchant returns to `reconnect_required`. A proactive refresh job should precede activation.
+- Real refresh-token rotation and expiry behavior. Daily maintenance covers quiet accounts, but provider acceptance must still verify the token and revocation contracts.
 - Whether a single transient refresh failure should retry the known token before requiring manual recovery, which depends on Razorpay's rotation behaviour on a failed response.
 - The ten-minute consent state window against the time hosted sign-up and KYC really take. Retrying is clean if it expires.
 

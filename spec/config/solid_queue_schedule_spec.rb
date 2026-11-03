@@ -62,4 +62,12 @@ RSpec.describe "Solid Queue schedule" do
       "schedule" => "*/30 * * * *"
     )
   end
+
+  it "maintains Razorpay OAuth tokens daily in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "refresh_razorpay_oauth_tokens")
+
+      expect(task).to include("class" => "RefreshRazorpayOauthTokensJob", "schedule" => "23 3 * * *")
+    end
+  end
 end

@@ -216,6 +216,48 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
     end
   end
 
+  it "does not claim access revoked when disconnecting an interrupted refresh" do
+    connected = connected_provider
+    connected.update!(settings: connected.settings.merge("oauth_refresh_reservation" => "interrupted-worker",
+      "oauth_refresh_reserved_at" => 2.minutes.ago.to_i))
+    stub_request(:post, RazorpayOauthHelpers::REVOKE_URL).to_return(status: 200, body: { message: "Token Revoked" }.to_json)
+
+    visit_settings
+    within(connection_panel) { click_button "Disconnect Razorpay" }
+    click_button "Disconnect", exact: true
+
+    within(connection_panel) do
+      expect(page).to have_content("Recovery needed", wait: 10)
+      expect(page).to have_button("Start recovery")
+      expect(page).to have_no_button("Connect or create Razorpay account")
+    end
+    expect(page).to have_no_content("Razorpay disconnected and access revoked")
+    expect(connected.reload.settings["oauth_refresh_reservation"]).to be_nil
+  end
+
+  it "recovers an orphaned reservation through settings and signed revocation" do
+    connected = connected_provider
+    connected.update!(connected: false, settings: connected.settings.except("razorpay_oauth_credentials_ciphertext").merge(
+      "oauth_refresh_reservation" => "interrupted-worker", "oauth_refresh_reserved_at" => 2.minutes.ago.to_i,
+      "oauth_status" => "disconnected"))
+
+    visit_settings
+    within(connection_panel) do
+      expect(page).to have_content("Recovery needed")
+      expect(page).to have_no_button("Connect or create Razorpay account")
+      click_button "Start recovery"
+      expect(page).to have_content("Recovery in progress", wait: 10)
+    end
+    expect(page).to have_no_css("#razorpay_key_secret", visible: :visible)
+    post_signed_revocation("acc_synthetic")
+    within(connection_panel) do
+      click_button "Check again"
+      expect(page).to have_content("Access revoked", wait: 10)
+      expect(page).to have_button("Connect or create Razorpay account")
+    end
+    expect(connected.reload.settings["oauth_refresh_reservation"]).to be_nil
+  end
+
   it "disconnects after confirmation and offers reconnect" do
     connected_provider
     stub_request(:post, RazorpayOauthHelpers::REVOKE_URL).to_return(status: 200, body: { message: "Token Revoked" }.to_json)

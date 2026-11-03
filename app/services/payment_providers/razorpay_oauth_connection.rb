@@ -178,7 +178,11 @@ module PaymentProviders
       def application_unchanged?
         identity = current_identity
         credentials = @provider.razorpay_oauth_credentials
-        identity.present? && credentials.is_a?(Hash) && credentials["identity"] == identity
+        credentials.is_a?(Hash) && same_application?(credentials["identity"], identity)
+      end
+
+      def same_application?(stored, current)
+        stored.is_a?(Hash) && current.is_a?(Hash) && stored.slice("client_id", "mode") == current.slice("client_id", "mode")
       end
 
       def current_identity
@@ -194,7 +198,7 @@ module PaymentProviders
       def cleanup_from_other_application?
         credentials = @provider.razorpay_oauth_credentials
         identity = current_identity
-        identity.present? && (!credentials.is_a?(Hash) || credentials["identity"] != identity)
+        identity.present? && (!credentials.is_a?(Hash) || !same_application?(credentials["identity"], identity))
       end
 
       def recovery_available?
@@ -226,11 +230,16 @@ module PaymentProviders
       end
 
       def revocation_floor
-        settings.dig("oauth_recovery", "requested_at").presence.to_i.nonzero? || settings["oauth_connected_at"].to_i
+        recovery_at = settings.dig("oauth_recovery", "requested_at").to_i
+        uncertain_at = settings["oauth_refresh_uncertain_at"].to_i
+        # Legacy uncertainty has no safe event boundary until the owner starts recovery.
+        return Float::INFINITY if settings["oauth_refresh_uncertain"] && !uncertain_at.positive? && !recovery_at.positive?
+
+        [recovery_at, uncertain_at, settings["oauth_connected_at"].to_i, settings["oauth_refresh_reserved_at"].to_i].max
       end
 
       def clear_reconciliation!
-        %w[oauth_refresh_uncertain oauth_recovery oauth_pending_digest oauth_pending_generation].each { |key| settings.delete(key) }
+        %w[oauth_refresh_uncertain oauth_refresh_uncertain_at oauth_recovery oauth_pending_digest oauth_pending_generation].each { |key| settings.delete(key) }
       end
 
       def audit!(action, **changes)
@@ -239,7 +248,7 @@ module PaymentProviders
 
       def restart_blocked?
         settings.key?("razorpay_oauth_credentials") || settings.key?("razorpay_oauth_credentials_ciphertext") ||
-          settings["oauth_pending_digest"].present? || settings["oauth_refresh_uncertain"]
+          settings["oauth_pending_digest"].present? || settings["oauth_refresh_reservation"].present? || settings["oauth_refresh_uncertain"]
       end
 
       def record_consent_attempt!(state, identity)
@@ -331,7 +340,8 @@ module PaymentProviders
       # token leaves evidence. A successful or classified refresh clears it under the row lock.
       def reserve_refresh!(attempt)
         @provider.with_lock do
-          next unless connection_usable? && credentials_expiring?(@provider.razorpay_oauth_credentials) && settings["oauth_refresh_reservation"].blank?
+          next unless connection_usable? && application_unchanged? &&
+              credentials_expiring?(@provider.razorpay_oauth_credentials) && settings["oauth_refresh_reservation"].blank?
 
           attempt[:reservation] = SecureRandom.hex(8)
           settings.merge!("oauth_refresh_reservation" => attempt[:reservation], "oauth_refresh_reserved_at" => Time.current.to_i)
@@ -380,7 +390,7 @@ module PaymentProviders
       end
 
       def usable_credentials?(credentials, identity)
-        credentials.is_a?(Hash) && credentials["identity"] == identity &&
+        credentials.is_a?(Hash) && same_application?(credentials["identity"], identity) &&
           %w[access_token refresh_token].all? { |key| credentials[key].is_a?(String) && credentials[key].present? }
       end
 
@@ -388,7 +398,7 @@ module PaymentProviders
         verify_refresh_reservation!(attempt)
         attempt[:refreshing] = true
         attempt[:result] = client.refresh(credentials.fetch("refresh_token"), account_id: settings["oauth_account_id"])
-        raise Error, "Razorpay account connection failed" unless client.identity == attempt[:identity]
+        raise Error, "Razorpay account connection failed" unless same_application?(client.identity, attempt[:identity])
 
         @provider.class.transaction(requires_new: true) do
           store_credentials!(attempt[:result], attempt[:identity])
@@ -408,7 +418,7 @@ module PaymentProviders
         elsif error.is_a?(RazorpayOauthClient::Rejected)
           clear_credentials! if error.token_invalid?
         elsif attempt[:refreshing]
-          settings["oauth_refresh_uncertain"] = true
+          mark_refresh_uncertain!
         end
         fail_closed!("reconnect_required")
         attempt[:cleanup] = @provider.razorpay_oauth_credentials if returned_token
@@ -462,7 +472,8 @@ module PaymentProviders
 
       def connection_state
         state = settings.fetch("oauth_status", "disconnected")
-        if settings["oauth_refresh_uncertain"] || (settings["oauth_pending_digest"].present? && state != "pending")
+        if settings["oauth_refresh_uncertain"] || (!@provider.connected? && settings["oauth_refresh_reservation"].present?) ||
+            (settings["oauth_pending_digest"].present? && state != "pending")
           return settings["oauth_recovery"].present? ? "recovery_pending" : "reconciliation_required"
         end
         if !@provider.connected? && settings.key?("razorpay_oauth_credentials_ciphertext")
@@ -505,6 +516,8 @@ module PaymentProviders
       end
 
       def invalidate!
+        mark_refresh_uncertain! if settings["oauth_refresh_reservation"].present?
+        clear_refresh_reservation!
         settings["oauth_generation"] = SecureRandom.hex(16)
         settings.delete("oauth_state")
         fail_closed!("disconnected")
@@ -523,6 +536,7 @@ module PaymentProviders
       def clear_credentials!
         settings.delete("razorpay_oauth_credentials")
         settings.delete("razorpay_oauth_credentials_ciphertext")
+        clear_refresh_reservation!
       end
 
       def clear_exchange!(pending)
@@ -541,7 +555,7 @@ module PaymentProviders
         return false unless credentials == expected && credentials.is_a?(Hash)
 
         confirmed = credentials.is_a?(Hash) && credentials["refresh_token"].present? &&
-          credentials["identity"] == client.identity && client.revoke(credentials["refresh_token"]) == true
+          same_application?(credentials["identity"], client.identity) && client.revoke(credentials["refresh_token"]) == true
         clear_credentials! if confirmed
         settings["oauth_status"] = "revocation_pending" if settings.key?("razorpay_oauth_credentials_ciphertext")
         confirmed == true && !settings["oauth_refresh_uncertain"]
@@ -627,7 +641,7 @@ module PaymentProviders
 
       # A newer grant owns the encrypted slot, so this returned token cannot be stored beside it.
       def revoke_orphaned_grant!(result, identity)
-        return if client.identity == identity && client.revoke(result["refresh_token"]) == true
+        return if same_application?(client.identity, identity) && client.revoke(result["refresh_token"]) == true
 
         mark_unknown_grant!
       rescue RazorpayOauthClient::Error
@@ -636,9 +650,13 @@ module PaymentProviders
 
       def mark_unknown_grant!
         @provider.with_lock do
-          settings["oauth_refresh_uncertain"] = true
+          mark_refresh_uncertain!
           @provider.save!
         end
+      end
+
+      def mark_refresh_uncertain!
+        settings.merge!("oauth_refresh_uncertain" => true, "oauth_refresh_uncertain_at" => Time.current.to_i)
       end
 
       def store_credentials!(result, identity)

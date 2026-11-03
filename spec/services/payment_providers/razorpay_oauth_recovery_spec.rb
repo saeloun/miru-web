@@ -366,7 +366,7 @@ RSpec.describe "Razorpay OAuth failure classification and recovery" do
       stub_razorpay_oauth_env(CLIENT_SECRET: "")
       expect(blocker).to eq("application_changed")
       stub_razorpay_oauth_env(REDIRECT_URI: "https://other.miru.example/payments/razorpay/callback")
-      expect(blocker).to eq("application_changed")
+      expect(blocker).to be_nil
     end
 
     it "survives a bad deploy: no downgrade, and restoring the config restores the connection" do

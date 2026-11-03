@@ -36,6 +36,9 @@ default: &default
         signature_reminders:
           class: SignatureRemindersJob
           schedule: '17 * * * *'
+        refresh_razorpay_oauth_tokens:
+          class: RefreshRazorpayOauthTokensJob
+          schedule: '23 3 * * *'
   workers:
     - queues: default
       threads: 5
@@ -93,6 +96,9 @@ production:
         signature_reminders:
           class: SignatureRemindersJob
           schedule: '17 * * * *'
+        refresh_razorpay_oauth_tokens:
+          class: RefreshRazorpayOauthTokensJob
+          schedule: '23 3 * * *'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>

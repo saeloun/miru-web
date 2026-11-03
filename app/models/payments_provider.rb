@@ -133,7 +133,7 @@ class PaymentsProvider < ApplicationRecord
   def razorpay_oauth_in_use?
     settings.to_h.values_at(
       "razorpay_oauth_credentials", "razorpay_oauth_credentials_ciphertext",
-      "oauth_state", "oauth_pending_digest", "oauth_refresh_uncertain"
+      "oauth_state", "oauth_pending_digest", "oauth_refresh_reservation", "oauth_refresh_uncertain"
     ).any?(&:present?)
   end
 

@@ -290,6 +290,49 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     expect(connection.access_token).to eq("synthetic_access")
   end
 
+  it "keeps expired credentials recoverable when application configuration is restored" do
+    complete
+    travel 1.hour do
+      allow(client).to receive(:identity).and_return(identity.merge("client_id" => "different_app"))
+      expect { connection.access_token }.to raise_error(described_class::Error)
+      expect(provider.reload.settings["oauth_refresh_reservation"]).to be_nil
+      expect(client).not_to have_received(:refresh)
+
+      allow(client).to receive(:identity).and_return(identity)
+      expect(connection.access_token).to eq("synthetic_access")
+    end
+    expect(provider.reload).to be_connected
+    expect(client).to have_received(:refresh).once
+  end
+
+  it "keeps stored tokens usable and revocable when only the callback URL changes" do
+    stub_razorpay_oauth_env
+    complete
+    allow(client).to receive(:identity).and_return(identity.merge("redirect_uri" => "https://next.example/payments/razorpay/callback"))
+
+    expect(connection.access_token).to eq("synthetic_access")
+    expect(connection.collections_ready?).to be(true)
+    travel 1.hour do
+      expect(connection.access_token).to eq("synthetic_access")
+    end
+    expect(client).to have_received(:refresh).once
+    expect(connection.disconnect!).to eq(remote_revocation_confirmed: true)
+    expect(client).to have_received(:revoke).with("synthetic_refresh").once
+  end
+
+  it "still rejects a changed callback during consent and revokes the returned grant" do
+    state = connection.start!
+    allow(client).to receive(:exchange) do
+      allow(client).to receive(:identity).and_return(identity.merge("redirect_uri" => "https://next.example/payments/razorpay/callback"))
+      tokens
+    end
+
+    expect { connection.complete!(state:, browser_state: state, code: "synthetic_code") }.to raise_error(described_class::Error)
+    expect(provider.reload).not_to be_connected
+    expect(client).to have_received(:revoke).with("synthetic_refresh").once
+    expect(provider.razorpay_oauth_credentials).to be_nil
+  end
+
   it "retains the rotated cleanup token when identity changes after refresh" do
     complete
     allow(client).to receive(:refresh) do
@@ -324,6 +367,81 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     allow(PaymentProviders::RazorpayOauthClient).to receive(:new).and_raise(PaymentProviders::RazorpayOauthClient::Unavailable, "config")
     expect(described_class.new(provider:, actor:).disconnect!).to eq(remote_revocation_confirmed: false)
     expect(provider.reload.razorpay_oauth_credentials).to include("refresh_token" => "synthetic_refresh")
+  end
+
+  [0, 120].each do |reservation_age|
+    it "requires reconciliation when disconnecting a #{reservation_age}-second-old refresh reservation" do
+      complete
+      provider.update!(settings: provider.settings.merge("oauth_refresh_reservation" => "interrupted-worker",
+        "oauth_refresh_reserved_at" => reservation_age.seconds.ago.to_i))
+
+      expect(connection.disconnect!).to eq(remote_revocation_confirmed: false)
+      expect(provider.reload.settings["oauth_refresh_reservation"]).to be_nil
+      expect(connection.status[:status]).to eq("reconciliation_required")
+      expect(connection.status[:recovery_available]).to be(true)
+      expect { connection.start! }.to raise_error(described_class::Error)
+    end
+  end
+
+  it "clears an interrupted refresh after signed revocation without poisoning a later connection" do
+    complete
+    provider.update!(settings: provider.settings.merge("oauth_refresh_reservation" => "interrupted-worker",
+      "oauth_refresh_reserved_at" => 2.minutes.ago.to_i))
+
+    expect(connection.provider_revoked!(occurred_at: Time.current.to_i, event_id: "evt_revocation")).to eq(:revoked)
+    expect(provider.reload.settings["oauth_refresh_reservation"]).to be_nil
+    expect(connection.status[:status]).to eq("revoked")
+    expect(complete).to eq(:connected)
+    travel 1.hour do
+      expect(connection.access_token).to eq("synthetic_access")
+    end
+    expect(client).to have_received(:refresh).once
+    expect(provider.reload).to be_connected
+  end
+
+  it "does not let a revocation from before an interrupted refresh clear reconciliation" do
+    complete
+    previous_revocation_at = Time.current.to_i + 60
+    travel 2.hours do
+      provider.update!(settings: provider.settings.merge("oauth_refresh_reservation" => "interrupted-worker",
+        "oauth_refresh_reserved_at" => Time.current.to_i))
+      expect(connection.disconnect!).to eq(remote_revocation_confirmed: false)
+
+      expect(connection.provider_revoked!(occurred_at: previous_revocation_at, event_id: "evt_previous_grant")).to eq(:ignored)
+      expect(connection.status[:status]).to eq("reconciliation_required")
+      expect(connection.provider_revoked!(occurred_at: Time.current.to_i, event_id: "evt_current_grant")).to eq(:revoked)
+      expect(connection.status[:status]).to eq("revoked")
+    end
+  end
+
+  it "requires a recovery start time to reconcile an older uncertainty marker" do
+    complete
+    earlier_event_at = Time.current.to_i + 60
+    travel 2.hours do
+      provider.update!(connected: false, settings: provider.settings.merge("oauth_refresh_uncertain" => true,
+        "oauth_status" => "reconnect_required"))
+
+      expect(connection.provider_revoked!(occurred_at: earlier_event_at, event_id: "evt_legacy_old")).to eq(:ignored)
+      connection.request_recovery!(account_id: "acc_synthetic")
+      expect(connection.provider_revoked!(occurred_at: Time.current.to_i, event_id: "evt_legacy_current")).to eq(:revoked)
+      expect(connection.status[:status]).to eq("revoked")
+    end
+  end
+
+  it "keeps an orphaned reservation blocked but recoverable without a cleanup token" do
+    complete
+    provider.update!(connected: false, settings: provider.settings.except("razorpay_oauth_credentials_ciphertext").merge(
+      "oauth_refresh_reservation" => "interrupted-worker", "oauth_refresh_reserved_at" => 2.minutes.ago.to_i,
+      "oauth_status" => "disconnected"))
+
+    expect(provider.razorpay_oauth_in_use?).to be(true)
+    expect(connection.status[:status]).to eq("reconciliation_required")
+    expect { connection.start! }.to raise_error(described_class::Error)
+    connection.request_recovery!(account_id: "acc_synthetic")
+    connection.finish_recovery_with_evidence!(provider_reference: "support-123")
+    expect(provider.reload.settings["oauth_refresh_reservation"]).to be_nil
+    expect(connection.status[:status]).to eq("reconnect_required")
+    expect(connection.start!).to match(/\A[0-9a-f]{64}\z/)
   end
 
   it "review regression: retains encrypted revocation material and retries before reconnecting" do
