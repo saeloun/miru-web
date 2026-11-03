@@ -14,8 +14,10 @@ module Payroll
       line_ids = @run.current_revision&.payroll_payload&.fetch("lines", [])&.pluck("employment_id") || []
       employment = Employment.kept.where(company_id: @company_id, id: line_ids).find(employment_id)
       employment.with_lock do
-        guard_bank_activity!(employment)
-        PayrollSplitArrangement.create!(attributes.merge(company_id: @company_id, employment:, requested_by: actor, details:))
+        arrangement = PayrollSplitArrangement.new(attributes.merge(company_id: @company_id, employment:, requested_by: actor, details:))
+        guard_bank_activity!(employment) unless same_allocation?(arrangement, employment)
+        arrangement.save!
+        arrangement
       end
     end
 
@@ -57,6 +59,14 @@ module Payroll
     end
 
     private
+
+      def same_allocation?(arrangement, employment)
+        current = PayrollSplitArrangement.current_for(employment)
+        return false unless current&.active?
+
+        fields = %w[allocation_kind allocation_value allocated_to remainder_to]
+        arrangement.attributes.slice(*fields) == current.attributes.slice(*fields)
+      end
 
       def guard_bank_activity!(employment)
         groups = PayrollPaymentGroup.where(company_id: @company_id, employment_id: employment.id, fully_credited_at: nil)

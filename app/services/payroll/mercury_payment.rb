@@ -115,7 +115,7 @@ module Payroll
       def current_group!(head, employment, line, arrangement, allocations)
         digest = PayrollPaymentGroup.line_digest(line)
         group = PayrollPaymentGroup.find_or_initialize_by(company_id: @company_id, payroll_run_id: @run.id, employment_id: employment.id)
-        if group.persisted? && group.in_flight_legs.exists? && (group.line_digest != digest || group.split_arrangement_id != arrangement&.id)
+        if group.persisted? && group.in_flight_legs.exists? && (group.line_digest != digest || stale_open_leg?(group, allocations))
           raise Blocked.new("bank_activity_requires_same_amounts")
         end
         raise Blocked.new("void_stale_transfer_first") if group.persisted? && stale_open_leg?(group, allocations)

@@ -543,6 +543,66 @@ RSpec.describe "Mercury payroll review findings" do
     end
   end
 
+  describe "verification G1: correcting a dead spouse account" do
+    it "allows new bank details with the same allocation and replaces only the failed transfer" do
+      revision = approve_revision
+      approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      consultant_leg, spouse_leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => consultant_leg.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: consultant_leg.id, expected_digest: consultant_leg.frozen_digest)
+      PayrollPaymentInstruction.where(id: spouse_leg.id).update_all(submission_state: "voided", released_at: Time.current)
+
+      corrected = spouse_details.merge("bank_account_number" => "555566667777")
+      arrangement = split_service.request!(actor: accounts, employment_id: employment.id,
+        attributes: { allocation_kind: "percentage", allocation_value: "50", allocated_to: "spouse", remainder_to: "consultant" },
+        details: corrected, account_number_confirmation: "555566667777")
+      split_service.verify!(actor: accounts, arrangement_id: arrangement.id)
+      split_service.approve!(actor: owner, arrangement_id: arrangement.id)
+      new_recipient_id = "88888888-8888-4888-8888-888888888888"
+      stub_request(:get, "#{mercury_base}/recipient/#{new_recipient_id}").to_return(mercury_json(
+        mercury_recipient("id" => new_recipient_id, "name" => "Synthetic Spouse",
+          "internationalWireRoutingInfo" => { "iban" => "555566667777", "swiftCode" => "SPOUINBBXXX",
+                                              "countrySpecific" => { "india" => { "ifscCode" => "SPOU0000002" } } })
+      ))
+      linked_recipient(beneficiary: "spouse", id: new_recipient_id)
+
+      replacement = Payroll::MercuryPayment.new(run).prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
+      expect(replacement.map(&:beneficiary)).to eq(["spouse"])
+      expect(replacement.first.mercury_recipient_id).to eq(new_recipient_id)
+      expect(replacement.first.entitlement_minor).to eq(spouse_leg.entitlement_minor)
+      expect(consultant_leg.reload.submission_state).to eq("accepted")
+    end
+
+    it "still refuses changed amounts while a transfer can complete" do
+      revision = approve_revision
+      approved_split(value: "50")
+      verified_connection
+      linked_recipient
+      link_spouse
+      leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:).first
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => leg.principal_minor / 100.0)))
+      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
+      expect(blocked_codes { request_split(value: "40") }).to eq(["split_locked_by_bank_activity"])
+    end
+  end
+
+  describe "verification G3: a hold does not end in a release" do
+    it "does not release on one failed read while held" do
+      leg = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent"), mercury_transaction("id" => "other", "status" => "sent")])
+      refresh(leg)
+      stub_status(transactions: [mercury_transaction("status" => "failed")])
+      refreshed = refresh(leg)
+      expect(refreshed.released_at).to be_nil
+      expect(refreshed.held_reason).to be_present
+    end
+  end
+
   describe "verification: known request read uses the request's own account" do
     it "reads transactions on the account Mercury reports" do
       other_account = "99999999-9999-4999-8999-999999999999"

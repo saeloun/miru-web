@@ -297,7 +297,7 @@ module Payroll
       def link_transaction(instruction, transaction, actor)
         previous = instruction.transaction_status
         no_funds = PayrollPaymentInstruction::NO_FUNDS_MOVED_TRANSACTIONS.include?(transaction.status)
-        unexplained = no_funds && ([nil, "pending"].exclude?(previous) || instruction.credited_minor.positive?)
+        unexplained = no_funds && ([nil, "pending"].exclude?(previous) || instruction.credited_minor.positive? || instruction.held_reason.present?)
         instruction.update!({ provider_transaction_id: transaction.id, transaction_status: transaction.status,
           transaction_failure_reason: transaction.failure_reason, last_checked_at: Time.current }
           .merge(unexplained ? {} : { transaction_link_state: "linked", last_error_code: nil, held_reason: nil }))

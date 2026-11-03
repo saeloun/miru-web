@@ -22,7 +22,7 @@ const labels: Record<string, string> = {
   allocation_changed: "The allocation changed. Void and prepare again",
   rate_implausible: "That rate is outside 50 to 200 INR per USD. Check it",
   split_locked_by_bank_activity:
-    "A transfer is in flight, so the split cannot change",
+    "A transfer for this consultant can still complete, so the split's amounts can't change. You can correct bank details if the allocation stays the same",
   request_mismatch: "Mercury's request differs from this transfer",
   transaction_mismatch: "Mercury's transaction does not match this transfer",
   multiple_transactions:

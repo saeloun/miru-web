@@ -39,7 +39,7 @@ The funds flow is the one requested: Saeloun's own Mercury account pays USD to I
 - `payroll_payment_instructions`: one leg. Stable identity is group + beneficiary (partial unique index on unreleased rows). Frozen allocated INR, quote, principal, configured fee, company debit, recipient and bank versions, key. Separate lifecycle columns for submission, request, transaction link and credit.
 - `payroll_payment_events`: append-only, database-enforced. Codes and actors only.
 
-A revision may replace a consultant's line only when no leg is in flight for that consultant. If a leg is in flight, the new line must have the same amounts and claims, or the revision is refused. Claims the run already settled stay selectable for that purpose. Prepared legs are voided by any new revision. A split cannot change or be withdrawn while a group in any run can still complete: it has bank activity and no held leg. A held leg (returned, failed, cancelled, or with a durable `held_reason`) means the group cannot complete in Miru, so it does not lock future months; an unsent sibling in that group then stays unsent. A leg whose allocation no longer matches cannot be sent. New consultant terms cannot take effect in a month that has bank activity.
+A revision may replace a consultant's line only when no leg is in flight for that consultant. If a leg is in flight, the new line must have the same amounts and claims, or the revision is refused. Claims the run already settled stay selectable for that purpose. Prepared legs are voided by any new revision. A split's allocation cannot change, and it cannot be withdrawn, while a group in any run can still complete: it has bank activity and no held leg. A new arrangement with the same allocation is allowed, so a closed account can be corrected and only the failed leg replaced. A held leg (returned, failed, cancelled, or with a durable `held_reason`) means the group cannot complete in Miru, so it does not lock future months; an unsent sibling in that group then stays unsent. A leg whose allocation no longer matches cannot be sent. New consultant terms cannot take effect in a month that has bank activity.
 
 ## Preparation and approval
 
@@ -119,6 +119,7 @@ Each is a later unit with its integration point. None is dropped.
 | 3–5 | PTO ledger and exception decisions | Unpaid hours are explicit input today |
 | 8 | India handoff | Separate parallel unit; non-Mercury lines stay blocked here |
 | 9 | Consultant self-request, reallocating reimbursements | Arrangement versions |
+| 12 | Overriding a held transfer | Multi-transaction and cancelled-after-approval holds have no in-app exit, like returned wires. They need Mercury's real response shapes from sandbox acceptance before an override is designed |
 | 12 | Replacing a departed assigned reviewer | Runs are immutable, so this needs append-only reassignment |
 | 7 | Date-bounded request scans | An account with over 2,000 requests reports an incomplete scan, which blocks attestation |
 

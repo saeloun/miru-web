@@ -182,8 +182,10 @@ Accounts can still record the credit with its bank reference, and the history st
 The owner or accounts reviewer enters the spouse's legal name and bank details, the
 account number twice, and a percentage or fixed INR amount with the other party
 taking the remainder. The assigned accounts reviewer verifies it and a different person,
-an owner, approves it. Any change needs verifying and approving again. A split can't
-change while a month's transfers can still complete. A returned or held transfer doesn't
+an owner, approves it. Any change needs verifying and approving again. While a month's
+transfers can still complete, a split's amounts can't change and it can't be withdrawn. You
+can still correct the spouse's bank details by requesting a split with the same allocation,
+which is how to fix a failed wire to a closed account. A returned or held transfer doesn't
 block a change, but anything left unsent in that month can't be sent afterwards.
 
 The split applies to the fee after adjustments. Reimbursements stay with the
