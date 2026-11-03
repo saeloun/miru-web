@@ -130,8 +130,9 @@ Before you start, a server administrator needs to:
 1. **Set up the connection (owner).** In Mercury, create a Custom API token with the
    `RequestSendMoney` scope (Send Money with Approval) and read access to accounts,
    recipients, send-money requests and transactions. Mercury's scope names for those
-   reads aren't publicly documented, so check them when you create the token. The person
-   who creates the token can't approve its requests.
+   reads aren't publicly documented, so check them when you create the token. Have
+   someone other than the token creator approve requests. Custom scopes can't be edited
+   later, and Mercury deletes tokens that go unused for 45 days.
 
    Enter the token, the source account ID, the expected legal name and the OUR fee. The
    token can't be viewed again. **Verify read access** checks the account and legal name.
@@ -181,8 +182,8 @@ Accounts can still record the credit with its bank reference, and the history st
 The owner or accounts reviewer enters the spouse's legal name and bank details, the
 account number twice, and a percentage or fixed INR amount with the other party
 taking the remainder. The assigned accounts reviewer verifies it and a different person,
-an owner, approves it. Any change needs verifying and approving again, and a split can't
-change for a run while one of its transfers is in flight there.
+an owner, approves it. Any change needs verifying and approving again. A split can't
+change while a transfer using it can still complete, in any month.
 
 The split applies to the fee after adjustments. Reimbursements stay with the
 consultant. Each transfer has its own principal, OUR fee, key and status, so a failed

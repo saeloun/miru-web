@@ -87,8 +87,13 @@ class PayrollPaymentInstruction < ApplicationRecord
     submission_state == "uncertain" && absent_confirmed_at.present?
   end
 
+  def unexplained_transactions?
+    transaction_link_state == "reconciliation_required" && last_error_code == "multiple_transactions"
+  end
+
   def credit_recordable?
     return false unless submission_state == "accepted" && released_at.nil? && %w[none partial].include?(credit_state)
+    return false if unexplained_transactions?
     return false if CREDIT_BARRED_TRANSACTIONS.include?(transaction_status) || request_status != "approved"
 
     transaction_link_state == "reconciliation_required" || transaction_status == "sent"

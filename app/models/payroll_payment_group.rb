@@ -35,7 +35,7 @@ class PayrollPaymentGroup < ApplicationRecord
   def fully_credited?
     legs = open_legs.to_a
     legs.size == required_legs && legs.all? do |leg|
-      RESOLVED_CREDIT_STATES.include?(leg.credit_state) &&
+      RESOLVED_CREDIT_STATES.include?(leg.credit_state) && !leg.unexplained_transactions? &&
         PayrollPaymentInstruction::CREDIT_BARRED_TRANSACTIONS.exclude?(leg.transaction_status)
     end
   end

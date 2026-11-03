@@ -146,14 +146,16 @@ const emptySelection: Selection = {
 
 const initialSelection = (row: PreparationConsultant): Selection => ({
   ...emptySelection,
-  included: row.current.included,
+  included: row.ready && row.current.included,
   unpaid:
     row.current.confirmed_unpaid_hours &&
     Number(row.current.confirmed_unpaid_hours) > 0
       ? row.current.confirmed_unpaid_hours
       : "",
   reason: row.current.unpaid_reason || "",
-  expenseIds: row.current.expense_ids || [],
+  expenseIds: (row.current.expense_ids || []).filter(id =>
+    row.eligible_expenses.some(claim => claim.id === id)
+  ),
   earning: row.current.other_earning || "",
   deduction: row.current.other_deduction || "",
   withholding: row.current.withholding || "",
@@ -384,7 +386,7 @@ export const PrepareRevisionPanel = ({
         expected_digest: data.current_digest,
         idempotency_key: key,
         consultants: data.consultants
-          .filter(row => selections[row.employment_id]?.included)
+          .filter(row => row.ready && selections[row.employment_id]?.included)
           .map(row => {
             const selection = selections[row.employment_id];
 

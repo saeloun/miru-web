@@ -278,6 +278,7 @@ module Payroll
       def begin_submission!(actor, instruction, expected_digest, provider_state)
         @run.with_lock do
           instruction.lock!
+          instruction.employment.lock!
           check_submittable!(actor, instruction, expected_digest)
           raise Blocked.new("recipient_changed") unless provider_state[:recipient_digest] == instruction.recipient_digest
 

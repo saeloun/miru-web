@@ -82,7 +82,9 @@ module Payroll
       def settled_claims_need_review?(group)
         return false if group.nil? || group.fully_credited_at
 
-        group.payroll_payment_instructions.any? { |leg| leg.payroll_payment_events.any? { |event| event.kind == "group_credit_reopened" } }
+        group.payroll_payment_instructions.any? do |leg|
+          leg.payroll_payment_events.any? { |event| event.kind == "group_credit_reopened" && event.data["settled_expense_ids"].present? }
+        end
       end
 
       def can_prepare?(blockers, group, allocations)

@@ -614,8 +614,9 @@ const Leg = ({ leg, context }: { leg: MercuryLeg; context: Context }) => {
       )}
       {leg.display_state === "reconciliation_required" && (
         <p className="text-sm">
-          Miru couldn&apos;t match this to a single Mercury wire. Check it in
-          Mercury, then record the credit with its bank reference.
+          {leg.actions.record_credit
+            ? "Miru couldn't match this to a single Mercury wire. Check it in Mercury, then record the credit with its bank reference."
+            : "Miru is holding this transfer because Mercury's records don't match it. Check it in Mercury with accounts. It can't be replaced from Miru yet."}
         </p>
       )}
       {leg.requester_may_approve === true && (
@@ -924,11 +925,27 @@ const Consultant = ({
         {consultant.recipients
           .filter(recipient => recipient.linked && recipient.current)
           .map(recipient => (
-            <p className="text-sm" key={recipient.beneficiary}>
-              {label(recipient.beneficiary)} recipient verified against the Miru
-              profile: {recipient.name} ••••{recipient.account_mask} ·{" "}
-              {recipient.swift_code}
-            </p>
+            <div className="space-y-2" key={recipient.beneficiary}>
+              <p className="text-sm">
+                {label(recipient.beneficiary)} recipient last verified against
+                the Miru profile: {recipient.name} ••••{recipient.account_mask}{" "}
+                · {recipient.swift_code}
+              </p>
+              {manage && (
+                <details>
+                  <summary className="cursor-pointer text-sm">
+                    Verify again or use another recipient
+                  </summary>
+                  <div className="mt-2">
+                    <RecipientLink
+                      beneficiary={recipient.beneficiary}
+                      consultant={consultant}
+                      context={context}
+                    />
+                  </div>
+                </details>
+              )}
+            </div>
           ))}
         {manage &&
           unlinked.map(recipient => (

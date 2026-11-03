@@ -390,8 +390,8 @@ RSpec.describe "Mercury payroll review findings" do
     end
   end
 
-  describe "gate review E4: split lock scope" do
-    it "does not lock a split because of another month's held transfer" do
+  describe "verification N3: split lock across runs" do
+    def in_flight_split
       revision = approve_revision
       arrangement = approved_split(value: "50")
       verified_connection
@@ -400,9 +400,76 @@ RSpec.describe "Mercury payroll review findings" do
       leg = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:).first
       stub_mercury_reads
       stub_mercury_write(mercury_json(mercury_request("amount" => leg.principal_minor / 100.0)))
-      Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
+      accepted = Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
       later = PayrollRun.create!(company:, period: Date.new(2026, 12, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
-      expect(Payroll::SplitArrangements.new(later).withdraw!(actor: owner, arrangement_id: arrangement.id).withdrawn?).to be(true)
+      [arrangement, accepted, Payroll::SplitArrangements.new(later)]
+    end
+
+    it "refuses a split change through another run while a transfer can still complete" do
+      arrangement, _leg, other_run = in_flight_split
+      expect(blocked_codes { other_run.withdraw!(actor: owner, arrangement_id: arrangement.id) }).to eq(["split_locked_by_bank_activity"])
+    end
+
+    it "does not lock future months because of a returned transfer" do
+      arrangement, leg, other_run = in_flight_split
+      PayrollPaymentInstruction.where(id: leg.id).update_all(transaction_status: "reversed")
+      expect(other_run.withdraw!(actor: owner, arrangement_id: arrangement.id).withdrawn?).to be(true)
+    end
+  end
+
+  describe "verification N4: known request exit reads transactions" do
+    let!(:leg) do
+      instruction = prepared_instruction
+      stub_mercury_reads
+      stub_mercury_write(mercury_json(mercury_request("amount" => 1.00)))
+      payment.submit!(actor: owner, instruction_id: instruction.id, expected_digest: instruction.frozen_digest)
+    end
+
+    before do
+      stub_listing([])
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("amount" => 1.00, "status" => "cancelled")))
+    end
+
+    def attest
+      service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
+    end
+
+    it "refuses attestation when the cancelled request has a transaction" do
+      stub_request(:get, transactions_url).to_return(mercury_json({ "total" => 1, "transactions" => [mercury_transaction("amount" => -1.00, "status" => "sent")] }))
+      expect(blocked_codes { attest }).to eq(["request_id_known"])
+      expect(leg.reload.retry_unlocked?).to be(false)
+    end
+
+    it "refuses attestation when transactions cannot be read" do
+      stub_request(:get, transactions_url).to_return(status: 503)
+      expect(blocked_codes { attest }).to eq(["provider_status_unavailable"])
+    end
+
+    it "allows attestation with an empty transaction read" do
+      stub_request(:get, transactions_url).to_return(mercury_json({ "total" => 0, "transactions" => [] }))
+      expect(attest.retry_unlocked?).to be(true)
+    end
+  end
+
+  describe "verification R1: return reported as a second sent transaction" do
+    let!(:leg) do
+      accepted = accepted_instruction
+      stub_status(transactions: [mercury_transaction("status" => "sent")])
+      refresh(accepted)
+    end
+
+    it "reopens the group and bars further credit" do
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
+      returned = mercury_transaction("id" => "return-tx", "amount" => 744.05, "kind" => "incomingDomesticWire", "status" => "sent")
+      stub_status(transactions: [mercury_transaction("status" => "sent"), returned])
+      refreshed = refresh(leg)
+      expect(refreshed.last_error_code).to eq("multiple_transactions")
+      expect(refreshed.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    it "does not take a credit while two transactions are unexplained" do
+      stub_status(transactions: [mercury_transaction("status" => "sent"), mercury_transaction("id" => "other", "status" => "sent")])
+      expect(refresh(leg).credit_recordable?).to be(false)
     end
   end
 
@@ -447,6 +514,7 @@ RSpec.describe "Mercury payroll review findings" do
 
     it "allows attestation once Mercury shows that request cancelled" do
       stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(mercury_request("amount" => 1.00, "status" => "cancelled")))
+      stub_request(:get, transactions_url).to_return(mercury_json({ "total" => 0, "transactions" => [] }))
       attested = service.attest_absence!(actor: accounts, instruction_id: leg.id, evidence_reference: "Case 1")
       expect(attested.retry_unlocked?).to be(true)
       expect(attested.provider_request_id).to be_nil
@@ -468,6 +536,13 @@ RSpec.describe "Mercury payroll review findings" do
     it "does not raise the settled-claim alert from settlement alone" do
       service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
       PayrollPaymentGroup.where(id: leg.payroll_payment_group_id).update_all(fully_credited_at: nil)
+      expect(consultant[:settled_claims_need_review]).to be(false)
+    end
+
+    it "does not claim reimbursements were paid when a consultant without claims has a return" do
+      service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "62500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
+      stub_status(transactions: [mercury_transaction("status" => "reversed")])
+      refresh(leg)
       expect(consultant[:settled_claims_need_review]).to be(false)
     end
 

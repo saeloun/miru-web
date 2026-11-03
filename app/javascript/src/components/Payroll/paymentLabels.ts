@@ -25,7 +25,8 @@ const labels: Record<string, string> = {
     "A transfer is in flight, so the split cannot change",
   request_mismatch: "Mercury's request differs from this transfer",
   transaction_mismatch: "Mercury's transaction does not match this transfer",
-  multiple_transactions: "Mercury lists more than one matching transaction",
+  multiple_transactions:
+    "Mercury lists more than one transaction for this request, so credit is on hold",
   transaction_list_incomplete: "Mercury's transaction list was incomplete",
   transaction_not_found: "No transaction found since approval",
   outcome_unknown: "Mercury's response was unclear",
@@ -88,7 +89,7 @@ const labels: Record<string, string> = {
   revision_changed: "A newer revision exists. Prepare again",
   connection_changed: "The Mercury connection changed. Prepare again",
   source_account_ineligible:
-    "The source account is not active or its legal name differs",
+    "Couldn't confirm the source account. It may be inactive, its legal name may differ, or Mercury may have refused the read",
   mercury_read_failed:
     "Mercury refused or didn't answer. Check the token, its read permissions and the environment",
   insufficient_balance: "The balance does not cover principal and fees",

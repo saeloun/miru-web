@@ -201,10 +201,18 @@ module Payroll
       end
 
       def guard_known_request_closed!(instruction)
-        parsed = read_request(connection.client, instruction.provider_request_id)
-        return if !instruction.matches_request?(parsed) && TERMINAL_REQUEST_STATUSES.include?(parsed.status)
+        client = connection.client
+        parsed = read_request(client, instruction.provider_request_id)
+        closed = !instruction.matches_request?(parsed) && TERMINAL_REQUEST_STATUSES.include?(parsed.status)
+        raise MercuryPayment::Blocked.new("request_id_known") unless closed && no_transactions_for?(client, instruction, parsed)
+      end
 
-        raise MercuryPayment::Blocked.new("request_id_known")
+      def no_transactions_for?(client, instruction, parsed)
+        transactions, total = Contract.transactions(client.request_transactions(account_id: instruction.source_account_id,
+          request_id: parsed.request_id, start: (parsed.created_at - 1.day).to_date))
+        total.zero? && transactions.empty?
+      rescue PayrollProviders::Error
+        raise MercuryPayment::Blocked.new("provider_status_unavailable")
       end
 
       def read_request(client, request_id)
