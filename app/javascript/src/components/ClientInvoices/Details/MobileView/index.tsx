@@ -4,6 +4,7 @@ import { MiruLogoWithTextSVG, ReportsIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import CompanyInfo from "components/Invoices/common/CompanyInfo";
+import PaymentHoldNotice from "components/Invoices/common/PaymentHoldNotice";
 
 import { i18n } from "../../../../i18n";
 
@@ -27,7 +28,10 @@ const MobileView = ({ data }) => {
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
   const isNonActionable =
-    invoice.status === "paid" || invoiceWaived || invoice.amount <= 0;
+    invoice.payment_on_hold ||
+    invoice.status === "paid" ||
+    invoiceWaived ||
+    (invoice.amount_due ?? invoice.amount) <= 0;
 
   const hasOtherProvider =
     !!stripe_connected_account ||
@@ -63,6 +67,11 @@ const MobileView = ({ data }) => {
     <div className="h-full">
       <Header invoice={invoice} />
       <div className="h-full overflow-y-scroll pb-40">
+        {invoice.payment_on_hold && (
+          <div className="px-4">
+            <PaymentHoldNotice />
+          </div>
+        )}
         <CompanyInfo company={company} />
         <InvoiceInfo
           company={company}
@@ -140,7 +149,7 @@ const MobileView = ({ data }) => {
           style="primary"
           disabled={isNonActionable}
           onClick={() => {
-            if (invoice.status != "paid") {
+            if (!isNonActionable) {
               window.location.href = paymentUrl;
             }
           }}

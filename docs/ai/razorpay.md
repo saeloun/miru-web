@@ -62,6 +62,10 @@ Webhooks recheck the stored binding under the invoice lock before clearing it. R
 
 An open review blocks checkout through other providers as well as Razorpay. Checkout rechecks after provider IO, and payment-start failures never promise the customer was not charged. Captures on invalid, waived or deleted invoices stay in review. OAuth evidence blocks permanent invoice destruction; use soft deletion to retain the audit trail.
 
+Public and client invoice views expose a safe `payment_on_hold` flag without the underlying financial metadata. While a creation, capture review or unavailable original binding requires confirmation, payment actions are disabled and UPI QR codes and bank instructions are withheld. Invoice UPI buttons use `payments/new?provider=upi`, so a previously loaded button rechecks the invoice before opening UPI. An explicitly unavailable UPI option never falls back to another provider. Already copied UPI links, QR codes and bank instructions cannot be revoked.
+
+Paid, waived and zero-balance invoices withhold payment options independently of the confirmation flag. Retained references do not label a paid invoice uncertain after disconnect. A confirmed cancelled or expired link permits another method when there is no unresolved creation or capture review; an unresolved capture still blocks it. The confirmation page gives a neutral status and links back to an available invoice rather than offering another payment attempt.
+
 ### Uncertain link creation
 
 `payment_infos["razorpay_link_creation"]` commits before the connected-account POST. Its unique reference, original account/mode/application and invoice amount are retained after an uncertain response. A retry queries that reference instead of creating again. An empty lookup is not proof of rejection. A found or manually supplied `plink_` ID must match the full original snapshot before adoption; its capture must be reconciled before the intent clears.

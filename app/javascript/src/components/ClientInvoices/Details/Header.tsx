@@ -40,7 +40,10 @@ const Header = ({
   };
 
   const isNonActionable =
-    status === "paid" || status === "waived" || invoice.amount <= 0;
+    invoice.payment_on_hold ||
+    status === "paid" ||
+    status === "waived" ||
+    (invoice.amount_due ?? invoice.amount) <= 0;
 
   const hasOtherProvider =
     !!stripe_connected_account ||
@@ -95,7 +98,7 @@ const Header = ({
                   : "bg-primary"
               }`}
               onClick={() => {
-                if (status != "paid") {
+                if (!isNonActionable) {
                   if (stripe_connected_account && !stripe_enabled) {
                     setShowStripeDisabledDialog(true);
                   } else if (

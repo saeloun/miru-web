@@ -35,7 +35,7 @@ module InvoicePayment
       end
 
       def description
-        "Invoice from #{company.name} for #{currency} #{invoice.amount} due on #{invoice.due_date}"
+        "Invoice from #{company.name} due on #{invoice.due_date}"
       end
 
       def currency

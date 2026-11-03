@@ -78,6 +78,10 @@ The background recovery job also checks uncertain links every five minutes while
 
 If a link cannot be found, a workspace owner or administrator should contact Razorpay support with the listed reference, account and mode. Keep that invoice blocked while checking its outcome. Do not create a replacement invoice to bypass it.
 
+Customers see **Payment needs confirmation** while the outcome is uncertain. Pay is unavailable, and Miru withholds UPI QR codes and bank instructions for that invoice. Ask the customer not to pay again while accounts checks the original attempt. Invoice UPI buttons recheck the invoice before opening the payment app. Previously copied UPI links, QR codes and bank details cannot be recalled.
+
+Paid, waived and zero-balance invoices do not offer another payment. A confirmed cancelled or expired link can allow another method after any captured-money review is resolved.
+
 For a captured payment requiring review, open its invoice and compare the bank payment with the amount due. Record the payment on the invoice or refund it through Razorpay as appropriate, then use **Mark as reviewed** after verifying that action. Marking a review does not itself record or refund money.
 
 ## Enable UPI Payouts

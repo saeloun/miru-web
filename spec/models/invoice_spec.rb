@@ -220,18 +220,18 @@ RSpec.describe Invoice, type: :model do
   end
 
   describe ".unit_amount" do
-    let(:invoice) { create :invoice }
+    let(:invoice) { create :invoice, amount: 100, amount_due: 40, amount_paid: 60 }
 
     it "returns the unit amount for normal_currencies" do
       normal_base_currency = "USD"
-      expected_amount = (invoice.amount * 100).to_i
+      expected_amount = (invoice.amount_due * 100).to_i
 
       expect(invoice.unit_amount(normal_base_currency)).to eq(expected_amount)
     end
 
     it "returns the unit amount for zero_decimal_currencies" do
       zero_base_currency = "JPY"
-      expected_amount = (invoice.amount).to_i
+      expected_amount = invoice.amount_due.to_i
 
       expect(invoice.unit_amount(zero_base_currency)).to eq(expected_amount)
     end

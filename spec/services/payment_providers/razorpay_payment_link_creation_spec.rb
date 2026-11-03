@@ -189,6 +189,18 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService, "durable OAuth link
     expect(invoice.razorpay_payment_link_id).to eq("plink_recovered")
   end
 
+  %w[paid partially_paid].each do |status|
+    it "keeps a #{status} creation without payment IDs on hold for review" do
+      creation_request.to_return do
+        { status: 200, body: created_link.merge(status:, amount_paid: 50_000, payments: []).to_json, headers: json }
+      end
+      expect { service.process }.to raise_error(PaymentProviders::RazorpayPaymentLinkService::PaymentConfirming)
+      expect(invoice.reload.payment_on_hold?).to be(true)
+      expect(invoice.payment_options_available?).to be(false)
+      expect(PaymentProviders::RazorpayPaymentReview.reviews_for(invoice).values).to contain_exactly(hash_including("payment_id" => nil))
+    end
+  end
+
   it "throttles an empty lookup without clearing the attempt or resending SMS" do
     creation = creation_request.to_timeout
     expect { service.process }.to raise_error(PaymentProviders::RazorpayClient::Error)

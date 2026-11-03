@@ -415,7 +415,8 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
         params: { razorpay_payment_link_id: "plink_oauth", razorpay_payment_link_status: "paid", razorpay_payment_id: "pay_deleted" }
       expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
       follow_redirect!
-      expect(response.body).to include("We are confirming your payment")
+      expect(response.body).to include("Payment needs confirmation")
+      expect(response.body).not_to include("Back to invoice")
       expect(invoice.reload.payments).to be_empty
       expect(pending_ids).to eq(["pay_deleted"])
     end
@@ -445,12 +446,12 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
       expect(pending_ids).to eq(["pay_racing"])
     end
 
-    it "says a reviewed payment is being confirmed, never that they were not charged" do
+    it "says a reviewed payment needs confirmation, never that they were not charged" do
       flag("pay_one")
       start_payment
       expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
       follow_redirect!
-      expect(response.body).to include("We are confirming your payment", "do not pay again")
+      expect(response.body).to include("Payment needs confirmation", "do not pay again", "Back to invoice")
       expect(response.body).not_to include("You have not been charged")
     end
 
@@ -467,7 +468,7 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
       start_payment
       follow_redirect!
       expect(response.body).not_to include("You have not been charged")
-      expect(response.body).to include("We are confirming your payment", "do not pay again")
+      expect(response.body).to include("Payment needs confirmation", "do not pay again")
       expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
       expect(a_request(:post, links_url)).to have_been_made.once
     end

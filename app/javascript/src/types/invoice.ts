@@ -30,4 +30,5 @@ export interface Invoice {
   invoiceLineItems?: import("../services/invoiceApi").InvoiceItem[];
   company?: Company;
   stripe_enabled?: boolean;
+  payment_on_hold?: boolean;
 }

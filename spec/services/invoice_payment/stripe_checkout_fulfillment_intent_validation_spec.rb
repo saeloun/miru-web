@@ -53,4 +53,16 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
     expect(described_class.new(event_for(invoice:, payment_intent: "pi_event_only")).process).to be(false)
     expect(Payment.last&.invoice_id).not_to eq(invoice.id)
   end
+
+  it "settles the remaining balance once when the Stripe checkout webhook is replayed" do
+    invoice = create(:invoice, company:, client:, currency: "INR", status: "sent", amount: 123.45,
+      amount_due: 23.45, amount_paid: 100, payment_infos: { "stripe_payment_intent" => "pi_remaining" })
+    event = event_for(invoice:, payment_intent: "pi_remaining")
+    event.data.object.amount_total = 2345
+
+    expect { described_class.new(event).process }.to change { invoice.payments.count }.by(1)
+    expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: BigDecimal("123.45"))
+    expect(invoice.payments.last.amount).to eq(BigDecimal("23.45"))
+    expect { described_class.new(event).process }.not_to change { invoice.payments.count }
+  end
 end

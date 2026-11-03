@@ -53,7 +53,7 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
       end
       expect(page).to have_css(selector, wait: 15)
       expect(page).to have_no_content("Loading Razorpay status…")
-      expect(page).to have_button("PAY") if selector == "#react-root"
+      expect(page).to have_button("PAY", disabled: :all) if selector == "#react-root"
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
       expect(overflowing_controls(selector)).to eq([])
       save_shot(name, label, selector)
@@ -82,7 +82,7 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
     directory = File.expand_path(ENV["RZP_SHOTS"], Rails.root)
     FileUtils.mkdir_p(directory)
     path = File.join(directory, "#{name}-#{label}.png")
-    if selector == "#react-root"
+    if ["#react-root", "body"].include?(selector)
       page.save_screenshot(path, full: true)
       return
     end
@@ -133,6 +133,112 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
     expect { PaymentProviders::RazorpayPaymentLinkService.new(invoice:, provider: connected, callback_url: "https://example.test/return").process }
       .to raise_error(PaymentProviders::RazorpayClient::Error)
     [invoice.reload, creation]
+  end
+
+  def configure_manual_payments
+    company.update!(bank_name: "Synthetic Transfer Bank", bank_account_number: "12345678", bank_routing_number: "SYNB0001234")
+    create(:payments_provider, company:, name: "upi", enabled: true, connected: true,
+      settings: { upi_id: "synthetic@upi", payee_name: "Synthetic Collections", enabled_on_invoices: true })
+  end
+
+  def expect_payment_hold
+    expect(page).to have_button("PAY", disabled: true)
+    expect(page).to have_content("Payment needs confirmation")
+    expect(page).to have_content("Please do not pay again. Contact the invoice sender to confirm the previous attempt.")
+    expect(page).to have_no_css("img[alt='UPI QR code']")
+    expect(page).to have_no_css("a[href^='upi:']")
+    expect(page).to have_no_content("Synthetic Transfer Bank")
+    expect(page).to have_no_link("Pay with PayPal")
+  end
+
+  def add_consulting_line_item(invoice)
+    create(:invoice_line_item, invoice:, name: "Consulting services", description: "Consulting services",
+      date: invoice.issue_date, rate: 1000, quantity: 60, timesheet_entry: nil)
+  end
+
+  it "holds public invoice payment options during an uncertain creation" do
+    invoice, creation = uncertain_link
+    add_consulting_line_item(invoice)
+    configure_manual_payments
+    provider.update!(enabled: false)
+    path = "/invoices/#{invoice.external_view_key}/view"
+    capture("19-public-invoice-on-hold", path:, selector: "#react-root") do
+      with_forgery_protection { visit path }
+      expect_payment_hold
+    end
+    expect(creation).to have_been_requested.once
+  end
+
+  it "holds public invoice payment options for a captured payment under review" do
+    configure_manual_payments
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR",
+      amount: 1000, amount_due: 1000, amount_paid: 0, status: "sent", payment_infos: {})
+    add_consulting_line_item(invoice)
+    PaymentProviders::RazorpayPaymentReview.flag!(invoice, payment_id: "pay_review", payment_link_id: "plink_review", amount: 100_000, reason: "webhook_mismatch")
+    path = "/invoices/#{invoice.external_view_key}/view"
+    capture("20-public-invoice-under-review", path:, selector: "#react-root") do
+      with_forgery_protection { visit path }
+      expect_payment_hold
+    end
+  end
+
+  it "shows the same hold in the signed-in client portal" do
+    invoice, = uncertain_link
+    add_consulting_line_item(invoice)
+    configure_manual_payments
+    client_user = create(:user, current_workspace_id: company.id)
+    create(:employment, company:, user: client_user)
+    create(:client_member, company:, client: invoice.client, user: client_user)
+    client_user.add_role(:client, company)
+    sign_in(client_user)
+    path = "/invoices/#{invoice.external_view_key}"
+    capture("21-client-invoice-on-hold", path:, selector: "#react-root") do
+      with_forgery_protection { visit path }
+      expect_payment_hold
+    end
+  end
+
+  it "shows a neutral confirming page with a safe route back to the invoice" do
+    invoice, = uncertain_link
+    path = "/invoices/#{invoice.external_view_key}/payments/cancel?reason=confirming"
+    capture("22-payment-confirmation-page", path:, selector: "body") do
+      with_forgery_protection { visit path }
+      expect(page).to have_css("h1", text: "Payment needs confirmation")
+      expect(page).to have_no_css("svg.text-red-400")
+      expect(page).to have_link("Back to invoice", href: "/invoices/#{invoice.external_view_key}/view")
+      expect(page).to have_no_link("Try again")
+    end
+    click_link "Back to invoice"
+    expect_payment_hold
+  end
+
+  it "does not label a paid invoice uncertain when its original account is disconnected" do
+    configure_manual_payments
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR",
+      amount: 1000, amount_due: 0, amount_paid: 1000, status: "paid", payment_infos: {
+        "razorpay_payment_link_id" => "plink_paid", "razorpay_payment_link_account_id" => "acc_original", "razorpay_payment_link_status" => "paid"
+      })
+    add_consulting_line_item(invoice)
+    path = "/invoices/#{invoice.external_view_key}/view"
+    capture("23-paid-invoice-closed", path:, selector: "#react-root") do
+      with_forgery_protection { visit path }
+      expect(page).to have_button("PAY", disabled: true)
+      expect(page).to have_no_content("Payment needs confirmation")
+      expect(page).to have_no_css("img[alt='UPI QR code']")
+    end
+  end
+
+  it "keeps a zero-balance invoice's payment action unavailable even before its status is updated" do
+    configure_manual_payments
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR",
+      amount: 1000, amount_due: 0, amount_paid: 1000, status: "viewed", payment_infos: {})
+    [1400, 390].each do |width|
+      page.driver.resize(width, 1000)
+      with_forgery_protection { visit "/invoices/#{invoice.external_view_key}/view" }
+      expect(page).to have_button("PAY", disabled: true)
+      expect(page).to have_no_content("Payment needs confirmation")
+      expect(page).to have_no_css("img[alt='UPI QR code']")
+    end
   end
 
   it "detects console errors, so the checks in this file can fail" do

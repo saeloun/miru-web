@@ -140,7 +140,7 @@ class Invoice < ApplicationRecord
   end
 
   def unit_amount(base_currency)
-    (amount * Money::Currency.new(base_currency).subunit_to_unit).to_i
+    (amount_due * Money::Currency.new(base_currency).subunit_to_unit).to_i
   end
 
   def settle!(payment)
@@ -181,6 +181,27 @@ class Invoice < ApplicationRecord
 
   def formatted_issue_date
     CompanyDateFormattingService.new(issue_date, company:).process
+  end
+
+  def payment_on_hold?
+    return false if paid? || waived? || discarded?
+
+    PaymentProviders::RazorpayPaymentLinkCreation.pending?(self) || razorpay_payment_review_required?
+  end
+
+  def payment_options_available?
+    !paid? && !waived? && !discarded? && amount_due.positive? && !payment_on_hold?
+  end
+
+  def razorpay_payment_review_required?
+    return true if PaymentProviders::RazorpayPaymentReview.pending?(self)
+    return false unless razorpay_payment_link_account_id.present? && razorpay_payment_link_id.present?
+    return false if %w[cancelled expired].include?(razorpay_payment_link_status)
+
+    provider = company.payments_providers.find_by(name: PaymentsProvider::RAZORPAY_PROVIDER, enabled: true) if currency == "INR"
+    !provider&.razorpay_collectable? || !provider.razorpay_oauth? ||
+      provider.settings["oauth_account_id"] != razorpay_payment_link_account_id ||
+      (razorpay_payment_link_mode.present? && provider.settings["oauth_mode"] != razorpay_payment_link_mode)
   end
 
   def razorpay_link_cancellation_due?

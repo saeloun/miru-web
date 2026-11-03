@@ -7,18 +7,25 @@ class Invoices::PaymentsController < ApplicationController
   before_action :ensure_invoice_unpaid, only: [:new]
 
   def new
-    if razorpay_payment_review_required?
+    if @invoice.razorpay_payment_review_required?
       return redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "confirming")
     end
+    unless @invoice.payment_options_available? || PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice)
+      return redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "start")
+    end
 
+    payment_terms = @invoice.slice(:currency, :amount_due)
     destination = payment_url
     @invoice.reload
     remove_instance_variable(:@_razorpay_provider) if instance_variable_defined?(:@_razorpay_provider)
     if @invoice.discarded? || @invoice.waived? || @invoice.razorpay_link_cancellation_due? ||
-        PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice) || razorpay_payment_review_required?
+        PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice) || @invoice.razorpay_payment_review_required?
       return redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "confirming")
     end
     return redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success" if @invoice.paid?
+    unless @invoice.payment_options_available? && @invoice.slice(:currency, :amount_due) == payment_terms
+      return redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "start")
+    end
 
     redirect_to destination, allow_other_host: true
   rescue PaymentProviders::RazorpayClient::Error, PaymentProviders::PaypalClient::Error, Stripe::StripeError => error
@@ -103,15 +110,6 @@ class Invoices::PaymentsController < ApplicationController
       PaymentProviders::RazorpayPaymentReview.pending?(@invoice) || PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice) || bound_razorpay_link?
     end
 
-    def razorpay_payment_review_required?
-      return true if PaymentProviders::RazorpayPaymentReview.pending?(@invoice)
-      return false unless bound_razorpay_link?
-
-      provider = razorpay_provider
-      !provider&.razorpay_oauth? || provider.settings["oauth_account_id"] != @invoice.razorpay_payment_link_account_id ||
-        (@invoice.razorpay_payment_link_mode.present? && provider.settings["oauth_mode"] != @invoice.razorpay_payment_link_mode)
-    end
-
     def bound_razorpay_link?
       @invoice.razorpay_payment_link_account_id.present? && @invoice.razorpay_payment_link_id.present?
     end
@@ -145,6 +143,7 @@ class Invoices::PaymentsController < ApplicationController
         end
         return razorpay_payment_url
       end
+      return upi_payment_url if params[:provider] == PaymentsProvider::UPI_PROVIDER
       return paypal_payment_url if paypal_requested? && paypal_provider.present?
       return razorpay_payment_url if razorpay_provider.present?
       return stripe_payment_url if stripe_onboarded?
@@ -159,6 +158,15 @@ class Invoices::PaymentsController < ApplicationController
 
     def paypal_requested?
       params[:provider].to_s == PaymentsProvider::PAYPAL_PROVIDER
+    end
+
+    def upi_payment_url
+      provider = @invoice.company.payments_providers.find_by(name: PaymentsProvider::UPI_PROVIDER, enabled: true)
+      unless @invoice.currency == "INR" && @invoice.payment_options_available? && provider&.upi_configured? && provider.enabled_on_invoices?
+        return cancel_invoice_payments_url(@invoice.external_view_key, reason: "start")
+      end
+
+      PaymentProviders::UpiIntentService.new(provider:, invoice: @invoice).payment_link
     end
 
     def paypal_payment_url

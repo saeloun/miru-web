@@ -1081,6 +1081,9 @@ const en = {
     noInvoiceGenerated: "No invoice has been generated yet.",
     acceptCreditCards: "Accept Credit Cards",
     payWithPaypal: "Pay with PayPal",
+    paymentOnHoldTitle: "Payment needs confirmation",
+    paymentOnHoldDescription:
+      "Please do not pay again. Contact the invoice sender to confirm the previous attempt.",
     sendTo: "SEND TO",
     send: "SEND",
     recentlyUpdated: "Recently Updated",
