@@ -4,6 +4,7 @@ import { MiruLogoWithTextSVG, ReportsIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import CompanyInfo from "components/Invoices/common/CompanyInfo";
+import ClientInfo from "components/Invoices/Invoice/ClientInfo";
 import PaymentHoldNotice from "components/Invoices/common/PaymentHoldNotice";
 
 import { i18n } from "../../../../i18n";
@@ -19,6 +20,7 @@ const MobileView = ({ data }) => {
     invoice,
     lineItems,
     company,
+    client,
     bank_payment,
     upi_payment,
     razorpay_payment,
@@ -73,6 +75,9 @@ const MobileView = ({ data }) => {
           </div>
         )}
         <CompanyInfo company={company} />
+        <div className="px-4 py-4">
+          <ClientInfo client={client} />
+        </div>
         <InvoiceInfo
           company={company}
           invoice={invoice}

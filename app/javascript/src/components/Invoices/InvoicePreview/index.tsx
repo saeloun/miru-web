@@ -455,7 +455,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({
               />
             ) : (
               <div className="mb-4">
-                <h1 className="text-2xl font-bold text-foreground print:text-foreground">
+                <h1 className="break-words text-2xl font-bold text-foreground print:text-foreground">
                   {invoice.company?.name || i18n.t("company")}
                 </h1>
               </div>
