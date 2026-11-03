@@ -37,7 +37,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     def is_valid_event?
       return false unless is_checkout_status_complete? && is_payment_status_paid?
 
-      return true if invoice.stripe_payment_intent.blank? && data_object.payment_intent.blank?
+      return false if data_object.payment_intent.blank?
 
       invoice.stripe_payment_intent == data_object.payment_intent
     end
@@ -57,7 +57,8 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
         transaction_type: "stripe",
         amount: Money.from_cents(event.data.object.amount_total, event.data.object.currency).amount,
         note: "Stripe_Payment_Success",
-        name: card_name
+        name: card_name,
+        provider_event_id: "stripe:#{data_object.payment_intent}"
       }
     end
 
@@ -93,6 +94,6 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     end
 
     def duplicate_payment?
-      invoice.paid?
+      invoice.paid? || Payment.exists?(provider_event_id: "stripe:#{data_object.payment_intent}")
     end
 end
