@@ -33,6 +33,20 @@ and production configuration. Added the missing hiring schedule assertion.
 - Required Vite build and forced test build passed after integration.
 - The same nine form/screening browser examples passed after integration.
 
+## Overlapping responses
+
+A fresh independent source review identified an error-clearing race. Holding a
+successful screening response until form creation had failed reproduced the
+disappearing conflict alert (**1 example, 1 failure**). Automatic version refresh
+now waits for idle, successful state; errors require an explicit refresh. Stale
+form versions disable mutations and dialog confirmation.
+
+The final form/screening suite passed **10 examples, 0 failures** with empty
+console/exception checks, including this controlled overlap and successful
+manual recovery. The desktop/mobile screenshots were captured again on this
+version. The suggested screening overwrite was checked against its separate
+edit-version state; screening does not submit the parent's observed version.
+
 This verifies local changes, not a deployment, provider integration or the whole
 ATS feature. The separate company-lock review comment remains open. Screenshots
 contain synthetic records and synthetic private links.

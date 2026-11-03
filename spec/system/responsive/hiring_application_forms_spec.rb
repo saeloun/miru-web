@@ -73,6 +73,45 @@ RSpec.describe "Admin candidate form review", type: :system, js: true do
     end
   end
 
+  it "retains a failed form action when a late screening response advances the version" do
+    released = false
+    saved = false
+    allow_any_instance_of(Api::V1::Hiring::ScreeningsController).to receive(:create).and_wrap_original do |original|
+      original.call
+      saved = true
+      Async::Task.current.sleep(0.01) until released
+    end
+    open_application
+    within(form_panel) { expect(page).to have_button("Create private form link", disabled: false) }
+    within('section[aria-label="Screening"]') do
+      select "Record information request", from: "Screening action"
+      fill_in "Screening reason", with: "Confirm availability before sending the form."
+      click_button "Save screening"
+    end
+    page.document.synchronize { raise Capybara::ElementNotFound, "Screening has not saved yet" unless saved }
+    within(form_panel) do
+      click_button "Create private form link"
+      expect(page).to have_css('[role="alert"]', text: "application changed")
+    end
+    released = true
+    expect(page).to have_text("Screening saved")
+    page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done));")
+    within(form_panel) do
+      expect(page).to have_css('[role="alert"]', text: "application changed")
+      expect(page).to have_button("Create private form link", disabled: true)
+      expect(application.hiring_portal_accesses).to be_empty
+      click_button "Refresh forms"
+      expect(page).not_to have_css('[role="alert"]')
+      click_button "Create private form link"
+      expect(page).to have_field("Private form link", readonly: true)
+    end
+    expect(application.hiring_portal_accesses.count).to eq(1)
+    expect(ActionMailer::Base.deliveries).to be_empty
+    expect(@console_errors).to eq([])
+  ensure
+    released = true
+  end
+
   it "opens communication settings to enable an unapproved form" do
     configuration = Hiring::Configure.new(company:, actor: admin)
     setting = company.hiring_setting

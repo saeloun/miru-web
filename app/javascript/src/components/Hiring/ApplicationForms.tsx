@@ -72,6 +72,9 @@ export default function ApplicationForms({
   const linkInput = useRef<HTMLInputElement>(null);
   const mounted = useRef(true);
   const path = `applications/${applicationId}/forms`;
+  const stale =
+    data !== null && data.application_lock_version < applicationVersion;
+
   useEffect(() => {
     mounted.current = true;
 
@@ -81,10 +84,10 @@ export default function ApplicationForms({
   }, []);
 
   useEffect(() => {
-    if (data && !busy && data.application_lock_version < applicationVersion) {
+    if (stale && !busy && !loading && !error) {
       setRefresh(value => value + 1);
     }
-  }, [applicationVersion, data?.application_lock_version, busy]);
+  }, [stale, busy, loading, error]);
 
   useEffect(() => {
     let active = true;
@@ -118,7 +121,7 @@ export default function ApplicationForms({
   }, [path, companyId, page, refresh, changed]);
 
   const mutate = async (revokeId?: number) => {
-    if (!data || busy || loading) return;
+    if (!data || busy || loading || stale || error) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -215,7 +218,7 @@ export default function ApplicationForms({
 
   const closed =
     data && ["hired", "rejected", "withdrawn"].includes(data.application_stage);
-  const disabled = busy || loading || Boolean(error);
+  const disabled = busy || loading || stale || Boolean(error);
 
   return (
     <section
@@ -462,7 +465,7 @@ export default function ApplicationForms({
             <Button
               type="button"
               className="min-h-11"
-              disabled={busy}
+              disabled={disabled}
               onClick={() =>
                 void mutate(action?.kind === "revoke" ? action.id : undefined)
               }
