@@ -31,6 +31,7 @@ class SubscriptionPurchaseEvent < ApplicationRecord
   private
 
     def report_enqueue_failure(error)
-      Rails.error.report(error, handled: true, context: { subscription_purchase_event_id: id })
+      Rails.error.report(error, handled: true, context: { subscription_purchase_event_id: id,
+        recovery: "Retried automatically by SubscriptionPurchaseDeliveryRecoveryJob; see docs/ai/stripe.md#purchase-announcements" })
     end
 end

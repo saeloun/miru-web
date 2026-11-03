@@ -76,7 +76,8 @@ module Subscriptions
       end
 
       def error_context
-        { subscription_purchase_event_id: event.id }
+        { subscription_purchase_event_id: event.id,
+          recovery: "Retried automatically by SubscriptionPurchaseDeliveryRecoveryJob; see docs/ai/stripe.md#purchase-announcements" }
       end
   end
 end
