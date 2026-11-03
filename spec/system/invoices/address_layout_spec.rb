@@ -82,15 +82,46 @@ RSpec.describe "Invoice address layout", type: :system, js: true do
     end
   end
 
+  it "keeps mobile line-item labels readable and paired with their values" do
+    page.driver.resize(390, 1000)
+    with_forgery_protection { visit "/invoices/#{invoice.external_view_key}/view" }
+    expect(page).to have_content("LAYOUT-001", wait: 15)
+    save_layout_shot("line-items", 390)
+
+    { "Date" => invoice.issue_date.strftime("%d-%m-%Y"), "Rate" => "₹1,000.00",
+      "Quantity" => "01:00", "Total" => "₹1,000.00" }.each do |label, value|
+      term = find("dt", exact_text: label)
+      expect(term.find(:xpath, "following-sibling::dd[1]")).to have_text(value, exact: true)
+      expect(text_overflow(label)).to eq([]), "mobile invoice clips #{label}"
+    end
+  end
+
+  it "preserves waived totals and disables payment on mobile" do
+    invoice.update!(status: "waived", amount_due: 0)
+    page.driver.resize(390, 1000)
+    with_forgery_protection { visit "/invoices/#{invoice.external_view_key}/view" }
+
+    expect(page).to have_text(/waived/i, wait: 15)
+    expect(page).to have_button("PAY", disabled: true)
+    total = find("dt", exact_text: "Total").find(:xpath, "following-sibling::dd[1]")
+    rate = find("dt", exact_text: "Rate").find(:xpath, "following-sibling::dd[1]")
+    expect(total[:class]).to include("line-through")
+    expect(rate[:class]).not_to include("line-through")
+    save_layout_shot("waived-line-items", 390)
+  end
+
   def text_overflow(text)
     page.evaluate_script(<<~JS)
       (() => {
-        const element = [...document.querySelectorAll('p, h1, h2, h3, span')].reverse().find(p =>
-          p.textContent.includes(#{text.to_json}) && p.getBoundingClientRect().height > 0);
+        const element = [...document.querySelectorAll('p, h1, h2, h3, span, th, dt')].reverse().find(p =>
+          p.textContent.toLowerCase().includes(#{text.downcase.to_json}) && p.getBoundingClientRect().height > 0);
         if (!element) return ['missing text'];
         const range = document.createRange();
         range.selectNodeContents(element);
         const textRect = range.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        if (textRect.right > elementRect.right + 2 || textRect.left < elementRect.left - 2)
+          return ['text exceeds its own element'];
         const overflow = [];
         let parent = element.parentElement;
         for (let depth = 0; parent && depth < 3; depth++, parent = parent.parentElement) {

@@ -88,7 +88,6 @@ const MobileView = ({ data }) => {
             currency={invoice.currency}
             dateFormat={company.dateFormat || company.date_format}
             items={lineItems}
-            showHeader={lineItems.length > 0}
             strikeAmount={strikeAmount}
           />
         </div>
