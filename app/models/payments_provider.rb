@@ -134,7 +134,8 @@ class PaymentsProvider < ApplicationRecord
     settings.to_h.values_at(
       "razorpay_oauth_credentials", "razorpay_oauth_credentials_ciphertext",
       "oauth_state", "oauth_pending_digest", "oauth_refresh_reservation", "oauth_refresh_uncertain"
-    ).any?(&:present?)
+    ).any?(&:present?) || (razorpay? && company&.persisted? && company.invoices
+      .where("payment_infos -> '#{PaymentProviders::RazorpayPaymentLinkCreation::KEY}' IS NOT NULL").exists?)
   end
 
   def paypal_configured?

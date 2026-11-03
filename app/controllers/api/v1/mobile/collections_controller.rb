@@ -27,7 +27,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
     end
 
     if (invoice = idempotent_invoice)
-      payment_link_url = invoice.razorpay_payment_link_url
+      payment_link_url = invoice.payable_razorpay_payment_link_url
       sms_sent = false
       payment_link_url, sms_sent = create_razorpay_payment_link!(invoice) if invoice && create_payment_link? && !invoice.paid?
 
@@ -100,7 +100,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
       customer_user: customer_user_for(invoice.client),
       invoice:,
       payment:,
-      payment_link_url: invoice.razorpay_payment_link_url,
+      payment_link_url: invoice.payable_razorpay_payment_link_url,
       sms_sent: false,
       status: :ok,
       message: "#{payment_method.upcase} payment recorded"
@@ -533,7 +533,7 @@ class Api::V1::Mobile::CollectionsController < Api::V1::ApplicationController
         currency: invoice.currency,
         due_date: invoice.due_date,
         payment_url: new_invoice_payment_url(invoice.external_view_key),
-        razorpay_payment_link_url: invoice.razorpay_payment_link_url,
+        razorpay_payment_link_url: invoice.payable_razorpay_payment_link_url,
         razorpay_payment_link_status: invoice.razorpay_payment_link_status
       }
     end

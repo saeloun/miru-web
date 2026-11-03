@@ -25,7 +25,7 @@ module PaymentProviders
       @account_id.present? && @invoice.razorpay_payment_link_account_id == @account_id &&
         @payment_link["id"] == @invoice.razorpay_payment_link_id &&
         notes.is_a?(Hash) && notes["miru_invoice_id"] == @invoice.id.to_s && notes["company_id"] == @invoice.company_id.to_s &&
-        @payment_link["reference_id"].to_s.start_with?("miru-inv-#{@invoice.id}-")
+        valid_reference?
     end
 
     def captured_payment_id
@@ -47,6 +47,11 @@ module PaymentProviders
     end
 
     private
+
+      def valid_reference?
+        reference = @invoice.razorpay_payment_link_reference_id
+        reference.present? ? @payment_link["reference_id"] == reference : @payment_link["reference_id"].to_s.start_with?("miru-inv-#{@invoice.id}-")
+      end
 
       def amount
         @payment_link["amount"]

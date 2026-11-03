@@ -23,6 +23,21 @@ module RazorpayOauthHelpers
     stub_request(:post, TOKEN_URL).to_return(status:, body: body.is_a?(String) ? body : body.to_json)
   end
 
+  def stub_razorpay_created_link(link, headers: {})
+    body = link.deep_stringify_keys
+    url = "https://api.razorpay.com/v1/payment_links"
+    creation = stub_request(:post, url)
+    creation.with(headers:) unless headers.empty?
+    creation.to_return do |request|
+      body = body.merge("reference_id" => JSON.parse(request.body).fetch("reference_id"))
+      { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+    stub_request(:get, "#{url}/#{body.fetch('id')}").to_return do
+      { status: 200, body: body.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+    creation
+  end
+
   def razorpay_rejection(description)
     { error: { code: "BAD_REQUEST_ERROR", description: } }
   end

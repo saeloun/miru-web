@@ -460,6 +460,12 @@ export const razorpayConnectionApi = {
       { invoice_id: invoiceId, review_id: reviewId },
       siteRootRequest
     ),
+  recoverLinkCreation: (invoiceId: number, paymentLinkId: string) =>
+    http.post(
+      `${razorpayConnectionPath}/link_recovery`,
+      { invoice_id: invoiceId, payment_link_id: paymentLinkId.trim() },
+      siteRootRequest
+    ),
   submitRecoveryEvidence: (providerReference: string) =>
     http.post(
       `${razorpayConnectionPath}/recovery/evidence`,

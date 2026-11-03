@@ -39,6 +39,9 @@ default: &default
         refresh_razorpay_oauth_tokens:
           class: RefreshRazorpayOauthTokensJob
           schedule: '23 3 * * *'
+        reconcile_razorpay_payment_links:
+          class: ReconcileRazorpayPaymentLinksJob
+          schedule: '*/5 * * * *'
   workers:
     - queues: default
       threads: 5
@@ -99,6 +102,9 @@ production:
         refresh_razorpay_oauth_tokens:
           class: RefreshRazorpayOauthTokensJob
           schedule: '23 3 * * *'
+        reconcile_razorpay_payment_links:
+          class: ReconcileRazorpayPaymentLinksJob
+          schedule: '*/5 * * * *'
   workers:
     - queues: default
       threads: <%= ENV.fetch("SOLID_QUEUE_THREADS", "3").to_i %>

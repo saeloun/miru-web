@@ -50,6 +50,10 @@ class Invoice < ApplicationRecord
     :razorpay_payment_link_url,
     :razorpay_payment_link_status,
     :razorpay_payment_link_account_id,
+    :razorpay_payment_link_reference_id,
+    :razorpay_payment_link_mode,
+    :razorpay_payment_link_amount,
+    :razorpay_payment_link_currency,
     :razorpay_payment_review,
     :razorpay_payment_id,
     :paypal_order_id,
@@ -66,7 +70,7 @@ class Invoice < ApplicationRecord
   after_discard :update_invoice_number
   after_commit :reset_skip_line_item_total_sync
   before_destroy :preserve_razorpay_payment_evidence, prepend: true
-  after_commit :enqueue_razorpay_link_cancellation, on: :update, if: :razorpay_link_cancellation_due?
+  after_commit :enqueue_razorpay_link_cancellation, on: :update
   after_rollback :reset_skip_line_item_total_sync
   after_create { Rails.event.notify(Invoices::Created.new(self)) }
   after_update(if: :saved_change_to_status?) do
@@ -179,6 +183,28 @@ class Invoice < ApplicationRecord
     CompanyDateFormattingService.new(issue_date, company:).process
   end
 
+  def razorpay_link_cancellation_due?
+    razorpay_payment_link_id.present? && razorpay_payment_link_account_id.present? &&
+      [nil, "created", "partially_paid"].include?(razorpay_payment_link_status) &&
+      (paid? || waived? || discarded? || razorpay_link_terms_changed?)
+  end
+
+  # The periodic reconciliation sweep also retries a closure if enqueue fails after commit.
+  def enqueue_razorpay_link_cancellation
+    return unless razorpay_link_cancellation_due?
+
+    CancelRazorpayPaymentLinkJob.perform_later(id, razorpay_payment_link_id, razorpay_payment_link_account_id)
+  rescue StandardError => error
+    Rails.error.report(error, handled: true, context: { invoice_id: id })
+  end
+
+  def payable_razorpay_payment_link_url
+    return if paid? || waived? || discarded? || razorpay_link_cancellation_due? || PaymentProviders::RazorpayPaymentReview.pending?(self) ||
+      PaymentProviders::RazorpayPaymentLinkCreation.pending?(self) || %w[paid cancelled expired].include?(razorpay_payment_link_status)
+
+    razorpay_payment_link_url
+  end
+
   private
 
     def set_external_view_key
@@ -191,25 +217,19 @@ class Invoice < ApplicationRecord
       end
     end
 
-    # Only OAuth links store an account. The job records a final status, which ends this check.
-    def razorpay_link_cancellation_due?
-      (paid? || waived? || discarded?) && razorpay_payment_link_id.present? && razorpay_payment_link_account_id.present? &&
-        [nil, "created", "partially_paid"].include?(razorpay_payment_link_status)
+    def razorpay_link_terms_changed?
+      return false unless razorpay_payment_link_amount.is_a?(Integer) && razorpay_payment_link_currency.present?
+
+      razorpay_payment_link_currency != currency || razorpay_payment_link_amount != PaymentProviders::RazorpayPaymentLinkVerification.amount_subunits(self)
     end
 
     def preserve_razorpay_payment_evidence
       return unless razorpay_payment_link_account_id.present? || PaymentProviders::RazorpayPaymentReview.pending?(self) ||
+        PaymentProviders::RazorpayPaymentLinkCreation.pending?(self) ||
         Array((payment_infos || {})[PaymentProviders::RazorpayPaymentReview::RESOLVED_KEY]).any?
 
       errors.add(:base, "Invoices with Razorpay payment evidence must be archived instead of permanently deleted")
       throw :abort
-    end
-
-    # Best effort: a failure here must not fail a payment or deletion that has already committed.
-    def enqueue_razorpay_link_cancellation
-      CancelRazorpayPaymentLinkJob.perform_later(id, razorpay_payment_link_id, razorpay_payment_link_account_id)
-    rescue StandardError => error
-      Rails.error.report(error, handled: true, context: { invoice_id: id })
     end
 
     def not_waived

@@ -14,7 +14,8 @@ class Invoices::PaymentsController < ApplicationController
     destination = payment_url
     @invoice.reload
     remove_instance_variable(:@_razorpay_provider) if instance_variable_defined?(:@_razorpay_provider)
-    if @invoice.discarded? || @invoice.waived? || razorpay_payment_review_required?
+    if @invoice.discarded? || @invoice.waived? || @invoice.razorpay_link_cancellation_due? ||
+        PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice) || razorpay_payment_review_required?
       return redirect_to cancel_invoice_payments_url(@invoice.external_view_key, reason: "confirming")
     end
     return redirect_to request.base_url + "/invoices/#{@invoice.external_view_key}/payments/success" if @invoice.paid?
@@ -36,6 +37,7 @@ class Invoices::PaymentsController < ApplicationController
   end
 
   def razorpay_success
+    recover_pending_razorpay_link if PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice)
     fulfilled = InvoicePayment::RazorpayPaymentLinkFulfillment.process(
       invoice: @invoice,
       params:
@@ -80,9 +82,10 @@ class Invoices::PaymentsController < ApplicationController
 
     # Only OAuth invoices store an account, so the API-key return path is unchanged.
     def razorpay_payment_unconfirmed?(fulfilled)
+      @invoice.reload
+      return true if PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice)
       return false if @invoice.razorpay_payment_link_account_id.blank?
 
-      @invoice.reload
       !fulfilled || !@invoice.paid? || PaymentProviders::RazorpayPaymentReview.pending?(@invoice, params[:razorpay_payment_id].to_s)
     end
 
@@ -97,7 +100,7 @@ class Invoices::PaymentsController < ApplicationController
     def razorpay_payment_may_exist?(error)
       return true if error.is_a?(PaymentProviders::RazorpayPaymentLinkService::PaymentConfirming)
 
-      PaymentProviders::RazorpayPaymentReview.pending?(@invoice) || bound_razorpay_link?
+      PaymentProviders::RazorpayPaymentReview.pending?(@invoice) || PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice) || bound_razorpay_link?
     end
 
     def razorpay_payment_review_required?
@@ -105,11 +108,22 @@ class Invoices::PaymentsController < ApplicationController
       return false unless bound_razorpay_link?
 
       provider = razorpay_provider
-      !provider&.razorpay_oauth? || provider.settings["oauth_account_id"] != @invoice.razorpay_payment_link_account_id
+      !provider&.razorpay_oauth? || provider.settings["oauth_account_id"] != @invoice.razorpay_payment_link_account_id ||
+        (@invoice.razorpay_payment_link_mode.present? && provider.settings["oauth_mode"] != @invoice.razorpay_payment_link_mode)
     end
 
     def bound_razorpay_link?
       @invoice.razorpay_payment_link_account_id.present? && @invoice.razorpay_payment_link_id.present?
+    end
+
+    def recover_pending_razorpay_link
+      provider = @invoice.company.payments_providers.find_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
+      return unless provider&.razorpay_oauth?
+
+      PaymentProviders::RazorpayPaymentLinkCreation.new(invoice: @invoice, provider:).recover!
+    rescue PaymentProviders::RazorpayClient::Error
+      # The intent remains visible to its administrators; an untrusted callback cannot clear it.
+      nil
     end
 
     def load_invoice
@@ -125,6 +139,12 @@ class Invoices::PaymentsController < ApplicationController
     end
 
     def payment_url
+      if PaymentProviders::RazorpayPaymentLinkCreation.pending?(@invoice)
+        unless razorpay_provider&.razorpay_oauth?
+          raise PaymentProviders::RazorpayPaymentLinkService::PaymentConfirming, "Reconnect the original Razorpay account to confirm this link"
+        end
+        return razorpay_payment_url
+      end
       return paypal_payment_url if paypal_requested? && paypal_provider.present?
       return razorpay_payment_url if razorpay_provider.present?
       return stripe_payment_url if stripe_onboarded?

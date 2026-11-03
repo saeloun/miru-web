@@ -8,7 +8,7 @@ class RazorpayConnectionsController < ApplicationController
   before_action :authenticate_callback, only: :callback
   before_action :authorize_management
   rate_limit to: 10, within: 1.minute, name: "mutation", by: -> { current_user.id },
-    only: %i[create update destroy recovery recovery_evidence resolve_payment_review]
+    only: %i[create update destroy recovery recovery_evidence resolve_payment_review recover_link_creation]
   rate_limit to: 20, within: 1.minute, name: "callback", by: -> { current_user.id }, only: :callback,
     with: -> { redirect_to "/settings/payment?razorpay=failed" }
 
@@ -75,6 +75,16 @@ class RazorpayConnectionsController < ApplicationController
     render_connection
   rescue PaymentProviders::RazorpayClient::Error
     render json: { errors: "Review kept. Check that this link is closed in Razorpay and this account is connected to Miru before retrying. No payment was recorded or refunded." }, status: 409
+  end
+
+  def recover_link_creation
+    invoice = current_company.invoices.find(params[:invoice_id])
+    PaymentProviders::RazorpayPaymentLinkCreation.new(invoice:, provider:).recover!(payment_link_id: params[:payment_link_id])
+    current_user.reload
+    authorize_management
+    render_connection
+  rescue PaymentProviders::RazorpayClient::Error
+    render json: { errors: "Link confirmation is still pending. Check its original Razorpay account, mode and reference, then retry." }, status: 409
   end
 
   private

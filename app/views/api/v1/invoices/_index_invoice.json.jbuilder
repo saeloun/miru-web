@@ -52,5 +52,5 @@ json.company do
   json.date_format current_company.date_format
 end
 
-json.razorpay_payment_link_url invoice.razorpay_payment_link_url
+json.razorpay_payment_link_url invoice.payable_razorpay_payment_link_url
 json.razorpay_payment_link_status invoice.razorpay_payment_link_status

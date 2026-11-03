@@ -152,7 +152,8 @@ module PaymentProviders
         account_id: settings["oauth_account_id"].presence || settings.dig("oauth_recovery", "account_id"), mode: settings["oauth_mode"],
         merchant_status: settings["oauth_merchant_status"], collections_enabled: collections_enabled?, collections_ready: collections_ready?,
         collections_blocker:, payouts_ready: false, recovery_available: recovery_available?, cleanup_pending: cleanup_pending?,
-        payments_needing_review: @provider.persisted? ? RazorpayPaymentReview.pending_for(@provider.company) : []
+        payments_needing_review: @provider.persisted? ? RazorpayPaymentReview.pending_for(@provider.company) : [],
+        links_needing_confirmation: @provider.persisted? ? RazorpayPaymentLinkCreation.pending_for(@provider.company) : []
       }
     end
 

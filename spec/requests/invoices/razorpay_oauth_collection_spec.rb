@@ -74,15 +74,15 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
 
   describe "starting a payment" do
     it "creates an account-bound link with the merchant bearer token and no API key or fee transfer" do
-      create_link = stub_request(:post, links_url).with(headers: { "Authorization" => "Bearer synthetic-access" })
-        .to_return(status: 200, body: link.to_json, headers: { "Content-Type" => "application/json" })
+      create_link = stub_razorpay_created_link(link, headers: { "Authorization" => "Bearer synthetic-access" })
       start_payment
       expect(response).to redirect_to("https://rzp.io/rzp/oauth")
       expect(create_link).to have_been_requested
       expect(a_request(:post, links_url).with { |request|
         body = JSON.parse(request.body)
         body["amount"] == 100_000 && body["currency"] == "INR" && body["accept_partial"] == false &&
-          body["reference_id"].start_with?("miru-inv-#{invoice.id}-") && body.dig("notes", "company_id") == company.id.to_s &&
+          body["reference_id"] == invoice.reload.razorpay_payment_link_reference_id && body["reference_id"].length <= 40 &&
+          body.dig("notes", "company_id") == company.id.to_s &&
           !body.key?("options")
       }).to have_been_made
       expect(invoice.reload.razorpay_payment_link_account_id).to eq("acc_synthetic")
@@ -90,7 +90,7 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
 
     it "restores global SDK credentials after a merchant request" do
       Razorpay.setup("legacy_key", "legacy_secret")
-      stub_request(:post, links_url).to_return(status: 200, body: link.to_json, headers: { "Content-Type" => "application/json" })
+      stub_razorpay_created_link(link)
       start_payment
       expect(Razorpay.auth_type).to eq(Razorpay::PRIVATE_AUTH)
       expect(Razorpay.auth).to eq(username: "legacy_key", password: "legacy_secret")
@@ -101,8 +101,7 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
 
     it "refreshes an expired token before using it, outside the SDK mutex" do
       stub_razorpay_token(body: razorpay_oauth_tokens(access_token: "rotated-access", refresh_token: "rotated-refresh"))
-      create_link = stub_request(:post, links_url).with(headers: { "Authorization" => "Bearer rotated-access" })
-        .to_return(status: 200, body: link.to_json, headers: { "Content-Type" => "application/json" })
+      create_link = stub_razorpay_created_link(link, headers: { "Authorization" => "Bearer rotated-access" })
       allow(PaymentProviders::RazorpayClient::SDK_MUTEX).to receive(:synchronize).and_wrap_original do |original, &block|
         expect(a_request(:post, RazorpayOauthHelpers::TOKEN_URL).with(body: /"grant_type":"refresh_token"/)).to have_been_made.once
         original.call(&block)
@@ -128,8 +127,7 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       stub_fetch(link.merge(amount: 50_000))
       cancel = stub_request(:post, "#{links_url}/plink_oauth/cancel").to_return(status: 200, body: link.merge(status: "cancelled").to_json,
         headers: { "Content-Type" => "application/json" })
-      stub_request(:post, links_url).to_return(status: 200, body: link.merge(id: "plink_new", short_url: "https://rzp.io/rzp/new").to_json,
-        headers: { "Content-Type" => "application/json" })
+      stub_razorpay_created_link(link.merge(id: "plink_new", short_url: "https://rzp.io/rzp/new"))
       start_payment
       expect(cancel).to have_been_requested
       expect(response).to redirect_to("https://rzp.io/rzp/new")
@@ -143,6 +141,26 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       expect(a_request(:post, links_url)).not_to have_been_made
       expect(invoice.reload).to be_paid
       expect(invoice.payments.last).to have_attributes(provider_event_id: "razorpay:pay_oauth")
+    end
+
+    it "does not expose a stale link if the amount changes after the service returns" do
+      bound_invoice(razorpay_payment_link_amount: 100_000, razorpay_payment_link_currency: "INR")
+      stub_fetch(link)
+      allow_any_instance_of(PaymentProviders::RazorpayPaymentLinkService).to receive(:process).and_wrap_original do |original|
+        original.call.tap { invoice.reload.update!(amount_due: 500) }
+      end
+      start_payment
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
+    end
+
+    it "keeps captures reported on a cancelled link instead of clearing its binding" do
+      bound_invoice
+      stub_fetch(link.merge(status: "cancelled", payments: [{ payment_id: "pay_cancelled", status: "captured", amount: 50_000 }]))
+      start_payment
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
+      expect(payment_review).to include("payment_id" => "pay_cancelled", "amount" => 50_000)
+      expect(invoice.reload.razorpay_payment_link_id).to eq("plink_oauth")
+      expect(a_request(:post, links_url)).not_to have_been_made
     end
 
     it "flags a paid link that no longer matches, then lets an owner clear it for a new link" do
@@ -166,8 +184,7 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       expect(response.parsed_body.dig("connection", "payments_needing_review")).to eq([])
       expect(Audited::Audit.where(auditable: invoice).pluck(:action)).to include("razorpay_oauth_payment_needs_review", "razorpay_oauth_payment_review_resolved")
 
-      stub_request(:post, links_url).to_return(status: 200, body: link.merge(id: "plink_new", short_url: "https://rzp.io/rzp/new", amount: 60_000).to_json,
-        headers: { "Content-Type" => "application/json" })
+      stub_razorpay_created_link(link.merge(id: "plink_new", short_url: "https://rzp.io/rzp/new", amount: 60_000))
       start_payment
       expect(response).to redirect_to("https://rzp.io/rzp/new")
     end
@@ -371,6 +388,67 @@ RSpec.describe "Razorpay OAuth invoice collection", type: :request do
       expect(invoice.reload).to be_paid
     end
   end
+
+  describe "confirming an uncertain link" do
+    def uncertain_creation
+      stub_request(:post, links_url).to_timeout
+      start_payment
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
+      invoice.reload.payment_infos.fetch("razorpay_link_creation")
+    end
+
+    it "lets an owner confirm a matching link and removes it from the separate confirmation list" do
+      intent = uncertain_creation
+      sign_in owner
+      get "/payments/razorpay/connection", as: :json
+      expect(response.parsed_body.dig("connection", "links_needing_confirmation")).to contain_exactly(hash_including(
+        "invoice_id" => invoice.id, "reference_id" => intent["reference_id"], "account_id" => "acc_synthetic", "mode" => "test"))
+      stub_fetch(link.merge(reference_id: intent["reference_id"]))
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id, payment_link_id: "plink_oauth" }, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("connection", "links_needing_confirmation")).to eq([])
+      expect(invoice.reload.razorpay_payment_link_id).to eq("plink_oauth")
+      expect(a_request(:post, links_url)).to have_been_made.once
+    end
+
+    it "does not expose a foreign company's uncertain creation" do
+      uncertain_creation
+      other_company = create(:company)
+      other_owner = create(:user, current_workspace: other_company)
+      create(:employment, company: other_company, user: other_owner, resigned_at: nil)
+      other_owner.add_role(:owner, other_company)
+      sign_in other_owner
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id, payment_link_id: "plink_oauth" }, as: :json
+      expect(response).to have_http_status(:not_found)
+      expect(a_request(:get, "#{links_url}/plink_oauth")).not_to have_been_made
+      expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
+    end
+
+    it "rechecks the owner's authorization after the provider responds" do
+      intent = uncertain_creation
+      sign_in owner
+      stub_request(:get, "#{links_url}/plink_oauth").to_return do
+        owner.remove_role(:owner, company)
+        { status: 200, body: link.merge(reference_id: intent["reference_id"]).to_json, headers: { "Content-Type" => "application/json" } }
+      end
+      post "/payments/razorpay/connection/link_recovery", params: { invoice_id: invoice.id, payment_link_id: "plink_oauth" }, as: :json
+      expect(response).to have_http_status(:forbidden)
+      expect(response.parsed_body).not_to have_key("connection")
+    end
+
+    it "keeps an orphan callback and a requested PayPal checkout in confirming state" do
+      intent = uncertain_creation
+      stub_request(:get, "#{links_url}/").with(query: { reference_id: intent["reference_id"] })
+        .to_return(status: 200, body: { payment_links: [] }.to_json, headers: { "Content-Type" => "application/json" })
+      expect_any_instance_of(PaymentProviders::PaypalOrderService).not_to receive(:process)
+      get new_invoice_payment_path(invoice_id: invoice.external_view_key), params: { provider: "paypal" }
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
+      return_from_razorpay
+      expect(response).to redirect_to(cancel_invoice_payments_url(invoice.external_view_key, reason: "confirming"))
+      expect(invoice.reload.payments).to be_empty
+      expect(a_request(:post, links_url)).to have_been_made.once
+    end
+  end
 end
 
 RSpec.describe "Razorpay OAuth account webhooks", type: :request do
@@ -541,6 +619,7 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService, "concurrent OAuth l
     owner.add_role(:owner, company)
     stub_razorpay_oauth_env
     connect_razorpay_oauth(provider, owner)
+    PaymentProviders::RazorpayOauthConnection.new(provider:, actor: owner).update_collections!(enabled: true)
     @threads = []
   end
 
@@ -565,20 +644,28 @@ RSpec.describe PaymentProviders::RazorpayPaymentLinkService, "concurrent OAuth l
 
   it "creates one payable link when two requests race" do
     entered, release = Queue.new, Queue.new
-    stub_request(:post, links_url).to_return do
+    bank_link = nil
+    stub_request(:post, links_url).to_return do |request|
+      bank_link = link.deep_stringify_keys.merge("reference_id" => JSON.parse(request.body).fetch("reference_id"))
       entered << true
       release.pop
-      { status: 200, body: link.to_json, headers: { "Content-Type" => "application/json" } }
+      { status: 200, body: bank_link.to_json, headers: { "Content-Type" => "application/json" } }
     end
-    stub_request(:get, "#{links_url}/plink_only").to_return(status: 200, body: link.to_json, headers: { "Content-Type" => "application/json" })
+    stub_request(:get, %r{\Ahttps://api\.razorpay\.com/v1/payment_links/\?reference_id=miru-[a-f0-9]{32}\z}).with do |request|
+      URI.decode_www_form(request.uri.query).to_h["reference_id"] == bank_link&.fetch("reference_id")
+    end.to_return do
+      { status: 200, body: { payment_links: [bank_link] }.to_json, headers: { "Content-Type" => "application/json" } }
+    end
+    stub_request(:get, "#{links_url}/plink_only").to_return do
+      { status: 200, body: bank_link.to_json, headers: { "Content-Type" => "application/json" } }
+    end
 
     first = create_link_in_thread
     Timeout.timeout(5) { entered.pop }
     second = create_link_in_thread("miru_oauth_second_link")
     Timeout.timeout(5) do
       loop do
-        break if ActiveRecord::Base.connection.select_value(
-          "SELECT EXISTS(SELECT 1 FROM pg_stat_activity WHERE application_name = 'miru_oauth_second_link' AND wait_event_type = 'Lock')")
+        break if invoice.reload.payment_infos.dig("razorpay_link_creation", "checked_at").present?
 
         Thread.pass
       end

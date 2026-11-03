@@ -48,7 +48,7 @@ RSpec.describe PaymentProviders::RazorpayOauthConnection do
     expect(connection.access_token).to eq("synthetic_access")
     expect(connection.status).to eq(status: "connected", account_id: "acc_synthetic", mode: "test", merchant_status: nil, collections_enabled: false,
       collections_ready: false, collections_blocker: "collections_disabled", payouts_ready: false, recovery_available: false,
-      cleanup_pending: false, payments_needing_review: [])
+      cleanup_pending: false, payments_needing_review: [], links_needing_confirmation: [])
     expect(provider).not_to be_enabled
     expect(provider).not_to be_razorpay_configured
     expect(provider.settings["authentication_mode"]).to eq("oauth")

@@ -103,6 +103,44 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
     console_errors.clear
   end
 
+  it "confirms an uncertain payment link without another creation or SMS" do
+    connected = connected_provider
+    PaymentProviders::RazorpayOauthConnection.new(provider: connected, actor: owner).update_collections!(enabled: true)
+    invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR",
+      amount: 1000, amount_due: 1000, amount_paid: 0, status: "sent", payment_infos: {})
+    links_url = "https://api.razorpay.com/v1/payment_links"
+    creation = stub_request(:post, links_url).to_timeout
+    expect { PaymentProviders::RazorpayPaymentLinkService.new(invoice:, provider: connected, callback_url: "https://example.test/return").process }
+      .to raise_error(PaymentProviders::RazorpayClient::Error)
+    reference = invoice.reload.payment_infos.dig("razorpay_link_creation", "reference_id")
+    lookup = stub_request(:get, "#{links_url}/").with(query: { reference_id: reference })
+      .to_return(status: 200, body: { payment_links: [] }.to_json, headers: { "Content-Type" => "application/json" })
+    visit_settings
+    within(connection_panel) do
+      expect(page).to have_content("Payment links need confirmation")
+      expect(page).to have_content(reference)
+      expect(page).to have_content("acc_synthetic")
+      expect(page).to have_field("Payment Link ID (optional)")
+      click_button "Check Razorpay"
+    end
+    expect(page).to have_content("Payment link status refreshed.")
+    expect(lookup).to have_been_requested.once
+    expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
+    capture("14-link-needs-confirmation")
+    stub_request(:get, "#{links_url}/plink_recovered").to_return(status: 200, body: {
+      id: "plink_recovered", reference_id: reference, short_url: "https://rzp.io/rzp/recovered", status: "created",
+      amount: 100_000, amount_paid: 0, currency: "INR", notes: { miru_invoice_id: invoice.id.to_s, company_id: company.id.to_s }
+    }.to_json, headers: { "Content-Type" => "application/json" })
+    within(connection_panel) do
+      fill_in "Payment Link ID (optional)", with: "plink_recovered"
+      click_button "Check Razorpay"
+      expect(page).to have_no_content("Payment links need confirmation", wait: 10)
+    end
+    expect(invoice.reload.razorpay_payment_link_id).to eq("plink_recovered")
+    expect(creation).to have_been_requested.once
+    expect(a_request(:post, %r{/notify_by/})).not_to have_been_made
+  end
+
   it "explains missing application credentials and keeps API keys usable" do
     stub_razorpay_oauth_env(ENABLED: "false")
     visit_settings

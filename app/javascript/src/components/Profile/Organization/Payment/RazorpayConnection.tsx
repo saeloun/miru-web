@@ -43,6 +43,14 @@ interface PaymentNeedingReview {
   display_amount: string | null;
 }
 
+interface LinkNeedingConfirmation {
+  invoice_id: number;
+  invoice_number: string;
+  reference_id: string | null;
+  account_id: string | null;
+  mode: string | null;
+}
+
 interface Connection {
   status: ConnectionStatus;
   account_id: string | null;
@@ -55,6 +63,7 @@ interface Connection {
   recovery_available: boolean;
   cleanup_pending: boolean;
   payments_needing_review: PaymentNeedingReview[];
+  links_needing_confirmation?: LinkNeedingConfirmation[];
 }
 
 interface ConnectionResponse {
@@ -97,6 +106,9 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
     useState<PaymentNeedingReview | null>(null);
   const [accountId, setAccountId] = useState("");
   const [providerReference, setProviderReference] = useState("");
+  const [recoveryLinkIds, setRecoveryLinkIds] = useState<
+    Record<number, string>
+  >({});
 
   const refresh = useCallback(async () => {
     try {
@@ -199,6 +211,7 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
 
   const { connection, connect_available: connectAvailable } = details;
   const { status } = connection;
+  const unconfirmedLinks = connection.links_needing_confirmation || [];
   const canConnect = connectAvailable && CONNECTABLE_STATUSES.includes(status);
 
   const connectButton = (
@@ -249,6 +262,80 @@ const RazorpayConnection: React.FC<RazorpayConnectionProps> = ({
             ? text(`unavailable.${details.unavailable_reason}`)
             : text(`description.${status}`)}
         </p>
+
+        {unconfirmedLinks.length > 0 && (
+          <Alert variant="destructive">
+            <AlertTitle>{text("linkConfirmationTitle")}</AlertTitle>
+            <AlertDescription>
+              <p>{text("linkConfirmationDescription")}</p>
+              <ul className="mt-3 space-y-4">
+                {unconfirmedLinks.map(link => (
+                  <li className="min-w-0 space-y-2" key={link.invoice_id}>
+                    <p>
+                      {text("linkInvoice", { number: link.invoice_number })}
+                    </p>
+                    <p className="break-words text-xs">
+                      {text("linkReference", {
+                        reference:
+                          link.reference_id || text("reviewPaymentUnknown"),
+                      })}
+                    </p>
+                    <p className="break-words text-xs">
+                      {text("linkAccount", {
+                        account:
+                          link.account_id || text("reviewPaymentUnknown"),
+                        mode: link.mode || text("reviewPaymentUnknown"),
+                      })}
+                    </p>
+                    <Label htmlFor={`razorpay_link_id_${link.invoice_id}`}>
+                      {text("linkId")}
+                    </Label>
+                    <Input
+                      aria-describedby={`razorpay_link_help_${link.invoice_id}`}
+                      disabled={isWorking}
+                      id={`razorpay_link_id_${link.invoice_id}`}
+                      maxLength={86}
+                      value={recoveryLinkIds[link.invoice_id] || ""}
+                      onChange={event =>
+                        setRecoveryLinkIds(current => ({
+                          ...current,
+                          [link.invoice_id]: event.target.value,
+                        }))
+                      }
+                    />
+                    <p
+                      className="text-xs"
+                      id={`razorpay_link_help_${link.invoice_id}`}
+                    >
+                      {text("linkHelp")}
+                    </p>
+                    <Button
+                      className={actionButtonClass}
+                      disabled={isWorking}
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        run(
+                          () =>
+                            razorpayConnectionApi.recoverLinkCreation(
+                              link.invoice_id,
+                              recoveryLinkIds[link.invoice_id] || ""
+                            ),
+                          text("linkRefreshResult")
+                        )
+                      }
+                    >
+                      {text("linkRecheck")}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+              {unconfirmedLinks.length >= 20 && (
+                <p className="mt-2 text-xs">{text("linkConfirmationLimit")}</p>
+              )}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {connection.payments_needing_review.length > 0 && (
           <Alert variant="destructive">

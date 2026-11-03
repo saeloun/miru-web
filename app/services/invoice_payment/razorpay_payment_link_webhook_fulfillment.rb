@@ -149,13 +149,11 @@ class InvoicePayment::RazorpayPaymentLinkWebhookFulfillment
     end
 
     def expire_payment_link
-      return true if payment_link_id.present? && invoice.razorpay_payment_link_id != payment_link_id
+      invoice.with_lock do
+        next if payment_link_id.present? && invoice.razorpay_payment_link_id != payment_link_id
 
-      invoice.update!(
-        razorpay_payment_link_id: nil,
-        razorpay_payment_link_url: nil,
-        razorpay_payment_link_status: payment_link_status
-      )
+        invoice.update!(razorpay_payment_link_id: nil, razorpay_payment_link_url: nil, razorpay_payment_link_status: payment_link_status)
+      end
       true
     end
 

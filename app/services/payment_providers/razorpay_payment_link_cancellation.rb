@@ -15,11 +15,12 @@ module PaymentProviders
     end
 
     def process(link = nil)
-      link ||= client.fetch_payment_link(@payment_link_id)
+      context = request_context
+      link ||= client.fetch_payment_link(@payment_link_id, expected_context: context)
       verify_link!(link)
       RazorpayPaymentReview.flag_link_captures!(@invoice, link, reason: RazorpayPaymentReview.closed_reason(@invoice) || "paid_link_mismatch")
       if CANCELLABLE_STATUSES.include?(link["status"])
-        link = client.cancel_payment_link(@payment_link_id)
+        link = client.cancel_payment_link(@payment_link_id, expected_context: context)
         verify_link!(link)
         RazorpayPaymentReview.flag_link_captures!(@invoice, link, reason: RazorpayPaymentReview.closed_reason(@invoice) || "paid_link_mismatch")
       end
@@ -31,6 +32,12 @@ module PaymentProviders
 
     private
 
+      def request_context
+        provider = client.provider
+        { "account_id" => @account_id, "mode" => @invoice.razorpay_payment_link_mode.presence || provider.settings["oauth_mode"],
+          "client_id" => provider.settings["oauth_client_id"] }
+      end
+
       def verify_link!(link)
         return if RazorpayPaymentLinkVerification.new(invoice: @invoice, payment_link: link, account_id: @account_id).belongs_to_invoice?
 
@@ -40,7 +47,8 @@ module PaymentProviders
       def client
         @_client ||= begin
           provider = @invoice.company.payments_providers.find_by(name: PaymentsProvider::RAZORPAY_PROVIDER)
-          unless provider&.razorpay_oauth? && provider.settings["oauth_account_id"] == @account_id
+          unless provider&.razorpay_oauth? && provider.settings["oauth_account_id"] == @account_id &&
+              (@invoice.razorpay_payment_link_mode.blank? || provider.settings["oauth_mode"] == @invoice.razorpay_payment_link_mode)
             raise RazorpayClient::Error, "Razorpay account connection does not match this payment link"
           end
 

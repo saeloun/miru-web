@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Closes the payable OAuth link of an invoice that became paid, waived or deleted. It only records the
-# outcome: the link ID, URL and account stay on the invoice so a later capture is still attributed.
+# Closes an OAuth link after its invoice closes or changes. Closed invoices retain their binding;
+# open invoices may replace a confirmed closed link, with financial evidence retained in reviews/audits.
 class CancelRazorpayPaymentLinkJob < ApplicationJob
   queue_as :default
 
@@ -13,14 +13,18 @@ class CancelRazorpayPaymentLinkJob < ApplicationJob
 
   def perform(invoice_id, payment_link_id, account_id)
     invoice = Invoice.find_by(id: invoice_id)
-    return unless invoice && current_binding?(invoice, payment_link_id, account_id) &&
-      PaymentProviders::RazorpayPaymentReview.closed_reason(invoice)
+    return unless invoice && current_binding?(invoice, payment_link_id, account_id) && invoice.razorpay_link_cancellation_due?
 
     status = PaymentProviders::RazorpayPaymentLinkCancellation.new(invoice:, payment_link_id:, account_id:).process
     invoice.with_lock do
       next unless current_binding?(invoice, payment_link_id, account_id)
 
-      invoice.update_columns(payment_infos: invoice.payment_infos.merge("razorpay_payment_link_status" => status), updated_at: Time.current)
+      infos = invoice.payment_infos.merge("razorpay_payment_link_status" => status)
+      if !PaymentProviders::RazorpayPaymentReview.closed_reason(invoice) && !PaymentProviders::RazorpayPaymentReview.pending?(invoice)
+        infos["razorpay_payment_link_id"] = nil
+        infos["razorpay_payment_link_url"] = nil
+      end
+      invoice.update_columns(payment_infos: infos, updated_at: Time.current)
     end
   end
 

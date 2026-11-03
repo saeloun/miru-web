@@ -2384,6 +2384,19 @@ const en = {
       disconnectConfirmed: "Razorpay disconnected and access revoked.",
       disconnected: "Razorpay disconnected.",
       reviewTitle: "Razorpay payments need your review",
+      linkConfirmationTitle: "Payment links need confirmation",
+      linkConfirmationDescription:
+        "Miru could not confirm whether Razorpay created these links. Do not issue another link. Check each original reference in the listed Razorpay account and mode.",
+      linkInvoice: "Invoice {{number}}",
+      linkReference: "Reference {{reference}}",
+      linkAccount: "Account {{account}} ({{mode}} mode)",
+      linkId: "Payment Link ID (optional)",
+      linkHelp:
+        "If you found the link in Razorpay, enter its plink_ ID. Leave this blank to check by reference. This check never creates or sends another link.",
+      linkRecheck: "Check Razorpay",
+      linkRefreshResult: "Payment link status refreshed.",
+      linkConfirmationLimit:
+        "Showing the first 20 links. Confirm these to see any remaining links.",
       reviewDescription:
         "Razorpay captured these payments, but Miru could not record them. Check each one, then record it on the invoice or refund it in Razorpay before marking it as reviewed.",
       reviewInvoice: "Invoice {{number}}: {{currency}} {{amount}}",

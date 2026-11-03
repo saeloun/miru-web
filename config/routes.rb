@@ -104,6 +104,7 @@ Rails.application.routes.draw do
   post "payments/razorpay/connection/recovery", to: "razorpay_connections#recovery"
   post "payments/razorpay/connection/recovery/evidence", to: "razorpay_connections#recovery_evidence"
   post "payments/razorpay/connection/payment_review", to: "razorpay_connections#resolve_payment_review"
+  post "payments/razorpay/connection/link_recovery", to: "razorpay_connections#recover_link_creation"
   get "payments/razorpay/callback", to: "razorpay_connections#callback"
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all

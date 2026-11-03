@@ -3,6 +3,11 @@
 require "rails_helper"
 
 RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
+  before do
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+  end
+
   let(:review) { PaymentProviders::RazorpayPaymentReview }
   let(:company) { create(:india_company, base_currency: "INR") }
   let(:owner) { create(:user, current_workspace: company) }
@@ -462,7 +467,9 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
       start_payment
       follow_redirect!
       expect(response.body).not_to include("You have not been charged")
-      expect(response.body).to include("If your account was charged, do not pay again")
+      expect(response.body).to include("We are confirming your payment", "do not pay again")
+      expect(invoice.reload.payment_infos).to have_key("razorpay_link_creation")
+      expect(a_request(:post, links_url)).to have_been_made.once
     end
 
     it "sends the customer to success when opening a lost paid link settles the invoice" do
@@ -539,6 +546,20 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
       settled_elsewhere
       provider.reload.settings["oauth_account_id"] = "acc_other"
       provider.save!
+      perform
+      expect(a_request(:any, %r{api\.razorpay\.com})).not_to have_been_made
+      expect(invoice.reload.razorpay_payment_link_status).to eq("created")
+    end
+
+    it "does not cancel a test-mode link through a live-mode connection for the same account" do
+      settled_elsewhere
+      invoice.update!(razorpay_payment_link_mode: "test")
+      provider.reload.update!(settings: provider.settings.merge("oauth_mode" => "live"))
+      provider.razorpay_oauth_credentials = provider.razorpay_oauth_credentials.merge(
+        "public_token" => "rzp_live_oauth_synthetic", "access_token" => "synthetic-live-access",
+        "identity" => provider.razorpay_oauth_credentials.fetch("identity").merge("mode" => "live"))
+      provider.save!
+      stub_razorpay_oauth_env(MODE: "live")
       perform
       expect(a_request(:any, %r{api\.razorpay\.com})).not_to have_been_made
       expect(invoice.reload.razorpay_payment_link_status).to eq("created")

@@ -56,6 +56,14 @@ Select these events:
 
 Use the same webhook secret in Razorpay and Miru. The webhook secret is different from the API Key Secret.
 
+## Confirm an Uncertain Connected-Account Link
+
+If a connected-account request times out, Miru keeps the original reference and blocks another payment link. An empty lookup does not prove Razorpay rejected the first request.
+
+An owner or administrator can open **Settings → Payment Settings → Razorpay**, find **Payment links need confirmation**, and click **Check Razorpay**. Check the account and test/live mode listed for that invoice. If you found the link in Razorpay, enter its `plink_` ID; Miru verifies it against the original invoice, reference, amount and currency before accepting it. This check does not create another link or resend SMS.
+
+The background recovery job also checks uncertain links every five minutes while the original account remains connected. If a confirmed link belongs to an invoice that was closed or changed, Miru retains its references and queues cancellation. Captured money that cannot be applied appears separately under **Razorpay payments need your review**. An unresolved lookup remains blocked for investigation.
+
 ## Enable UPI Payouts
 
 1. Activate RazorpayX and payout API access.
