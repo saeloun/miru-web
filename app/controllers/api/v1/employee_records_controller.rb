@@ -67,9 +67,18 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     raise ActionController::BadRequest unless params[:kind].is_a?(String)
 
     document = employment.employee_documents.where(kind: params[:kind]).find(params[:id])
-    data = document.file.download
-    document.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
-    send_data data, filename: document.file.filename.to_s, type: document.file.blob.content_type, disposition: "attachment"
+    blob = document.file.blob
+    raise ActiveStorage::FileNotFoundError unless blob
+
+    data = blob.download
+    current_user.with_lock do
+      authorize_access
+      current = find_employment(employment.user_id).employee_documents.where(kind: params[:kind]).find(document.id)
+      raise ActiveStorage::FileNotFoundError unless current.file.blob_id == blob.id
+
+      current.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+      send_data data, filename: blob.filename.to_s, type: blob.content_type, disposition: "attachment"
+    end
   rescue ActiveStorage::FileNotFoundError
     render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
   end

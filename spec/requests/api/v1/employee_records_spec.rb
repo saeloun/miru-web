@@ -200,6 +200,11 @@ RSpec.describe "Employee records", type: :request do
     sign_in admin
     upload_document(kind: "contract")
     expect(response).to have_http_status(:created)
+    contract = EmployeeDocument.last
+    get "/api/v1/employee_records/documents/#{contract.id}", params: { user_id: employee.id, kind: "contract" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
+    expect(contract.audits.where(action: "download").count).to eq(1)
     sign_in employee
     get "/api/v1/employee_records/documents/#{EmployeeDocument.last.id}", params: { kind: "contract" }
     expect(response).to have_http_status(:ok)
@@ -234,6 +239,58 @@ RSpec.describe "Employee records", type: :request do
     get "/api/v1/employee_records/documents/#{document.id}", params: { user_id: employee.id, kind: "pan" }
     expect(response).to have_http_status(404)
     expect(response.parsed_body.fetch("errors")).to eq("Document is unavailable. Please contact your workspace administrator.")
+  end
+
+  %w[workspace role actor_employment target_employment].each do |change|
+    it "withholds private document bytes after a #{change} change during storage download" do
+      upload_document
+      document = EmployeeDocument.last
+      other_company = create(:company) if change == "workspace"
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+        bytes = original.call(*arguments)
+        case change
+        when "workspace" then admin.update!(current_workspace: other_company)
+        when "role" then admin.remove_role(:admin, company)
+        when "actor_employment" then admin_employment.update_column(:resigned_at, Date.yesterday)
+        when "target_employment" then employment.update_column(:resigned_at, Date.yesterday)
+        end
+        bytes
+      end
+
+      get "/api/v1/employee_records/documents/#{document.id}", params: { user_id: employee.id, kind: "pan" }
+      expect(response).to have_http_status(change == "target_employment" ? :not_found : :forbidden)
+      expect(response.body).not_to include("%PDF")
+      expect(document.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  it "withholds private document bytes when the attachment changes during storage download" do
+    upload_document
+    document = EmployeeDocument.last
+    replacement = File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")) do |io|
+      ActiveStorage::Blob.create_and_upload!(io:, filename: "replacement.pdf", content_type: "application/pdf")
+    end
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      bytes = original.call(*arguments)
+      document.file_attachment.update!(blob: replacement)
+      bytes
+    end
+
+    get "/api/v1/employee_records/documents/#{document.id}", params: { user_id: employee.id, kind: "pan" }
+    expect(response).to have_http_status(:not_found)
+    expect(response.body).not_to include("%PDF")
+    expect(document.audits.where(action: "download")).to be_empty
+  end
+
+  it "reports a missing attachment without returning private document bytes" do
+    upload_document
+    document = EmployeeDocument.last
+    document.file.purge
+
+    get "/api/v1/employee_records/documents/#{document.id}", params: { user_id: employee.id, kind: "pan" }
+    expect(response).to have_http_status(:not_found)
+    expect(response.parsed_body.fetch("errors")).to eq("Document is unavailable. Please contact your workspace administrator.")
+    expect(document.audits.where(action: "download")).to be_empty
   end
 
   it "rejects disguised, oversized, public, unknown-kind and blob-identifier uploads" do
