@@ -7,11 +7,12 @@ module SignatureRequestFixtures
       revision_id: record.current_revision_id, content_digest: record.current_revision.content_digest }
   end
 
-  def approved_signature_request(company:, actor:, client: nil, employment: nil)
-    source = Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")
-    file = Rack::Test::UploadedFile.new(source, "application/pdf")
-    upload = Signatures::Upload.new([ActionDispatch::Http::UploadedFile.new(
-      tempfile: file.tempfile, filename: "synthetic.pdf", type: "application/pdf")])
+  def approved_signature_request(company:, actor:, client: nil, employment: nil,
+    sources: [Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")])
+    files = sources.map { |source| Rack::Test::UploadedFile.new(source, "application/pdf") }
+    upload = Signatures::Upload.new(files.map do |file|
+      ActionDispatch::Http::UploadedFile.new(tempfile: file.tempfile, filename: "synthetic.pdf", type: "application/pdf")
+    end)
     record = SignatureRequest.create!(company:, created_by: actor, client:, employment:, title: "Synthetic approved contract",
       creation_key: SecureRandom.uuid, creation_digest: "a" * 64)
     upload.with_cleanup { record.with_lock { record.revise!(actor:, attributes: {}, upload:) } }
@@ -27,7 +28,7 @@ module SignatureRequestFixtures
       approval_source: "manual", approval_note: "Synthetic external approval evidence")).approve
     record.reload
   ensure
-    file&.close
+    files&.each(&:close)
   end
 
   def provider_signature_record(revision, status: "COMPLETED")
