@@ -23,7 +23,7 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
 
     expect(response).to have_http_status(:created)
 
-    perform_enqueued_jobs
+    perform_enqueued_jobs(only: ActionMailer::MailDeliveryJob)
     expect(ActionMailer::Base.deliveries.last.subject).to eq("[Priority] Need help")
   end
 
@@ -31,7 +31,7 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
     company.update!(plan_tier: "free")
 
     post api_v1_support_requests_path, params: params
-    perform_enqueued_jobs
+    perform_enqueued_jobs(only: ActionMailer::MailDeliveryJob)
 
     expect(response).to have_http_status(:created)
     expect(ActionMailer::Base.deliveries.last.subject).to eq("[Support] Need help")
@@ -44,7 +44,7 @@ RSpec.describe "Api::V1::SupportRequests", type: :request do
         message: "Please help.\r\nBcc: attacker@example.com"
       }
     }
-    perform_enqueued_jobs
+    perform_enqueued_jobs(only: ActionMailer::MailDeliveryJob)
     mail = ActionMailer::Base.deliveries.last
 
     expect(mail.header.fields.count { |field| field.name == "Subject" }).to eq(1)
