@@ -542,8 +542,11 @@ RSpec.describe "Settings - Razorpay account connection", type: :system, js: true
 
     invoice = create(:invoice, company:, client: create(:client, company:, currency: "INR"), currency: "INR", amount: 1000, amount_due: 1000,
       amount_paid: 0, status: "sent")
+    create(:invoice_line_item, invoice:, name: "Synthetic consulting", description: "Synthetic consulting", rate: 1000, quantity: 60,
+      date: invoice.issue_date, timesheet_entry: nil)
     with_forgery_protection { visit "/invoices/#{invoice.external_view_key}/view" }
     expect(page).to have_content(invoice.invoice_number, wait: 15)
+    expect(page).to have_content("Synthetic consulting")
     expect(page).to have_button("PAY", wait: 10)
     expect(page.evaluate_async_script(<<~JS, invoice.external_view_key)).to be(true)
       var done = arguments[arguments.length - 1];
