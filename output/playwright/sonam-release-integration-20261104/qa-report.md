@@ -1,7 +1,7 @@
 # Sonam release integration: local verification
 
-This candidate combines the implemented ATS, Razorpay collection and Mercury
-consultant-payroll work. All runtime evidence uses synthetic records, a dedicated
+This candidate combines the implemented ATS, employee records/signing, Razorpay
+collection and Mercury consultant-payroll work. All runtime evidence uses synthetic records, a dedicated
 local PostgreSQL database, real headless Brave and an outbound-network sandbox
 allowing localhost only. No live banking connection or production deployment
 was exercised.
@@ -14,6 +14,7 @@ was exercised.
 | ATS, PR #2479 | `186e48cc0` |
 | Mercury, PR #2492 | `7dcc3dd0a` |
 | Razorpay, PR #2488 | `07070cfd8` (includes `281764efa` and `0191f78dc`) |
+| Signing page-count follow-up, #2462 | `2fe61870e` |
 
 Manual merge resolutions retain the combined request-log redactions, all
 changelog entries, and default/production schedules for hiring recovery,
@@ -25,9 +26,10 @@ provider schedules.
 
 - Clean develop baseline: **12 examples, 0 failures**.
 - ATS plus Mercury intermediate candidate: **169 examples, 0 failures**.
-- Final combined backend at `204f899fe`, after the late-capture follow-up: **1,483 examples, 0
+- Final combined backend at `22c37049d`, after the signing follow-up: **1,718 examples, 0
   failures** across payroll, payment providers, settlement, subscription
-  delivery, jobs, hiring and relevant request boundaries.
+  delivery, jobs, hiring, signing, employee records, customizable reports,
+  occasion reminders and relevant request boundaries.
 - Combined browser run: **51 examples, 0 failures** covering Razorpay connection
   and payment holds, invoice calendar dates, Mercury returns, candidate forms,
   and staff assessment review/downloads.
@@ -35,8 +37,8 @@ provider schedules.
   example, 0 failures**, recapturing the six affected connection/invoice images.
 - Frozen dependency install, the required `timeout 30 bin/vite build`, forced
   test-asset build, RuboCop and commit hooks passed. Frontend sources, package
-  inputs and Vite configuration were unchanged by the Stripe follow-ups. Browser
-  results and screenshots above precede the backend-only late-capture fix.
+  inputs and Vite configuration were unchanged by the Stripe/signing follow-ups.
+  Browser results and screenshots above precede those backend-only fixes.
 
 ## Review follow-up
 
@@ -73,6 +75,22 @@ settlement examples** after strengthening the prior-capture fixture. RuboCop,
 Reek (zero warnings), commit hooks and direct diff checks passed. Claude's
 source-only second opinion exposed the legacy replay risk and missing reverse
 delivery order; it was advisory, not a council approval.
+
+The #2462 follow-up rejects a completed signed item with fewer pages than its
+approved source before uploading its archive blob. Both the single-document
+and later-item cleanup regressions failed on the unchanged service. The latter
+also verifies that an earlier staged file is physically deleted. Existing seal,
+envelope, original-byte and separate certificate/audit checks remain in place.
+The final source branch passed **187 signing service/API examples**, then **23
+reconciliation examples** after strengthening the storage assertion.
+
+Claude's source-only review raised a provider compatibility concern. The pinned
+Documenso seal job confirmed that team settings can append certificate/audit
+pages before sealing; exact page-count equality would reject valid contracts.
+The final guard therefore requires a minimum count and permits added pages.
+Counts do not prove semantic fidelity or detect every omitted page masked by
+appended evidence. Existing archives are unchanged. See the
+[signing verification receipt](../../../docs/qa/generic-document-signing-2462/page-count-reconciliation.md).
 
 Screenshot review also caught an inconsistent demo invoice with a balance but
 no line items. The fixture now includes its INR 1,000 consulting item; the
