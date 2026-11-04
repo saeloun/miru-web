@@ -87,7 +87,7 @@ RSpec.describe "Expenses", type: :system, js: true do
     end
   end
 
-  it "hides delete for paid expenses" do
+  it "keeps paid expenses read-only" do
     create(:expense,
       company:,
       user: user,
@@ -103,10 +103,14 @@ RSpec.describe "Expenses", type: :system, js: true do
     with_forgery_protection do
       visit "/expenses"
 
-      find("button[aria-label='Expense actions for Paid reimbursement']", wait: 10).click
-      expect(page).to have_content("Edit expense", wait: 10)
+      within("tr", text: "Paid reimbursement", wait: 10) do
+        expect(page).to have_css("td", exact_text: "Paid")
+        expect(page).not_to have_button("Expense actions for Paid reimbursement")
+      end
+      expect(page).not_to have_content("Edit expense", wait: 2)
       expect(page).not_to have_content("Delete expense", wait: 2)
       expect(page).not_to have_content("Mark as paid", wait: 2)
+      page.save_screenshot(Rails.root.join("tmp/capybara/paid-expense-read-only-20261104.png"), full: true)
     end
   end
 
@@ -181,6 +185,7 @@ RSpec.describe "Expenses", type: :system, js: true do
   end
 
   it "accepts currency symbols in the amount field when adding an expense" do
+    company.update!(base_currency: "USD")
     with_forgery_protection do
       visit "/expenses"
 
@@ -198,10 +203,11 @@ RSpec.describe "Expenses", type: :system, js: true do
 
       expect do
         dialog.click_button "Add Expense"
-        expect(page).to have_content("Expense created successfully", wait: 10)
+        expect(page).not_to have_css("[role='dialog']", wait: 10)
+        expect(page).to have_content("Currency symbol expense", wait: 10)
       end.to change(Expense, :count).by(1)
 
-      expect(Expense.order(:id).last.amount.to_f).to eq(100.0)
+      expect(Expense.order(:id).last).to have_attributes(amount: BigDecimal("100.00"), currency: "USD")
     end
   end
 
