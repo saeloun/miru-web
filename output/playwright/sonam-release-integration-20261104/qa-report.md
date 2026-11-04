@@ -13,7 +13,7 @@ was exercised.
 | Public develop baseline | `10e457e1d` |
 | ATS, PR #2479 | `186e48cc0` |
 | Mercury, PR #2492 | `7dcc3dd0a` |
-| Razorpay, PR #2488 | `0191f78dc` (includes `281764efa`) |
+| Razorpay, PR #2488 | `07070cfd8` (includes `281764efa` and `0191f78dc`) |
 
 Manual merge resolutions retain the combined request-log redactions, all
 changelog entries, and default/production schedules for hiring recovery,
@@ -25,7 +25,7 @@ provider schedules.
 
 - Clean develop baseline: **12 examples, 0 failures**.
 - ATS plus Mercury intermediate candidate: **169 examples, 0 failures**.
-- Final combined backend after the Stripe follow-up: **1,477 examples, 0
+- Final combined backend at `204f899fe`, after the late-capture follow-up: **1,483 examples, 0
   failures** across payroll, payment providers, settlement, subscription
   delivery, jobs, hiring and relevant request boundaries.
 - Combined browser run: **51 examples, 0 failures** covering Razorpay connection
@@ -35,7 +35,8 @@ provider schedules.
   example, 0 failures**, recapturing the six affected connection/invoice images.
 - Frozen dependency install, the required `timeout 30 bin/vite build`, forced
   test-asset build, RuboCop and commit hooks passed. Frontend sources, package
-  inputs and Vite configuration were unchanged by the Stripe follow-up.
+  inputs and Vite configuration were unchanged by the Stripe follow-ups. Browser
+  results and screenshots above precede the backend-only late-capture fix.
 
 ## Review follow-up
 
@@ -51,6 +52,27 @@ Failure leaves the invoice unpaid with no payment row; a successful retry
 records one payment and replay records none. Both event types and invalid
 checkout behavior pass in **24 focused examples** on the Razorpay branch.
 [Stripe webhook reference](https://docs.stripe.com/webhooks).
+
+A distinct Stripe capture arriving after another provider paid the invoice was
+also silently ignored. Both webhook regressions reproduced the missing ledger
+entry. `07070cfd8` records identifiable late captures with a reconciliation note
+and actual captured currency, preserving the paid invoice balance and avoiding
+another confirmation email. Replays and both checkout/intent delivery orders
+produce one entry. The shared settlement commit checks also preserve distinct
+captures after an earlier canonically referenced Stripe payment.
+
+Legacy Stripe rows with no PaymentIntent reference remain ambiguous. They do
+not receive another ledger credit; a Sentry warning includes the invoice and
+incoming provider reference for manual reconciliation. Historical audit remains
+a rollout requirement. Normal unpaid checkout currency handling is unchanged;
+this fix does not add a general currency-mismatch reconciliation workflow or
+automatically refund overpayments.
+
+The source branch passed **144 related payment examples**, followed by **13
+settlement examples** after strengthening the prior-capture fixture. RuboCop,
+Reek (zero warnings), commit hooks and direct diff checks passed. Claude's
+source-only second opinion exposed the legacy replay risk and missing reverse
+delivery order; it was advisory, not a council approval.
 
 Screenshot review also caught an inconsistent demo invoice with a balance but
 no line items. The fixture now includes its INR 1,000 consulting item; the
