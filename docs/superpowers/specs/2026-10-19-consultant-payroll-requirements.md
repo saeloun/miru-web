@@ -134,7 +134,7 @@ Rollout integration: the consultant terms/review feature uses the same trusted, 
 | 3 | Monthly report before any payment action; expected/recorded/approved/pending hours, days = hours/8, fee and separate selected reimbursements | Preview; leave balances/withholding explicitly unavailable |
 | 3–4 | Approved nonbillable work, holiday/optional-holiday overlap counted once, service dates, fractional work; unresolved work visible without automatic deductions | Preview; approval/PTO policy pending |
 | 4 example 1 | 160 expected, 150 worked, 10 approved paid PTO, opening 40: full fee, closing 30 | Pending PTO ledger; preview preserves full fee without inventing approval/balance |
-| 4 example 2 | 160 expected, 100 worked, 60 approved unpaid: 62.5% fee; reimbursements unchanged | Preview scenario with explicit unpaid hours/reason; persisted approval pending |
+| 4 example 2 | 160 expected, 100 worked, 60 approved unpaid: 62.5% fee; reimbursements unchanged | Local integration coverage: actual ₹100,000 terms, calendar and timesheets produce ₹62,500; persisted accounts and distinct-owner approvals, one mocked Mercury approval request despite resubmission, explicit ₹62,500 INR credit and credit-entry deduplication. Separate consultant-revision coverage keeps reimbursements unprorated. Live provider/account acceptance remains open. |
 | 4 example 3 | 160 expected, 100 worked, 60 approved advance PTO: full fee, negative balance recovered by future accrual | Pending PTO ledger |
 | 4 example 4 | 100 worked, 60 unexplained: correction/review, never automatic deduction | Preview |
 | 4 example 5 | Full work with historical PTO −40: full current fee; separate historical decision | Preview never reads legacy balance as a deduction; recovery workflow pending |

@@ -30,7 +30,7 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
 
   context "4. All five 160-hour examples and service policies" do
     it "pays the full monthly fee for 150 worked plus 10 approved paid PTO and changes opening 40 to closing 30 PTO hours"
-    it "persists approval of 60 unpaid hours against 160 expected hours and pays exactly 62.5 percent once"
+    # Confirmed unpaid example: payroll_run_preparation_spec.rb exercises real facts, both approvals, a single mocked Mercury request and recorded INR credit.
     it "pays the full monthly fee for 100 worked plus 60 approved advance-PTO hours and records the resulting negative balance"
     it "requests correction of the unexplained 60 hours after 100 worked without making an unpaid deduction"
     it "pays a fully worked current month with historical PTO minus 40 and opens a separate historical-balance review"
