@@ -1,0 +1,8 @@
+{
+  "evidence": [],
+  "limits": [
+    "Browser regression tests used synthetic local records and provider HTTP doubles; live provider and production acceptance were not exercised.",
+    "Functional and console scores cover the selected automated assertions only; visual, accessibility, performance, content, link-crawl and general UX audits are incomplete.",
+    "The initial focused probe covered one case; it is not a comparable whole-suite score baseline."
+  ]
+}

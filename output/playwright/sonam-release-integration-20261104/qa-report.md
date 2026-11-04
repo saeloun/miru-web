@@ -183,3 +183,20 @@ These are local results, separate from published-head CI and the required
 exact-commit engineering/design/developer-experience reviews. The PR branches
 and candidate have not been pushed or deployed by this work. Provider account
 activation, live transfers and remaining issue acceptance items are unverified.
+
+## Latest combined browser run
+
+After `a7ad6d274`, two system specs were strengthened for actual short-PDF
+reconciliation and fresh screenshot destinations. Application/frontend sources
+are unchanged. The wider run passed **121 examples, 0 failures**, following a
+passing focused archive case. It covers the existing profile, report, document
+preparation/authoring, signing/archive, consultant payroll, tax, payment and ATS
+journeys together, with native byte-verified downloads and scenario console/
+overflow checks. Test assets were force-built before the owned Brave testserver.
+
+The fresh [browser report](../sonam-combined-browser-20261104T010820Z/qa-report-localhost-2026-11-04.md)
+contains **84 synthetic screenshots**; eight representative images were opened
+and inspected. These supplement the earlier 48-image gallery above. The formal
+evidence-helper verdict is **inconclusive (`no evidence rows`)**; native test
+results are distinct from a clean QA/review gate. Live-provider and production
+acceptance remain unverified.

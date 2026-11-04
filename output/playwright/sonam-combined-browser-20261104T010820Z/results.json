@@ -1,0 +1,22 @@
+{
+  "command": "/bin/zsh /tmp/miru-sonam-combined-browser-full-20261104.sh",
+  "examples": 121,
+  "failures": 0,
+  "duration": "5 minutes 3 seconds",
+  "exit_code": 0,
+  "deadline_receipt": {
+    "guard": "qa-deadline",
+    "event": "finished",
+    "observedAt": "2026-11-04T01:21:03.929Z",
+    "deadlineAt": "2026-11-04T01:25:49.652Z",
+    "timedOut": false,
+    "exitCode": 0
+  },
+  "code_base": "a7ad6d274",
+  "application_sources_unchanged": true,
+  "vite_manifest_sha256": "5a51e3b38e303d4635e7cccbb2df4ac3f0d1038c08cf57eda66f6d1b0cc36bb8",
+  "spec_sha256": {
+    "spec/system/responsive/signature_archives_spec.rb": "abac3a09dea07274c6bde8937f1738be512f6ea82550724bcb7d24243a7c7ddc",
+    "spec/system/responsive/employee_records_spec.rb": "cc910b4e24bac548c72ea4b8a5d6fc26a5e37bf9ffed406a34163af05ce8d97e"
+  }
+}
