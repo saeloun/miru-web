@@ -113,10 +113,15 @@ class HandleStripeCheckoutEventService
         else
           set_response({ message: "Invalid payload!" }, 400)
         end
-      elsif InvoicePayment::StripeCheckoutFulfillment.process(event)
-        set_response({ success: true }, :ok)
       else
-        set_response({ message: "Invalid payload!" }, 400)
+        case InvoicePayment::StripeCheckoutFulfillment.process(event)
+        when nil
+          set_response({ message: "Payment settlement failed" }, :internal_server_error)
+        when false
+          set_response({ message: "Invalid payload!" }, 400)
+        else
+          set_response({ success: true }, :ok)
+        end
       end
     end
 
