@@ -113,4 +113,19 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
     expect(invoice.payments.last.amount).to eq(BigDecimal("23.45"))
     expect { described_class.new(event).process }.not_to change { invoice.payments.count }
   end
+
+  it "preserves the captured currency when recording a late checkout for reconciliation" do
+    invoice = create(:invoice, company:, client:, currency: "INR", status: "paid", amount: 100,
+      amount_due: 0, amount_paid: 100, payment_infos: { "stripe_payment_intent" => "pi_currency_late" })
+    event = event_for(invoice:, payment_intent: "pi_currency_late")
+    event.data.object.currency = "usd"
+    allow(CurrencyConversionService).to receive(:get_exchange_rate).with("USD", company.base_currency, Date.current)
+      .and_return(83)
+
+    payment = described_class.process(event)
+
+    expect(payment).to have_attributes(payment_currency: "USD", amount: 100, base_currency_amount: 8300,
+      note: "Stripe_Payment_Already_Paid_Reconciliation")
+    expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: 100)
+  end
 end

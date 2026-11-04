@@ -167,4 +167,40 @@ RSpec.describe InvoicePayment::Settle, "Stripe confirmation commits" do
     expect(invoice.payments).to be_empty
     expect(enqueued_jobs).to be_empty
   end
+
+  it "commits a reconciliation payment without updating the paid invoice or sending confirmations" do
+    described_class.process(payment_params.merge(provider_event_id: "stripe:pi_first"), invoice)
+    clear_enqueued_jobs
+
+    payment = nil
+    expect do
+      invoice.with_lock do
+        payment = described_class.process(payment_params.merge(provider_event_id: "stripe:pi_late"), invoice,
+          reconcile: true)
+      end
+    end.to change(Payment, :count).by(1)
+
+    expect(payment).to have_attributes(status: "partially_paid", amount: 100)
+    expect(invoice.reload).to have_attributes(status: "paid", amount_paid: 100, amount_due: 0)
+    expect(enqueued_jobs).to be_empty
+  end
+
+  [nil, "evt_legacy"].each do |legacy_reference|
+    it "flags ambiguous capture evidence instead of duplicating a legacy #{legacy_reference.inspect} payment" do
+      described_class.process(payment_params.merge(provider_event_id: legacy_reference), invoice)
+      clear_enqueued_jobs
+      allow(Sentry).to receive(:capture_message)
+      late_params = payment_params.merge(provider_event_id: "stripe:pi_late")
+
+      expect do
+        invoice.with_lock { described_class.process(late_params, invoice, reconcile: true) }
+      end.not_to change(Payment, :count)
+
+      expect(Sentry).to have_received(:capture_message).with(
+        "Stripe capture requires legacy payment reconciliation", level: :warning,
+        extra: { invoice_id: invoice.id, provider_event_id: "stripe:pi_late" })
+      expect(invoice.reload).to have_attributes(status: "paid", amount_paid: 100, amount_due: 0)
+      expect(enqueued_jobs).to be_empty
+    end
+  end
 end

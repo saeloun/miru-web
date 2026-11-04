@@ -75,7 +75,7 @@ RSpec.describe InvoicePayment::StripePaymentSucceeded do
     end
   end
 
-  it "rechecks whether the invoice was paid after acquiring the lock" do
+  it "records reconciliation when the invoice was paid while acquiring the lock" do
     allow(Invoice).to receive_message_chain(:where, :first).and_return(invoice)
     expect(invoice).to receive(:with_lock) do |&block|
       invoice.update_columns(status: Invoice.statuses.fetch("paid"), amount_due: 0)
@@ -84,7 +84,9 @@ RSpec.describe InvoicePayment::StripePaymentSucceeded do
     end
 
     expect do
-      expect(described_class.process(event)).to be(true)
-    end.not_to change(Payment, :count)
+      payment = described_class.process(event)
+      expect(payment.note).to eq("Stripe_Payment_Already_Paid_Reconciliation")
+    end.to change(Payment, :count).by(1)
+    expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: 0)
   end
 end

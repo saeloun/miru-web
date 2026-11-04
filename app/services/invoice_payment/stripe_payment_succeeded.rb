@@ -17,10 +17,10 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
     return false if invoice.blank?
 
     invoice.with_lock do
-      return true if invoice.paid? || Payment.exists?(
+      return true if Payment.exists?(
         provider_event_id: ["stripe:#{data_object.id}", event.id].compact_blank)
 
-      InvoicePayment::Settle.process(payment_params, invoice)
+      InvoicePayment::Settle.process(payment_params, invoice, reconcile: invoice.paid?)
     end
   rescue StandardError => error
     Rails.logger.error error.message
@@ -38,7 +38,7 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
         transaction_type: "stripe",
         amount: Money.from_cents(amount_total_cents, data_object.currency).amount,
         payment_currency: data_object.currency.upcase,
-        note: "Stripe_Payment_Success",
+        note: invoice.paid? ? "Stripe_Payment_Already_Paid_Reconciliation" : "Stripe_Payment_Success",
         provider_event_id: "stripe:#{data_object.id}"
       }
     end

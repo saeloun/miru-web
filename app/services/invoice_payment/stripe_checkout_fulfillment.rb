@@ -30,7 +30,7 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
       invoice.with_lock do
         next true if duplicate_payment?
 
-        InvoicePayment::Settle.process(payment_params, invoice)
+        InvoicePayment::Settle.process(payment_params, invoice, reconcile: invoice.paid?)
       end
     end
 
@@ -56,7 +56,8 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
         transaction_date: DateTime.strptime(event.created.to_s, "%s").to_date,
         transaction_type: "stripe",
         amount: Money.from_cents(event.data.object.amount_total, event.data.object.currency).amount,
-        note: "Stripe_Payment_Success",
+        payment_currency: invoice.paid? ? data_object.currency.upcase : invoice.currency,
+        note: invoice.paid? ? "Stripe_Payment_Already_Paid_Reconciliation" : "Stripe_Payment_Success",
         name: card_name,
         provider_event_id: "stripe:#{data_object.payment_intent}"
       }
@@ -94,6 +95,6 @@ class InvoicePayment::StripeCheckoutFulfillment < ApplicationService
     end
 
     def duplicate_payment?
-      invoice.paid? || Payment.exists?(provider_event_id: "stripe:#{data_object.payment_intent}")
+      Payment.exists?(provider_event_id: "stripe:#{data_object.payment_intent}")
     end
 end
