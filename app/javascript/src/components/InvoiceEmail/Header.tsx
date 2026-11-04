@@ -18,9 +18,10 @@ const Header = ({
   setShowStripeDisabledDialog,
 }: InvoiceEmailProps) => {
   const isNonActionable =
+    invoice.payment_on_hold ||
     invoice.status == "paid" ||
     invoice.status == "waived" ||
-    invoice.amount <= 0;
+    (invoice.amount_due ?? invoice.amount) <= 0;
 
   const hasOtherProvider =
     !!isStripeConnected ||
@@ -30,7 +31,7 @@ const Header = ({
   const paypalOnly = paypalEnabled && !hasOtherProvider;
 
   const startPayment = () => {
-    if (invoice.status == "paid") return;
+    if (isNonActionable) return;
 
     if (isStripeConnected && !invoice.stripe_enabled) {
       setShowStripeDisabledDialog(true);
@@ -84,10 +85,10 @@ const Header = ({
             </Tooltip>
           ) : (
             <button
-              disabled={invoice.status == "paid"}
+              disabled={isNonActionable}
               className={`flex h-10 w-44 flex-row items-center justify-center rounded
               ${
-                invoice.status == "paid"
+                isNonActionable
                   ? "cursor-not-allowed bg-indigo-100"
                   : "bg-primary"
               }`}

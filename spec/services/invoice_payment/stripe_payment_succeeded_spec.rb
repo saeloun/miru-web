@@ -40,11 +40,24 @@ RSpec.describe InvoicePayment::StripePaymentSucceeded do
     allow_any_instance_of(Invoice).to receive(:send_to_client_email)
   end
 
-  it "stores the Stripe event ID when settling the invoice" do
+  it "stores the Stripe payment intent ID when settling the invoice" do
     payment = described_class.process(event)
 
-    expect(payment.provider_event_id).to eq(event.id)
+    expect(payment.provider_event_id).to eq("stripe:#{event.data.object.id}")
     expect(invoice.reload).to be_paid
+  end
+
+  it "preserves replay protection for an existing event-based payment reference" do
+    create(:payment, invoice:, amount: 50, transaction_type: :stripe, provider_event_id: event.id)
+
+    expect { described_class.process(event) }.not_to change(Payment, :count)
+  end
+
+  it "rejects events without a payment intent ID before looking up an invoice" do
+    event.data.object.id = nil
+    expect(Invoice).not_to receive(:where)
+
+    expect(described_class.process(event)).to be(false)
   end
 
   context "when Stripe replays a partial payment event" do

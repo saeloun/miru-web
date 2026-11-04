@@ -35,6 +35,7 @@ import {
   DialogTitle,
 } from "../../../ui/dialog";
 import { paymentSettings, quickBooksApi } from "apis/api";
+import RazorpayConnection from "./RazorpayConnection";
 import {
   ApiStatus as PaymentSettingsStatus,
   MIRU_APP_SUPPORT_EMAIL_ID,
@@ -72,6 +73,8 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
   const [isDisconnecting, setIsDisconnecting] = useState<boolean>(false);
   const [isSavingUpi, setIsSavingUpi] = useState<boolean>(false);
   const [isSavingRazorpay, setIsSavingRazorpay] = useState<boolean>(false);
+  const [razorpayApiKeysBlocked, setRazorpayApiKeysBlocked] =
+    useState<boolean>(true);
   const [isSavingPaypal, setIsSavingPaypal] = useState<boolean>(false);
   const [isDisconnectingPaypal, setIsDisconnectingPaypal] =
     useState<boolean>(false);
@@ -459,6 +462,12 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
       }));
       toast.success(i18n.t("paymentSettingsPage.razorpaySaved"));
     } catch (error) {
+      if ((error as any)?.response?.status === 409) {
+        setRazorpayApiKeysBlocked(true);
+        razorpayProviderRef.current?.scrollIntoView({ behavior: "smooth" });
+
+        return;
+      }
       console.error("Failed to save Razorpay settings:", error);
       toast.error(i18n.t("paymentSettingsPage.razorpaySaveFailed"));
     } finally {
@@ -1309,7 +1318,15 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             {i18n.t("paymentSettingsPage.razorpayDescription")}
                           </p>
 
-                          <div className="mt-5 rounded-lg border border-primary/20 bg-primary/5 p-4">
+                          <RazorpayConnection
+                            onApiKeysBlockedChange={setRazorpayApiKeysBlocked}
+                          />
+
+                          <div
+                            className={`mt-5 rounded-lg border border-primary/20 bg-primary/5 p-4 ${
+                              razorpayApiKeysBlocked ? "hidden" : ""
+                            }`}
+                          >
                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                               <div>
                                 <div className="flex flex-wrap items-center gap-2">
@@ -1463,7 +1480,11 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                          <div
+                            className={`mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 ${
+                              razorpayApiKeysBlocked ? "hidden" : ""
+                            }`}
+                          >
                             <div className="space-y-2">
                               <Label htmlFor="razorpay_key_id">
                                 {i18n.t("paymentSettingsPage.razorpayKeyId")}
@@ -1704,7 +1725,11 @@ const OrganizationPaymentSettingsPage: React.FC = () => {
                             </div>
                           </div>
 
-                          <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <div
+                            className={`mt-4 flex flex-col gap-3 sm:flex-row sm:items-center ${
+                              razorpayApiKeysBlocked ? "hidden" : ""
+                            }`}
+                          >
                             <div className="flex items-center gap-2 py-1">
                               <DeviceMobile className="h-4 w-4 text-muted-foreground" />
                               <Label

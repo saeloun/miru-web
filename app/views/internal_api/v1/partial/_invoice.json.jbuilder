@@ -3,6 +3,8 @@
 json.id invoice.id
 json.issue_date invoice.formatted_issue_date
 json.due_date invoice.formatted_due_date
+json.issue_date_iso invoice.issue_date&.iso8601
+json.due_date_iso invoice.due_date&.iso8601
 json.invoice_number invoice.invoice_number
 json.reference invoice.reference
 json.amount invoice.amount

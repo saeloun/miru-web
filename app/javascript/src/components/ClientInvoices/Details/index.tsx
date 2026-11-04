@@ -4,6 +4,7 @@ import { invoicesApi } from "apis/api";
 import Loader from "common/Loader/index";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
+import PaymentHoldNotice from "components/Invoices/common/PaymentHoldNotice";
 import { useUserContext } from "context/UserContext";
 import { useParams } from "react-router-dom";
 
@@ -71,6 +72,7 @@ const ClientInvoiceDetails = () => {
             paypalPayment={paypal_payment}
             stripe_connected_account={stripe_connected_account}
           />
+          {invoice.payment_on_hold && <PaymentHoldNotice />}
           <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
             <InvoiceDetails
               client={client}

@@ -4,6 +4,8 @@ import { MiruLogoWithTextSVG, ReportsIcon } from "miruIcons";
 import { Button } from "StyledComponents";
 
 import CompanyInfo from "components/Invoices/common/CompanyInfo";
+import ClientInfo from "components/Invoices/Invoice/ClientInfo";
+import PaymentHoldNotice from "components/Invoices/common/PaymentHoldNotice";
 
 import { i18n } from "../../../../i18n";
 
@@ -18,6 +20,7 @@ const MobileView = ({ data }) => {
     invoice,
     lineItems,
     company,
+    client,
     bank_payment,
     upi_payment,
     razorpay_payment,
@@ -27,7 +30,10 @@ const MobileView = ({ data }) => {
   const invoiceWaived = invoice?.status === "waived";
   const strikeAmount = invoiceWaived && "line-through";
   const isNonActionable =
-    invoice.status === "paid" || invoiceWaived || invoice.amount <= 0;
+    invoice.payment_on_hold ||
+    invoice.status === "paid" ||
+    invoiceWaived ||
+    (invoice.amount_due ?? invoice.amount) <= 0;
 
   const hasOtherProvider =
     !!stripe_connected_account ||
@@ -63,7 +69,15 @@ const MobileView = ({ data }) => {
     <div className="h-full">
       <Header invoice={invoice} />
       <div className="h-full overflow-y-scroll pb-40">
+        {invoice.payment_on_hold && (
+          <div className="px-4">
+            <PaymentHoldNotice />
+          </div>
+        )}
         <CompanyInfo company={company} />
+        <div className="px-4 py-4">
+          <ClientInfo client={client} />
+        </div>
         <InvoiceInfo
           company={company}
           invoice={invoice}
@@ -74,7 +88,6 @@ const MobileView = ({ data }) => {
             currency={invoice.currency}
             dateFormat={company.dateFormat || company.date_format}
             items={lineItems}
-            showHeader={lineItems.length > 0}
             strikeAmount={strikeAmount}
           />
         </div>
@@ -140,7 +153,7 @@ const MobileView = ({ data }) => {
           style="primary"
           disabled={isNonActionable}
           onClick={() => {
-            if (invoice.status != "paid") {
+            if (!isNonActionable) {
               window.location.href = paymentUrl;
             }
           }}

@@ -13,6 +13,15 @@ RSpec.describe "Payroll log privacy" do
     expect(filtered.to_s).not_to include(sensitive_value)
   end
 
+  it "keeps payroll, hiring and signing request data filtered together" do
+    parameters = %w[payroll_mercury_connection mercury_payment payroll_split_arrangement consultants
+      application hiring_search query hiring_setting hiring_form screening hiring_assessment hiring_assignment
+      agreement signature_request signature_review].index_with { { "private_value" => sensitive_value } }
+    filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+
+    expect(filter.filter(parameters)).to eq(parameters.transform_values { "[FILTERED]" })
+  end
+
   it "redacts payroll payloads from model inspection" do
     revision = PayrollRevision.new(payroll_payload: { "input" => sensitive_value })
 

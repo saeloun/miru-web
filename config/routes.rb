@@ -109,6 +109,15 @@ Rails.application.routes.draw do
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
+  get "payments/razorpay/connection", to: "razorpay_connections#show"
+  post "payments/razorpay/connection", to: "razorpay_connections#create"
+  patch "payments/razorpay/connection", to: "razorpay_connections#update"
+  delete "payments/razorpay/connection", to: "razorpay_connections#destroy"
+  post "payments/razorpay/connection/recovery", to: "razorpay_connections#recovery"
+  post "payments/razorpay/connection/recovery/evidence", to: "razorpay_connections#recovery_evidence"
+  post "payments/razorpay/connection/payment_review", to: "razorpay_connections#resolve_payment_review"
+  post "payments/razorpay/connection/link_recovery", to: "razorpay_connections#recover_link_creation"
+  get "payments/razorpay/callback", to: "razorpay_connections#callback"
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
@@ -118,6 +127,7 @@ Rails.application.routes.draw do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
     post "razorpay/payouts", to: "razorpay#payouts"
+    post "razorpay/oauth", to: "razorpay#oauth"
     post "paypal/events", to: "paypal#events"
   end
 

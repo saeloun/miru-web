@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+payment_on_hold = invoice.payment_on_hold?
+payment_available = invoice.payment_options_available?
 json.url new_invoice_payment_url(invoice.external_view_key)
 json.invoice invoice.slice(
   :id,
@@ -16,6 +18,7 @@ json.invoice invoice.slice(
   :stripe_enabled,
   :tax
 ).merge(
+  payment_on_hold:,
   invoice_taxes: invoice.invoice_taxes.map { |invoice_tax|
     {
       id: invoice_tax.id,
@@ -29,7 +32,7 @@ json.invoice invoice.slice(
 )
 json.logo invoice.company.company_logo
 json.lineItems invoice.invoice_line_items
-json.stripe_connected_account stripe_connected_account&.details_submitted || false
+json.stripe_connected_account payment_available && (stripe_connected_account&.details_submitted || false)
 enabled_providers = invoice.company.payments_providers.where(enabled: true).index_by(&:name)
 upi_provider = enabled_providers[PaymentsProvider::UPI_PROVIDER]
 razorpay_provider = enabled_providers[PaymentsProvider::RAZORPAY_PROVIDER]
@@ -38,6 +41,9 @@ upi_payment =
   if upi_provider&.enabled_on_invoices? && invoice.currency == "INR"
     PaymentProviders::UpiIntentService.new(provider: upi_provider, invoice:).details
   end
+if upi_payment.present?
+  upi_payment[:payment_link] = new_invoice_payment_url(invoice.external_view_key, provider: "upi")
+end
 bank_payment_enabled =
   invoice.company.bank_name.present? ||
   invoice.company.bank_account_number.present? ||
@@ -54,23 +60,24 @@ bank_payment_title =
 json.upi_payment upi_payment
 json.razorpay_payment do
   json.enabled !!(
-    razorpay_provider&.enabled_on_invoices? &&
-    razorpay_provider&.razorpay_configured? &&
+    payment_available && razorpay_provider&.razorpay_collectable? &&
     invoice.currency == "INR"
   )
   json.provider "razorpay"
 end
 json.paypal_payment do
-  json.enabled paypal_provider&.paypal_ready_for_invoices?(invoice.currency, invoice.amount_due) || false
+  json.enabled payment_available && (paypal_provider&.paypal_ready_for_invoices?(invoice.currency, invoice.amount_due) || false)
   json.url "#{new_invoice_payment_url(invoice.external_view_key)}?provider=paypal"
 end
 json.bank_payment do
-  json.enabled bank_payment_enabled
+  json.enabled payment_available && bank_payment_enabled
   json.title bank_payment_title
-  json.bank_name invoice.company.bank_name
-  json.bank_account_number invoice.company.bank_account_number
-  json.bank_routing_number invoice.company.bank_routing_number
-  json.bank_swift_code invoice.company.bank_swift_code
+  if payment_available
+    json.bank_name invoice.company.bank_name
+    json.bank_account_number invoice.company.bank_account_number
+    json.bank_routing_number invoice.company.bank_routing_number
+    json.bank_swift_code invoice.company.bank_swift_code
+  end
 end
 json.company do
   json.partial! "internal_api/v1/partial/company", locals: {

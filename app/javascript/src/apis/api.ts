@@ -435,6 +435,45 @@ export const leavesApi = {
 // Logout
 export const logoutApi = (config = {}) => http.delete(`/users/logout`, config);
 
+const razorpayConnectionPath = "/payments/razorpay/connection";
+const siteRootRequest = { baseURL: "/" };
+
+export const razorpayConnectionApi = {
+  get: () =>
+    http.get(razorpayConnectionPath, {
+      ...siteRootRequest,
+      skipErrorToast: true,
+    }),
+  start: () => http.post(razorpayConnectionPath, {}, siteRootRequest),
+  updateCollections: (enabled: boolean) =>
+    http.patch(razorpayConnectionPath, { enabled }, siteRootRequest),
+  disconnect: () => http.delete(razorpayConnectionPath, siteRootRequest),
+  requestRecovery: (accountId: string) =>
+    http.post(
+      `${razorpayConnectionPath}/recovery`,
+      { account_id: accountId.trim() },
+      siteRootRequest
+    ),
+  resolvePaymentReview: (invoiceId: number, reviewId: string) =>
+    http.post(
+      `${razorpayConnectionPath}/payment_review`,
+      { invoice_id: invoiceId, review_id: reviewId },
+      siteRootRequest
+    ),
+  recoverLinkCreation: (invoiceId: number, paymentLinkId: string) =>
+    http.post(
+      `${razorpayConnectionPath}/link_recovery`,
+      { invoice_id: invoiceId, payment_link_id: paymentLinkId.trim() },
+      { ...siteRootRequest, skipErrorToast: true }
+    ),
+  submitRecoveryEvidence: (providerReference: string) =>
+    http.post(
+      `${razorpayConnectionPath}/recovery/evidence`,
+      { provider_reference: providerReference.trim() },
+      siteRootRequest
+    ),
+};
+
 // Payment Settings
 export const paymentSettingsApi = {
   get: () => http.get(`/payments/settings`),

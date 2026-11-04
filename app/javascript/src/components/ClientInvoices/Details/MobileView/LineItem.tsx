@@ -2,41 +2,44 @@ import React from "react";
 
 import dayjs from "dayjs";
 import { currencyFormat, minToHHMM, lineTotalCalc } from "helpers";
+import { i18n } from "../../../../i18n";
 
 const LineItem = ({ currency, item, dateFormat, strikeAmount = "" }) => {
   const date = dayjs(item.date).format(dateFormat);
 
   return (
-    <>
-      <tr className="w-full">
-        <td className="flex flex-col px-1 py-3 text-left text-xs font-medium text-foreground ">
-          <span className="text-sm">
-            {item.name}
-            {item.first_name} {item.last_name}
-          </span>
-          <span className="text-muted-foreground">{date}</span>
-        </td>
-        <td className="w-2/12 px-1 py-3 text-right text-xs font-medium text-foreground">
-          {currencyFormat(currency, item.rate)}
-        </td>
-        <td className="w-3/12 px-1 py-3 text-right text-xs font-medium text-foreground">
-          {minToHHMM(item.quantity)}
-        </td>
-        <td
-          className={`w-3/12 px-1 py-3 text-right text-xs font-medium text-foreground ${strikeAmount}`}
-        >
-          {currencyFormat(currency, lineTotalCalc(item.quantity, item.rate))}
-        </td>
-      </tr>
-      <tr>
-        <td
-          className="w-full border-b border-border px-1 pb-6 text-left text-xs font-medium text-muted-foreground last:border-0"
-          colSpan={6}
-        >
-          {item.description}
-        </td>
-      </tr>
-    </>
+    <li className="rounded-lg border border-border p-4">
+      <p className="break-words text-sm font-semibold text-foreground">
+        {[item.name, item.first_name, item.last_name].filter(Boolean).join(" ")}
+      </p>
+      <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">
+        {item.description}
+      </p>
+      <dl className="mt-4 grid grid-cols-2 gap-4 text-sm tabular-nums">
+        <div className="min-w-0 break-words">
+          <dt className="text-muted-foreground">{i18n.t("date")}</dt>
+          <dd className="text-foreground">{date}</dd>
+        </div>
+        <div className="min-w-0 break-words">
+          <dt className="text-muted-foreground">{i18n.t("invoices.rate")}</dt>
+          <dd className="text-foreground">
+            {currencyFormat(currency, item.rate)}
+          </dd>
+        </div>
+        <div className="min-w-0 break-words">
+          <dt className="text-muted-foreground">
+            {i18n.t("invoices.quantity")}
+          </dt>
+          <dd className="text-foreground">{minToHHMM(item.quantity)}</dd>
+        </div>
+        <div className="min-w-0 break-words">
+          <dt className="text-muted-foreground">{i18n.t("total")}</dt>
+          <dd className={`font-semibold text-foreground ${strikeAmount}`}>
+            {currencyFormat(currency, lineTotalCalc(item.quantity, item.rate))}
+          </dd>
+        </div>
+      </dl>
+    </li>
   );
 };
 

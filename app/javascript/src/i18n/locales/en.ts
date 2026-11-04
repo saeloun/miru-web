@@ -1082,6 +1082,9 @@ const en = {
     noInvoiceGenerated: "No invoice has been generated yet.",
     acceptCreditCards: "Accept Credit Cards",
     payWithPaypal: "Pay with PayPal",
+    paymentOnHoldTitle: "Payment needs confirmation",
+    paymentOnHoldDescription:
+      "Please do not pay again. Contact the invoice sender to confirm the previous attempt.",
     sendTo: "SEND TO",
     send: "SEND",
     recentlyUpdated: "Recently Updated",
@@ -2348,6 +2351,188 @@ const en = {
     razorpaySaveFailed: "Failed to save Razorpay settings.",
     razorpayRouteNote:
       "Cards and UPI are controlled in Razorpay Dashboard. Use the setup box above to copy the webhook URLs and event names. UPI payouts require RazorpayX account activation.",
+    razorpayConnection: {
+      title: "Connect your Razorpay account",
+      connect: "Connect or create Razorpay account",
+      hostedNote:
+        "Razorpay hosts sign-in, sign-up and KYC. New accounts need Razorpay's approval before they can accept payments, so connecting does not activate an account.",
+      cancelAttempt: "Cancel this attempt",
+      disconnect: "Disconnect Razorpay",
+      retryRevocation: "Retry revocation",
+      account: "Razorpay account",
+      mode: "Mode",
+      merchantStatus: "Razorpay account status",
+      collectionsBlockedTitle: "Invoice collection is not available yet",
+      payoutsNote:
+        "This connection only collects invoice payments into your own Razorpay account. It does not include RazorpayX, Payroll or payouts.",
+      recoveryAccount: "Razorpay account ID",
+      recoveryOtherApplication:
+        "This access belongs to a previous Miru Razorpay application, so Miru can no longer revoke it. Start recovery to finish removing it.",
+      recoveryAccountHelp:
+        "Find it in your Razorpay Dashboard. It starts with acc_.",
+      startRecovery: "Start recovery",
+      recoveryStepRevoke:
+        "Sign in to the Razorpay Dashboard, open Applications and choose Revoke beside Miru, then confirm Revoke Access.",
+      recoveryStepWait:
+        "Miru finishes recovery automatically when Razorpay sends its signed revocation event. You can then connect again.",
+      checkAgain: "Check again",
+      recoveryReference: "Razorpay support reference",
+      recoveryReferenceHelp:
+        "If Miru is not listed under Applications, ask Razorpay support to confirm that this account has no active grant for Miru, then enter their reference here. It is recorded in your audit log.",
+      submitReference: "Finish recovery with this reference",
+      disconnectTitle: "Disconnect Razorpay?",
+      disconnectDescription:
+        "Miru stops offering Razorpay on invoices and asks Razorpay to revoke its access. Payments already made are kept. A customer who already has a payment link may still be able to pay with it, and Miru records that payment if Razorpay reports it.",
+      keepConnection: "Keep connected",
+      confirmDisconnect: "Disconnect",
+      disconnectConfirmed: "Razorpay disconnected and access revoked.",
+      disconnected: "Razorpay disconnected.",
+      reviewTitle: "Razorpay payments need your review",
+      linkConfirmationTitle: "Payment links need confirmation",
+      linkConfirmationDescription:
+        "Miru could not confirm whether Razorpay created these links. Do not issue another link. Check each original reference in the listed Razorpay account and mode.",
+      linkInvoice: "Invoice {{number}}",
+      linkReference: "Reference {{reference}}",
+      linkAccount: "Account {{account}} ({{mode}} mode)",
+      linkId: "Payment Link ID (optional)",
+      linkHelp:
+        "If you found the link in Razorpay, enter its plink_ ID. Leave this blank to check by reference. This check never creates or sends another link.",
+      linkRecheck: "Check Razorpay",
+      linkStillPending:
+        "Not confirmed. This invoice stays on hold; no new link was created.",
+      linkConfirmed: "Payment link confirmed.",
+      linkRecentlyChecked:
+        "A check ran recently or is still in progress. This invoice stays on hold; try again shortly.",
+      linkNoLongerPending:
+        "No confirmation is pending. Check the invoice before taking further action.",
+      linkChecking: "Checking Razorpay…",
+      linkCheckFailed:
+        "Razorpay could not confirm this link. Keep the invoice on hold and try again later.",
+      linkRateLimited:
+        "Too many checks. Nothing was checked. Wait a minute and try again.",
+      linkConnectionRequired:
+        "Reconnect the original Razorpay account before checking these links.",
+      loading: "Loading Razorpay status…",
+      loadFailed: "Could not load Razorpay status",
+      lastKnownStatus:
+        "Showing the last loaded status. Actions are paused until Razorpay status can be loaded again.",
+      retryLoading: "Retry loading status",
+      linkConfirmationLimit:
+        "Showing the first 20 links. Confirm these to see any remaining links.",
+      reviewDescription:
+        "Razorpay captured these payments, but Miru could not record them. Check each one, then record it on the invoice or refund it in Razorpay before marking it as reviewed.",
+      reviewInvoice: "Invoice {{number}}: {{currency}} {{amount}}",
+      reviewResolve: "Mark as reviewed",
+      reviewReferences: "Payment {{payment}}, payment link {{link}}",
+      reviewPaymentUnknown: "not provided",
+      reviewLimit:
+        "Showing the first 20 payments. Review these to see any remaining payments.",
+      reviewState: {
+        open: "Invoice is unpaid.",
+        paid: "Invoice is already paid.",
+        deleted: "Invoice was deleted.",
+        waived: "Invoice was waived.",
+      },
+      reviewReason: {
+        webhook_mismatch: "The payment did not match the invoice.",
+        callback_mismatch: "The payment did not match the invoice.",
+        paid_link_mismatch: "The paid link did not match the invoice.",
+        untracked_link: "It was paid through a link Miru no longer tracks.",
+        invoice_paid: "It was paid after the invoice was settled.",
+        invoice_deleted: "It was paid after the invoice was deleted.",
+        invoice_waived: "It was paid after the invoice was waived.",
+        invoice_invalid:
+          "The invoice could not be updated. Check its details before reconciling this payment.",
+        partial_payment:
+          "Razorpay reported a partial payment. Reconcile it before collecting again.",
+        unknown: "It could not be matched to the invoice.",
+      },
+      reviewConfirmTitle: "Mark this payment as reviewed?",
+      reviewConfirmDescription:
+        "This does not record or refund a payment. If this is the last review on an unpaid invoice, Miru closes its old payment link before allowing another checkout. Other payments stay listed.",
+      reviewKeep: "Keep in review",
+      reviewConfirm: "Confirm reviewed",
+      disconnectUnconfirmed:
+        "Razorpay is disconnected in Miru, but Razorpay has not confirmed the revocation.",
+      status: {
+        disconnected: "Not connected",
+        pending: "Waiting for Razorpay",
+        connected: "Connected",
+        reconnect_required: "Reconnect needed",
+        merchant_rejected: "Declined by Razorpay",
+        revoked: "Access revoked",
+        revocation_pending: "Revocation pending",
+        reconciliation_required: "Recovery needed",
+        recovery_pending: "Recovery in progress",
+      },
+      description: {
+        disconnected:
+          "Sign in to your Razorpay account or create one, then collect INR invoice payments directly into it.",
+        pending:
+          "We are waiting for you to finish on Razorpay. If you closed that page, you can start again.",
+        connected:
+          "Your Razorpay account is connected to this workspace. Miru never holds your funds.",
+        reconnect_required:
+          "This Razorpay connection needs to be set up again. You can connect again now.",
+        merchant_rejected:
+          "Razorpay reported that this account is not compliant for payment processing. Resolve this with Razorpay, then try again.",
+        revoked:
+          "Access to Miru was revoked in Razorpay, so invoice payments through this connection have stopped. You can connect again.",
+        revocation_pending:
+          "Invoice payments have stopped, but Razorpay has not confirmed that Miru's access was revoked. Retry when Razorpay is reachable.",
+        reconciliation_required:
+          "Miru could not confirm the result of a request to Razorpay, so a grant may still exist. Connecting again is blocked until this is resolved.",
+        recovery_pending:
+          "Connecting again stays blocked until Razorpay confirms that this grant is gone.",
+      },
+      unavailable: {
+        legacy_api_keys:
+          "This workspace uses Razorpay API keys, which keep working as they are. Account connection is not available for workspaces with saved API keys.",
+        not_configured:
+          "Account connection is not switched on for this Miru installation yet. Until it is, you can use Razorpay API keys below.",
+      },
+      merchant: {
+        unconfirmed: "Not confirmed yet",
+        activated: "Activated",
+        instantly_activated: "Instantly activated",
+        payments_enabled: "Payments enabled",
+        funds_unhold: "Funds released",
+        under_review: "Under review",
+        needs_clarification: "Needs clarification",
+        funds_hold: "Funds on hold",
+        suspended: "Suspended",
+        rejected: "Rejected",
+      },
+      blocker: {
+        not_connected: "Connect your Razorpay account first.",
+        collections_disabled:
+          "Razorpay invoice collection through account connection is not switched on for this Miru installation yet.",
+        webhook_not_configured:
+          "Miru's Razorpay event webhook is not set up yet, so payments could not be confirmed.",
+        application_changed:
+          "Miru's Razorpay application changed since you connected. Disconnect and connect again.",
+        merchant_unconfirmed:
+          "Razorpay has not confirmed that this account can accept payments. Finish any KYC steps in Razorpay. Miru updates this when Razorpay confirms.",
+        merchant_under_review:
+          "Razorpay is reviewing this account. Miru updates this when Razorpay finishes.",
+        merchant_needs_clarification:
+          "Razorpay needs more information. Respond in your Razorpay Dashboard.",
+        merchant_funds_hold:
+          "Razorpay has put funds on hold for this account. Resolve this with Razorpay.",
+        merchant_suspended:
+          "Razorpay suspended this account. Resolve this with Razorpay.",
+        merchant_rejected:
+          "Razorpay rejected this account. Resolve this with Razorpay.",
+      },
+      callback: {
+        connected:
+          "Razorpay account connected. Check its status before collecting payments.",
+        denied: "The Razorpay connection was cancelled.",
+        failed: "The Razorpay connection could not be completed.",
+        merchant_rejected:
+          "Razorpay reported that this account is not compliant for payment processing.",
+      },
+    },
     razorpayChecklist: {
       title: "Razorpay launch checklist",
       progress: "%{completed}/%{total} ready",

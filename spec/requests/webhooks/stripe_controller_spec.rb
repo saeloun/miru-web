@@ -225,4 +225,38 @@ RSpec.describe "Stripe webhooks", type: :request do
     expect(response).to have_http_status(:ok)
     expect(InvoicePayment::StripePaymentSucceeded).to have_received(:process).with(event)
   end
+
+  it "requests a retry and reports a payment-intent settlement failure" do
+    invoice = create(:invoice, company:, status: "sent", amount: 100, amount_due: 100, amount_paid: 0,
+      payment_infos: { stripe_payment_intent: "pi_retry" })
+    event = Stripe::Event.construct_from(
+      id: "evt_retry", type: "payment_intent.succeeded", created: Time.current.to_i,
+      data: { object: { id: "pi_retry", amount_received: 10_000, currency: "usd" } }
+    )
+    error = StandardError.new("Synthetic settlement unavailable")
+    allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+    allow(InvoicePayment::Settle).to receive(:process).and_raise(error)
+    allow(Sentry).to receive(:capture_exception)
+
+    post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+    expect(response).to have_http_status(:internal_server_error)
+    expect(invoice.reload).to be_sent
+    expect(invoice.payments).to be_empty
+    expect(Sentry).to have_received(:capture_exception).with(error)
+
+    allow(InvoicePayment::Settle).to receive(:process).and_call_original
+
+    expect do
+      post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+    end.to change { invoice.payments.count }.by(1)
+
+    expect(response).to have_http_status(:ok)
+    expect(invoice.reload).to be_paid
+
+    expect do
+      post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+    end.not_to change { invoice.payments.count }
+    expect(response).to have_http_status(:ok)
+  end
 end

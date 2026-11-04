@@ -9,6 +9,7 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
 
   def event_for(invoice:, payment_intent:)
     {
+      id: "evt_checkout",
       data: {
         object: {
           metadata: { invoice_id: invoice.id },
@@ -21,6 +22,53 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
       },
       created: Time.current.strftime("%s")
     }.to_dot
+  end
+
+  context "when the payment does not settle the invoice" do
+    let(:invoice) do
+      create(:invoice, company:, client:, currency: "INR", status: "sent", amount: 123.45,
+        amount_due: 123.45, amount_paid: 0, payment_infos: { "stripe_payment_intent" => "pi_partial" })
+    end
+    let(:checkout_event) do
+      event_for(invoice:, payment_intent: "pi_partial").tap { |event| event.data.object.amount_total = 2345 }
+    end
+    let(:intent_event) do
+      { id: "evt_intent", created: Time.current.to_i,
+        data: { object: { id: "pi_partial", amount_received: 2345, currency: "inr" } } }.to_dot
+    end
+
+    before { invoice }
+
+    it "records a repeated checkout payment once" do
+      expect do
+        2.times { described_class.process(checkout_event) }
+      end.to change { invoice.payments.count }.by(1)
+
+      expect(invoice.reload).to have_attributes(amount_paid: BigDecimal("23.45"), amount_due: 100)
+    end
+
+    it "ignores the payment-intent event after the checkout event" do
+      expect { described_class.process(checkout_event) }.to change(Payment, :count).by(1)
+
+      expect { InvoicePayment::StripePaymentSucceeded.process(intent_event) }.not_to change(Payment, :count)
+      expect(invoice.reload).to have_attributes(amount_paid: BigDecimal("23.45"), amount_due: 100)
+    end
+
+    it "ignores the checkout event after the payment-intent event" do
+      expect { InvoicePayment::StripePaymentSucceeded.process(intent_event) }.to change(Payment, :count).by(1)
+
+      expect { described_class.process(checkout_event) }.not_to change(Payment, :count)
+      expect(invoice.reload).to have_attributes(amount_paid: BigDecimal("23.45"), amount_due: 100)
+    end
+  end
+
+  it "rejects checkout fulfillment when neither side has a payment intent" do
+    invoice = create(:invoice, company:, client:, currency: "INR", status: "sent", amount: 100,
+      amount_due: 100, amount_paid: 0)
+
+    expect do
+      expect(described_class.process(event_for(invoice:, payment_intent: nil))).to be(false)
+    end.not_to change(Payment, :count)
   end
 
   it "rejects checkout fulfillment when only the invoice has a payment intent" do
@@ -52,5 +100,17 @@ RSpec.describe InvoicePayment::StripeCheckoutFulfillment do
 
     expect(described_class.new(event_for(invoice:, payment_intent: "pi_event_only")).process).to be(false)
     expect(Payment.last&.invoice_id).not_to eq(invoice.id)
+  end
+
+  it "settles the remaining balance once when the Stripe checkout webhook is replayed" do
+    invoice = create(:invoice, company:, client:, currency: "INR", status: "sent", amount: 123.45,
+      amount_due: 23.45, amount_paid: 100, payment_infos: { "stripe_payment_intent" => "pi_remaining" })
+    event = event_for(invoice:, payment_intent: "pi_remaining")
+    event.data.object.amount_total = 2345
+
+    expect { described_class.new(event).process }.to change { invoice.payments.count }.by(1)
+    expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: BigDecimal("123.45"))
+    expect(invoice.payments.last.amount).to eq(BigDecimal("23.45"))
+    expect { described_class.new(event).process }.not_to change { invoice.payments.count }
   end
 end

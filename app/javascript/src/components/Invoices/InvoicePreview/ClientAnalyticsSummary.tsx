@@ -7,6 +7,7 @@ import { analyticsApi } from "apis/api";
 import { Roles } from "../../../constants";
 import { useUserContext } from "../../../context/UserContext";
 import { currencyFormat } from "../../../helpers/currency";
+import { hasProAccess } from "../../../lib/planAccess";
 import { i18n } from "../../../i18n";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
 import { Skeleton } from "../../ui/skeleton";
@@ -37,12 +38,11 @@ const ClientAnalyticsSummary: React.FC<ClientAnalyticsSummaryProps> = ({
   clientId,
 }) => {
   const { company, companyRole } = useUserContext();
-  const canViewClientAnalytics = [
-    Roles.ADMIN,
-    Roles.OWNER,
-    Roles.MANAGER,
-    Roles.BOOK_KEEPER,
-  ].includes(companyRole as Roles);
+  const canViewClientAnalytics =
+    hasProAccess(company) &&
+    [Roles.ADMIN, Roles.OWNER, Roles.MANAGER, Roles.BOOK_KEEPER].includes(
+      companyRole as Roles
+    );
   const currency = company?.base_currency || company?.baseCurrency || "USD";
   const from = subDays(new Date(), 365).toISOString().slice(0, 10);
   const to = new Date().toISOString().slice(0, 10);

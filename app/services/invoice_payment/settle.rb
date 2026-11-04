@@ -15,7 +15,9 @@ module InvoicePayment
         @payment = Payment.create!(payment_params)
         @invoice.settle!(payment)
       end
-      send_stripe_payment_confirmation if payment.stripe?
+      if payment.stripe?
+        ActiveRecord.after_all_transactions_commit { send_stripe_payment_confirmation }
+      end
 
       @payment
     end
@@ -32,6 +34,9 @@ module InvoicePayment
           invoice_id: invoice.id,
           subject: "Payment Confirmation of Invoice #{invoice.invoice_number} by #{invoice.client.name}"
         )
+      rescue StandardError => error
+        Rails.logger.error("stripe_payment_confirmation_failed invoice_id=#{invoice.id} error_class=#{error.class}")
+        Sentry.capture_exception(error)
       end
   end
 end

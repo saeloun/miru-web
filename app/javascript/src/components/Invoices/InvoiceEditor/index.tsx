@@ -30,6 +30,7 @@ import {
 
 import { cn } from "../../../lib/utils";
 import { format } from "date-fns";
+import dayjs from "dayjs";
 import { Calendar } from "../../ui/calendar";
 import {
   CalendarBlank as CalendarIcon,
@@ -128,7 +129,7 @@ const InvoiceEditor: React.FC<InvoiceEditorProps> = ({
     if (!date) return undefined;
 
     if (date instanceof Date && !isNaN(date.getTime())) return date;
-    const parsed = new Date(date);
+    const parsed = dayjs(date).toDate();
 
     return isNaN(parsed.getTime()) ? undefined : parsed;
   };

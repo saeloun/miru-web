@@ -78,4 +78,21 @@ RSpec.describe "Solid Queue schedule" do
       expect(task).to include("class" => "HiringDeliveryRecoveryJob", "schedule" => "*/5 * * * *")
     end
   end
+
+  it "maintains Razorpay OAuth tokens daily in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "refresh_razorpay_oauth_tokens")
+
+      expect(task).to include("class" => "RefreshRazorpayOauthTokensJob", "schedule" => "23 3 * * *")
+    end
+  end
+
+  it "keeps Mercury bank polling and Razorpay payment reconciliation in both schedules" do
+    %w[default production].each do |environment|
+      tasks = config.dig(environment, "dispatchers", 0, "recurring_tasks")
+
+      expect(tasks.fetch("mercury_payroll_status_refresh")).to include("class" => "Payroll::MercuryStatusRefreshJob", "schedule" => "*/30 * * * *")
+      expect(tasks.fetch("reconcile_razorpay_payment_links")).to include("class" => "ReconcileRazorpayPaymentLinksJob", "schedule" => "*/5 * * * *")
+    end
+  end
 end
