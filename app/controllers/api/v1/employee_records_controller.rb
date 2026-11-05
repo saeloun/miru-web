@@ -71,8 +71,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     raise ActiveStorage::FileNotFoundError unless blob
 
     data = blob.download
-    current_user.with_lock do
-      authorize_access
+    with_download_workspace do
       current = find_employment(employment.user_id).employee_documents.where(kind: params[:kind]).find(document.id)
       raise ActiveStorage::FileNotFoundError unless current.file.blob_id == blob.id
 

@@ -71,6 +71,9 @@ RSpec.describe "Salary slips", type: :request do
     slip = imported_slip
     post "/api/v1/salary_slips/#{slip.id}/publish"
     expect(response).to have_http_status(:ok)
+    get "/api/v1/salary_slips/#{slip.id}/download"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
     sign_in employee
     get "/api/v1/salary_slips"
     expect(response.parsed_body.fetch("salary_slips").pluck("id")).to eq([slip.id])
@@ -144,7 +147,7 @@ RSpec.describe "Salary slips", type: :request do
     get "/api/v1/salary_slips/#{slip.id}/download"
     expect(response).to have_http_status(:ok)
     expect(response.media_type).to eq("application/pdf")
-    expect(response.body).to eq(slip.file.download)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
     expect(response.headers["Content-Disposition"]).to start_with("attachment;")
     expect(slip.audits.where(action: "download", user: employee)).to exist
@@ -161,6 +164,9 @@ RSpec.describe "Salary slips", type: :request do
     expect(previous.file).to be_attached
     expect(corrected.reload.supersedes_id).to eq(previous.id)
     expect(SalarySlip.published.where(employment:, pay_month: "2026-09-01").count).to eq(1)
+    get "/api/v1/salary_slips/#{previous.id}/download"
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
     sign_in employee
     get "/api/v1/salary_slips/#{previous.id}/download"
     expect(response).to have_http_status(:forbidden)
@@ -192,6 +198,105 @@ RSpec.describe "Salary slips", type: :request do
     expect(response.headers["X-Content-Type-Options"]).to eq("nosniff")
     expect(slip.reload.status).to eq("published")
     expect(slip.file).to be_attached
+  end
+
+  %w[workspace role membership withdrawal].each do |change|
+    it "withholds a salary slip after #{change} changes during storage download" do
+      slip = imported_slip
+      slip.publish!(actor: admin)
+      other = create(:company) if change == "workspace"
+      sign_in employee
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+        bytes = original.call(*arguments)
+        case change
+        when "workspace" then employee.update!(current_workspace: other)
+        when "role" then employee.remove_role(:employee, company)
+        when "membership" then employment.update_column(:resigned_at, Date.yesterday)
+        when "withdrawal" then slip.withdraw!(actor: admin)
+        end
+        bytes
+      end
+
+      get "/api/v1/salary_slips/#{slip.id}/download"
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).not_to include("%PDF")
+      expect(slip.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  it "withholds a coworker's salary slip after an administrator loses admin access during storage download" do
+    slip = imported_slip
+    admin.add_role(:employee, company)
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      bytes = original.call(*arguments)
+      admin.remove_role(:admin, company)
+      bytes
+    end
+
+    get "/api/v1/salary_slips/#{slip.id}/download"
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(slip.audits.where(action: "download")).to be_empty
+  end
+
+  %w[replaced removed].each do |change|
+    it "withholds salary-slip bytes when the attachment is #{change} during storage download" do
+      slip = imported_slip
+      replacement = File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")) do |io|
+        ActiveStorage::Blob.create_and_upload!(io:, filename: "replacement.pdf", content_type: "application/pdf")
+      end if change == "replaced"
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+        bytes = original.call(*arguments)
+        change == "replaced" ? slip.file_attachment.update!(blob: replacement) : slip.file_attachment.destroy!
+        bytes
+      end
+
+      get "/api/v1/salary_slips/#{slip.id}/download"
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include("%PDF")
+      expect(slip.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  it "reports a missing salary-slip attachment privately" do
+    slip = imported_slip
+    slip.file_attachment.destroy!
+
+    get "/api/v1/salary_slips/#{slip.id}/download"
+    expect(response).to have_http_status(:not_found)
+    expect(response.parsed_body.fetch("errors")).to eq("Document is unavailable. Please contact your workspace administrator.")
+    expect(slip.audits.where(action: "download")).to be_empty
+  end
+
+  it "downloads through a CLI session bound to a different workspace from the browser default" do
+    slip = imported_slip
+    other = create(:company)
+    create(:employment, company: other, user: admin, resigned_at: nil)
+    admin.add_role(:admin, other)
+    admin.update!(current_workspace: other)
+    sign_out admin
+    _session, token = CliSession.issue_for(user: admin, company:)
+    expect(admin.reload.current_workspace_id).to eq(other.id)
+
+    get "/api/v1/salary_slips/#{slip.id}/download", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
+    expect(slip.audits.where(action: "download", associated: company, user: admin)).to exist
+    expect(admin.reload.current_workspace_id).to eq(other.id)
+  end
+
+  it "withholds salary-slip bytes after a CLI session is revoked during storage download" do
+    slip = imported_slip
+    sign_out admin
+    session, token = CliSession.issue_for(user: admin, company:)
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap { session.revoke! }
+    end
+
+    get "/api/v1/salary_slips/#{slip.id}/download", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(slip.audits.where(action: "download")).to be_empty
   end
 
   it "links a replacement to a previously withdrawn publication without rewriting the withdrawal" do

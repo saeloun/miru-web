@@ -195,6 +195,14 @@ RSpec.describe "Employee records", type: :request do
     expect(response.headers["Content-Disposition"]).to start_with("attachment;")
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
     expect(response.headers["X-Content-Type-Options"]).to eq("nosniff")
+    sign_out employee
+    _session, token = CliSession.issue_for(user: employee, company:)
+    get "/api/v1/employee_records/documents/#{document.id}", params: { kind: "pan" },
+      headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
+    expect(document.audits.where(action: "download", associated: company, user: employee).count).to eq(2)
+    sign_in employee
     get "/api/v1/employee_records/documents/#{document.id}", params: { kind: "contract" }
     expect(response).to have_http_status(:not_found)
     sign_in admin
