@@ -173,8 +173,8 @@ module InvoiceEditorSystemHelpers
   end
 
   def update_invoice_line_item(original_name:, name: nil, rate: nil, quantity: nil, description: nil)
-    row = find_invoice_line_item_row(original_name)
-    row_selector = "[data-line-item-row-key='#{row["data-line-item-row-key"]}']"
+    row_key = with_invoice_line_item_row(original_name) { |row| row["data-line-item-row-key"] }
+    row_selector = "[data-line-item-row-key='#{row_key}']"
 
     if rate
       find(row_selector, wait: 10)
@@ -204,16 +204,17 @@ module InvoiceEditorSystemHelpers
   end
 
   def remove_invoice_line_item(name)
-    find_invoice_line_item_row(name).find("#deleteLineItemButton", wait: 10).click
+    with_invoice_line_item_row(name) { |row| row.find("#deleteLineItemButton").click }
   end
 
-  def find_invoice_line_item_row(name)
-    find(:fillable_field, with: name, wait: 10).find(:xpath, "./ancestor::tr[1]")
+  def with_invoice_line_item_row(name)
+    page.document.synchronize(10) do
+      yield find(:fillable_field, with: name).find(:xpath, "./ancestor::tr[1]")
+    end
   end
 
   def expect_invoice_line_item(name, description: nil)
-    row = find_invoice_line_item_row(name)
-    expect(row).to have_field(type: "text", with: name, wait: 10)
+    with_invoice_line_item_row(name) { |row| row.assert_selector(:field, type: "text", with: name) }
 
     if description
       expect(page).to have_field(with: description, wait: 10)
