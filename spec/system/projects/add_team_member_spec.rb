@@ -16,14 +16,20 @@ RSpec.describe "Add team member to project", type: :system, js: true do
       sign_in(user)
     end
 
-    it "opens add/remove team member modal for a project" do
+    it "closes an unchanged empty team without sending a member update" do
       with_forgery_protection do
         visit "/projects"
         expect(page).to have_content(project.name, wait: 10)
         page.find(:xpath, "//tr[contains(., '#{project.name}')]").hover.click
         expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
-        expect(page).to have_button("Save Members", disabled: true, wait: 10)
+        expect(page).to have_button("Save Members", disabled: false)
+        page.save_screenshot(Rails.root.join("tmp", "project-members-empty.png"))
+        click_button "Save Members"
+        expect(page).not_to have_css("[role='dialog']")
+        expect(project.project_members.kept).to be_empty
+        expect(page.driver.browser.network.traffic.filter_map(&:request).map(&:url))
+          .not_to include(a_string_including("/api/v1/project_members/#{project.id}"))
       end
     end
   end
@@ -40,7 +46,7 @@ RSpec.describe "Add team member to project", type: :system, js: true do
       sign_in(user)
     end
 
-    it "can remove member from a project" do
+    it "removes the last project member and keeps the team empty when reopened" do
       with_forgery_protection do
         visit "/projects"
         expect(page).to have_content(project.name, wait: 10)
@@ -48,10 +54,24 @@ RSpec.describe "Add team member to project", type: :system, js: true do
         expect(page).to have_content(project.name, wait: 10)
         click_button "addRemoveTeamMembers"
         first(:button, "removeMember").click
+        expect(page).to have_css("button#removeMember", count: 1)
+        click_button "Save Members"
+        expect(page).not_to have_css("[role='dialog']")
+        expect(project.project_members.kept.pluck(:user_id)).to eq([user_3.id])
+        click_button "addRemoveTeamMembers"
+        first(:button, "removeMember").click
+        expect(page).not_to have_css("button#removeMember")
+        expect(page).to have_button("Save Members", disabled: false)
         click_button "Save Members"
 
-        expect(page).not_to have_content(user_2.first_name)
+        expect(page).not_to have_css("[role='dialog']")
+        expect(project.project_members.kept).to be_empty
         expect(page).to have_content(project.name)
+        click_button "addRemoveTeamMembers"
+        expect(page).to have_css("[role='dialog']")
+        expect(page).not_to have_field("Hourly rate")
+        expect(page).to have_button("Save Members", disabled: false)
+        page.save_screenshot(Rails.root.join("tmp", "project-members-removed.png"))
       end
     end
 
