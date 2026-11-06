@@ -1,0 +1,4 @@
+f640e9df0f79ab69ebd689aeb03b7dcc1034a2818bff4dc5cb02a9c994b328a9  spec/system/settings/billing_spec.rb
+7e0d4bc559ef289ec4853dc2e8df6ade47c2db087613cc56b51ebabfb5367d25  spec/system/settings/payment_spec.rb
+8f100115fef3a0a2ba872359afc6fc65c77f62ea6f4a7a65468fec3697d00d39  output/playwright/settings-verification-20261106/billing-client-portal-seats.png
+de07986ef7f2d13109b656da375984d7f4c099ef76da38aa1aa95c6d475b84eb  output/playwright/settings-verification-20261106/razorpay-launch-checklist.png
