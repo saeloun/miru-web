@@ -411,5 +411,5 @@ export default function Hiring() {
     );
   }
 
-  return <Workspace key={company.id} companyId={company.id} />;
+  return <Workspace key={company.id} companyId={Number(company.id)} />;
 }

@@ -440,13 +440,15 @@ export default function AssignmentReviews() {
     );
   }
 
+  const companyId = Number(company.id);
+
   return assignmentId ? (
     <ReviewDetail
       key={`${company.id}:${assignmentId}`}
-      companyId={company.id}
+      companyId={companyId}
       id={assignmentId}
     />
   ) : (
-    <ReviewList key={company.id} companyId={company.id} />
+    <ReviewList key={company.id} companyId={companyId} />
   );
 }

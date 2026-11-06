@@ -115,6 +115,55 @@ RSpec.describe "Admin and designated-staff assessments", type: :system, js: true
     })
   end
 
+  it "keeps admin intake and designated reviews scoped with string workspace IDs" do
+    record = submitted_assignment
+    allow_any_instance_of(Api::V1::Users::SessionsController).to receive(:me).and_wrap_original do |original|
+      original.call
+      response = original.receiver.response
+      payload = JSON.parse(response.body)
+      payload.fetch("company")["id"] = payload.fetch("company").fetch("id").to_s
+      response.body = payload.to_json
+    end
+    errors = []
+    page.driver.browser.on("Runtime.consoleAPICalled") { |event| errors << event if event["type"] == "error" }
+    page.driver.browser.on("Runtime.exceptionThrown") { |event| errors << event }
+
+    admin_page
+    sign_out admin
+    sign_in reviewer
+    visit "/assignment-reviews"
+    click_link "Synthetic Review Candidate · Catalogue review task"
+    expect(page).to have_css("h1", text: "Assignment review", exact_text: true)
+    expect(page).to have_text("Synthetic private contribution statement")
+    expect(page).not_to have_text("Private Admin-only hiring notes")
+    fill_review
+    select "Pass", from: "Recommendation"
+    click_button "Record assessment review"
+    expect(page).to have_text("Review recorded. Admin decides the next step.")
+    expect(record.reload.reviews.sole.outcome).to eq("pass")
+    if ENV["HIRING_DOWNLOAD_SHOTS"]
+      directory = Rails.root.join(ENV.fetch("HIRING_DOWNLOAD_SHOTS"))
+      FileUtils.mkdir_p(directory)
+      page.save_screenshot(directory.join("string-workspace-review.png"), full: true)
+    end
+
+    mismatched_response = false
+    allow_any_instance_of(Api::V1::Hiring::AssignmentReviewsController).to receive(:show).and_wrap_original do |original|
+      original.call
+      response = original.receiver.response
+      payload = JSON.parse(response.body)
+      payload["company_id"] = company.id + 1
+      response.body = payload.to_json
+      mismatched_response = true
+    end
+    visit "/assignment-reviews/#{record.id}"
+    expect(page).to have_css('[role="alert"]', text: "The hiring workspace changed. Reload the current workspace.")
+    expect(mismatched_response).to be(true)
+    expect(page).not_to have_text("Synthetic private contribution statement")
+    expect(errors).to be_empty
+    page.save_screenshot(directory.join("workspace-mismatch.png"), full: true) if directory
+  end
+
   %i[admin reviewer].each do |role|
     it "releases row locks while reading a private assessment download for #{role}" do
       source = Rails.root.join("spec/fixtures/files/qa-main.pdf")

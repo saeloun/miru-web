@@ -408,8 +408,8 @@ export default function AssignmentTemplateEditor({
                         ? `${revision.snapshot.details.expected_minutes} minutes`
                         : "Effort not set"}{" "}
                       ·{" "}
-                      {revision.snapshot.details.submission_method?.replaceAll(
-                        "_",
+                      {revision.snapshot.details.submission_method?.replace(
+                        /_/g,
                         " "
                       ) || "Method not set"}
                     </p>
