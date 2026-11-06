@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "timeout"
 
 RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
   let(:start_timer_label) { "Start Timer" }
@@ -404,6 +405,35 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_content(selected_date, wait: 10)
   end
 
+  it "keeps the view tabs in place when the employee filter finishes loading" do
+    original_size = page.evaluate_script("[window.innerWidth, window.innerHeight]")
+    page.driver.resize(1400, 1000)
+    ready = Queue.new
+    release = Queue.new
+    allow_any_instance_of(Api::V1::TimeTrackingController).to receive(:index).and_wrap_original do |original, *arguments|
+      result = original.call(*arguments)
+      ready << true
+      Timeout.timeout(10) { release.pop }
+      result
+    end
+
+    visit "/time-tracking"
+    Timeout.timeout(10) { ready.pop }
+    expect(page).to have_button("Month")
+    expect(page).not_to have_css("[data-testid='user-select']")
+    month_top = page.evaluate_script("document.querySelector('button[data-view=month]').getBoundingClientRect().top")
+    release.close
+
+    expect(page).to have_css("[data-testid='user-select']")
+    expect(page.evaluate_script("document.querySelector('button[data-view=month]').getBoundingClientRect().top")).to eq(month_top)
+    click_button "Month"
+    expect(page).to have_css(".week-view[data-view='month']")
+    page.save_screenshot(Rails.root.join("tmp", "time-tracking-stable-toolbar.png"), full: true)
+  ensure
+    release&.close
+    page.driver.resize(*original_size) if original_size
+  end
+
   it "shows selected day total in month view and allows adding entry from the same screen" do
     visit "/time-tracking"
     expect(page).to have_css("#react-root", wait: 10)
@@ -541,6 +571,8 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     expect(page).to have_css("#react-root", wait: 10)
     switch_to("Week")
 
+    selected_day = find("p", text: /\A[A-Z][a-z]+, [A-Z][a-z]+ \d{1,2}, \d{4}\z/, wait: 10)
+    prior_date = Date.parse(selected_day.text) - 7
     original_range = find(".week-view h2", wait: 10).text
     find("[data-testid='time-nav-prev']", wait: 10).click
 
@@ -553,9 +585,15 @@ RSpec.describe "Time Tracking - Add Entry", type: :system, js: true do
     click_button "Add Entry"
 
     expect(page).to have_text(/saving to/i, wait: 10)
-    expect(find("button[aria-pressed='true']", wait: 10)).to have_text(
-      /selected/i
-    )
+    expect(parse_entry_form_date(current_entry_form_date)).to eq(prior_date)
+    select_radix("Client", client.name)
+    select_radix("Project", project.name)
+    fill_in "timeInput", with: "00:45"
+    fill_in "notes", with: "Prior week save target"
+    click_button "Save Entry"
+
+    expect(page).to have_content("Prior week save target", wait: 10)
+    expect(TimesheetEntry.find_by!(user:, note: "Prior week save target").work_date).to eq(prior_date)
   end
 
   it "keeps add-entry actions from submitting the time tracking page" do
