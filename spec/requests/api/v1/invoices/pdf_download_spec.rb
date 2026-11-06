@@ -2,6 +2,8 @@
 
 require "rails_helper"
 require "base64"
+require "open3"
+require "tempfile"
 
 RSpec.describe "Invoice PDF Download", type: :request do
   let(:company) { create(:company) }
@@ -178,61 +180,48 @@ RSpec.describe "Invoice PDF Download", type: :request do
 
   describe "PDF content generation" do
     before do
-      # Allow real PDF generation for this test
       allow_any_instance_of(InvoicePayment::PdfGeneration).to receive(:process).and_call_original
-      allow_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
-        args[:template]
-        locals = args[:locals]
-
-        # Return a realistic invoice HTML
-        <<~HTML
-          <html>
-            <head><title>Invoice #{locals[:invoice].invoice_number}</title></head>
-            <body>
-              <h1>Invoice #{locals[:invoice].invoice_number}</h1>
-              <p>Client: #{locals[:client].name}</p>
-              <p>Amount: #{locals[:invoice_amount]}</p>
-              <p>Tax: #{locals[:invoice_tax]}</p>
-              <p>Total: #{locals[:total]}</p>
-            </body>
-          </html>
-        HTML
-      end
     end
 
-    it "generates PDF with correct invoice data", skip: "Response body is compressed in test environment" do
-      # For this specific test, allow real PDF generation
-      allow_any_instance_of(InvoicePayment::PdfGeneration).to receive(:process).and_call_original
-      allow_any_instance_of(PdfGeneration::InvoiceService).to receive(:process).and_call_original
-
-      # Mock the template rendering but return valid HTML
-      allow_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
-        <<~HTML
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <style>body { font-family: Arial; margin: 20px; }</style>
-          </head>
-          <body>
-            <h1>Invoice ##{invoice.invoice_number}</h1>
-            <p>Client: #{invoice.client.name}</p>
-            <p>Amount: $#{invoice.amount}</p>
-            <p>Tax: $#{invoice.tax}</p>
-            <p>Total: $#{invoice.amount_due}</p>
-          </body>
-          </html>
-        HTML
-      end
-
+    it "decodes the default renderer stub into PDF bytes" do
       get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(user)
 
       expect(response).to have_http_status(:success)
-      expect(response.content_type).to include("application/pdf")
+      expect(response.body).to eq("%PDF-1.4\nMocked PDF content")
+    end
 
-      # The mocked response should be the PDF content
-      pdf_data = response.body
-      expect(pdf_data[0..3]).to eq("%PDF")
-      expect(pdf_data.size).to be > 50 # Has some PDF content
+    [["unpaid", "0.00", nil, "1,575.00"], ["partially paid", "500.00", "500.00", "1,075.00"], ["paid", "1575.00", "1,575.00", "0.00"]].each do |state, paid, formatted_paid, due|
+      it "downloads a parseable #{state} invoice PDF with the real template and INR balance" do
+        allow(Ferrum::Browser).to receive(:new).and_call_original
+        company.update!(base_currency: "INR")
+        invoice.update!(currency: "INR", issue_date: Date.new(2026, 11, 1), due_date: Date.new(2026, 11, 30))
+        if paid != "0.00"
+          InvoicePayment::Settle.process({ invoice_id: invoice.id, amount: paid, transaction_date: Date.current, transaction_type: "bank_transfer", payment_currency: "INR" }, invoice)
+        end
+
+        get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(user)
+
+        expect(response).to have_http_status(:success)
+        expect(response.content_type).to include("application/pdf")
+        expect(response.body).to start_with("%PDF-")
+
+        Tempfile.create(["invoice-download", ".pdf"], binmode: true) do |file|
+          file.write(response.body)
+          file.flush
+          text, error, status = Open3.capture3("pdftotext", "-layout", file.path, "-")
+          expect(status.success?).to be(true), error
+          expect(text).to include(invoice.invoice_number, company.name, client.name, "Web Development Services")
+          expect(text).to match(/Sub total\s+₹1,500\.00/)
+          expect(text).to match(/Discount\s+-₹75\.00/)
+          expect(text).to match(/Tax\s+₹150\.00/)
+          expect(text).to match(/Total Due\s+₹#{Regexp.escape(due)}/)
+          if formatted_paid
+            expect(text).to match(/Total\s+₹1,575\.00/)
+            expect(text).to match(/Amount Paid\s+₹#{Regexp.escape(formatted_paid)}/)
+          end
+        end
+        File.binwrite(Rails.root.join("tmp", "invoice-download-#{state.tr(' ', '-')}.pdf"), response.body) if ENV["SAVE_TEST_PDFS"]
+      end
     end
   end
 end
