@@ -50,8 +50,7 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "6. Reimbursement settlement" do
-    it "atomically reserves a claim for one run when two payroll approvals select it concurrently"
-    it "prevents direct expense settlement from paying a claim reserved by an approved payroll run"
+    # Concurrent run reservation and both direct-settlement orderings: claim_settlement_concurrency_spec.rb.
     it "freezes approved claim amounts and requires reapproval or an adjustment after material claim changes"
     it "carries a claim approved after cutoff into the next run or an explicitly separate payment"
     it "releases a reservation only after cancellation or failure proves no outstanding payment and retains it for uncertain outcomes"
