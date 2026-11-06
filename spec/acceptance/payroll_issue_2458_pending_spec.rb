@@ -52,7 +52,8 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   context "6. Reimbursement settlement" do
     # Concurrent run reservation and both direct-settlement orderings: claim_settlement_concurrency_spec.rb.
     # Immutable amounts/reapproval and next-run cutoff carryover: consultant_revision_spec.rb.
-    it "releases a reservation only after cancellation or failure proves no outstanding payment and retains it for uncertain outcomes"
+    # No-funds release, uncertain-outcome retention and split siblings: consultant_revision_spec.rb and mercury_split_spec.rb.
+    it "protects reimbursement reservations until outstanding India accounts-handoff payments are resolved"
     it "settles an approved reimbursement once and retains its receipt, original currency, approved amount and payment allocation"
   end
 

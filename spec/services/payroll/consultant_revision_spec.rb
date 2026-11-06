@@ -284,6 +284,112 @@ RSpec.describe Payroll::ConsultantRevision do
       expect(revision.reload.approval_issues).to eq([])
     end
 
+    context "when a claim has a Mercury instruction" do
+      let(:claim_revision) do
+        revision = build(expenses: [claim.id])
+        approve(revision)
+        revision
+      end
+      let(:claim_instruction) { prepared_instruction(revision: claim_revision) }
+      let(:claim_request) { mercury_request("amount" => claim_instruction.principal_minor / 100.0) }
+
+      def submit_claim(timeout: false)
+        if timeout
+          stub_request(:post, "#{mercury_base}/account/#{account_id}/request-send-money").to_timeout
+        else
+          stub_mercury_write(mercury_json(claim_request))
+        end
+        Payroll::MercuryPayment.new(run).submit!(actor: owner, instruction_id: claim_instruction.id, expected_digest: claim_instruction.frozen_digest)
+      end
+
+      def refresh_claim(request_status: "approved", transaction_status: nil)
+        transactions = transaction_status ? [mercury_transaction("status" => transaction_status, "amount" => -claim_instruction.principal_minor / 100.0)] : []
+        stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(claim_request.merge("status" => request_status)))
+        stub_request(:get, %r{#{Regexp.escape(mercury_base)}/account/#{account_id}/transactions})
+          .to_return(mercury_json({ "total" => transactions.size, "transactions" => transactions }))
+        Payroll::MercuryReconciliation.new(run).refresh!(actor: owner, instruction_id: claim_instruction.id)
+      end
+
+      def expect_claim_release_after_revision
+        reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: claim_revision)
+        expect(claim_instruction.reload.released_at).to be_present
+        expect(claim_instruction.credited_minor).to eq(0)
+        expect(claim_instruction.payroll_payment_group.in_flight_legs).to be_empty
+        expect(reservation.released_at).to be_nil
+        replacement = build
+        expect(run.current_revision.id).to eq(replacement.id)
+        expect(reservation.reload.released_at).to be_present
+        expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+        expect(claim).not_to be_payroll_reserved
+      end
+
+      def expect_claim_still_reserved
+        reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: claim_revision)
+        expect(claim_instruction.reload.released_at).to be_nil
+        expect(claim_instruction.payroll_payment_group.in_flight_legs).not_to be_empty
+        expect { build }.to raise_error(Payroll::Workflow::Conflict, /A bank transfer exists/)
+        expect(run.reload.current_revision.id).to eq(claim_revision.id)
+        expect(reservation.reload.released_at).to be_nil
+        expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+      end
+
+      %w[rejected cancelled].each do |status|
+        it "releases the claim after an unapproved #{status} request is closed and the revision is replaced" do
+          submit_claim
+          expect(refresh_claim(request_status: status).display_state).to eq("bank_#{status}")
+          expect_claim_release_after_revision
+        end
+      end
+
+      %w[failed cancelled].each do |status|
+        it "releases the claim after an authoritative uncredited #{status} wire and a replacement revision" do
+          submit_claim
+          expect(refresh_claim(transaction_status: "pending").display_state).to eq("processing")
+          expect(refresh_claim(transaction_status: status).display_state).to eq("transaction_#{status}")
+          expect_claim_release_after_revision
+        end
+      end
+
+      it "retains the claim when submission times out without a known bank outcome" do
+        submit_claim(timeout: true)
+        expect(claim_instruction.reload).to have_attributes(submission_state: "uncertain", last_error_code: "outcome_unknown")
+        expect_claim_still_reserved
+      end
+
+      it "retains one reservation when an unchanged revision is reapproved during an uncertain payment" do
+        submit_claim(timeout: true)
+        reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: claim_revision)
+        replacement = build(expenses: [claim.id])
+        expect(replacement.id).not_to eq(claim_revision.id)
+        expect(reservation.reload).to have_attributes(released_at: nil, payroll_revision_id: claim_revision.id, amount_minor: 500_000)
+        expect(claim.reload).to be_payroll_reserved
+
+        approve(replacement)
+        expect(PayrollExpenseReservation.active.where(expense: claim).sole.id).to eq(reservation.id)
+        expect(reservation.reload).to have_attributes(released_at: nil, payroll_revision_id: replacement.id, amount_minor: 500_000)
+        expect(claim_instruction.reload).to have_attributes(submission_state: "uncertain", released_at: nil, payroll_revision_id: claim_revision.id)
+        expect(a_request(:post, "#{mercury_base}/account/#{account_id}/request-send-money")).to have_been_made.once
+      end
+
+      it "retains the claim when cancellation follows bank approval without transaction proof" do
+        submit_claim
+        refresh_claim
+        expect(claim_instruction.reload.request_approved_at).to be_present
+        expect(refresh_claim(request_status: "cancelled").held_reason).to eq("cancelled_after_approval")
+        expect_claim_still_reserved
+      end
+
+      it "retains the claim when a failed wire follows partial credit" do
+        submit_claim
+        refresh_claim(transaction_status: "sent")
+        Payroll::MercuryReconciliation.new(run).record_credit!(actor: accounts, instruction_id: claim_instruction.id,
+          amount: "1000.00", credited_on: Date.current.iso8601, reference: "Synthetic partial credit")
+        expect(refresh_claim(transaction_status: "failed")).to have_attributes(held_reason: "failed_after_sent", credit_state: "partial", credited_minor: 100_000)
+        expect_claim_still_reserved
+        expect { claim.reload.mark_paid! }.to raise_error(ActiveRecord::RecordInvalid, /reserved/)
+      end
+    end
+
     context "when a claim is approved after the payroll cutoff" do
       let(:cutoff) { "2026-11-30" }
 

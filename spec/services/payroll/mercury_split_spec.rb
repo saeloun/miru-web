@@ -209,4 +209,64 @@ RSpec.describe "Mercury spouse split payments" do
       expect(blocked_codes { linked_recipient(beneficiary: "spouse", id: spouse_recipient_id) }).to eq(["recipient_account_mismatch"])
     end
   end
+
+  describe "reimbursement reservations across split legs" do
+    around do |example|
+      travel_to(Time.utc(2026, 12, 5, 12)) { example.run }
+    end
+
+    let(:claim) { create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved, approved_at: 1.minute.ago) }
+    let!(:base_revision) do
+      company.update!(timezone: "Asia/Kolkata")
+      employment.update!(joined_at: Date.new(2020, 1, 1))
+      revision = revise_with_claims([claim.id])
+      workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
+      workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
+      revision
+    end
+
+    def revise_with_claims(ids)
+      Payroll::ConsultantRevision.new(run, actor: accounts).create!(
+        consultants: [{ employment_id: employment.id, expense_ids: ids, acknowledged: true }], cutoff: Date.current.iso8601,
+        expected_digest: run.current_revision&.digest, idempotency_key: SecureRandom.uuid)
+    end
+
+    it "keeps the claim reserved until both split requests are proven cancelled" do
+      approved_arrangement
+      consultant_leg, spouse_leg = prepared_legs
+      spouse_request_id = "77777777-7777-4777-8777-777777777777"
+      requests = [mercury_request("amount" => consultant_leg.principal_minor / 100.0),
+                  mercury_request("requestId" => spouse_request_id, "recipientId" => spouse_recipient_id, "amount" => spouse_leg.principal_minor / 100.0)]
+      [consultant_leg, spouse_leg].zip(requests).each do |leg, request|
+        stub_mercury_write(mercury_json(request))
+        submit(leg)
+      end
+      reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: base_revision)
+      service = Payroll::MercuryReconciliation.new(run)
+      stub_request(:get, %r{#{Regexp.escape(mercury_base)}/account/#{account_id}/transactions})
+        .to_return(mercury_json({ "total" => 0, "transactions" => [] }))
+      stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}")
+        .to_return(mercury_json(requests.first.merge("status" => "cancelled")))
+      service.refresh!(actor: owner, instruction_id: consultant_leg.id)
+
+      expect(consultant_leg.reload.released_at).to be_present
+      expect(spouse_leg.reload.released_at).to be_nil
+      expect(consultant_leg.payroll_payment_group.in_flight_legs.pluck(:id)).to eq([spouse_leg.id])
+      expect { revise_with_claims([]) }.to raise_error(Payroll::Workflow::Conflict, /A bank transfer exists/)
+      expect(run.reload.current_revision.id).to eq(base_revision.id)
+      expect(reservation.reload.released_at).to be_nil
+
+      stub_request(:get, "#{mercury_base}/request-send-money/#{spouse_request_id}")
+        .to_return(mercury_json(requests.last.merge("status" => "cancelled")))
+      service.refresh!(actor: owner, instruction_id: spouse_leg.id)
+      expect(spouse_leg.reload.released_at).to be_present
+      expect(consultant_leg.payroll_payment_group.in_flight_legs).to be_empty
+      replacement = revise_with_claims([])
+      expect(run.current_revision.id).to eq(replacement.id)
+      expect(reservation.reload.released_at).to be_present
+      expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+      expect(claim).not_to be_payroll_reserved
+      expect(a_request(:post, "#{mercury_base}/account/#{account_id}/request-send-money")).to have_been_made.twice
+    end
+  end
 end
