@@ -5,7 +5,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
     "lib": ["es6", "dom", "dom.iterable"],
-    "module": "es6",
+    "module": "ESNext",
     "moduleResolution": "node",
     "sourceMap": true,
     "target": "ES2021",

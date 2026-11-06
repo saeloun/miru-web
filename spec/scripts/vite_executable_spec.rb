@@ -97,6 +97,34 @@ RSpec.describe "Vite executable resolution" do
     expect(status).to be_success, errors
   end
 
+  it "rebuilds after TypeScript configuration changes but reuses unchanged assets" do
+    write_command("custom-vite", <<~SH)
+      echo build >> build-calls
+      mkdir -p public/vite-test/.vite
+      printf '{}' > public/vite-test/.vite/manifest.json
+    SH
+    config = File.join(@project, "config/vite.json")
+    settings = JSON.parse(File.read(config))
+    settings["all"]["viteBinPath"] = "commands/custom-vite"
+    File.write(config, JSON.generate(settings))
+    File.write(File.join(@project, "tsconfig.json"), '{"compilerOptions":{"module":"es6"}}')
+    script = <<~RUBY
+      2.times { abort "Build failed" unless ViteRuby::Builder.new(ViteRuby.instance).build }
+      abort "Unchanged assets rebuilt" unless File.readlines("build-calls").size == 1
+      File.write("tsconfig.json", '{"compilerOptions":{"module":"ESNext"}}')
+      abort "Rebuild failed" unless ViteRuby::Builder.new(ViteRuby.instance).build
+    RUBY
+
+    _output, errors, status = Open3.capture3(
+      { "RACK_ENV" => "test", "VITE_RUBY_ROOT" => @project,
+        "PATH" => "#{@project}/commands:#{ENV.fetch('PATH')}" },
+      RbConfig.ruby, "-rvite_ruby", "-e", script, chdir: @project
+    )
+
+    expect(status).to be_success, errors
+    expect(File.readlines(File.join(@project, "build-calls"), chomp: true)).to eq(%w[build build])
+  end
+
   it "explains an unusable configured executable even when local dependencies are available" do
     write_command("custom-vite", "exit 0\n")
     File.chmod(0o644, File.join(@project, "commands/custom-vite"))
