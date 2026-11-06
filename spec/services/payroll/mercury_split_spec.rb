@@ -215,7 +215,12 @@ RSpec.describe "Mercury spouse split payments" do
       travel_to(Time.utc(2026, 12, 5, 12)) { example.run }
     end
 
-    let(:claim) { create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved, approved_at: 1.minute.ago) }
+    let(:receipt) { "description,amount,currency\nSynthetic travel,5000,INR\n" }
+    let(:claim) do
+      create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved, approved_at: 1.minute.ago).tap do |expense|
+        expense.receipts.attach(io: StringIO.new(receipt), filename: "synthetic-receipt.csv", content_type: "text/csv")
+      end
+    end
     let!(:base_revision) do
       company.update!(timezone: "Asia/Kolkata")
       employment.update!(joined_at: Date.new(2020, 1, 1))
@@ -229,6 +234,65 @@ RSpec.describe "Mercury spouse split payments" do
       Payroll::ConsultantRevision.new(run, actor: accounts).create!(
         consultants: [{ employment_id: employment.id, expense_ids: ids, acknowledged: true }], cutoff: Date.current.iso8601,
         expected_digest: run.current_revision&.digest, idempotency_key: SecureRandom.uuid)
+    end
+
+    it "pays a claim once only after both split credits and preserves its receipt and INR allocation" do
+      receipt_id = claim.receipts.sole.blob_id
+      approved_arrangement
+      legs = prepared_legs
+      expect(legs.map(&:entitlement_minor)).to eq([5_187_500, 1_562_500])
+      expect(legs.map(&:principal_minor)).to eq([61_756, 18_601])
+      expect(legs.map(&:fee_minor)).to eq([1_500, 1_500])
+      expect(legs.map(&:company_debit_minor)).to eq([63_256, 20_101])
+      reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: base_revision)
+      group = legs.first.payroll_payment_group
+      expect(legs.map(&:payroll_payment_group_id).uniq).to eq([group.id])
+      expect(group.entitlement_minor).to eq(6_750_000)
+      requests = [mercury_request("amount" => legs.first.principal_minor / 100.0),
+                  mercury_request("requestId" => "77777777-7777-4777-8777-777777777777", "recipientId" => spouse_recipient_id, "amount" => legs.last.principal_minor / 100.0)]
+      transactions = legs.zip(requests).map do |leg, request|
+        stub_mercury_write(mercury_json(request))
+        submit(leg)
+        stub_request(:get, "#{mercury_base}/request-send-money/#{request.fetch('requestId')}").to_return(mercury_json(request.merge("status" => "approved")))
+        mercury_transaction("id" => SecureRandom.uuid, "requestId" => request.fetch("requestId"), "amount" => -leg.principal_minor / 100.0, "status" => "sent")
+      end
+      stub_request(:get, %r{#{Regexp.escape(mercury_base)}/account/#{account_id}/transactions})
+        .to_return(mercury_json({ "total" => transactions.size, "transactions" => transactions }))
+      service = Payroll::MercuryReconciliation.new(run)
+      credits = legs.zip(["51875.00", "15625.00"]).map do |leg, amount|
+        expect(service.refresh!(actor: owner, instruction_id: leg.id)).to have_attributes(transaction_status: "sent", submission_state: "accepted")
+        { actor: accounts, instruction_id: leg.id, amount:, credited_on: Date.current.iso8601, reference: "Synthetic split #{leg.beneficiary}" }
+      end
+      service.record_credit!(**credits.first)
+      expect(legs.first.reload).to have_attributes(credit_state: "credited", credited_minor: 5_187_500, entitlement_currency: "INR")
+      expect(legs.last.reload).to have_attributes(credit_state: "none", credited_minor: 0)
+      expect(group.reload.fully_credited_at).to be_nil
+      expect(reservation.reload.settled_at).to be_nil
+      expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+
+      service.record_credit!(**credits.last)
+      expect(claim.reload).to have_attributes(status: "paid", amount: 5_000, currency: "INR", user_id: worker.id)
+      expect(reservation.reload).to have_attributes(amount_minor: 500_000, released_at: nil)
+      expect(reservation.settled_at).to be_present
+      expect(claim.paid_at).to be_present
+      expect(group.reload.fully_credited_at).to be_present
+      settled_at, paid_at, fully_credited_at = reservation.settled_at, claim.paid_at, group.fully_credited_at
+
+      travel 5.minutes
+      credits.each { |credit| service.record_credit!(**credit) }
+      legs.each { |leg| service.refresh!(actor: owner, instruction_id: leg.id) }
+      expect(reservation.reload.settled_at).to eq(settled_at)
+      expect(claim.reload.paid_at).to eq(paid_at)
+      expect(group.reload.fully_credited_at).to eq(fully_credited_at)
+      expect(claim.receipts.sole.blob_id).to eq(receipt_id)
+      expect(claim.receipts.sole.download).to eq(receipt)
+      expect(PayrollPaymentEvent.where(payroll_payment_instruction_id: legs.map(&:id), kind: "group_fully_credited").count).to eq(1)
+      expect(PayrollPaymentEvent.where(payroll_payment_instruction_id: legs.map(&:id), kind: "group_credit_reopened")).to be_empty
+      legs.each do |leg|
+        expect(leg.reload).to have_attributes(credit_state: "credited", credited_minor: leg.entitlement_minor, entitlement_currency: "INR")
+        expect(leg.payroll_payment_events.where(kind: "credit_recorded").sole.data).to include("currency" => "INR", "amount_minor" => leg.entitlement_minor)
+      end
+      expect(a_request(:post, "#{mercury_base}/account/#{account_id}/request-send-money")).to have_been_made.twice
     end
 
     it "keeps the claim reserved until both split requests are proven cancelled" do

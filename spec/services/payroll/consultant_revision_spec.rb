@@ -356,8 +356,13 @@ RSpec.describe Payroll::ConsultantRevision do
         expect_claim_still_reserved
       end
 
-      it "retains one reservation when an unchanged revision is reapproved during an uncertain payment" do
+      it "settles the original uncertain payment once after an unchanged revision is reapproved" do
+        receipt = "description,amount,currency\nSynthetic travel,5000,INR\n"
+        claim.receipts.attach(io: StringIO.new(receipt), filename: "synthetic-receipt.csv", content_type: "text/csv")
+        receipt_id = claim.receipts.sole.blob_id
         submit_claim(timeout: true)
+        bank_terms = claim_instruction.attributes.slice("principal_minor", "fee_minor", "company_debit_minor", "frozen_digest")
+        expect(claim_instruction).to have_attributes(principal_minor: 80_357, fee_minor: 1_500, company_debit_minor: 81_857)
         reservation = PayrollExpenseReservation.active.find_by!(expense: claim, payroll_revision: claim_revision)
         replacement = build(expenses: [claim.id])
         expect(replacement.id).not_to eq(claim_revision.id)
@@ -368,6 +373,40 @@ RSpec.describe Payroll::ConsultantRevision do
         expect(PayrollExpenseReservation.active.where(expense: claim).sole.id).to eq(reservation.id)
         expect(reservation.reload).to have_attributes(released_at: nil, payroll_revision_id: replacement.id, amount_minor: 500_000)
         expect(claim_instruction.reload).to have_attributes(submission_state: "uncertain", released_at: nil, payroll_revision_id: claim_revision.id)
+
+        service = Payroll::MercuryReconciliation.new(run)
+        stub_request(:get, "#{mercury_base}/request-send-money/#{request_id}").to_return(mercury_json(claim_request))
+        service.confirm_request!(actor: owner, instruction_id: claim_instruction.id, request_id:)
+        expect(refresh_claim(transaction_status: "sent")).to have_attributes(submission_state: "accepted", provider_request_id: request_id, transaction_status: "sent")
+        expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+        expect(reservation.reload.settled_at).to be_nil
+        credit = { actor: accounts, instruction_id: claim_instruction.id, amount: "67500.00", credited_on: Date.current.iso8601, reference: "Synthetic reapproved credit" }
+        service.record_credit!(**credit)
+
+        group = claim_instruction.payroll_payment_group
+        expect(group.reload).to have_attributes(entitlement_minor: 6_750_000, payroll_revision_id: claim_revision.id)
+        expect(claim.reload).to have_attributes(status: "paid", amount: 5_000, currency: "INR", user_id: worker.id)
+        expect(reservation.reload).to have_attributes(payroll_revision_id: replacement.id, amount_minor: 500_000, released_at: nil)
+        expect(reservation.settled_at).to be_present
+        expect(claim.paid_at).to be_present
+        expect(group.fully_credited_at).to be_present
+        settled_at, paid_at, fully_credited_at = reservation.settled_at, claim.paid_at, group.fully_credited_at
+
+        travel 5.minutes
+        service.record_credit!(**credit)
+        refresh_claim(transaction_status: "sent")
+        expect(reservation.reload.settled_at).to eq(settled_at)
+        expect(claim.reload.paid_at).to eq(paid_at)
+        expect(group.reload.fully_credited_at).to eq(fully_credited_at)
+        expect(claim_instruction.reload).to have_attributes(credit_state: "credited", credited_minor: 6_750_000, entitlement_currency: "INR")
+        expect(claim_instruction.attributes.slice(*bank_terms.keys)).to eq(bank_terms)
+        expect(PayrollPaymentInstruction.where(payroll_run: run, employment:).open_slot.sole.id).to eq(claim_instruction.id)
+        expect(claim.receipts.sole.blob_id).to eq(receipt_id)
+        expect(claim.receipts.sole.download).to eq(receipt)
+        expect(claim_instruction.payroll_payment_events.where(kind: "credit_recorded").sole.data).to include("currency" => "INR", "amount_minor" => 6_750_000)
+        expect(claim_instruction.payroll_payment_events.where(kind: "group_fully_credited").count).to eq(1)
+        expect(claim_instruction.payroll_payment_events.where(kind: "group_credit_reopened")).to be_empty
+        expect(PayrollExpenseReservation.where(expense: claim).count).to eq(1)
         expect(a_request(:post, "#{mercury_base}/account/#{account_id}/request-send-money")).to have_been_made.once
       end
 
