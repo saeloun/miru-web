@@ -160,6 +160,40 @@ RSpec.describe Payroll::ConsultantRevision do
       expect([policy.mark_paid?, policy.update?, policy.destroy?, policy.approve?]).to all(be(false))
     end
 
+    it "freezes approved claim amounts and requires reapproval after material claim changes" do
+      original = build(expenses: [claim.id])
+      approve(original)
+      snapshot = original.payroll_payload.deep_dup
+      reservation = PayrollExpenseReservation.active.find_by!(expense: claim)
+      expect { original.update!(payroll_payload: {}) }.to raise_error(ActiveRecord::ReadOnlyRecord)
+      expect { claim.reload.update!(amount: 6_000) }.to raise_error(ActiveRecord::RecordInvalid, /reserved/)
+      expect(claim.reload.amount).to eq(5_000)
+
+      build
+      expect(reservation.reload.released_at).to be_present
+      claim.reload.update!(amount: 6_000)
+      expect(claim).to be_submitted
+      expect { build(expenses: [claim.id]) }.to raise_error(Payroll::ConsultantReview::InvalidInput, /no longer eligible/)
+      claim.approve!
+      revised = build(expenses: [claim.id])
+
+      expect(original.reload.payroll_payload).to eq(snapshot)
+      expect(reservation.reload.amount_minor).to eq(500_000)
+      expect(line(revised).dig("amounts", "reimbursements_minor")).to eq(600_000)
+      expect(workflow.status).to eq("draft")
+      expect { workflow.approve!(actor: owner, stage: "final", expected_digest: original.digest) }.to raise_error(Payroll::Workflow::Conflict)
+      expect do
+        workflow.approve!(actor: owner, stage: "final", expected_digest: revised.digest)
+      end.to raise_error(ActiveRecord::RecordInvalid, /requires a current eligible accounts approval/)
+      expect(revised.payroll_approvals).to be_empty
+
+      workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revised.digest)
+      expect(workflow.status).to eq("accounts_approved")
+      workflow.approve!(actor: owner, stage: "final", expected_digest: revised.digest)
+      expect(workflow.status).to eq("approved")
+      expect(PayrollExpenseReservation.active.where(expense: claim).sole).to have_attributes(payroll_revision_id: revised.id, amount_minor: 600_000)
+    end
+
     it "keeps a reserved claim out of another run" do
       approve(build(expenses: [claim.id]))
       later = PayrollRun.create!(company:, period: Date.new(2026, 12, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
@@ -248,6 +282,43 @@ RSpec.describe Payroll::ConsultantRevision do
       approve(revision)
       expect(claim.reload).not_to be_paid
       expect(revision.reload.approval_issues).to eq([])
+    end
+
+    context "when a claim is approved after the payroll cutoff" do
+      let(:cutoff) { "2026-11-30" }
+
+      before do
+        company.update!(timezone: "Asia/Kolkata")
+        travel_to(Time.utc(2027, 1, 5, 12))
+      end
+
+      it "carries a claim approved after cutoff into the next run" do
+        row = builder.preparation(cutoff:).find { |entry| entry[:employment_id] == employment.id }
+        expect(row[:eligible_expenses]).to be_empty
+        expect(row[:excluded_expenses]).to include("approved_after_cutoff" => 1)
+        expect { build(expenses: [claim.id]) }.to raise_error(Payroll::ConsultantReview::InvalidInput, /no longer eligible/)
+        previous = build
+        approve(previous)
+        expect(claim.reload.payroll_reserved?).to be(false)
+
+        later = PayrollRun.create!(company:, period: Date.new(2026, 12, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
+        create(:timesheet_entry, user: worker, project: work_entry.project, work_date: Date.new(2026, 12, 2), duration: 480)
+        next_builder = described_class.new(later, actor: accounts)
+        next_row = next_builder.preparation(cutoff: Date.current.iso8601).find { |entry| entry[:employment_id] == employment.id }
+        expect(next_row[:eligible_expenses].pluck(:id)).to eq([claim.id])
+        revision = next_builder.create!(
+          consultants: [{ employment_id: employment.id, expense_ids: [claim.id], acknowledged: true }],
+          cutoff: Date.current.iso8601, expected_digest: nil, idempotency_key: "carried-claim")
+        next_workflow = Payroll::Workflow.new(later)
+        next_workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
+        next_workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
+
+        expect(previous.reload.payroll_payload.fetch("lines").first.fetch("reimbursements")).to be_empty
+        expect(run.current_revision.id).to eq(previous.id)
+        expect(workflow.status).to eq("approved")
+        expect(PayrollExpenseReservation.active.where(expense: claim).sole).to have_attributes(payroll_run_id: later.id, payroll_revision_id: revision.id, amount_minor: 500_000)
+        expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+      end
     end
   end
 end

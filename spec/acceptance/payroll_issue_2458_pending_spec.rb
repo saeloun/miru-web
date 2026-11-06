@@ -51,8 +51,7 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
 
   context "6. Reimbursement settlement" do
     # Concurrent run reservation and both direct-settlement orderings: claim_settlement_concurrency_spec.rb.
-    it "freezes approved claim amounts and requires reapproval or an adjustment after material claim changes"
-    it "carries a claim approved after cutoff into the next run or an explicitly separate payment"
+    # Immutable amounts/reapproval and next-run cutoff carryover: consultant_revision_spec.rb.
     it "releases a reservation only after cancellation or failure proves no outstanding payment and retains it for uncertain outcomes"
     it "settles an approved reimbursement once and retains its receipt, original currency, approved amount and payment allocation"
   end
