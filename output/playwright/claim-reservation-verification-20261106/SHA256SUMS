@@ -1,0 +1,3 @@
+ec164b671de60f4d9a5ca6a35c2da584dffed5054318e0a9347eb8db5cb0e29a  app/services/payroll/claim_reference.rb
+f44d2e427dac72b3f5f20bc00bd4ee8f6522fb74fd4ce4a398e76cbc8ef61785  spec/services/payroll/claim_reservation_concurrency_spec.rb
+9904f3192a3dcc2b42ec5133283b3c23d23eb6fbdfac0b7a2b733a3872167a5f  docs/superpowers/specs/2026-10-19-consultant-payroll-requirements.md

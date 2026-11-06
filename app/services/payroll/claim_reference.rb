@@ -60,7 +60,7 @@ module Payroll
 
         return reservation.update!(payroll_revision: revision)
       end
-      unless expense.approved? && expense.paid_at.nil? && !expense.discarded?
+      unless expense.approved? && expense.paid_at.nil? && !expense.discarded? && self.for(expense) == entry["source_reference"]
         raise Workflow::Conflict, "A selected claim is no longer payable; prepare a new revision"
       end
 
