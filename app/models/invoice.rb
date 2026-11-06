@@ -127,6 +127,10 @@ class Invoice < ApplicationRecord
     totals_differ?(attrs)
   end
 
+  def self.line_item_subtotal(values)
+    values.sum { |quantity, rate| (quantity.to_f / 60) * rate.to_f }.round(2)
+  end
+
   def recently_sent_mail?
     sent_at.nil? || (sent_at && !(sent_at > 1.minute.ago))
   end
@@ -318,7 +322,7 @@ class Invoice < ApplicationRecord
     end
 
     def calculated_totals_from_line_items(line_items)
-      subtotal = line_items.sum { |item| (item.quantity.to_f / 60) * item.rate.to_f }.round(2)
+      subtotal = self.class.line_item_subtotal(line_items.map { |item| [item.quantity, item.rate] })
       sync_invoice_tax_amounts(subtotal)
       total_attributes_for(subtotal)
     end
@@ -327,7 +331,7 @@ class Invoice < ApplicationRecord
       line_item_totals = invoice_line_items.pluck(:quantity, :rate)
       return zero_total_attributes if line_item_totals.empty?
 
-      subtotal = line_item_totals.sum { |quantity, rate| (quantity.to_f / 60) * rate.to_f }.round(2)
+      subtotal = self.class.line_item_subtotal(line_item_totals)
       sync_invoice_tax_amounts(subtotal)
       total_attributes_for(subtotal)
     end

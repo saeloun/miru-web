@@ -183,6 +183,20 @@ RSpec.describe "Invoice PDF Download", type: :request do
       allow_any_instance_of(InvoicePayment::PdfGeneration).to receive(:process).and_call_original
     end
 
+    def downloaded_pdf_text
+      expect(response).to have_http_status(:success)
+      expect(response.content_type).to include("application/pdf")
+      expect(response.body).to start_with("%PDF-")
+
+      Tempfile.create(["invoice-download", ".pdf"], binmode: true) do |file|
+        file.write(response.body)
+        file.flush
+        text, error, status = Open3.capture3("pdftotext", "-layout", file.path, "-")
+        expect(status.success?).to be(true), error
+        text
+      end
+    end
+
     it "decodes the default renderer stub into PDF bytes" do
       get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(user)
 
@@ -201,27 +215,42 @@ RSpec.describe "Invoice PDF Download", type: :request do
 
         get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(user)
 
-        expect(response).to have_http_status(:success)
-        expect(response.content_type).to include("application/pdf")
-        expect(response.body).to start_with("%PDF-")
-
-        Tempfile.create(["invoice-download", ".pdf"], binmode: true) do |file|
-          file.write(response.body)
-          file.flush
-          text, error, status = Open3.capture3("pdftotext", "-layout", file.path, "-")
-          expect(status.success?).to be(true), error
-          expect(text).to include(invoice.invoice_number, company.name, client.name, "Web Development Services")
-          expect(text).to match(/Sub total\s+₹1,500\.00/)
-          expect(text).to match(/Discount\s+-₹75\.00/)
-          expect(text).to match(/Tax\s+₹150\.00/)
-          expect(text).to match(/Total Due\s+₹#{Regexp.escape(due)}/)
-          if formatted_paid
-            expect(text).to match(/Total\s+₹1,575\.00/)
-            expect(text).to match(/Amount Paid\s+₹#{Regexp.escape(formatted_paid)}/)
-          end
+        text = downloaded_pdf_text
+        expect(text).to include(invoice.invoice_number, company.name, client.name, "Web Development Services")
+        expect(text).to match(/Sub total\s+₹1,500\.00/)
+        expect(text).to match(/Discount\s+-₹75\.00/)
+        expect(text).to match(/Tax\s+₹150\.00/)
+        expect(text).to match(/Total Due\s+₹#{Regexp.escape(due)}/)
+        if formatted_paid
+          expect(text).to match(/Total\s+₹1,575\.00/)
+          expect(text).to match(/Amount Paid\s+₹#{Regexp.escape(formatted_paid)}/)
         end
         File.binwrite(Rails.root.join("tmp", "invoice-download-#{state.tr(' ', '-')}.pdf"), response.body) if ENV["SAVE_TEST_PDFS"]
       end
+    end
+
+    it "preserves recorded totals and payments when fractional-minute charges cross a half-cent" do
+      allow(Ferrum::Browser).to receive(:new).and_call_original
+      company.update!(base_currency: "INR")
+      invoice.update!(currency: "INR", tax: 0, discount: 0)
+      invoice.invoice_line_items.reload.sole.update!(quantity: 1, rate: "60.30")
+      invoice.reload
+      payment = InvoicePayment::Settle.process({ invoice_id: invoice.id, amount: "0.50", transaction_date: Date.current, transaction_type: "bank_transfer", payment_currency: "INR" }, invoice)
+      expect(invoice.reload).to have_attributes(amount: BigDecimal("1.01"), amount_paid: BigDecimal("0.50"), amount_due: BigDecimal("0.51"))
+      recorded_invoice = invoice.attributes
+      recorded_payment = payment.attributes
+
+      get "/api/v1/invoices/#{invoice.id}/download", headers: auth_headers(user)
+
+      text = downloaded_pdf_text
+      expect(text).to match(/Sub total\s+₹1\.01/)
+      expect(text).to match(/Total\s+₹1\.01/)
+      expect(text).to match(/Amount Paid\s+₹0\.50/)
+      expect(text).to match(/Total Due\s+₹0\.51/)
+      expect(invoice.reload.attributes).to eq(recorded_invoice)
+      expect(payment.reload.attributes).to eq(recorded_payment)
+      expect(invoice.payments.count).to eq(1)
+      File.binwrite(Rails.root.join("tmp", "invoice-download-fractional.pdf"), response.body) if ENV["SAVE_TEST_PDFS"]
     end
   end
 end

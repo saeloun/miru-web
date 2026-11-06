@@ -92,26 +92,13 @@ RSpec.describe PdfGeneration::InvoiceService do
         expect(locals[:invoice_amount_due]).to be_present
         expect(locals[:invoice_amount_paid]).to be_present
         expect(locals[:invoice_line_items]).to be_present
-        expect(locals[:sub_total]).to be_present
-        expect(locals[:total]).to be_present
+        expect(locals[:sub_total]).to eq("$1,000.00")
+        expect(locals[:total]).to eq("$1,050.00")
 
         "<html><body>Invoice</body></html>"
       end
 
       service.process
-    end
-
-    it "calculates the correct subtotal" do
-      subtotal = service.send(:calculate_subtotal)
-
-      expect(subtotal).to eq(1000.0)
-    end
-
-    it "calculates the correct total" do
-      total = service.send(:calculate_total)
-
-      # total = subtotal + tax - discount = 1000 + 100 - 50 = 1050
-      expect(total).to eq(1050.0)
     end
 
     it "formats currency correctly" do
@@ -245,10 +232,15 @@ RSpec.describe PdfGeneration::InvoiceService do
   end
 
   describe "error handling" do
-    it "handles invoices without line items" do
-      invoice.invoice_line_items.destroy_all
+    it "keeps an empty invoice subtotal at zero after its lines are removed" do
+      invoice.invoice_line_items.reload.destroy_all
+      expect(invoice.invoice_line_items.reload).to be_empty
+      expect_any_instance_of(ActionController::Base).to receive(:render_to_string) do |_, args|
+        expect(args[:locals].slice(:sub_total, :total)).to eq(sub_total: "$0.00", total: "$0.00")
+        "<html><body>Invoice</body></html>"
+      end
 
-      expect { service.process }.not_to raise_error
+      service.process
     end
 
     it "handles invoices with nil amounts" do
