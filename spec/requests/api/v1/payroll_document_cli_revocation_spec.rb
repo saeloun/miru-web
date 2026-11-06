@@ -39,6 +39,28 @@ RSpec.describe "Payroll document CLI revocation", type: :request do
     end
   end
 
+  it "permanently revokes a CLI session invalidated while a private employee CSV is generated" do
+    account = "9876543210987654"
+    EmployeeRecord.create!(employment:, private_details: { "bank_account_number" => account })
+    report = EmployeeReport.create!(company:, name: "Synthetic private report", columns: ["bank_account_number"])
+    session, token = CliSession.issue_for(user: actor, company:)
+    allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap do |csv|
+        expect(csv).to include(account)
+        actor.remove_role(:admin, company)
+      end
+    end
+
+    get "/api/v1/employee_reports/#{report.id}/download", params: { month: "2026-10" }, headers: { "Authorization" => "Bearer #{token}" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include(account)
+    expect(report.audits.where(action: "download")).to be_empty
+    expect(session.reload.revoked_at).to be_present
+    actor.add_role(:admin, company)
+    expect(CliSession.authenticate(token)).to be_nil
+  end
+
   %w[salary_slip tax_evidence employee_document].each do |kind|
     it "permanently revokes a CLI session invalidated during #{kind} storage download" do
       record, path = private_document(kind)
