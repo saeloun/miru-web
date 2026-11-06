@@ -1,10 +1,18 @@
-import axios from "axios";
+import axios, { type AxiosInstance } from "axios";
 import { Toastr } from "StyledComponents";
 import { getActiveLocale } from "../i18n";
 
 import { clearCredentialsFromLocalStorage } from "utils/storage";
 import { getCsrfToken, getSessionRequestHeaders } from "utils/authHeaders";
 import { reportClientError } from "utils/runtimeRecovery";
+
+declare module "axios" {
+  interface AxiosRequestConfig<D = any, P = any> {
+    skipErrorToast?: boolean;
+    skipSuccessToast?: boolean;
+    __sessionValidated?: boolean;
+  }
+}
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -17,7 +25,7 @@ const AUTH_PATH_PREFIXES = [
 ];
 
 class ApiHandler {
-  axios: any;
+  axios: AxiosInstance;
   sessionValidationPromise: Promise<boolean> | null;
 
   constructor() {
