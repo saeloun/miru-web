@@ -15,6 +15,7 @@ class HiringApplication < ApplicationRecord
   has_many :hiring_submissions, dependent: :destroy
   has_many :hiring_screenings, dependent: :destroy
   has_many :hiring_decisions, dependent: :destroy
+  has_many :hiring_offers, dependent: :destroy
   has_many :hiring_interviews, dependent: :destroy
   serialize :creation_details, coder: JSON, type: Hash
   encrypts :creation_details, :notes

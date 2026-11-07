@@ -7,6 +7,9 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/hiring-offer", to: "hiring_offer_portal#show"
+  post "/hiring-offer/open", to: "hiring_offer_portal#open"
+  post "/hiring-offer/reply", to: "hiring_offer_portal#reply"
   get "/hiring-assignment", to: "hiring_assignment_portal#show", as: :hiring_assignment
   post "/hiring-assignment/open", to: "hiring_assignment_portal#open"
   post "/hiring-assignment/submit", to: "hiring_assignment_portal#submit"

@@ -6,6 +6,10 @@ This record covers private intake, email acknowledgements, candidate forms, scre
 
 The [decision-record checkpoint](decisions-20261107.md) adds drafts, explicit immutable finalization, hold ownership/date/zone and failure→Rejection Pending. The [communication increment](decision-messages-20261108.md) adds readonly draft previews, controlled finalized-rejection delivery, independently approved automation and due-hold notices. **371 backend checks and all 99 hiring Brave cases pass**, including actual loopback SMTP capture. Ten new screenshots are repository artifacts; hosted attachments, publication and the final review remain outstanding. Internal-notice recovery controls remain Task 9.
 
+## Task 8 private offers — in progress
+
+The [offer increment](offers-20261108.md) adds encrypted Preparing terms, separate approval/immutable private issuance, candidate acceptance/decline, local-date expiry and revocation. **391 hiring backend/schedule checks pass**; the full 105-case hiring Brave run and six affected native cases after the issuer-lifecycle refinement pass. Captures cover desktop/mobile, recovery and privacy. Issuing the private link sends no email. Offer email and accepted-offer→profile→generic agreement onboarding remain required; Task 8 stays unchecked.
+
 ## Task 6 internal feedback notices
 
 Optional, explicitly approved reviewer prompts, overdue reminders and submission notices to the approving Admin now reuse the encrypted outbox. Activation excludes the backlog; permission/recipient changes suppress unsent mail; Admin history shows frozen content and uncertain delivery. All hiring services/requests pass **316/0**, and six affected browser files pass **36/0**. [Behavior, verification and three captures](feedback-notifications-20261107.md). Internal manual recovery controls remain a communication-history follow-up; due hold notices and final decisions are Task 7. Publication and whole-branch review remain required.

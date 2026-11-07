@@ -15,5 +15,5 @@ Rails.application.config.filter_parameters += [
   :mercury_payment, :payroll_split_arrangement, :consultants, :agreement, :agreement_template, :signature_request, :signature_review,
   :signature_connection, :files, :payload, :webhookEndpoint, /\Aapplication\z/, /\Ahiring_search\z/, /\Aquery\z/,
   :hiring_setting, :hiring_mailbox, :hiring_receipt, :hiring_message, :hiring_form, :screening, :hiring_decision, :hiring_assignment_template,
-  :hiring_assessment, :hiring_assignment, :hiring_panel_member, :hiring_interview, :hiring_booking, :hiring_feedback, :calendar_id, :event_id
+  :hiring_assessment, :hiring_assignment, :hiring_panel_member, :hiring_interview, :hiring_booking, :hiring_feedback, :hiring_offer, :offer_portal, :calendar_id, :event_id
 ]

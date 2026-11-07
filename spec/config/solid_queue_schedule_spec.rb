@@ -5,6 +5,12 @@ require "yaml"
 require "erb"
 
 RSpec.describe "Solid Queue schedule" do
+  it "expires issued hiring offers in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_offer_expiry")
+      expect(task).to include("class" => "HiringOfferExpiryJob", "schedule" => "4-59/5 * * * *")
+    end
+  end
   it "reconciles missing interview feedback requests in default and production" do
     %w[default production].each do |environment|
       task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_feedback_requests")

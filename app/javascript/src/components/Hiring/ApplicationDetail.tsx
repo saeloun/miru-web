@@ -8,6 +8,7 @@ import ApplicationScreening from "./ApplicationScreening";
 import ApplicationAssignments from "./ApplicationAssignments";
 import ApplicationInterviews from "./ApplicationInterviews";
 import ApplicationDecisions from "./ApplicationDecisions";
+import ApplicationOffers from "./ApplicationOffers";
 import {
   receiptLabel,
   stageLabel,
@@ -169,6 +170,13 @@ export default function ApplicationDetail({
       />
       <ApplicationDecisions
         key={`decisions:${companyId}:${application.id}`}
+        companyId={companyId}
+        application={application}
+        changed={applicationChanged}
+        onDenied={denied}
+      />
+      <ApplicationOffers
+        key={`offers:${companyId}:${application.id}`}
         companyId={companyId}
         application={application}
         changed={applicationChanged}

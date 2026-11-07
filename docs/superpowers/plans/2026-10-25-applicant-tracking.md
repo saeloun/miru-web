@@ -100,6 +100,8 @@ Decision records, explicit draft/final confirmation, hold ownership/date/zone an
 
 ### Task 8: Offers and existing onboarding handoff
 
+Private offer records/approval, immutable issued terms, expiring/revocable candidate acceptance/decline and exact-intent recovery are implemented locally. **391 hiring backend/schedule checks pass**; a full 105-case hiring Brave run and six affected native cases after the issuer-lifecycle refinement pass. Captures and SQL/migration proof are in the [offer report](../../qa/hiring-2463/offers-20261108.md). Sent currently means issued via the private link; no email is sent. Approved editable offer-email delivery and explicit accepted-offer→employee/consultant profile→generic upload/signing handoff remain required. Task 8 stays unchecked.
+
 **Files:** `app/models/hiring_offer.rb`, `app/services/hiring/{offers,onboarding}.rb`, offer/portal/onboarding controls, migrations and tests.
 
 **Interface:** immutable issued compensation/date terms with Preparing/Sent/Accepted/Declined/Expired. Accepted offer plus Admin confirmation creates/links the correct existing employee/consultant workflow and generic agreement upload; retries return the same handoff. Do not send contracts or change payroll implicitly.

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_180200) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -956,6 +956,37 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_180200) do
     t.check_constraint "original_message_id IS NULL AND attempt_number = 1 OR original_message_id IS NOT NULL AND original_message_id <> id AND attempt_number > 1", name: "hiring_message_attempt"
     t.check_constraint "resolution IS NULL AND resolved_at IS NULL AND resolved_by_id IS NULL AND resolution_details IS NULL OR resolution IS NOT NULL AND (resolution::text = ANY (ARRAY['accepted'::character varying, 'not_accepted'::character varying]::text[])) AND resolved_at IS NOT NULL AND resolution_details IS NOT NULL", name: "hiring_message_resolution"
     t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
+  end
+
+  create_table "hiring_offers", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "issued_by_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "edit_details"
+    t.text "issue_details"
+    t.text "response_details"
+    t.text "details", null: false
+    t.text "access_token", null: false
+    t.string "state", default: "preparing", null: false
+    t.datetime "issued_at"
+    t.datetime "expires_at"
+    t.datetime "responded_at"
+    t.datetime "revoked_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_hiring_offers_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_offers_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_offers_one_active", unique: true, where: "((state)::text = ANY ((ARRAY['preparing'::character varying, 'sent'::character varying, 'accepted'::character varying])::text[]))"
+    t.index ["company_id", "id"], name: "index_hiring_offers_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_offers_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_offers_on_created_by_id"
+    t.index ["expires_at"], name: "index_hiring_offers_pending_expiry", where: "((state)::text = 'sent'::text)"
+    t.index ["issued_by_id"], name: "index_hiring_offers_on_issued_by_id"
+    t.check_constraint "state::text = 'preparing'::text AND issued_at IS NULL AND issued_by_id IS NULL AND issue_details IS NULL AND expires_at IS NULL AND responded_at IS NULL AND response_details IS NULL AND revoked_at IS NULL OR (state::text = ANY (ARRAY['sent'::character varying, 'accepted'::character varying, 'declined'::character varying, 'expired'::character varying]::text[])) AND issued_at IS NOT NULL AND issue_details IS NOT NULL AND expires_at IS NOT NULL AND ((state::text = ANY (ARRAY['sent'::character varying, 'expired'::character varying]::text[])) AND responded_at IS NULL AND response_details IS NULL OR (state::text = ANY (ARRAY['accepted'::character varying, 'declined'::character varying]::text[])) AND responded_at IS NOT NULL AND response_details IS NOT NULL)", name: "hiring_offer_state"
   end
 
   create_table "hiring_panel_members", force: :cascade do |t|
@@ -2493,6 +2524,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_180200) do
   add_foreign_key "hiring_messages", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
   add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_offers", "companies"
+  add_foreign_key "hiring_offers", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_offers", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_offers", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_panel_members", "companies"
   add_foreign_key "hiring_panel_members", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_portal_accesses", "companies"
