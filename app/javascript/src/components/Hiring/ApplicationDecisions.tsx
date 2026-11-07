@@ -7,6 +7,8 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import Picker from "./Picker";
 import Pager from "./Pager";
+import CandidateMessages from "./CandidateMessages";
+import InternalNoticeHistory from "./InternalNoticeHistory";
 import {
   accessDenied,
   failureMessage,
@@ -20,6 +22,7 @@ import {
   type ApplicationChange,
   type Choice,
   type Pagination,
+  type InternalNotice,
 } from "./types";
 
 type Details = {
@@ -31,6 +34,7 @@ type Details = {
   time_zone: string;
 };
 type Decision = {
+  notifications?: InternalNotice[];
   id: number;
   state: string;
   lock_version: number;
@@ -142,7 +146,12 @@ export default function ApplicationDecisions({
             ) ?? null;
           setSaved(draft);
           setVersion(result.application.lock_version);
-          setOutcome(draft?.details.outcome ?? "pass");
+          setOutcome(
+            draft?.details.outcome ??
+              (result.application.stage === "rejection_pending"
+                ? "reject"
+                : "pass")
+          );
           setReason(draft?.details.reason ?? "");
           setFollowUp(draft?.details.follow_up_on ?? "");
           setOwner(
@@ -203,7 +212,7 @@ export default function ApplicationDecisions({
         setFollowUp("");
         setNotice(
           operation.action === "finalize"
-            ? "Decision finalized. No email was sent."
+            ? "Decision finalized. Review message history for delivery status."
             : "This accepted request is already finalized. Review its history."
         );
       } else {
@@ -270,9 +279,10 @@ export default function ApplicationDecisions({
         <>
           <h3 className="font-semibold">Admin decision</h3>
           <p className="text-sm text-muted-foreground">
-            Drafts do not change hiring stages. Finalized decisions are
-            permanent records. Rejection delivery and due hold notices are
-            separate actions; this step sends no email.
+            Drafts do not change hiring stages or send mail. Finalized decisions
+            are permanent records. Rejection and hold notices run automatically
+            only when explicitly enabled and approved in communication settings.
+            Internal reasons stay in Miru.
           </p>
           <p ref={status} role={error ? "alert" : "status"} tabIndex={-1}>
             {error || notice}
@@ -463,6 +473,14 @@ export default function ApplicationDecisions({
                 </div>
               )}
               <h4 className="font-semibold">Decision history</h4>
+              <Button
+                type="button"
+                variant="outline"
+                disabled={busy}
+                onClick={() => setRefresh(value => value + 1)}
+              >
+                Refresh decision history
+              </Button>
               {!data.decisions.length && <p>No decisions recorded.</p>}
               {data.decisions.map(record => (
                 <article
@@ -488,6 +506,24 @@ export default function ApplicationDecisions({
                       Finalized by {record.finalized_by_name || "Former Admin"}{" "}
                       · {record.finalized_at}
                     </p>
+                  )}
+                  {record.details.outcome === "reject" && (
+                    <CandidateMessages
+                      companyId={companyId}
+                      path={`${path}/${record.id}/messages`}
+                      context={{
+                        kind: "decision",
+                        number: record.id,
+                        version: record.lock_version,
+                      }}
+                      onDenied={onDenied}
+                    />
+                  )}
+                  {record.details.outcome === "hold" && (
+                    <InternalNoticeHistory
+                      title="Hold follow-up delivery history"
+                      notifications={record.notifications}
+                    />
                   )}
                 </article>
               ))}

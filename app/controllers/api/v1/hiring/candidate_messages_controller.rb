@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class Api::V1::Hiring::InterviewMessagesController < Api::V1::Hiring::BaseController
+class Api::V1::Hiring::CandidateMessagesController < Api::V1::Hiring::BaseController
   def index
-    communication.with_interview do
+    communication.with_context do
       rows, pagination = page_records(communication.messages.order(id: :desc))
       render json: { company_id: current_company.id, messages: rows.map { |message| details(message) }, pagination: }
     end
@@ -14,12 +14,12 @@ class Api::V1::Hiring::InterviewMessagesController < Api::V1::Hiring::BaseContro
   end
 
   def create
-    message, created = communication.queue!(attributes: mutation_attributes(:hiring_message, Hiring::InterviewCommunication::KEYS))
+    message, created = communication.queue!(attributes: mutation_attributes(:hiring_message, communication.class::KEYS))
     render json: { company_id: current_company.id, message: details(message) }, status: created ? 201 : 200
   end
 
   def retry
-    attributes = mutation_attributes(:hiring_message, Hiring::InterviewCommunication::KEYS + ["message_version"])
+    attributes = mutation_attributes(:hiring_message, communication.class::KEYS + ["message_version"])
     message, = communication.queue!(attributes: attributes.except("message_version"), retry_of: communication.messages.find(optional_id(:id)),
       message_version: attributes["message_version"])
     render json: { company_id: current_company.id, message: details(message) }, status: 201
@@ -45,7 +45,8 @@ class Api::V1::Hiring::InterviewMessagesController < Api::V1::Hiring::BaseContro
 
     def details(message)
       message.slice(:id, :kind, :state, :error_code, :lock_version, :attempt_number, :original_message_id, :sent_at,
-        :resolution, :resolution_details, :resolved_at).merge(current_context: communication.current_operation?(message),
+        :resolution, :resolution_details, :resolved_at).merge(automatic: message.content["automatic"] == true,
+          current_context: communication.current_operation?(message),
           retryable: communication.current_operation?(message) && message.retryable? && message.attempts.order(attempt_number: :desc).pick(:id) == message.id,
           content: message.content.slice("to", "reply_to", "subject", "body"))
     end

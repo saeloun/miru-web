@@ -43,10 +43,11 @@ module Hiring
           next unless recipient && mailbox
 
           content = { "feedback_id" => @feedback.id, "recipient_user_id" => recipient.id, "to" => recipient.email,
+            "automatic" => true, "approval_actor_id" => setting.approved_by_id,
             "mailbox_id" => mailbox.id, "reply_to" => mailbox.source_email,
             "subject" => setting.details.fetch("#{kind}_subject"), "body" => body(kind, setting) }
           @company.hiring_messages.create!(hiring_application: @application, hiring_setting: setting, kind:, event_key: "feedback:#{@feedback.id}",
-            approved_setting_version: setting.lock_version, content:, queued_by: setting.approved_by)
+            approved_setting_version: setting.lock_version, content:)
         end
       end
       ActiveRecord.after_all_transactions_commit { message.enqueue } if message
@@ -96,6 +97,9 @@ module Hiring
       def body(kind, setting)
         notice = kind == "feedback_received" ? "Feedback received. Review the recommendation in Miru; no decision was made automatically." :
           "Please record your interview feedback in Hiring → My feedback."
+        if kind == "feedback_received" && @feedback.details["recommendation"] == "pass"
+          notice += " Interviewer recommends Pass; the candidate is ready for Admin review of the next stage."
+        end
         [setting.details.fetch("#{kind}_body"), notice, "Application ##{@application.id}: #{@application.submitted_name}",
           "Round #{@booking.hiring_interview.number}: #{@booking.round_details.fetch('title')}",
           "Feedback due (UTC): #{@booking.feedback_due_at.utc.iso8601}"].join("\n\n")

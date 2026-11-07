@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_170000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_180200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -807,6 +807,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_170000) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["company_id", "finalized_at", "id"], name: "index_hiring_decisions_finalized", where: "((state)::text = 'finalized'::text)"
     t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_decisions_for_history"
     t.index ["company_id", "hiring_application_id"], name: "index_hiring_decisions_one_draft", unique: true, where: "((state)::text = 'draft'::text)"
     t.index ["company_id", "id"], name: "index_hiring_decisions_on_company_id_and_id", unique: true
@@ -950,8 +951,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_170000) do
     t.index ["queued_by_id"], name: "index_hiring_messages_on_queued_by_id"
     t.index ["resolved_by_id"], name: "index_hiring_messages_on_resolved_by_id"
     t.index ["state", "enqueued_at"], name: "index_hiring_messages_on_state_and_enqueued_at"
-    t.check_constraint "kind::text = 'acknowledgement'::text AND event_key::text = 'acknowledgement'::text OR (kind::text = ANY (ARRAY['interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying]::text[])) AND event_key::text ~ '^booking:[1-9][0-9]{0,18}$'::text OR kind::text = 'interview_invitation'::text AND event_key::text ~ '^round:[1-9][0-9]{0,18}:[0-9]{1,10}$'::text OR (kind::text = ANY (ARRAY['feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying]::text[])) AND event_key::text ~ '^feedback:[1-9][0-9]{0,18}$'::text", name: "hiring_message_event"
-    t.check_constraint "kind::text = ANY (ARRAY['acknowledgement'::character varying, 'interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying, 'feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying]::text[])", name: "hiring_message_kind"
+    t.check_constraint "kind::text = 'acknowledgement'::text AND event_key::text = 'acknowledgement'::text OR (kind::text = ANY (ARRAY['interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying]::text[])) AND event_key::text ~ '^booking:[1-9][0-9]{0,18}$'::text OR kind::text = 'interview_invitation'::text AND event_key::text ~ '^round:[1-9][0-9]{0,18}:[0-9]{1,10}$'::text OR (kind::text = ANY (ARRAY['feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying]::text[])) AND event_key::text ~ '^feedback:[1-9][0-9]{0,18}$'::text OR (kind::text = ANY (ARRAY['rejection'::character varying, 'hold_follow_up'::character varying]::text[])) AND event_key::text ~ '^decision:[1-9][0-9]{0,18}$'::text", name: "hiring_message_event"
+    t.check_constraint "kind::text = ANY (ARRAY['acknowledgement'::character varying, 'interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying, 'feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying, 'rejection'::character varying, 'hold_follow_up'::character varying]::text[])", name: "hiring_message_kind"
     t.check_constraint "original_message_id IS NULL AND attempt_number = 1 OR original_message_id IS NOT NULL AND original_message_id <> id AND attempt_number > 1", name: "hiring_message_attempt"
     t.check_constraint "resolution IS NULL AND resolved_at IS NULL AND resolved_by_id IS NULL AND resolution_details IS NULL OR resolution IS NOT NULL AND (resolution::text = ANY (ARRAY['accepted'::character varying, 'not_accepted'::character varying]::text[])) AND resolved_at IS NOT NULL AND resolution_details IS NOT NULL", name: "hiring_message_resolution"
     t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
@@ -1050,6 +1051,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_170000) do
     t.datetime "updated_at", null: false
     t.text "form_schema"
     t.datetime "feedback_notifications_started_at"
+    t.datetime "rejection_automation_started_at"
+    t.datetime "hold_notifications_started_at"
     t.index ["approved_by_id"], name: "index_hiring_settings_on_approved_by_id"
     t.index ["company_id", "id"], name: "index_hiring_settings_on_company_id_and_id", unique: true
     t.index ["company_id"], name: "index_hiring_settings_on_company_id", unique: true

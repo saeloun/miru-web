@@ -348,14 +348,14 @@ namespace :api, defaults: { format: "json" } do
       end
       resources :applications, only: [:index, :show, :create] do
         resources :interviews, only: [:index, :create, :update] do
-          resources :messages, only: [:index, :create], controller: :interview_messages do
+          resources :messages, only: [:index, :create], controller: :candidate_messages do
             post :preview, on: :collection
             post :retry, on: :member
             post :reconcile, on: :member
           end
           resources :bookings, only: [:index, :create, :update] do
             post :import, on: :collection
-            resources :messages, only: [:index, :create], controller: :interview_messages do
+            resources :messages, only: [:index, :create], controller: :candidate_messages do
               post :preview, on: :collection
               post :retry, on: :member
               post :reconcile, on: :member
@@ -373,6 +373,11 @@ namespace :api, defaults: { format: "json" } do
         resources :screenings, only: [:index, :create]
         resources :decisions, only: [:index, :create, :update] do
           post :finalize, on: :member
+          resources :messages, only: [:index, :create], controller: :decision_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
         end
         resources :forms, only: [:index, :create, :destroy] do
           get :resume, on: :member

@@ -66,7 +66,7 @@ RSpec.describe "Admin decision journeys", type: :system, js: true do
     page.driver.browser.keyboard.type(:space)
     expect(page).to have_checked_field("I confirm this final decision")
     click_button "Finalize saved decision"
-    expect(page).to have_text("Decision finalized. No email was sent.")
+    expect(page).to have_text("Decision finalized. Review message history for delivery status.")
     expect(application.reload.stage).to eq("on_hold")
     expect(booking.reload.status).to eq("cancelled")
     expect(HiringMessage.count).to eq(0)

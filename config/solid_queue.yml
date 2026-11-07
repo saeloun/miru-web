@@ -45,6 +45,9 @@ default: &default
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob
           schedule: '2-59/5 * * * *'
+        hiring_decision_notifications:
+          class: HiringDecisionNotificationsJob
+          schedule: '3-59/5 * * * *'
         subscription_purchase_delivery_recovery:
           class: SubscriptionPurchaseDeliveryRecoveryJob
           schedule: '*/10 * * * *'
@@ -120,6 +123,9 @@ production:
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob
           schedule: '2-59/5 * * * *'
+        hiring_decision_notifications:
+          class: HiringDecisionNotificationsJob
+          schedule: '3-59/5 * * * *'
         subscription_purchase_delivery_recovery:
           class: SubscriptionPurchaseDeliveryRecoveryJob
           schedule: '*/10 * * * *'

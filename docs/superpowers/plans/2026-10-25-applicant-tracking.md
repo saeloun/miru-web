@@ -90,13 +90,13 @@ Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`
 
 ### Task 7: Decisions, holds and controlled rejection
 
-Decision records, explicit draft/final confirmation, hold ownership/date/zone and failure→Rejection Pending are implemented locally: **333 hiring backend cases and 26 affected native browser cases pass**. Drafts have no stage/mail effects; finalization preserves immutable history and closes applicable active work. Rejection preview/delivery/automation and due-hold notices remain unfinished; the completion contract stays unchecked. [Behavior, evidence and six captures](../../qa/hiring-2463/decisions-20261107.md).
+Decision records, explicit draft/final confirmation, hold ownership/date/zone and failure→Rejection Pending are implemented locally. Readonly rejection-draft preview, controlled finalized-rejection delivery, independent no-backlog opt-ins and due-hold notices now complete Task 7 locally: **371 backend cases and all 99 hiring native browser cases pass**. A real loopback SMTP capture verifies the candidate payload; unknown sends require evidence and a separate explicit retry. [Decision records](../../qa/hiring-2463/decisions-20261107.md) and [communication verification with ten captures](../../qa/hiring-2463/decision-messages-20261108.md). Publication, exact-head reviews/CI and the whole-branch audit remain required.
 
 **Files:** `app/services/hiring/decisions.rb`, Admin decision/template controls, communication/reminder extensions and tests.
 
 **Interface:** Pass notifies Admin; Fail creates Rejection Pending; only confirmed finalized decision or explicitly enabled automation queues rejection. Hold requires reason/owner/follow-up date and due notification. Every transition is audited and stale updates conflict.
 
-- [ ] RED→GREEN finalized vs draft decisions, approval/template changes, internal feedback never mailed, permission loss while queued, hold reminders and duplicate/failure/uncertain sends; actual local-mail browser journey; commit.
+- [x] RED→GREEN finalized vs draft decisions, approval/template changes, internal feedback never mailed, permission loss while queued, hold reminders and duplicate/failure/uncertain sends; actual local-mail browser journey; commit.
 
 ### Task 8: Offers and existing onboarding handoff
 

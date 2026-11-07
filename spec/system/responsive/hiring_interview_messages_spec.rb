@@ -86,7 +86,7 @@ RSpec.describe "Interview candidate communication journeys", type: :system, js: 
 
   it "recovers a lost queue response without another message" do
     intercepted = false
-    allow_any_instance_of(Api::V1::Hiring::InterviewMessagesController).to receive(:create).and_wrap_original do |original, *arguments|
+    allow_any_instance_of(Api::V1::Hiring::CandidateMessagesController).to receive(:create).and_wrap_original do |original, *arguments|
       original.call(*arguments)
       unless intercepted
         intercepted = true

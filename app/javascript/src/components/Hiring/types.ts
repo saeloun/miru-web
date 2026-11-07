@@ -111,6 +111,12 @@ export const feedbackMessageFields = [
   { key: "feedback_received_subject", label: "Admin feedback notice subject" },
   { key: "feedback_received_body", label: "Admin feedback notice body" },
 ] as const;
+export const decisionMessageFields = [
+  { key: "rejection_subject", label: "Rejection subject" },
+  { key: "rejection_body", label: "Rejection body" },
+  { key: "hold_follow_up_subject", label: "Hold follow-up subject" },
+  { key: "hold_follow_up_body", label: "Hold follow-up body" },
+] as const;
 export type HiringSettingsDetails = Record<
   (typeof hiringTextFields)[number]["key"],
   string | null
@@ -118,13 +124,17 @@ export type HiringSettingsDetails = Record<
   Partial<
     Record<
       | (typeof interviewMessageFields)[number]["key"]
-      | (typeof feedbackMessageFields)[number]["key"],
+      | (typeof feedbackMessageFields)[number]["key"]
+      | (typeof decisionMessageFields)[number]["key"],
       string | null
     >
   > & {
     client_count: number | null;
     feedback_notifications_enabled?: boolean;
     feedback_mailbox_id?: number | null;
+    rejection_automation_enabled?: boolean;
+    hold_notifications_enabled?: boolean;
+    decision_mailbox_id?: number | null;
   };
 export type HiringSettings = {
   details: HiringSettingsDetails;
@@ -134,11 +144,20 @@ export type HiringSettings = {
   approved_at: string | null;
   complete: boolean;
   feedback_mailbox: Choice | null;
+  decision_mailbox: Choice | null;
   preview: { subject: string; body: string } | null;
 };
 export type HiringSettingsPage = {
   company_id: number;
   settings: HiringSettings;
+};
+export type InternalNotice = {
+  id: number;
+  kind: string;
+  state: HiringMessage["state"];
+  error_code: string | null;
+  sent_at: string | null;
+  content: { to: string; reply_to: string; subject: string; body: string };
 };
 export type Mailbox = {
   id: number;

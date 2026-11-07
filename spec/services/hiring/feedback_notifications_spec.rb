@@ -66,6 +66,8 @@ RSpec.describe "Approved internal feedback notifications" do
     at_end
     2.times { collect }
     expect(collect.pluck(:kind)).to eq(["feedback_prompt"])
+    expect(collect.sole.queued_by_id).to be_nil
+    expect(collect.sole.content["approval_actor_id"]).to eq(admin.id)
     HiringDeliveryJob.perform_now(collect.sole.id)
     expect(ActionMailer::Base.deliveries.sole.to).to eq([interviewer.email])
     expect(ActionMailer::Base.deliveries.sole.body.decoded).to include("Feedback due (UTC)", "Project discussion")
@@ -114,7 +116,8 @@ RSpec.describe "Approved internal feedback notifications" do
     mail = ActionMailer::Base.deliveries.sole
     expect(mail.to).to eq([admin.email])
     expect(mail.body.decoded).to include("Feedback received", "Review the recommendation in Miru")
-    expect(mail.body.decoded).not_to include("PRIVATE", "pass", "candidate@example.test")
+    expect(mail.body.decoded).to include("Interviewer recommends Pass", "ready for Admin review of the next stage")
+    expect(mail.body.decoded).not_to include("PRIVATE", "candidate@example.test")
     expect(application.reload.stage).to eq("interview")
   end
 

@@ -10,7 +10,7 @@ import Picker from "./Picker";
 import Pager from "./Pager";
 import InterviewBookings from "./InterviewBookings";
 import FeedbackHistory from "./FeedbackHistory";
-import InterviewMessages from "./InterviewMessages";
+import CandidateMessages from "./CandidateMessages";
 import {
   accessDenied,
   failureMessage,
@@ -541,7 +541,7 @@ export default function ApplicationInterviews({
                   title={`Feedback for round ${record.number}`}
                   onDenied={failed}
                 />
-                <InterviewMessages
+                <CandidateMessages
                   companyId={companyId}
                   path={`applications/${application.id}/interviews/${record.id}/messages`}
                   context={{

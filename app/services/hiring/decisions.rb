@@ -46,7 +46,7 @@ module Hiring
             details: decision_details(attributes))
         end
         @application.touch
-        [record, true]
+        [record.reload, true]
       end
     rescue ActiveRecord::RecordInvalid
       raise Intake::InvalidInput, "Use valid decision wording, outcome, owner and date."

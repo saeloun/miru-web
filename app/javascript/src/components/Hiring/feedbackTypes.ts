@@ -1,4 +1,4 @@
-import type { Pagination } from "./types";
+import type { InternalNotice, Pagination } from "./types";
 
 export const assessmentFields = [
   ["topics", "Topics covered"],
@@ -40,14 +40,7 @@ export type FeedbackRecord = {
   details: FeedbackContent | null;
   reviewer_name: string;
   late: boolean;
-  notifications?: {
-    id: number;
-    kind: string;
-    state: string;
-    error_code: string | null;
-    sent_at: string | null;
-    content: { to: string; reply_to: string; subject: string; body: string };
-  }[];
+  notifications?: InternalNotice[];
   booking: {
     id: number;
     number: number;

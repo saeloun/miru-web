@@ -26,11 +26,14 @@ class Api::V1::Hiring::SettingsController < Api::V1::Hiring::BaseController
       fields = HiringSetting::TEXT_FIELDS + ["client_count"]
       complete = setting&.complete? || false
       mailbox = current_company.hiring_mailboxes.find_by(id: setting&.details&.fetch("feedback_mailbox_id", nil))
+      decision_mailbox = current_company.hiring_mailboxes.find_by(id: setting&.details&.fetch("decision_mailbox_id", nil))
       render json: { company_id: current_company.id, settings: {
         details: setting&.details || fields.index_with(nil), lock_version: setting&.lock_version,
         form: setting&.form || ::Hiring::Form.default_schema,
         approved: setting&.approved? || false, approved_at: setting&.approved_at, complete:,
         feedback_mailbox: mailbox && { id: mailbox.id, label: "#{mailbox.name} · #{mailbox.source_email}#{mailbox.active? ? '' : ' (disabled)'}" },
+        decision_mailbox: decision_mailbox && { id: decision_mailbox.id,
+          label: "#{decision_mailbox.name} · #{decision_mailbox.source_email}#{decision_mailbox.active? ? '' : ' (disabled)'}" },
         preview: complete ? { subject: setting.details.fetch("acknowledgement_subject"), body: setting.acknowledgement_text } : nil } }
     end
 end

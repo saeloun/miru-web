@@ -12,6 +12,7 @@ import {
   hiringTextFields,
   interviewMessageFields,
   feedbackMessageFields,
+  decisionMessageFields,
   type HiringSettings,
   type HiringSettingsDetails,
   type HiringSettingsPage,
@@ -23,6 +24,7 @@ export default function Settings({ companyId }: { companyId: number }) {
   const [saved, setSaved] = useState<HiringSettings | null>(null);
   const [draft, setDraft] = useState<HiringSettingsDetails | null>(null);
   const [feedbackMailbox, setFeedbackMailbox] = useState<Choice | null>(null);
+  const [decisionMailbox, setDecisionMailbox] = useState<Choice | null>(null);
   const [draftForm, setDraftForm] = useState<FormSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -49,6 +51,7 @@ export default function Settings({ companyId }: { companyId: number }) {
           setSaved(result.settings);
           setDraft(result.settings.details);
           setFeedbackMailbox(result.settings.feedback_mailbox);
+          setDecisionMailbox(result.settings.decision_mailbox);
           setDraftForm(result.settings.form);
           setNotice("");
         }
@@ -119,6 +122,7 @@ export default function Settings({ companyId }: { companyId: number }) {
       setSaved(data.settings);
       setDraft(data.settings.details);
       setFeedbackMailbox(data.settings.feedback_mailbox);
+      setDecisionMailbox(data.settings.decision_mailbox);
       setDraftForm(data.settings.form);
       setNotice(
         approve
@@ -202,6 +206,7 @@ export default function Settings({ companyId }: { companyId: number }) {
                 ...hiringTextFields,
                 ...interviewMessageFields,
                 ...feedbackMessageFields,
+                ...decisionMessageFields,
               ].map(({ key, label }) => (
                 <div key={key} className="min-w-0 space-y-2">
                   <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>
@@ -280,6 +285,64 @@ export default function Settings({ companyId }: { companyId: number }) {
                     });
                   }}
                   emptyLabel="Choose internal feedback inbox"
+                  purpose="history"
+                />
+              </div>
+              <div className="space-y-3 md:col-span-2">
+                {(
+                  [
+                    [
+                      "rejection_automation_enabled",
+                      "Enable automatic rejection after final Admin decision",
+                    ],
+                    [
+                      "hold_notifications_enabled",
+                      "Enable automatic due-hold notices",
+                    ],
+                  ] as const
+                ).map(([key, label]) => (
+                  <Label key={key} className="flex min-h-11 items-center gap-3">
+                    <input
+                      type="checkbox"
+                      checked={draft[key] === true}
+                      onChange={event =>
+                        setDraft({ ...draft, [key]: event.target.checked })
+                      }
+                    />
+                    {label}
+                  </Label>
+                ))}
+                <p className="max-w-3xl text-sm text-muted-foreground">
+                  Both are off by default. Enable only after reviewing the
+                  relevant subject/body and choosing an inbox, then save and
+                  approve. Each option applies only to decisions finalized after
+                  its activation; old decisions are not mailed. Rejections
+                  require a finalized Admin rejection. Hold notices go to the
+                  approving Admin on the saved local follow-up date. Editing a
+                  draft never sends mail.
+                </p>
+                <Picker
+                  id="hiring-decision-mailbox"
+                  companyId={companyId}
+                  kind="mailboxes"
+                  label="Decision reply inbox"
+                  value={
+                    decisionMailbox ||
+                    (draft.decision_mailbox_id
+                      ? {
+                          id: draft.decision_mailbox_id,
+                          label: `Inbox #${draft.decision_mailbox_id}`,
+                        }
+                      : null)
+                  }
+                  change={choice => {
+                    setDecisionMailbox(choice);
+                    setDraft({
+                      ...draft,
+                      decision_mailbox_id: choice?.id ?? null,
+                    });
+                  }}
+                  emptyLabel="Choose decision inbox"
                   purpose="history"
                 />
               </div>

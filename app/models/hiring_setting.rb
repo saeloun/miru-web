@@ -5,6 +5,7 @@ class HiringSetting < ApplicationRecord
     acknowledgement_subject acknowledgement_body].freeze
   INTERVIEW_FIELDS = HiringMessage::INTERVIEW_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
   FEEDBACK_FIELDS = HiringMessage::FEEDBACK_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
+  DECISION_FIELDS = HiringMessage::DECISION_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
 
   belongs_to :company
   belongs_to :approved_by, class_name: "User", optional: true
@@ -45,8 +46,9 @@ class HiringSetting < ApplicationRecord
     end
 
     def valid_details
-      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id]
-      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS).all? do |field|
+      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id
+        rejection_automation_enabled hold_notifications_enabled decision_mailbox_id]
+      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS).all? do |field|
         valid_text?(details[field], field.end_with?("_subject") ? 200 : 5_000) &&
           (!field.end_with?("_subject") || details[field].nil? || !details[field].match?(/[[:cntrl:]]/))
       end
@@ -57,6 +59,13 @@ class HiringSetting < ApplicationRecord
       valid &&= enabled.nil? || [true, false].include?(enabled)
       valid &&= mailbox.nil? || mailbox.is_a?(Integer) && mailbox.positive?
       valid &&= mailbox.present? && FEEDBACK_FIELDS.all? { |key| details[key].present? } if enabled == true
+      decision_mailbox = details["decision_mailbox_id"]
+      valid &&= decision_mailbox.nil? || decision_mailbox.is_a?(Integer) && decision_mailbox.positive?
+      { "rejection_automation_enabled" => "rejection", "hold_notifications_enabled" => "hold_follow_up" }.each do |flag, kind|
+        value = details[flag]
+        valid &&= value.nil? || [true, false].include?(value)
+        valid &&= decision_mailbox.present? && %w[subject body].all? { |part| details["#{kind}_#{part}"].present? } if value == true
+      end
       errors.add(:details, "contain invalid hiring email settings") unless valid
     end
 

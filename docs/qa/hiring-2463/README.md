@@ -1,10 +1,10 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling, feedback and messages from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). Milestone sections below retain their checkpoint status; the latest internal-notice increment is described first. Decisions, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling, feedback and decision messages from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). Milestone sections retain their checkpoint status. Offers, onboarding, reporting, retention and the release audit remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
 
-## Task 7 decision records — in progress
+## Task 7 decisions and communication — complete locally
 
-The newer [Task 7 decision-record increment](decisions-20261107.md) adds drafts, explicit immutable finalization, hold ownership/date/zone and failure→Rejection Pending. Hiring backend **333/0**; five affected Brave files **26/0**. Rejection mail/automation and due-hold notices remain unfinished, so Task 7 is not complete.
+The [decision-record checkpoint](decisions-20261107.md) adds drafts, explicit immutable finalization, hold ownership/date/zone and failure→Rejection Pending. The [communication increment](decision-messages-20261108.md) adds readonly draft previews, controlled finalized-rejection delivery, independently approved automation and due-hold notices. **371 backend checks and all 99 hiring Brave cases pass**, including actual loopback SMTP capture. Ten new screenshots are repository artifacts; hosted attachments, publication and the final review remain outstanding. Internal-notice recovery controls remain Task 9.
 
 ## Task 6 internal feedback notices
 

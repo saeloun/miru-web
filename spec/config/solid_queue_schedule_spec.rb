@@ -11,6 +11,13 @@ RSpec.describe "Solid Queue schedule" do
       expect(task).to include("class" => "HiringFeedbackRequestsJob", "schedule" => "2-59/5 * * * *")
     end
   end
+  it "queues approved decision notices in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_decision_notifications")
+      expect(task).to include("class" => "HiringDecisionNotificationsJob", "schedule" => "3-59/5 * * * *")
+    end
+  end
+
   let(:config) do
     YAML.safe_load(
       ERB.new(Rails.root.join("config/solid_queue.yml").read).result,

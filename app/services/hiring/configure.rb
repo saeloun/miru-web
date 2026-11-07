@@ -14,6 +14,8 @@ module Hiring
         values = fields.index_with(nil).merge(details.transform_keys(&:to_s))
         setting.details = values.transform_values { |value| value.is_a?(String) ? value.strip : value }
         setting.feedback_notifications_started_at = nil unless setting.details["feedback_notifications_enabled"] == true
+        setting.rejection_automation_started_at = nil unless setting.details["rejection_automation_enabled"] == true
+        setting.hold_notifications_started_at = nil unless setting.details["hold_notifications_enabled"] == true
         setting.form_schema = form unless form.nil?
         if setting.changed?
           setting.audit_comment = "Saved hiring email configuration."
@@ -38,6 +40,13 @@ module Hiring
         end
 
         setting.assign_attributes(approved_at: Time.current, approved_by: @actor)
+        %w[rejection_automation hold_notifications].each do |feature|
+          next unless setting.details["#{feature}_enabled"] == true
+          unless @company.hiring_mailboxes.exists?(id: setting.details["decision_mailbox_id"], active: true)
+            raise Intake::InvalidInput, "Choose an enabled reply inbox in this workspace for decision notices."
+          end
+          setting["#{feature}_started_at"] ||= Time.current
+        end
         setting.audit_comment = "Approved hiring email configuration."
         Audited.audit_class.as_user(@actor) { setting.save! }
       end

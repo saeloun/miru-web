@@ -66,6 +66,18 @@ RSpec.shared_context "interview message records" do
     result
   end
 
+  def approve_decision_messages(automatic: false, holds: false)
+    setting = approve
+    values = setting.details.merge("rejection_subject" => "Application update", "rejection_body" => "Thank you for your time. We will not proceed.",
+      "hold_follow_up_subject" => "Hiring follow-up due", "hold_follow_up_body" => "Please review this application.",
+      "rejection_automation_enabled" => automatic, "hold_notifications_enabled" => holds, "decision_mailbox_id" => mailbox.id)
+    configuration = Hiring::Configure.new(company:, actor: admin)
+    setting = configuration.save_draft!(details: values, lock_version: setting.lock_version)
+    result = configuration.approve!(lock_version: setting.lock_version)
+    travel 1.second
+    result
+  end
+
   before do
     admin.add_role(:admin, company)
     interviewer.add_role(:employee, company)

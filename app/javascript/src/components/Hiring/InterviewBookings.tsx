@@ -8,7 +8,7 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import Pager from "./Pager";
 import CalendarBooking from "./CalendarBooking";
-import InterviewMessages from "./InterviewMessages";
+import CandidateMessages from "./CandidateMessages";
 import {
   accessDenied,
   failureMessage,
@@ -607,7 +607,7 @@ export default function InterviewBookings({
                     </Button>
                   </div>
                 )}
-                <InterviewMessages
+                <CandidateMessages
                   companyId={companyId}
                   path={`${path}/${booking.id}/messages`}
                   context={{

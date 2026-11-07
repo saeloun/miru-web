@@ -50,7 +50,9 @@ module Hiring
         return "source_changed" unless mailbox && mailbox.source_email == content["reply_to"]
 
         application = @message.hiring_application.reload
-        return "application_closed" if %w[withdrawn rejected hired].include?(application.stage)
+        return "application_closed" if %w[withdrawn hired].include?(application.stage) || application.stage == "rejected" && @message.kind != "rejection"
+        return DecisionCommunication.blocked_reason(@message) if @message.kind == "rejection"
+        return DecisionNotifications.blocked_reason(@message) if @message.kind == "hold_follow_up"
         return FeedbackNotifications.blocked_reason(@message) if HiringMessage::FEEDBACK_KINDS.include?(@message.kind)
 
         return "recipient_changed" unless application.hiring_candidate.reload.email == content["to"]

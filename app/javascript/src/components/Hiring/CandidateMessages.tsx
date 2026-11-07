@@ -22,7 +22,10 @@ import {
 } from "./types";
 
 type Content = { to: string; reply_to: string; subject: string; body: string };
-type Preview = Content & { intent: Record<string, string | number | null> };
+type Preview = Content & {
+  intent: Record<string, string | number | null>;
+  can_queue?: boolean;
+};
 type Message = Pick<
   HiringMessage,
   | "id"
@@ -36,14 +39,14 @@ type Message = Pick<
   | "resolution"
   | "resolution_details"
   | "sent_at"
-> & { content: Content; current_context: boolean };
+> & { content: Content; current_context: boolean; automatic: boolean };
 type History = {
   company_id: number;
   messages: Message[];
   pagination: Pagination;
 };
 
-export default function InterviewMessages({
+export default function CandidateMessages({
   companyId,
   path,
   context,
@@ -51,14 +54,20 @@ export default function InterviewMessages({
 }: {
   companyId: number;
   path: string;
-  context: { kind: "booking" | "round"; number: number; version: number };
+  context: {
+    kind: "booking" | "round" | "decision";
+    number: number;
+    version: number;
+  };
   onDenied: (failure: unknown) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [data, setData] = useState<History | null>(null);
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
-  const [kind, setKind] = useState("interview_invitation");
+  const [kind, setKind] = useState(
+    context.kind === "decision" ? "rejection" : "interview_invitation"
+  );
   const [mailbox, setMailbox] = useState<Choice | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [retryOf, setRetryOf] = useState<Message | null>(null);
@@ -215,6 +224,10 @@ export default function InterviewMessages({
   };
 
   const contextLabel = `${context.kind} ${context.number}`;
+  const messageKinds =
+    context.kind === "decision"
+      ? [{ key: "rejection", label: "Rejection" }]
+      : interviewMessageKinds;
   const id = `${context.kind}-messages-${context.number}`;
 
   return (
@@ -242,9 +255,10 @@ export default function InterviewMessages({
         <>
           <h5 className="font-semibold">Candidate messages</h5>
           <p className="text-sm text-muted-foreground">
-            Saving interview details sends no email. Choose an approved template
-            and reply inbox, then confirm the exact preview. Internal feedback
-            and cancellation reasons are excluded.
+            Choose an approved template and reply inbox, then confirm the exact
+            preview. Internal feedback, decision reasons and cancellation
+            reasons are excluded. Review existing delivery history before
+            sending.
           </p>
           {context.kind === "round" && (
             <p className="text-sm text-muted-foreground">
@@ -287,10 +301,10 @@ export default function InterviewMessages({
                 setRetryOf(null);
               }}
             >
-              {interviewMessageKinds
+              {messageKinds
                 .filter(
                   item =>
-                    context.kind === "booking" ||
+                    context.kind !== "round" ||
                     item.key === "interview_invitation"
                 )
                 .map(item => (
@@ -325,10 +339,16 @@ export default function InterviewMessages({
                   : "Confirm candidate message"}
               </h6>
               <MessageContent content={preview} />
+              {preview.can_queue === false && (
+                <p>
+                  Draft preview only. Finalize this decision and preview again
+                  before queueing.
+                </p>
+              )}
               <div className="flex flex-wrap gap-3">
                 <Button
                   type="button"
-                  disabled={busy}
+                  disabled={busy || preview.can_queue === false}
                   onClick={() => void send()}
                 >
                   Confirm and queue {retryOf ? "retry" : "message"}
@@ -361,11 +381,11 @@ export default function InterviewMessages({
                   >
                     <h6 className="font-semibold">
                       {
-                        interviewMessageKinds.find(
-                          item => item.key === message.kind
-                        )?.label
+                        messageKinds.find(item => item.key === message.kind)
+                          ?.label
                       }{" "}
                       · Attempt {message.attempt_number}
+                      {message.automatic && " · Automatic approved delivery"}
                     </h6>
                     {context.kind === "round" && (
                       <p>
