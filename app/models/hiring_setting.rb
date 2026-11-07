@@ -3,6 +3,7 @@
 class HiringSetting < ApplicationRecord
   TEXT_FIELDS = %w[company_intro working_arrangements working_week overlap pto hiring_process
     acknowledgement_subject acknowledgement_body].freeze
+  INTERVIEW_FIELDS = HiringMessage::INTERVIEW_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
 
   belongs_to :company
   belongs_to :approved_by, class_name: "User", optional: true
@@ -43,12 +44,11 @@ class HiringSetting < ApplicationRecord
     end
 
     def valid_details
-      allowed = TEXT_FIELDS + ["client_count"]
-      valid = (details.keys - allowed).empty? && TEXT_FIELDS.all? do |field|
-        valid_text?(details[field], field == "acknowledgement_subject" ? 200 : 5_000)
+      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + ["client_count"]
+      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS).all? do |field|
+        valid_text?(details[field], field.end_with?("_subject") ? 200 : 5_000) &&
+          (!field.end_with?("_subject") || details[field].nil? || !details[field].match?(/[[:cntrl:]]/))
       end
-      subject = details["acknowledgement_subject"]
-      valid &&= subject.nil? || !subject.match?(/[[:cntrl:]]/)
       count = details["client_count"]
       valid &&= count.nil? || count.is_a?(Integer) && count.between?(0, 1_000_000)
       errors.add(:details, "contain invalid hiring email settings") unless valid

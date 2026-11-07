@@ -91,10 +91,25 @@ export const hiringTextFields = [
   { key: "acknowledgement_subject", label: "Acknowledgement subject" },
   { key: "acknowledgement_body", label: "Acknowledgement body" },
 ] as const;
+export const interviewMessageKinds = [
+  { key: "interview_invitation", label: "Interview invitation" },
+  { key: "interview_confirmation", label: "Interview confirmation" },
+  { key: "interview_reschedule", label: "Interview reschedule" },
+  { key: "interview_cancellation", label: "Interview cancellation" },
+] as const;
+export const interviewMessageFields = interviewMessageKinds.flatMap(
+  ({ key, label }) => [
+    { key: `${key}_subject` as const, label: `${label} subject` },
+    { key: `${key}_body` as const, label: `${label} body` },
+  ]
+);
 export type HiringSettingsDetails = Record<
   (typeof hiringTextFields)[number]["key"],
   string | null
-> & { client_count: number | null };
+> &
+  Partial<
+    Record<(typeof interviewMessageFields)[number]["key"], string | null>
+  > & { client_count: number | null };
 export type HiringSettings = {
   details: HiringSettingsDetails;
   form: FormSchema;

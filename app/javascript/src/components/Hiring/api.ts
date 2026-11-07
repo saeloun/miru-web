@@ -5,6 +5,9 @@ export const quiet = { skipErrorToast: true, skipSuccessToast: true };
 const workspaceChanged =
   "The hiring workspace changed. Reload the current workspace.";
 
+export const accessDenied = (error: unknown) =>
+  axios.isAxiosError(error) && [403, 404].includes(error.response?.status ?? 0);
+
 export const failureMessage = (error: unknown) => {
   const errors = axios.isAxiosError(error)
     ? error.response?.data?.errors

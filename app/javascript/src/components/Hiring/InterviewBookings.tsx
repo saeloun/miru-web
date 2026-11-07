@@ -8,7 +8,14 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import Pager from "./Pager";
 import CalendarBooking from "./CalendarBooking";
-import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import InterviewMessages from "./InterviewMessages";
+import {
+  accessDenied,
+  failureMessage,
+  quiet,
+  read,
+  verifyWorkspace,
+} from "./api";
 import { stageLabel, type ApplicationChange } from "./types";
 import {
   bookingTimeLabel,
@@ -38,6 +45,7 @@ export default function InterviewBookings({
   applicationVersion,
   changed,
   close,
+  onDenied,
 }: {
   companyId: number;
   applicationId: number;
@@ -45,6 +53,7 @@ export default function InterviewBookings({
   applicationVersion: number;
   changed: (attributes: ApplicationChange) => void;
   close: () => void;
+  onDenied: (failure: unknown) => void;
 }) {
   const [data, setData] = useState<BookingPage | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -83,10 +92,11 @@ export default function InterviewBookings({
 
   const failed = (failure: unknown) => {
     if (axios.isAxiosError(failure)) {
-      if ([403, 404].includes(failure.response?.status ?? 0)) {
+      if (accessDenied(failure)) {
         setData(null);
         setDraft(null);
         setCalendar(null);
+        onDenied(failure);
       }
       const options = failure.response?.data?.offset_options;
       if (
@@ -597,6 +607,12 @@ export default function InterviewBookings({
                     </Button>
                   </div>
                 )}
+                <InterviewMessages
+                  companyId={companyId}
+                  path={`${path}/${booking.id}/messages`}
+                  bookingNumber={booking.number}
+                  onDenied={failed}
+                />
               </li>
             ))}
           </ol>

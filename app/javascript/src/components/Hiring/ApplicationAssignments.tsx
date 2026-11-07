@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
 import Api from "apis/api";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -7,7 +8,13 @@ import { Textarea } from "../ui/textarea";
 import Picker from "./Picker";
 import Pager from "./Pager";
 import AssessmentWork, { downloadAssessmentFile } from "./AssessmentWork";
-import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import {
+  accessDenied,
+  failureMessage,
+  quiet,
+  read,
+  verifyWorkspace,
+} from "./api";
 import type { AssignmentTemplate } from "./AssignmentLibrary";
 import type { AdminAssessment, AssessmentPage } from "./assessmentTypes";
 import {
@@ -56,10 +63,12 @@ export default function ApplicationAssignments({
   companyId,
   application,
   changed,
+  onDenied,
 }: {
   companyId: number;
   application: Application;
   changed: (attributes: ApplicationChange) => void;
+  onDenied: (failure: unknown) => void;
 }) {
   const [data, setData] = useState<AssessmentPage | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -78,6 +87,12 @@ export default function ApplicationAssignments({
   > | null>(null);
   const feedback = useRef<HTMLParagraphElement>(null);
   const path = `applications/${application.id}/assignments`;
+  const failed = (failure: unknown) => {
+    if (accessDenied(failure)) onDenied(failure);
+
+    setError(failureMessage(failure));
+  };
+
   useEffect(() => {
     mounted.current = true;
 
@@ -113,7 +128,7 @@ export default function ApplicationAssignments({
         setError("");
       })
       .catch(failure => {
-        if (active) setError(failureMessage(failure));
+        if (active) failed(failure);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -153,7 +168,12 @@ export default function ApplicationAssignments({
         );
       }
     } catch (failure) {
-      if (!controller.signal.aborted) setError(failureMessage(failure));
+      if (!controller.signal.aborted) {
+        if (axios.isAxiosError(failure) && failure.response?.status === 403) {
+          onDenied(failure);
+        }
+        setError(failureMessage(failure));
+      }
     } finally {
       if (!controller.signal.aborted) setTaskLoading(false);
     }
@@ -263,7 +283,7 @@ export default function ApplicationAssignments({
       );
       setRefresh(value => value + 1);
     } catch (failure) {
-      if (mounted.current) setError(failureMessage(failure));
+      if (mounted.current) failed(failure);
     } finally {
       if (mounted.current) setBusy(false);
     }
@@ -283,7 +303,7 @@ export default function ApplicationAssignments({
         filename
       );
     } catch (failure) {
-      if (mounted.current) setError(failureMessage(failure));
+      if (mounted.current) failed(failure);
     } finally {
       if (mounted.current) setBusy(false);
     }

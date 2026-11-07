@@ -9,6 +9,7 @@ import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import FormSettings from "./FormSettings";
 import {
   hiringTextFields,
+  interviewMessageFields,
   type HiringSettings,
   type HiringSettingsDetails,
   type HiringSettingsPage,
@@ -115,7 +116,7 @@ export default function Settings({ companyId }: { companyId: number }) {
       setDraftForm(data.settings.form);
       setNotice(
         approve
-          ? "Approved. New applications can receive this acknowledgement and any enabled form link."
+          ? "Approved. New applications can receive this acknowledgement and any enabled form link. Interview messages require a separate preview and confirmation."
           : "Draft saved. Outgoing acknowledgements require approval."
       );
     } catch (failure) {
@@ -133,7 +134,10 @@ export default function Settings({ companyId }: { companyId: number }) {
           <p className="max-w-3xl text-sm text-muted-foreground">
             Confirm your company information and engagement terms before
             approving automatic acknowledgements for new applications. Approval
-            does not send mail to the existing backlog.
+            does not send mail to the existing backlog. Interview templates are
+            optional until used; each interview message needs a separate preview
+            and confirmation. Booking details are added automatically. Changing
+            any template requires approving the settings again.
           </p>
         </div>
         <Button
@@ -188,38 +192,40 @@ export default function Settings({ companyId }: { companyId: number }) {
               disabled={busy || loading}
               className="grid min-w-0 gap-4 md:grid-cols-2"
             >
-              {hiringTextFields.map(({ key, label }) => (
-                <div key={key} className="min-w-0 space-y-2">
-                  <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>
-                  {key === "acknowledgement_subject" ? (
-                    <Input
-                      id={`hiring-setting-${key}`}
-                      className="h-11"
-                      value={draft[key] ?? ""}
-                      maxLength={200}
-                      onChange={event =>
-                        setDraft({ ...draft, [key]: event.target.value })
-                      }
-                    />
-                  ) : (
-                    <Textarea
-                      id={`hiring-setting-${key}`}
-                      rows={3}
-                      value={draft[key] ?? ""}
-                      maxLength={5000}
-                      onChange={event =>
-                        setDraft({ ...draft, [key]: event.target.value })
-                      }
-                    />
-                  )}
-                  {key === "pto" && (
-                    <p className="text-xs text-muted-foreground">
-                      Use the applicable employee and consultant terms; this
-                      text appears in every acknowledgement.
-                    </p>
-                  )}
-                </div>
-              ))}
+              {[...hiringTextFields, ...interviewMessageFields].map(
+                ({ key, label }) => (
+                  <div key={key} className="min-w-0 space-y-2">
+                    <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>
+                    {key.endsWith("_subject") ? (
+                      <Input
+                        id={`hiring-setting-${key}`}
+                        className="h-11"
+                        value={draft[key] ?? ""}
+                        maxLength={200}
+                        onChange={event =>
+                          setDraft({ ...draft, [key]: event.target.value })
+                        }
+                      />
+                    ) : (
+                      <Textarea
+                        id={`hiring-setting-${key}`}
+                        rows={3}
+                        value={draft[key] ?? ""}
+                        maxLength={5000}
+                        onChange={event =>
+                          setDraft({ ...draft, [key]: event.target.value })
+                        }
+                      />
+                    )}
+                    {key === "pto" && (
+                      <p className="text-xs text-muted-foreground">
+                        Use the applicable employee and consultant terms; this
+                        text appears in every acknowledgement.
+                      </p>
+                    )}
+                  </div>
+                )
+              )}
               <div className="space-y-2">
                 <Label htmlFor="hiring-client-count">Client count</Label>
                 <Input
@@ -267,7 +273,7 @@ export default function Settings({ companyId }: { companyId: number }) {
               >
                 {draftForm.enabled
                   ? "Approve communications and form"
-                  : "Approve acknowledgement"}
+                  : "Approve communications"}
               </Button>
             </div>
             <p className="text-sm text-muted-foreground">

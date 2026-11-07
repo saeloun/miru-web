@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import Api from "apis/api";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -11,7 +10,13 @@ import Picker from "./Picker";
 import Pager from "./Pager";
 import InterviewBookings from "./InterviewBookings";
 import FeedbackHistory from "./FeedbackHistory";
-import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import {
+  accessDenied,
+  failureMessage,
+  quiet,
+  read,
+  verifyWorkspace,
+} from "./api";
 import {
   stageLabel,
   type Application,
@@ -36,10 +41,12 @@ export default function ApplicationInterviews({
   companyId,
   application,
   changed,
+  onDenied,
 }: {
   companyId: number;
   application: Application;
   changed: (attributes: ApplicationChange) => void;
+  onDenied: (failure: unknown) => void;
 }) {
   const [data, setData] = useState<InterviewPage | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -74,13 +81,11 @@ export default function ApplicationInterviews({
   }, [application.lock_version, data?.application.lock_version]);
 
   const failed = (failure: unknown) => {
-    if (
-      axios.isAxiosError(failure) &&
-      [403, 404].includes(failure.response?.status ?? 0)
-    ) {
+    if (accessDenied(failure)) {
       setData(null);
       setDraft(null);
       setBookingRoundId(null);
+      onDenied(failure);
     }
     setError(failureMessage(failure));
   };
@@ -596,6 +601,7 @@ export default function ApplicationInterviews({
           applicationVersion={application.lock_version}
           changed={changed}
           close={() => setBookingRoundId(null)}
+          onDenied={failed}
         />
       )}
     </section>

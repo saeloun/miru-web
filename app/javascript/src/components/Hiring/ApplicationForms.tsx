@@ -14,7 +14,13 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import Pager from "./Pager";
-import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import {
+  accessDenied,
+  failureMessage,
+  quiet,
+  read,
+  verifyWorkspace,
+} from "./api";
 import {
   receiptLabel,
   answerText,
@@ -29,12 +35,14 @@ export default function ApplicationForms({
   applicationVersion,
   timeZone,
   changed,
+  onDenied,
 }: {
   companyId: number;
   applicationId: number;
   applicationVersion: number;
   timeZone: string;
   changed: (attributes: Pick<Application, "stage" | "lock_version">) => void;
+  onDenied: (failure: unknown) => void;
 }) {
   const [data, setData] = useState<CandidateFormsPage | null>(null);
   const [page, setPage] = useState(1);
@@ -52,6 +60,12 @@ export default function ApplicationForms({
   const path = `applications/${applicationId}/forms`;
   const stale =
     data !== null && data.application_lock_version < applicationVersion;
+
+  const failed = (failure: unknown) => {
+    if (accessDenied(failure)) onDenied(failure);
+
+    setError(failureMessage(failure));
+  };
 
   useEffect(() => {
     mounted.current = true;
@@ -86,7 +100,7 @@ export default function ApplicationForms({
         });
       })
       .catch(failure => {
-        if (active) setError(failureMessage(failure));
+        if (active) failed(failure);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -140,7 +154,7 @@ export default function ApplicationForms({
       setRefresh(value => value + 1);
     } catch (failure) {
       if (mounted.current) {
-        setError(failureMessage(failure));
+        failed(failure);
         setLink(null);
       }
     } finally {
@@ -183,8 +197,9 @@ export default function ApplicationForms({
       anchor.download = form.resume.filename;
       anchor.click();
       window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
-    } catch {
+    } catch (failure) {
       if (mounted.current) {
+        if (accessDenied(failure)) onDenied(failure);
         setError(
           "The resume could not be downloaded. Refresh forms and retry, or ask an administrator to check private storage."
         );

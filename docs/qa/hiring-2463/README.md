@@ -1,6 +1,10 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling and feedback from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Candidate/internal interview messages, prompts/reminders, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling, feedback and candidate booking messages from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Unbooked invitations, internal interview notifications, prompts/reminders, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Task 6 candidate booking messages
+
+Admins can edit/approve four templates, preview public booking facts and explicitly queue an invitation, confirmation, reschedule or cancellation. Existing outbox claims, delivery checks, immutable attempts and uncertain-outcome reviews are reused. Final backend: **5,829/0, 59 pending**; all hiring browser cases: **78/0**. A scoped child denial clears the whole application and sibling panels. [Behavior, verification and six screenshots](interview-messages-20261107.md). Unbooked invitations, internal notices and feedback reminders remain unfinished; Task 6 stays unchecked.
 
 ## Task 6 feedback increment
 

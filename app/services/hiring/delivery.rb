@@ -58,6 +58,8 @@ module Hiring
           return "portal_unavailable" unless access&.active?
         end
 
+        return InterviewCommunication.blocked_reason(@message) if HiringMessage::INTERVIEW_KINDS.include?(@message.kind)
+
         nil
       end
 

@@ -80,7 +80,7 @@ Local panel, round and handover implementation: 15 request cases, 55 hiring brow
 
 ### Task 6: Scheduling and feedback deadlines
 
-Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f` and verified read-only import at `09b00bf12`. Feedback submission/history is implemented locally with immutable issued snapshots, current original-reviewer authorization, late/no-show handling and exact accepted-intent recovery; **324 related checks and 69 hiring browser cases pass**. Candidate/internal messages, prompts/reminders and the completion contract below remain unfinished. [Scheduling](../../qa/hiring-2463/scheduling-20261107.md), [calendar import](../../qa/hiring-2463/calendar-20261107.md) and [feedback evidence](../../qa/hiring-2463/feedback-20261107.md).
+Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`, read-only import at `09b00bf12` and immutable feedback at `44ac2c9de`. Candidate messages for recorded bookings now have approved editable templates, explicit previews/queuing and the existing outbox/reconciliation transport; **67 focused message/delivery/acknowledgement checks pass**. Unbooked invitations, internal Admin notifications, feedback prompts/reminders and the completion contract below remain unfinished. [Scheduling](../../qa/hiring-2463/scheduling-20261107.md), [calendar](../../qa/hiring-2463/calendar-20261107.md), [feedback](../../qa/hiring-2463/feedback-20261107.md) and [candidate booking messages](../../qa/hiring-2463/interview-messages-20261107.md).
 
 **Files:** `app/services/hiring/{scheduling,calendar_events}.rb`, scheduling/feedback jobs and controls, adapter to existing available calendar authorization, tests.
 

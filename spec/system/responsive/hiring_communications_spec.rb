@@ -54,19 +54,19 @@ RSpec.describe "Hiring communications", type: :system, js: true do
     fill_in "Company introduction", with: "Incomplete draft"
     click_button "Save draft"
     expect(page).to have_text("Draft saved")
-    expect(page).to have_button("Approve acknowledgement", disabled: true)
+    expect(page).to have_button("Approve communications", disabled: true)
     fill_settings
     expect(page).to have_text("Save your edits to preview")
     click_button "Save draft"
     expect(page).to have_css('[data-testid="acknowledgement-preview"]', text: "Clients: 0")
-    expect(page).to have_button("Approve acknowledgement", disabled: false)
-    click_button "Approve acknowledgement"
+    expect(page).to have_button("Approve communications", disabled: false)
+    click_button "Approve communications"
     expect(page).to have_text("Approved for new applications")
     expect(company.reload.hiring_setting.approved?).to be(true)
     capture("communications-approved-desktop.png")
     fill_in "PTO and engagement policy", with: "Updated engagement-specific policy."
     expect(page).to have_text("Unsaved changes")
-    expect(page).to have_button("Approve acknowledgement", disabled: true)
+    expect(page).to have_button("Approve communications", disabled: true)
     click_button "Save draft"
     expect(page).to have_text("Unapproved draft")
     expect(company.reload.hiring_setting.approved_at).to be_nil
@@ -143,7 +143,7 @@ RSpec.describe "Hiring communications", type: :system, js: true do
     click_button "Save draft"
     expect(page).to have_css('[role="alert"]', text: "settings changed")
     expect(page).to have_field("Field label", with: "My unsaved field")
-    expect(page).to have_button("Approve acknowledgement", disabled: true)
+    expect(page).to have_button("Approve communications", disabled: true)
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to eq(true)
     capture("candidate-form-settings-stale-mobile.png")
     click_button "Discard edits and reload"

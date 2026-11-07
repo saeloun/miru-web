@@ -34,24 +34,13 @@ module Hiring
     end
 
     def reconcile!(message:, lock_version:, outcome:, evidence:, worker_stopped:)
-      unless %w[accepted not_accepted].include?(outcome) && evidence.is_a?(String) && evidence.strip.length.between?(1, 2000) &&
-          !evidence.include?("\0") && [true, false].include?(worker_stopped) && (outcome != "not_accepted" || worker_stopped)
-        raise Intake::InvalidInput, "Record provider evidence; non-acceptance also requires confirming the original worker has stopped."
-      end
       raise Pundit::NotAuthorizedError unless @actor
 
       @actor.with_lock do
         authorize_actor!
         @receipt.with_lock do
           with_current_message(message, lock_version) do
-            unless message.state == "uncertain" && message.resolution.nil?
-              raise Intake::Conflict, "Only an unresolved unknown delivery can be reconciled. Reload its current status."
-            end
-            Audited.audit_class.as_user(@actor) do
-              message.update!(resolution: outcome, resolution_details: { "evidence" => evidence.strip, "worker_stopped" => worker_stopped },
-                resolved_by: @actor, resolved_at: Time.current)
-            end
-            message
+            message.record_delivery_review!(actor: @actor, outcome:, evidence:, worker_stopped:)
           end
         end
       end

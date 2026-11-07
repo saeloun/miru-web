@@ -25,6 +25,11 @@ export default function ApplicationDetail({
   const [page, setPage] = useState(1);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
+  const denied = useCallback((failure: unknown) => {
+    setData(null);
+    setError(failureMessage(failure));
+  }, []);
+
   const applicationChanged = useCallback(
     (attributes: ApplicationChange) => {
       setData(current =>
@@ -145,18 +150,21 @@ export default function ApplicationDetail({
         application={application}
         timeZone={data.time_zone}
         changed={applicationChanged}
+        onDenied={denied}
       />
       <ApplicationAssignments
         key={`assignments:${companyId}:${application.id}`}
         companyId={companyId}
         application={application}
         changed={applicationChanged}
+        onDenied={denied}
       />
       <ApplicationInterviews
         key={`interviews:${companyId}:${application.id}`}
         companyId={companyId}
         application={application}
         changed={applicationChanged}
+        onDenied={denied}
       />
       <ApplicationForms
         key={`${companyId}:${application.id}`}
@@ -165,6 +173,7 @@ export default function ApplicationDetail({
         applicationVersion={application.lock_version}
         timeZone={data.time_zone}
         changed={applicationChanged}
+        onDenied={denied}
       />
       <section
         className="rounded-lg border bg-card p-4 sm:p-6"

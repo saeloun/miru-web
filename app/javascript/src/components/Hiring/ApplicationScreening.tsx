@@ -4,7 +4,13 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import Picker from "./Picker";
-import { failureMessage, quiet, read, verifyWorkspace } from "./api";
+import {
+  accessDenied,
+  failureMessage,
+  quiet,
+  read,
+  verifyWorkspace,
+} from "./api";
 import {
   receiptLabel,
   stageLabel,
@@ -51,11 +57,13 @@ export default function ApplicationScreening({
   application,
   timeZone,
   changed,
+  onDenied,
 }: {
   companyId: number;
   application: Application;
   timeZone: string;
   changed: (attributes: ApplicationChange) => void;
+  onDenied: (failure: unknown) => void;
 }) {
   const [data, setData] = useState<ScreeningPage | null>(null);
   const [version, setVersion] = useState<number | null>(null);
@@ -73,6 +81,12 @@ export default function ApplicationScreening({
   const feedback = useRef<HTMLParagraphElement>(null);
   const initialized = useRef(false);
   const path = `applications/${application.id}/screenings`;
+  const failed = (failure: unknown) => {
+    if (accessDenied(failure)) onDenied(failure);
+
+    setError(failureMessage(failure));
+  };
+
   useEffect(() => {
     mounted.current = true;
 
@@ -120,7 +134,7 @@ export default function ApplicationScreening({
         });
       })
       .catch(failure => {
-        if (active) setError(failureMessage(failure));
+        if (active) failed(failure);
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -172,7 +186,7 @@ export default function ApplicationScreening({
       setPage(1);
       setRefresh(value => value + 1);
     } catch (failure) {
-      if (mounted.current) setError(failureMessage(failure));
+      if (mounted.current) failed(failure);
     } finally {
       if (mounted.current) setBusy(false);
     }
