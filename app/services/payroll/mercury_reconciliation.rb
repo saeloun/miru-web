@@ -165,8 +165,9 @@ module Payroll
         raise MercuryPayment::Blocked.new("not_accepted_yet") unless instruction.submission_state == "accepted"
 
         client = connection.client
+        observed_attributes = instruction.attributes
         parsed = read_request(client, instruction.provider_request_id)
-        matched = apply_request(instruction, parsed, actor)
+        matched = apply_request(instruction, parsed, actor, observed_attributes)
         apply_transactions(instruction, client, actor) if matched && instruction.request_status != "pendingApproval"
         sync_group(instruction, actor)
         instruction
@@ -223,8 +224,9 @@ module Payroll
         raise MercuryPayment::Blocked.new("provider_status_unavailable")
       end
 
-      def apply_request(instruction, parsed, actor)
+      def apply_request(instruction, parsed, actor, observed_attributes)
         instruction.with_lock do
+          next false unless instruction.attributes == observed_attributes
           next false if instruction.released_at
 
           unless instruction.provider_request_id == parsed.request_id && instruction.matches_request?(parsed)
@@ -242,11 +244,14 @@ module Payroll
       end
 
       def apply_transactions(instruction, client, actor)
+        observed_attributes = instruction.attributes
         start = (instruction.provider_request_created_at - 1.day).to_date
         transactions, total = Contract.transactions(
           client.request_transactions(account_id: instruction.source_account_id, request_id: instruction.provider_request_id, start:)
         )
-        instruction.with_lock { apply_linkage(instruction, transactions, total, actor) }
+        instruction.with_lock do
+          apply_linkage(instruction, transactions, total, actor) if instruction.attributes == observed_attributes
+        end
       rescue PayrollProviders::Error
         raise MercuryPayment::Blocked.new("provider_status_unavailable")
       end

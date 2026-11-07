@@ -19,6 +19,25 @@ RSpec.describe Payroll::MercuryStatusRefreshJob do
     expect(a_request(:post, /mercury/)).not_to have_been_made
   end
 
+  it "discards a stale batch record and advances on the next sweep" do
+    changed = false
+    allow_any_instance_of(Payroll::MercuryReconciliation).to receive(:refresh_from_job!).and_wrap_original do |original, instruction|
+      unless changed
+        PayrollPaymentInstruction.find(instruction.id).update!(last_error_code: "provider_status_unavailable", last_checked_at: Time.current)
+        changed = true
+      end
+      original.call(instruction)
+    end
+
+    described_class.perform_now
+    expect(leg.reload).to have_attributes(request_status: "pendingApproval", last_error_code: nil, credited_minor: 0)
+
+    described_class.perform_now
+    expect(leg.reload).to have_attributes(request_status: "approved", last_error_code: nil, credited_minor: 0)
+    expect(a_request(:get, "#{mercury_base}/request-send-money/#{request_id}")).to have_been_made.twice
+    expect(a_request(:post, /mercury/)).not_to have_been_made
+  end
+
   it "does not touch an unverified connection" do
     PayrollMercuryConnection.find_by!(company:).update!(verified_at: nil, verified_version: nil)
     described_class.perform_now
