@@ -4,7 +4,7 @@ This record covers private intake, email acknowledgements, candidate forms, scre
 
 ## Task 6 manual scheduling increment
 
-Manual candidate-zone bookings, immutable reschedules, cancellation/no-show and curated staff booking details are implemented locally. Related hiring checks: **257/0**; full backend before the final access guard: **5,754/0, 59 pending**; all hiring browser files: **59/0**. Calendar import, feedback and reminders remain pending. [Details and four actual screenshots](scheduling-20261107.md).
+Manual candidate-zone bookings, immutable reschedules, cancellation/no-show and curated staff booking details are implemented locally. Existing calendar authorization now belongs to the Miru user who completed OAuth; unbound tokens require reconnection. Related hiring/calendar checks: **268/0**; full backend before the final access guard: **5,754/0, 59 pending**; all hiring browser files: **59/0**. Calendar import, feedback and reminders remain pending. [Details and four actual screenshots](scheduling-20261107.md).
 
 ## Task 5 interview panels and configurable rounds
 

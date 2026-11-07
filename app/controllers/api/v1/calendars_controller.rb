@@ -3,6 +3,7 @@
 class Api::V1::CalendarsController < Api::V1::ApplicationController
   OAUTH_STATE_SESSION_KEY = :google_calendar_oauth_state
   OAUTH_USER_SESSION_KEY = :google_calendar_oauth_user_id
+  AUTHORIZATION_USER_SESSION_KEY = :google_calendar_authorization_user_id
 
   before_action :set_client
 
@@ -33,12 +34,13 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
 
       response = @client.fetch_access_token!
       session[:authorization] = response
+      session[AUTHORIZATION_USER_SESSION_KEY] = current_user.id
       clear_oauth_state
 
       redirect_to api_v1_calendars_path
     else
       clear_oauth_state
-      current_user.update!(calendar_connected: false)
+      clear_calendar_authorization
       redirect_to root_path, alert: "Calendar authorization failed"
     end
   end
@@ -46,13 +48,13 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
   def calendars
     authorize :calendars, policy_class: CalendarPolicy
 
-    @client.update!(session[:authorization])
-    current_user.update!(calendar_connected: true)
+    return unless load_authorization
 
     service = Google::Apis::CalendarV3::CalendarService.new
     service.authorization = @client
 
     @calendar_list = service.list_calendar_lists
+    current_user.update!(calendar_connected: true)
     primary_calendar = @calendar_list.items.find { |item| item.summary.include?("@") }
     calendar_id = primary_calendar&.id
 
@@ -67,7 +69,7 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
   def events
     authorize :events, policy_class: CalendarPolicy
 
-    @client.update!(session[:authorization])
+    return unless load_authorization
     current_month = Time.current.month
     current_year = Time.current.year
     calendar_id = params[:calendar_id]
@@ -93,7 +95,26 @@ class Api::V1::CalendarsController < Api::V1::ApplicationController
     end
 
     def set_client
+      response.headers["Cache-Control"] = "private, no-store"
       @client = Signet::OAuth2::Client.new(client_options)
+    end
+
+    def load_authorization
+      authorization = session[:authorization]
+      if session[AUTHORIZATION_USER_SESSION_KEY] == current_user.id && authorization.is_a?(Hash) && authorization["access_token"].present?
+        @client.update!(authorization)
+        return true
+      end
+
+      clear_calendar_authorization
+      redirect_to root_path, alert: "Connect your Google Calendar before reading meetings"
+      false
+    end
+
+    def clear_calendar_authorization
+      session.delete(:authorization)
+      session.delete(AUTHORIZATION_USER_SESSION_KEY)
+      current_user.update!(calendar_connected: false) if current_user.calendar_connected?
     end
 
     def valid_oauth_state?

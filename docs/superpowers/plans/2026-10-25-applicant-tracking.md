@@ -80,6 +80,8 @@ Local panel, round and handover implementation: 15 request cases, 55 hiring brow
 
 ### Task 6: Scheduling and feedback deadlines
 
+Manual scheduling increment committed as `d7d08d192`: UTC/candidate-zone times, DST choice/rejection, immutable reschedule/cancellation/no-show and private staff projection. Calendar session ownership is hardened before import. Combined hiring/calendar checks: **268/0**; actual scheduling browser scenarios: **4/0**. Calendar import, feedback submission, messages/reminders and the completion contract below remain unfinished. [Evidence and four screenshots](../../qa/hiring-2463/scheduling-20261107.md).
+
 **Files:** `app/services/hiring/{scheduling,calendar_events}.rb`, scheduling/feedback jobs and controls, adapter to existing available calendar authorization, tests.
 
 **Interface:** manual fallback stores UTC start/end and candidate IANA zone, external booking/meeting details and round status. Calendar import uses the authorized connection and verifies assignment/attendee; candidate email excludes internal feedback. Feedback records attendance/date/topics/evidence/assessment/recommendation.
