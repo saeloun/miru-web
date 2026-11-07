@@ -1,6 +1,6 @@
 # Manual interview scheduling — Task 6 increment
 
-Local work for [Sonam's ATS request](https://github.com/saeloun/miru-web/issues/2463). Task 6 remains incomplete: calendar import, feedback submission, candidate communications and reminder delivery are still pending. This increment does not send email or change an external calendar.
+Local manual-booking increment for [Sonam's ATS request](https://github.com/saeloun/miru-web/issues/2463). The subsequent [calendar import increment](calendar-20261107.md) adds provider import; Task 6 remains incomplete because feedback submission, candidate communications and reminder delivery are still pending. This increment does not send email or change an external calendar.
 
 ## Behavior and boundaries
 

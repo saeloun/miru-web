@@ -24,7 +24,7 @@ class HiringInterviewBooking < ApplicationRecord
 
   def admin_details
     slice(:id, :number, :status, :lock_version, :starts_at, :ends_at, :feedback_due_at, :ended_at, :ending_reason)
-      .merge(details:, round_details:, panel: panel_snapshot)
+      .merge(details:, round_details:, panel: panel_snapshot).then { |result| precise_times(result) }
   end
 
   def staff_details
@@ -33,7 +33,7 @@ class HiringInterviewBooking < ApplicationRecord
       shared["meeting_url"] = ""
       shared["booking_instructions"] = ""
     end
-    slice(:id, :status, :starts_at, :ends_at, :feedback_due_at).merge(details: shared)
+    precise_times(slice(:id, :status, :starts_at, :ends_at, :feedback_due_at).merge(details: shared))
   end
 
   def end!(status:, reason:)
@@ -48,7 +48,7 @@ class HiringInterviewBooking < ApplicationRecord
 
     def valid_details
       hours = details["feedback_hours"]
-      valid = details.keys.sort == DETAIL_KEYS.sort && details["source"] == "manual" &&
+      valid = valid_source? &&
         hours.is_a?(Integer) && hours.between?(1, 8760) && text?(details["booking_instructions"], 5000) &&
         text?(details["meeting_url"], 2048) && safe_meeting_url?(details["meeting_url"]) &&
         round_details.keys.sort == HiringInterview::DETAIL_KEYS.sort &&
@@ -57,15 +57,49 @@ class HiringInterviewBooking < ApplicationRecord
     end
 
     def valid_times
-      local = Hiring::InterviewTime.parse(details["starts_local"], time_zone: details["candidate_time_zone"], utc_offset: details["utc_offset"])
+      local = if details["source"] == "google_calendar"
+        calendar_start
+      else
+        Hiring::InterviewTime.parse(details["starts_local"], time_zone: details["candidate_time_zone"], utc_offset: details["utc_offset"])
+      end
       duration = round_details["duration_minutes"]
       hours = details["feedback_hours"]
       unless starts_at == local && duration.is_a?(Integer) && hours.is_a?(Integer) &&
           ends_at == starts_at + duration.minutes && feedback_due_at == ends_at + hours.hours
         errors.add(:base, "Record the candidate-local time, round duration and feedback deadline consistently")
       end
-    rescue Hiring::Intake::InvalidInput
+    rescue Hiring::Intake::InvalidInput, TZInfo::InvalidTimezoneIdentifier, ArgumentError, TypeError, KeyError
       errors.add(:base, "Choose a valid candidate-local date, time and UTC offset")
+    end
+
+    def valid_source?
+      return details.keys.sort == DETAIL_KEYS.sort if details["source"] == "manual"
+      return false unless details["source"] == "google_calendar" && details.keys.sort == (DETAIL_KEYS + ["provider"]).sort
+
+      provider = details["provider"]
+      provider.is_a?(Hash) && provider.keys.sort == %w[calendar_id ends_at etag event_id starts_at] &&
+        provider.values.all? { |value| text?(value, 1024) && value.strip.present? }
+    end
+
+    def calendar_start
+      provider = details.fetch("provider")
+      raise Hiring::Intake::InvalidInput unless provider.is_a?(Hash)
+
+      start = Time.iso8601(provider.fetch("starts_at"))
+      finish = Time.iso8601(provider.fetch("ends_at"))
+      local = TZInfo::Timezone.get(details["candidate_time_zone"]).to_local(start)
+      unless provider["starts_at"] == start.utc.iso8601(6) && provider["ends_at"] == finish.utc.iso8601(6) && ends_at == finish &&
+          details["starts_local"] == local.strftime("%Y-%m-%dT%H:%M:%S.%6N") && details["utc_offset"] == local.strftime("%:z")
+        raise Hiring::Intake::InvalidInput
+      end
+      start
+    end
+
+    def precise_times(result)
+      return result unless details["source"] == "google_calendar"
+
+      %w[starts_at ends_at feedback_due_at].each { |key| result[key] = public_send(key).utc.iso8601(6) }
+      result
     end
 
     def valid_ending

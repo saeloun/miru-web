@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::Hiring::BookingsController < Api::V1::Hiring::BaseController
+  include HiringCalendarConnection
   rescue_from ::Hiring::InterviewTime::Ambiguous do |error|
     render json: { errors: error.message, offset_options: error.offsets }, status: 422
   end
@@ -31,6 +32,16 @@ class Api::V1::Hiring::BookingsController < Api::V1::Hiring::BaseController
       ::Hiring::Scheduling.new(interview:, actor: current_user).end!(booking:, attributes:)
       render json: context(interview).merge(booking: booking.admin_details)
     end
+  end
+
+  def import
+    attributes = mutation_attributes(:hiring_booking, ::Hiring::Scheduling::IMPORT_KEYS)
+    application = current_company.hiring_applications.find(optional_id(:application_id))
+    interview = application.hiring_interviews.find(optional_id(:interview_id))
+    booking = ::Hiring::Scheduling.new(interview:, actor: current_user).import!(attributes:) do |expected|
+      hiring_calendar_events(expected).fetch(calendar_id: attributes["calendar_id"], event_id: attributes["event_id"])
+    end
+    render json: context(interview).merge(booking: booking.admin_details), status: booking.previously_new_record? ? 201 : 200
   end
 
   private

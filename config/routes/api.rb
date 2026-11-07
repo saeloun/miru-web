@@ -346,7 +346,10 @@ namespace :api, defaults: { format: "json" } do
       end
       resources :applications, only: [:index, :show, :create] do
         resources :interviews, only: [:index, :create, :update] do
-          resources :bookings, only: [:index, :create, :update]
+          resources :bookings, only: [:index, :create, :update] do
+            post :import, on: :collection
+          end
+          resources :calendar_events, only: :index
         end
         post :search, on: :collection
         resources :assignments, only: [:index, :create] do

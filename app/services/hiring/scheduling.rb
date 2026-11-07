@@ -5,6 +5,8 @@ module Hiring
     CREATE_KEYS = %w[company_id application_version interview_version request_key starts_local candidate_time_zone utc_offset
       meeting_url booking_instructions feedback_hours previous_booking_id reason].freeze
     END_KEYS = %w[company_id application_version interview_version booking_version action reason].freeze
+    IMPORT_KEYS = %w[company_id application_version interview_version request_key calendar_id event_id etag candidate_time_zone
+      feedback_hours booking_instructions previous_booking_id reason].freeze
 
     def initialize(interview:, actor:)
       @interview, @actor = interview, actor
@@ -15,18 +17,36 @@ module Hiring
     def create!(attributes:)
       with_round do
         input!(attributes, CREATE_KEYS)
-        key = attributes["request_key"]
-        unless key.is_a?(String) && key.match?(/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i)
-          raise Intake::InvalidInput, "Use a valid booking request identifier."
-        end
-        if (existing = @interview.hiring_interview_bookings.find_by(request_key: key))
-          raise Intake::Conflict, "This request already recorded a different booking." unless existing.request_details == attributes
-
-          next existing
-        end
+        existing = existing_request(attributes)
+        next existing if existing
         versions!(attributes)
         available_round!
         record_booking!(attributes)
+      end
+    end
+
+    def calendar_context
+      with_round do
+        available_round!
+        import_context
+      end
+    end
+
+    def import!(attributes:)
+      prepared = with_round do
+        prepare_import(attributes)
+      end
+      return prepared if prepared.is_a?(HiringInterviewBooking)
+
+      event = yield prepared
+      with_round do
+        current = prepare_import(attributes)
+        next current if current.is_a?(HiringInterviewBooking)
+
+        raise Intake::Conflict, "The candidate or panel changed. Reload before importing." unless prepared == current
+        raise Intake::Conflict, "The calendar event changed. Search again before importing." unless event.fetch("etag") == attributes["etag"]
+
+        record_booking!(attributes, calendar_event: event)
       end
     end
 
@@ -101,17 +121,51 @@ module Hiring
         end
       end
 
-      def record_booking!(attributes)
+      def existing_request(attributes)
+        key = attributes["request_key"]
+        unless key.is_a?(String) && key.match?(/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i)
+          raise Intake::InvalidInput, "Use a valid booking request identifier."
+        end
+        existing = @interview.hiring_interview_bookings.find_by(request_key: key)
+        if existing && existing.request_details != attributes
+          raise Intake::Conflict, "This request already recorded a different booking."
+        end
+        existing
+      end
+
+      def import_context
+        ids = @interview.panel_snapshot.pluck("employment_id")
+        { application_version: @application.lock_version, interview_version: @interview.lock_version,
+          candidate_email: @application.hiring_candidate.reload.email.strip.downcase,
+          panel_emails: @company.employments.where(id: ids).joins(:user).pluck("users.email").map { |email| email.strip.downcase }.sort,
+          duration_minutes: @interview.details.fetch("duration_minutes") }
+      end
+
+      def prepare_import(attributes)
+        input!(attributes, IMPORT_KEYS)
+        existing = existing_request(attributes)
+        return existing if existing
+
+        versions!(attributes)
+        available_round!
+        import_context
+      end
+
+      def record_booking!(attributes, calendar_event: nil)
         original = @interview.hiring_interview_bookings.scheduled.first
         replace_booking!(original, attributes)
-        starts_at = InterviewTime.parse(attributes["starts_local"], time_zone: attributes["candidate_time_zone"], utc_offset: attributes["utc_offset"])
+        starts_at = if calendar_event
+          Time.iso8601(calendar_event.fetch("starts_at"))
+        else
+          InterviewTime.parse(attributes["starts_local"], time_zone: attributes["candidate_time_zone"], utc_offset: attributes["utc_offset"])
+        end
         hours = attributes["feedback_hours"]
         raise Intake::InvalidInput, "Choose a feedback deadline from 1 to 8,760 hours after the interview." unless hours.is_a?(Integer) && hours.between?(1, 8760)
 
         ends_at = starts_at + @interview.details.fetch("duration_minutes").minutes
         booking = @interview.hiring_interview_bookings.create!(company: @company, created_by: @actor,
           number: (@interview.hiring_interview_bookings.maximum(:number) || 0) + 1, request_key: attributes.fetch("request_key"), request_details: attributes,
-          starts_at:, ends_at:, feedback_due_at: ends_at + hours.hours, details: booking_details(attributes, starts_at),
+          starts_at:, ends_at:, feedback_due_at: ends_at + hours.hours, details: booking_details(attributes, starts_at, calendar_event:),
           round_details: @interview.details, panel_snapshot: @interview.panel_snapshot)
         event!(booking, original ? "rescheduled" : "scheduled")
         booking
@@ -126,11 +180,23 @@ module Hiring
         original&.end!(status: "cancelled", reason:)
       end
 
-      def booking_details(attributes, starts_at)
-        { "starts_local" => attributes["starts_local"], "candidate_time_zone" => attributes["candidate_time_zone"],
-          "utc_offset" => TZInfo::Timezone.get(attributes["candidate_time_zone"]).to_local(starts_at).strftime("%:z"),
+      def booking_details(attributes, starts_at, calendar_event: nil)
+        zone = attributes["candidate_time_zone"]
+        raise Intake::InvalidInput, "Choose the candidate's IANA time zone." unless zone.is_a?(String) && zone.valid_encoding? && zone.length <= 100
+
+        local = TZInfo::Timezone.get(zone).to_local(starts_at)
+        result = { "starts_local" => attributes["starts_local"], "candidate_time_zone" => zone,
+          "utc_offset" => local.strftime("%:z"),
           "meeting_url" => attributes.fetch("meeting_url", ""), "booking_instructions" => attributes.fetch("booking_instructions", ""),
           "feedback_hours" => attributes["feedback_hours"], "source" => "manual" }
+        if calendar_event
+          result.merge!("source" => "google_calendar", "starts_local" => local.strftime("%Y-%m-%dT%H:%M:%S.%6N"),
+            "meeting_url" => calendar_event.fetch("meeting_url"), "provider" => attributes.slice("calendar_id", "event_id", "etag")
+              .merge("starts_at" => calendar_event.fetch("starts_at"), "ends_at" => calendar_event.fetch("ends_at")))
+        end
+        result
+      rescue TZInfo::InvalidTimezoneIdentifier
+        raise Intake::InvalidInput, "Choose the candidate's IANA time zone."
       end
 
       def reason!(attributes, required: true)

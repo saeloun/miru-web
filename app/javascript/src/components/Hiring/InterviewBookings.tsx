@@ -7,6 +7,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import Pager from "./Pager";
+import CalendarBooking from "./CalendarBooking";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import { stageLabel, type ApplicationChange } from "./types";
 import {
@@ -54,6 +55,10 @@ export default function InterviewBookings({
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [offsets, setOffsets] = useState<string[]>([]);
+  const [calendar, setCalendar] = useState<{
+    currentBookingId: number | null;
+    zone: string | null;
+  } | null>(null);
   const generation = useRef(0);
   const mounted = useRef(true);
   const feedback = useRef<HTMLParagraphElement>(null);
@@ -81,6 +86,7 @@ export default function InterviewBookings({
       if ([403, 404].includes(failure.response?.status ?? 0)) {
         setData(null);
         setDraft(null);
+        setCalendar(null);
       }
       const options = failure.response?.data?.offset_options;
       if (
@@ -134,7 +140,10 @@ export default function InterviewBookings({
       applicationVersion: data.application.lock_version,
       interviewVersion: data.interview.lock_version,
       requestKey: window.crypto.randomUUID(),
-      local: booking?.details.starts_local || "",
+      local:
+        booking?.details.source === "manual"
+          ? booking.details.starts_local
+          : "",
       zone:
         booking?.details.candidate_time_zone || data.candidate_time_zone || "",
       offset: booking?.details.utc_offset || "",
@@ -216,7 +225,7 @@ export default function InterviewBookings({
   const editable =
     data?.interview.status === "planned" &&
     data.application.stage === "interview";
-  const locked = busy || loading || !!draft;
+  const locked = busy || loading || !!draft || !!calendar;
 
   return (
     <section
@@ -238,6 +247,21 @@ export default function InterviewBookings({
         </p>
       )}
       <div className="flex flex-wrap gap-3">
+        {data && (
+          <Button
+            className="min-h-11"
+            variant="outline"
+            disabled={locked || !editable}
+            onClick={() =>
+              setCalendar({
+                currentBookingId: data.current_booking_id,
+                zone: data.candidate_time_zone,
+              })
+            }
+          >
+            Import from Google Calendar
+          </Button>
+        )}
         {data && !data.current_booking_id && (
           <Button
             className="min-h-11"
@@ -250,7 +274,7 @@ export default function InterviewBookings({
         <Button
           className="min-h-11"
           variant="outline"
-          disabled={busy}
+          disabled={busy || !!calendar}
           onClick={() => {
             setDraft(null);
             setOffsets([]);
@@ -263,7 +287,7 @@ export default function InterviewBookings({
         <Button
           className="min-h-11"
           variant="outline"
-          disabled={busy}
+          disabled={busy || !!calendar}
           onClick={close}
         >
           {draft
@@ -271,6 +295,26 @@ export default function InterviewBookings({
             : "Close booking history"}
         </Button>
       </div>
+      {calendar && (
+        <CalendarBooking
+          companyId={companyId}
+          applicationId={applicationId}
+          interviewId={interviewId}
+          currentBookingId={calendar.currentBookingId}
+          candidateZone={calendar.zone}
+          close={() => setCalendar(null)}
+          failed={failed}
+          saved={application => {
+            generation.current += 1;
+            setCalendar(null);
+            setData(null);
+            setNotice("Calendar booking imported");
+            changed(application);
+            setPage(1);
+            setRefresh(value => value + 1);
+          }}
+        />
+      )}
       {draft && (
         <form onSubmit={save} className="space-y-4 rounded-lg border p-4">
           <fieldset
@@ -286,6 +330,13 @@ export default function InterviewBookings({
                 ? "Cancel booking"
                 : "Record a no-show"}
             </legend>
+            {draft.action === "record" &&
+              draft.booking?.details.source === "google_calendar" && (
+                <p className="text-sm text-muted-foreground">
+                  Choose a new local time for this manual replacement. The
+                  imported event keeps its original seconds and precision.
+                </p>
+              )}
             {draft.action === "record" && (
               <>
                 <div className="space-y-2">
@@ -488,6 +539,12 @@ export default function InterviewBookings({
                     booking.details.candidate_time_zone
                   )}{" "}
                   · {booking.details.candidate_time_zone}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Recorded from{" "}
+                  {booking.details.source === "google_calendar"
+                    ? "Google Calendar"
+                    : "manual entry"}
                 </p>
                 <p className="whitespace-pre-wrap break-words">
                   {booking.details.booking_instructions}

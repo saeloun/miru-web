@@ -146,4 +146,27 @@ RSpec.describe "Api::V1::Calendars", type: :request do
     expect(request.session[:google_calendar_authorization_user_id]).to be_nil
     expect(user.reload.calendar_connected).to be(false)
   end
+
+  it "returns to the application after a state-bound hiring connection and clears the return path" do
+    allow_any_instance_of(Signet::OAuth2::Client).to receive(:fetch_access_token!).and_return("access_token" => "synthetic-token")
+    get api_v1_redirect_path, params: { return_to: "/hiring/applications/123" }
+    state = Rack::Utils.parse_query(URI.parse(response.parsed_body.fetch("url")).query).fetch("state")
+    get api_v1_callback_path, params: { code: "synthetic-code", state: }
+    expect(response).to redirect_to("/hiring/applications/123")
+    expect(request.session[:google_calendar_return_to]).to be_nil
+    get api_v1_redirect_path
+    state = Rack::Utils.parse_query(URI.parse(response.parsed_body.fetch("url")).query).fetch("state")
+    get api_v1_callback_path, params: { code: "synthetic-code", state: }
+    expect(response).to redirect_to(api_v1_calendars_path)
+  end
+
+  it "rejects external, malformed and callback-supplied return paths" do
+    allow_any_instance_of(Signet::OAuth2::Client).to receive(:fetch_access_token!).and_return("access_token" => "synthetic-token")
+    ["https://example.test", "//example.test", "/hiring/applications/123?return_to=//example.test", { unsafe: true }].each do |path|
+      get api_v1_redirect_path, params: { return_to: path }
+      state = Rack::Utils.parse_query(URI.parse(response.parsed_body.fetch("url")).query).fetch("state")
+      get api_v1_callback_path, params: { code: "synthetic-code", state:, return_to: "https://example.test" }
+      expect(response).to redirect_to(api_v1_calendars_path)
+    end
+  end
 end

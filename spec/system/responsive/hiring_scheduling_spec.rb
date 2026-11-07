@@ -73,6 +73,117 @@ RSpec.describe "Interview scheduling", type: :system, js: true do
     page.save_screenshot(directory.join("#{name}.png"), full: true)
   end
 
+  def calendar_fixture
+    { "id" => "synthetic_event", "etag" => '"synthetic-v1"', "summary" => "Synthetic calendar interview", "status" => "confirmed",
+      "start" => { "dateTime" => "2027-01-15T09:00:15.123456Z" }, "end" => { "dateTime" => "2027-01-15T09:45:15.123456Z" },
+      "attendees" => [{ "email" => application.hiring_candidate.email, "responseStatus" => "accepted" },
+        { "email" => interviewer.email, "responseStatus" => "accepted" }], "hangoutLink" => "https://meet.example.test/synthetic" }
+  end
+
+  def connected_calendar
+    allow_any_instance_of(Calendars::Connection).to receive(:configured?).and_return(true)
+    client = Signet::OAuth2::Client.new(access_token: "synthetic-calendar-token", expires_at: 1.hour.from_now)
+    allow_any_instance_of(Calendars::Connection).to receive(:authorized_client).and_return(client)
+    stub_request(:get, "https://www.googleapis.com/calendar/v3/users/me/calendarList")
+      .with(query: hash_including("maxResults" => "20"))
+      .to_return(status: 200, headers: { "Content-Type" => "application/json" },
+        body: { items: [{ id: "primary", summary: "Synthetic interview calendar" }] }.to_json)
+    stub_request(:get, "https://www.googleapis.com/calendar/v3/calendars/primary/events")
+      .with(query: hash_including("singleEvents" => "true"))
+      .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: { items: [calendar_fixture] }.to_json)
+    stub_request(:get, "https://www.googleapis.com/calendar/v3/calendars/primary/events/synthetic_event")
+      .to_return(status: 200, headers: { "Content-Type" => "application/json" }, body: calendar_fixture.to_json)
+  end
+
+  def select_calendar_event
+    click_button "Import from Google Calendar"
+    select "Synthetic interview calendar", from: "Google calendar"
+    fill_in "Search from (UTC date)", with: "2027-01-15"
+    click_button "Find matching events"
+    find("#calendar-event option", text: "Synthetic calendar interview").select_option
+    fill_in "Candidate time zone for import", with: "Asia/Kolkata"
+    fill_in "Feedback due within (hours after interview)", with: "24"
+    fill_in "Booking instructions", with: "Contact the hiring team to reschedule"
+  end
+
+  it "explains an unconfigured calendar and keeps manual scheduling available on mobile" do
+    allow_any_instance_of(Calendars::Connection).to receive(:configured?).and_return(false)
+    open_bookings(width: 375)
+    click_button "Import from Google Calendar"
+    expect(page).to have_text("Google Calendar is not configured for Miru")
+    expect(page).to have_text("You can still record a manual booking")
+    screenshot("calendar-fallback-mobile")
+    click_button "Close calendar import"
+    expect(page).to have_button("Record manual booking", disabled: false)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
+    expect(@console_errors).to be_empty
+  end
+
+  it "imports a selected event on mobile with exact stored instants and a visible candidate zone" do
+    connected_calendar
+    open_bookings(width: 375)
+    select_calendar_event
+    expect(page).to have_text("09:00:15.123456Z")
+    screenshot("calendar-import-mobile")
+    click_button "Import selected event"
+    expect(page).to have_text("Calendar booking imported")
+    expect(page).to have_text("Google Calendar")
+    expect(page).to have_text("Asia/Kolkata")
+    expect(round.hiring_interview_bookings.sole.starts_at).to eq(Time.iso8601("2027-01-15T09:00:15.123456Z"))
+    screenshot("calendar-booking-imported-mobile")
+    click_button "Reschedule booking 1"
+    expect(page).to have_field("Start in candidate's local time", with: "")
+    expect(page).to have_text("Choose a new local time for this manual replacement")
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth")).to be(true)
+    expect(@console_errors).to be_empty
+    expect(HiringMessage.count).to eq(0)
+  end
+
+  it "retains a stale calendar draft until explicit discard and a new search" do
+    connected_calendar
+    open_bookings(width: 375)
+    select_calendar_event
+    round.touch
+    click_button "Import selected event"
+    expect(page).to have_text("This application, round or booking changed")
+    expect(page).to have_field("Feedback due within (hours after interview)", with: "24")
+    expect(round.hiring_interview_bookings).to be_empty
+    screenshot("calendar-import-stale-mobile")
+    click_button "Discard calendar draft and search again"
+    click_button "Find matching events"
+    find("#calendar-event option", text: "Synthetic calendar interview").select_option
+    fill_in "Candidate time zone for import", with: "Asia/Kolkata"
+    fill_in "Feedback due within (hours after interview)", with: "24"
+    click_button "Import selected event"
+    expect(page).to have_text("Calendar booking imported")
+    expect(round.hiring_interview_bookings.count).to eq(1)
+    expect(@console_errors).to be_empty
+  end
+
+  it "retries a lost accepted calendar response with the same request key and no duplicate provider read" do
+    provider = connected_calendar
+    lost = false
+    allow_any_instance_of(Api::V1::Hiring::BookingsController).to receive(:render).and_wrap_original do |original, *args, **options, &block|
+      if original.receiver.action_name == "import" && !lost
+        lost = true
+        original.call(json: { errors: "Synthetic lost response. Retry the same import." }, status: 503)
+      else
+        original.call(*args, **options, &block)
+      end
+    end
+    open_bookings(width: 375)
+    select_calendar_event
+    click_button "Import selected event"
+    expect(page).to have_text("Synthetic lost response. Retry the same import.")
+    expect(page).to have_field("Feedback due within (hours after interview)", with: "24")
+    expect(round.hiring_interview_bookings.count).to eq(1)
+    click_button "Import selected event"
+    expect(page).to have_text("Calendar booking imported")
+    expect(round.hiring_interview_bookings.count).to eq(1)
+    expect(provider).to have_been_requested.once
+    expect(@console_errors).to be_empty
+  end
+
   it "records, reschedules and cancels manual bookings on mobile while preserving prior times" do
     open_bookings(width: 375)
     within('section[aria-label="Interview bookings"]') do

@@ -8,7 +8,14 @@ export type BookingDetails = {
   meeting_url: string;
   booking_instructions: string;
   feedback_hours: number;
-  source: "manual";
+  source: "manual" | "google_calendar";
+  provider?: {
+    calendar_id: string;
+    event_id: string;
+    etag: string;
+    starts_at: string;
+    ends_at: string;
+  };
 };
 export type Booking = {
   id: number;
@@ -55,6 +62,9 @@ export const bookingTimeLabel = (value: string, zone: string) =>
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
+    ...(new Date(value).getUTCSeconds() || new Date(value).getUTCMilliseconds()
+      ? { second: "2-digit" as const }
+      : {}),
     hourCycle: "h23",
     timeZone: zone,
   }).format(new Date(value));
