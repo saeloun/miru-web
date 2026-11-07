@@ -10,7 +10,7 @@ RSpec.describe "Api::V1::Client#create", type: :request do
 
   context "when user is an admin" do
     before do
-      send_request :get, invitations_accepts_url(token: invitation.token)
+      send_request :post, invitations_accepts_url, params: { token: invitation.token }
       create(:employment, company:, user:)
       user.add_role :admin, company
       sign_in user

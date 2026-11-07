@@ -13,6 +13,19 @@ RSpec.describe "Api::V1::Invitations#create", type: :request do
   end
 
   context "when new user is invited" do
+    it "does not lock an existing recipient out of their own account before acceptance" do
+      recipient = create(:user)
+      previous = recipient.attributes.slice("current_workspace_id", "invitation_token", "invitation_created_at", "invited_by_id", "encrypted_password")
+      count = user.reload.invitations_count
+      post api_v1_invitations_path, params: { first_name: "Taylor", last_name: "Candidate", recipient_email: recipient.email, role: "employee" }, headers: auth_headers(user)
+      expect(response).to have_http_status(:created)
+      expect(recipient.reload.attributes.slice(*previous.keys)).to eq(previous)
+      expect(recipient.valid_password?("Password123!")).to be(true)
+      expect(user.reload.invitations_count).to eq(count + 1)
+      expect(company.employments.where(user: recipient)).not_to exist
+      expect(company.invitations.where(recipient_email: recipient.email, accepted_at: nil)).to exist
+    end
+
     it "forbids an admin from inviting an owner" do
       send_request :post, api_v1_invitations_path, params: {
         first_name: "New",

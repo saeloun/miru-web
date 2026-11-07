@@ -35,7 +35,12 @@ class CreateInvitedUserService
   def process
     invitation_valid!
     user_valid!
-    invitation.company.with_employee_number_lock do
+    invitation.company.with_employee_number_lock do |company|
+      invitation.lock!
+      raise InvitationExpired unless invitation.company_id == company.id
+
+      invitation_valid!
+      user_valid!
       update_invitation!
       ensure_seat_available!
       find_or_create_user!
@@ -43,7 +48,11 @@ class CreateInvitedUserService
       create_client_member
       create_notification_preference
     end
+  rescue ActiveRecord::LockWaitTimeout => e
+    @error = e
+    service_failed("Your account is being updated. Reopen your invitation link and try again.")
   rescue StandardError => e
+    @error = e
     service_failed(e.message)
     Rails.logger.error e.message
     Rails.logger.error e.backtrace.join("\n")
@@ -60,7 +69,7 @@ class CreateInvitedUserService
     end
 
     def invitation_valid!
-      raise InvitationExpired unless invitation.is_valid?
+      raise InvitationExpired unless invitation.token == token && invitation.is_valid?
     end
 
     def user_valid!
@@ -78,7 +87,7 @@ class CreateInvitedUserService
     end
 
     def find_or_create_user!
-      if (@user = User.find_by(email: invitation.recipient_email))
+      if (@user = User.lock("FOR NO KEY UPDATE NOWAIT").find_by(email: invitation.recipient_email))
         @user.update!(current_workspace_id: invitation.company.id)
         activate_employment_status unless invitation.client
         sync_invitable_metadata!
@@ -106,7 +115,7 @@ class CreateInvitedUserService
       )
       @user.skip_password_validation = true
       @user.save!
-      sync_invitable_metadata!
+      sync_invitable_metadata!(pending_password: true)
     end
 
     def add_role_to_invited_user
@@ -131,9 +140,9 @@ class CreateInvitedUserService
       @reset_password_token = user.create_reset_password_token
     end
 
-    def sync_invitable_metadata!
+    def sync_invitable_metadata!(pending_password: false)
       user.update_columns(
-        invitation_token: invitation.token,
+        invitation_token: pending_password ? invitation.token : nil,
         invitation_created_at: invitation.created_at,
         invitation_sent_at: invitation.created_at,
         invitation_accepted_at: invitation.accepted_at || Time.current,

@@ -102,7 +102,9 @@ Decision records, explicit draft/final confirmation, hold ownership/date/zone an
 
 Private offer approval/immutable issuance, expiring/revocable candidate responses and approved editable manual offer email are implemented locally. **414 hiring backend/schedule checks and all 111 hiring Brave cases pass**. Actual local SMTP→emailed private link→acceptance and readonly delivery history are verified. Offer Sent means the terms were issued; email delivery is separately confirmed and recorded. [Private-offer checkpoint](../../qa/hiring-2463/offers-20261108.md) and [offer-email proof with eight captures](../../qa/hiring-2463/offer-email-20261108.md). Explicit accepted-offer→employee/consultant profile→generic upload/signing handoff remains required; Task 8 stays unchecked.
 
-**Files:** `app/models/hiring_offer.rb`, `app/services/hiring/{offers,onboarding}.rb`, offer/portal/onboarding controls, migrations and tests.
+The shared account-invitation prerequisite now requires explicit CSRF-protected acceptance, prevents cached/concurrent reuse and fixes existing-member password lockout. **241 related backend checks and nine Brave cases pass**; [verification and six captures](../../qa/hiring-2463/invitation-safety-20261108.md). This is prerequisite work; the accepted-offer/profile/upload handoff is still pending.
+
+**Files:** `app/models/hiring_offer.rb`, `app/services/hiring/{offers,onboarding}.rb`, offer/portal/onboarding controls, shared invitation acceptance, migrations and tests.
 
 **Interface:** immutable issued compensation/date terms with Preparing/Sent/Accepted/Declined/Expired. Accepted offer plus Admin confirmation creates/links the correct existing employee/consultant workflow and generic agreement upload; retries return the same handoff. Do not send contracts or change payroll implicitly.
 

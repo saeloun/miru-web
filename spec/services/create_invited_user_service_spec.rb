@@ -18,6 +18,35 @@ RSpec.describe CreateInvitedUserService do
   end
 
   describe "#process" do
+    %w[accepted expired rotated].each do |state|
+      it "rejects a preloaded invitation that was #{state} before the company lock" do
+        service = described_class.new(invitation.token)
+        service.send(:invitation)
+        case state
+        when "accepted" then invitation.update!(accepted_at: Time.current)
+        when "expired" then invitation.update!(expired_at: 1.minute.ago)
+        when "rotated" then invitation.update!(token: Devise.friendly_token)
+        end
+
+        expect { service.process }.not_to change(User, :count)
+        expect(service.success).to be(false)
+        expect(service.error_message).to eq("Invitation expired")
+      end
+    end
+
+    it "does not accept a second service's cached copy after the first accepts" do
+      first = described_class.new(invitation.token)
+      second = described_class.new(invitation.token)
+      [first, second].each { |service| service.send(:invitation) }
+      first.process
+      expect(first.success).to be(true)
+      accepted_at = invitation.reload.accepted_at
+      expect { second.process }.not_to change { invitation.reload.accepted_at }
+      expect(second.success).to be(false)
+      expect(invitation.reload.accepted_at).to eq(accepted_at)
+      expect(company.employments.joins(:user).where(users: { email: invitation.recipient_email }).count).to eq(1)
+    end
+
     context "when the free workspace's seats filled after the invitation was sent" do
       before do
         (3 - company.used_team_seats).times do
