@@ -10,6 +10,7 @@ import { Badge } from "../ui/badge";
 import Picker from "./Picker";
 import Pager from "./Pager";
 import InterviewBookings from "./InterviewBookings";
+import FeedbackHistory from "./FeedbackHistory";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import {
   stageLabel,
@@ -79,6 +80,7 @@ export default function ApplicationInterviews({
     ) {
       setData(null);
       setDraft(null);
+      setBookingRoundId(null);
     }
     setError(failureMessage(failure));
   };
@@ -527,6 +529,12 @@ export default function ApplicationInterviews({
                     </li>
                   ))}
                 </ul>
+                <FeedbackHistory
+                  companyId={companyId}
+                  path={`applications/${application.id}/interviews/${record.id}/feedback`}
+                  title={`Feedback for round ${record.number}`}
+                  onDenied={failed}
+                />
                 <div className="flex flex-wrap gap-3">
                   <Button
                     className="min-h-11"

@@ -27,6 +27,14 @@ class Api::V1::Hiring::InterviewReviewsController < Api::V1::Hiring::BaseControl
     end
   end
 
+  def feedback
+    with_interview do |interview|
+      rows, pagination = page_records(HiringFeedback.for_previous_rounds(interview)
+        .order("hiring_interviews.number DESC", "hiring_interview_bookings.number DESC", "hiring_feedbacks.id DESC"))
+      render json: { company_id: current_company.id, feedbacks: rows.map(&:review_details), pagination: }
+    end
+  end
+
   def resume
     submission = with_interview { |interview| resume_submission(interview) }
     blob_id = submission.resume_attachment.blob_id

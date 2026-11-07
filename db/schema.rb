@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_110200) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_133000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -790,6 +790,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_110200) do
     t.index ["company_id", "email"], name: "index_hiring_candidates_on_company_id_and_email", unique: true
     t.index ["company_id", "id"], name: "index_hiring_candidates_on_company_id_and_id", unique: true
     t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
+  end
+
+  create_table "hiring_feedbacks", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_booking_id", null: false
+    t.bigint "hiring_panel_member_id"
+    t.bigint "issued_panel_member_id", null: false
+    t.text "panel_snapshot", null: false
+    t.bigint "submitted_by_id"
+    t.uuid "request_key"
+    t.text "request_details"
+    t.text "details"
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_feedbacks_on_company_id_and_id", unique: true
+    t.index ["hiring_interview_booking_id", "issued_panel_member_id"], name: "index_hiring_feedbacks_on_issued_request", unique: true
+    t.index ["hiring_panel_member_id", "submitted_at", "id"], name: "index_hiring_feedbacks_for_reviewer"
+    t.index ["submitted_by_id"], name: "index_hiring_feedbacks_on_submitted_by_id"
+    t.check_constraint "submitted_at IS NULL AND submitted_by_id IS NULL AND request_key IS NULL AND request_details IS NULL AND details IS NULL OR submitted_at IS NOT NULL AND request_key IS NOT NULL AND request_details IS NOT NULL AND details IS NOT NULL", name: "hiring_feedback_submission"
   end
 
   create_table "hiring_interview_bookings", force: :cascade do |t|
@@ -2416,6 +2437,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_110200) do
   add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
   add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_feedbacks", "companies"
+  add_foreign_key "hiring_feedbacks", "hiring_interview_bookings", column: ["company_id", "hiring_interview_booking_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_feedbacks", "hiring_panel_members", on_delete: :nullify
+  add_foreign_key "hiring_feedbacks", "users", column: "submitted_by_id", on_delete: :nullify
   add_foreign_key "hiring_interview_bookings", "companies"
   add_foreign_key "hiring_interview_bookings", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_interview_bookings", "users", column: "created_by_id", on_delete: :nullify

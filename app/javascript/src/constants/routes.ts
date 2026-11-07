@@ -34,6 +34,10 @@ const AssignmentReviews = lazy(
 const InterviewReviews = lazy(
   () => import("components/Hiring/InterviewReviews")
 );
+
+const InterviewFeedback = lazy(
+  () => import("components/Hiring/InterviewFeedback")
+);
 const SignedDocuments = lazy(() => import("components/SignedDocuments"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
@@ -265,6 +269,14 @@ export const PUBLIC_ROUTES = [
 ];
 
 export const ROUTES = [
+  {
+    path: "/interview-feedback",
+    subRoutes: [
+      { path: "", Component: InterviewFeedback },
+      { path: ":feedbackId", Component: InterviewFeedback },
+    ],
+    authorisedRoles: [ADMIN, OWNER, EMPLOYEE, BOOK_KEEPER, Roles.MANAGER],
+  },
   {
     path: "/interview-reviews",
     subRoutes: [

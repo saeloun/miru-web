@@ -1,10 +1,14 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening, assessments and configurable interview rounds from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Scheduling, feedback, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling and feedback from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Candidate/internal interview messages, prompts/reminders, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Task 6 feedback increment
+
+Original interviewers can record attendance, actual date, assessment, evidence, issued questions and one of four recommendations. Submitted feedback is immutable; Admins and the next assigned interviewer have scoped history. Late submissions, lost responses, stale drafts and revoked access are covered: **324 related cases and 69 hiring browser cases pass**. [Behavior, verification and seven browser captures](feedback-20261107.md). Candidate/internal messages and reminder delivery remain unfinished; Task 6 is unchecked.
 
 ## Task 6 manual scheduling increment
 
-Manual candidate-zone bookings and read-only Google Calendar import are implemented locally. Imports verify the full panel, candidate, etag, current permissions and exact UTC instants; stale drafts and accepted retries preserve their original intent. Related hiring/calendar checks: **292/0**; full backend before the final identifier-log filter: **5,787/0, 59 pending**; all hiring browser files: **63/0**. Feedback, candidate communications and reminders remain pending. [Manual scheduling and four screenshots](scheduling-20261107.md); [calendar import and four more screenshots](calendar-20261107.md).
+Manual candidate-zone bookings and read-only Google Calendar import are implemented locally. Imports verify the full panel, candidate, etag, current permissions and exact UTC instants; stale drafts and accepted retries preserve their original intent. At that checkpoint, related checks passed **292/0**, the backend before the final identifier-log filter passed **5,787/0, 59 pending**, and hiring browser files passed **63/0**. The feedback increment above adds later evidence. Candidate communications and reminders remain pending. [Manual scheduling and four screenshots](scheduling-20261107.md); [calendar import and four more screenshots](calendar-20261107.md).
 
 ## Task 5 interview panels and configurable rounds
 

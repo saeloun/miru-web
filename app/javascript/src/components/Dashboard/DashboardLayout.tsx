@@ -200,6 +200,12 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
           roles: ["admin", "owner", "manager", "employee", "book_keeper"],
         },
         {
+          label: "Interview feedback",
+          href: "/interview-feedback",
+          icon: UsersThree,
+          roles: ["admin", "owner", "manager", "employee", "book_keeper"],
+        },
+        {
           label: t("sidebar.holidayCalendar"),
           href: "/settings/holidays",
           icon: Calendar,

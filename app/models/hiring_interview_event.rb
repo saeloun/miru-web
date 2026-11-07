@@ -7,7 +7,7 @@ class HiringInterviewEvent < ApplicationRecord
   serialize :details, coder: JSON, type: Hash
   encrypts :details
   self.filter_attributes += [:details]
-  validates :action, inclusion: { in: %w[created updated reassigned completed skipped cancelled scheduled rescheduled booking_cancelled no_show] }
+  validates :action, inclusion: { in: %w[created updated reassigned completed skipped cancelled scheduled rescheduled booking_cancelled no_show feedback_submitted] }
   validate -> { errors.add(:base, "Choose the interview in this workspace") unless hiring_interview&.company_id == company_id }
   validate -> { errors.add(:base, "Interview history cannot be rewritten") }, on: :update
 end

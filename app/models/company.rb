@@ -40,6 +40,7 @@ class Company < ApplicationRecord
   has_many :hiring_portal_accesses, dependent: :destroy
   has_many :hiring_submissions, dependent: :destroy
   has_many :hiring_screenings, dependent: :destroy
+  has_many :hiring_feedbacks, dependent: :destroy
   has_many :hiring_panel_members, dependent: :destroy
   has_many :hiring_interviews, dependent: :destroy
   has_many :hiring_assignments, dependent: :destroy

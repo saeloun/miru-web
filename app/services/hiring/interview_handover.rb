@@ -13,10 +13,14 @@ module Hiring
       assessment = @application.hiring_assignments.joins(:submission)
         .where.not(hiring_assignment_submissions: { submitted_at: nil }).order(id: :desc).first
       submission = @application.hiring_submissions.where.not(submitted_at: nil).order(id: :desc).first
+      booking = @interview.hiring_interview_bookings.order(number: :desc).first
+      request = booking&.hiring_feedbacks&.assigned_to(@actor, @interview.company)&.find do |record|
+        HiringFeedbackPolicy.new(@actor, record).show?
+      end
       { candidate: { full_name: @application.submitted_name, email: @application.hiring_candidate.email },
         role: @application.hiring_role&.slice(:id, :title), form: submission && form_details(submission),
         assessment: assessment&.review_details,
-        booking: @interview.hiring_interview_bookings.order(number: :desc).first&.staff_details }
+        booking: booking&.staff_details, feedback_request_id: request&.id }
     end
 
     private

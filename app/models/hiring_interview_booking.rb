@@ -6,6 +6,8 @@ class HiringInterviewBooking < ApplicationRecord
   belongs_to :company
   belongs_to :hiring_interview
   belongs_to :created_by, class_name: "User", optional: true
+  has_many :hiring_feedbacks, dependent: :destroy
+  after_create :create_feedback_requests!
   serialize :request_details, coder: JSON, type: Hash
   serialize :details, coder: JSON, type: Hash
   serialize :round_details, coder: JSON, type: Hash
@@ -40,7 +42,21 @@ class HiringInterviewBooking < ApplicationRecord
     with_lock { update!(status:, ending_reason: reason, ended_at: Time.current) if self.status == "scheduled" }
   end
 
+  def request_feedback!
+    with_lock { create_feedback_requests! }
+  end
+
   private
+
+    def create_feedback_requests!
+      panel_snapshot.each do |issued|
+        hiring_feedbacks.find_or_create_by!(issued_panel_member_id: issued.fetch("panel_member_id")) do |feedback|
+          feedback.company = company
+          feedback.hiring_panel_member = company.hiring_panel_members.find_by(id: issued.fetch("panel_member_id"))
+          feedback.panel_snapshot = issued.slice("panel_member_id", "employment_id", "full_name")
+        end
+      end
+    end
 
     def matching_interview
       errors.add(:base, "Choose the interview in this workspace") unless hiring_interview&.company_id == company_id

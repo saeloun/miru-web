@@ -65,5 +65,6 @@ export type InterviewHandover = {
     form: CandidateFormReview | null;
     assessment: Assessment | null;
     booking: StaffBooking | null;
+    feedback_request_id?: number | null;
   };
 };

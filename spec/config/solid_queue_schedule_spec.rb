@@ -5,6 +5,12 @@ require "yaml"
 require "erb"
 
 RSpec.describe "Solid Queue schedule" do
+  it "reconciles missing interview feedback requests in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_feedback_requests")
+      expect(task).to include("class" => "HiringFeedbackRequestsJob", "schedule" => "2-59/5 * * * *")
+    end
+  end
   let(:config) do
     YAML.safe_load(
       ERB.new(Rails.root.join("config/solid_queue.yml").read).result,

@@ -8,6 +8,7 @@ import { failureMessage, read } from "./api";
 import { answerText, type Pagination } from "./types";
 import type { InterviewHandover } from "./interviewTypes";
 import { bookingTimeLabel } from "./bookingTypes";
+import FeedbackHistory from "./FeedbackHistory";
 
 function Handover({ companyId, id }: { companyId: number; id: string }) {
   const [data, setData] = useState<InterviewHandover | null>(null);
@@ -150,6 +151,15 @@ function Handover({ companyId, id }: { companyId: number; id: string }) {
             aria-label="Interview details"
             className="min-w-0 space-y-4 rounded-lg border bg-card p-4"
           >
+            {data.handover.feedback_request_id && (
+              <Button asChild variant="outline" className="min-h-11">
+                <Link
+                  to={`/interview-feedback/${data.handover.feedback_request_id}`}
+                >
+                  Record interview feedback
+                </Link>
+              </Button>
+            )}
             <h2 className="break-words text-xl font-semibold">
               {data.handover.candidate.full_name}
             </h2>
@@ -210,6 +220,15 @@ function Handover({ companyId, id }: { companyId: number; id: string }) {
               ))}
             </ul>
           </section>
+          <FeedbackHistory
+            companyId={companyId}
+            path={`${path}/feedback`}
+            title="Previous interview feedback"
+            onDenied={failure => {
+              setData(null);
+              setError(failureMessage(failure));
+            }}
+          />
           <section
             aria-label="Candidate handover"
             className="min-w-0 space-y-4 rounded-lg border bg-card p-4"

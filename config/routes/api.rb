@@ -310,7 +310,9 @@ namespace :api, defaults: { format: "json" } do
     end
 
     namespace :hiring do
+      resources :interview_feedback, only: [:index, :show, :update]
       resources :interview_reviews, only: [:index, :show] do
+        get :feedback, on: :member
         get :resume, on: :member
         get "assignments/:assignment_id/files/:attachment_id", on: :member, action: :download
       end
@@ -350,6 +352,7 @@ namespace :api, defaults: { format: "json" } do
             post :import, on: :collection
           end
           resources :calendar_events, only: :index
+          resources :feedback, only: :index, controller: :interview_feedback_history
         end
         post :search, on: :collection
         resources :assignments, only: [:index, :create] do
