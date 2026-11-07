@@ -2,6 +2,8 @@
 
 Local implementation for [Sonam's #2463](https://github.com/saeloun/miru-web/issues/2463), following the existing scheduling, immutable feedback and candidate-message increments. This report does not establish CI or production delivery.
 
+Implementation commit: `8eb98f6e7bff84bbb7121e68a9b56195f56a0635`. Post-commit notification checks pass **23 backend + 3 native browser cases**, overlapping the broader scopes below. The working files and committed blobs match all 21 tested source fingerprints.
+
 ## Behavior
 
 - Internal notices default off. An Admin chooses an active company reply inbox, supplies six subject/body fields, saves and explicitly approves the configuration.
@@ -22,6 +24,8 @@ Internal history is read-only in this increment. Manual review/resend controls f
 - Both migrations passed up/down/up in a newly created disposable database. Both check constraints are validated, the unique operation index remains intact, and a recorded internal notice makes rollback refuse **before DDL**. The owned database was removed. The first rollback-fixture attempt used empty serialized hashes that became SQL NULL; the fixture was corrected before the passing run.
 - Required development/test Vite builds and changed frontend lint pass. Sixteen changed Ruby files pass RuboCop. TypeScript remains at the same **329 diagnostics**, with zero added/removed normalized diagnostics versus the prior baseline. No checker or test was weakened.
 - **21 source/test/schema fingerprints** match the files used by these checks. Three real browser captures were visually inspected; checksums are alongside them. Screenshots are local committed artifacts, not hosted PR image uploads.
+
+The generic checker remains **NOT_READY**: lint/build pass, typecheck reports the same 329 diagnostics, and its Ruby selection has no supported runner for 116 selected files. It does not replace the manually executed RSpec evidence above. No exact-head council review log exists; the review-target answer is still pending. There was no push, merge or deployment.
 
 The source uses no new dependency or separate sender. Local Qwen gave bounded read-only advice; its concurrency/permission claims did not account for the existing company lock, unique root constraint and Delivery rechecks, so those claims were not adopted as verified findings.
 

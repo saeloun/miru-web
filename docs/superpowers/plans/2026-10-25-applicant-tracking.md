@@ -80,13 +80,13 @@ Local panel, round and handover implementation: 15 request cases, 55 hiring brow
 
 ### Task 6: Scheduling and feedback deadlines
 
-Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`, read-only import at `09b00bf12`, immutable feedback at `44ac2c9de` and candidate booking messages at `f87d3bd9c` (readiness follow-up `75504d94b`). Unbooked invitations (`60d7a320f`) retain revision history and uncertainty guards. Optional approved feedback prompts, overdue reminders and submission notices to the approving Admin now reuse that outbox, with no backlog activation. **316 hiring service/request checks and 36 affected browser cases pass**. Internal history is read-only; its manual recovery controls remain Task 9. Local Task 6 completion awaits its commit; publication and the final whole-branch review remain separate. [Scheduling](../../qa/hiring-2463/scheduling-20261107.md), [calendar](../../qa/hiring-2463/calendar-20261107.md), [feedback](../../qa/hiring-2463/feedback-20261107.md), [booking messages](../../qa/hiring-2463/interview-messages-20261107.md), [unbooked invitations](../../qa/hiring-2463/unbooked-invitations-20261107.md) and [internal notices](../../qa/hiring-2463/feedback-notifications-20261107.md).
+Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`, read-only import at `09b00bf12`, immutable feedback at `44ac2c9de` and candidate booking messages at `f87d3bd9c` (readiness follow-up `75504d94b`). Unbooked invitations (`60d7a320f`) retain revision history and uncertainty guards. Optional approved feedback prompts, overdue reminders and submission notices to the approving Admin (`8eb98f6e7`) now reuse that outbox, with no backlog activation. **316 hiring service/request checks and 36 affected browser cases pass**; post-commit notification checks pass **23 backend + 3 browser cases**. Internal history is read-only; its manual recovery controls remain Task 9. Task 6 is complete locally; publication and the final whole-branch review remain separate. [Scheduling](../../qa/hiring-2463/scheduling-20261107.md), [calendar](../../qa/hiring-2463/calendar-20261107.md), [feedback](../../qa/hiring-2463/feedback-20261107.md), [booking messages](../../qa/hiring-2463/interview-messages-20261107.md), [unbooked invitations](../../qa/hiring-2463/unbooked-invitations-20261107.md) and [internal notices](../../qa/hiring-2463/feedback-notifications-20261107.md).
 
 **Files:** `app/services/hiring/{scheduling,calendar_events}.rb`, scheduling/feedback jobs and controls, adapter to existing available calendar authorization, tests.
 
 **Interface:** manual fallback stores UTC start/end and candidate IANA zone, external booking/meeting details and round status. Calendar import uses the authorized connection and verifies assignment/attendee; candidate email excludes internal feedback. Feedback records attendance/date/topics/evidence/assessment/recommendation.
 
-- [ ] RED→GREEN DST/invalid zone, reschedule/cancel/no-show, stale booking/unauthorized calendar event, private handover vs candidate template, due/missing feedback and deduplicated prompts/reminders; actual available-calendar or explicitly unconfigured fallback evidence; commit.
+- [x] RED→GREEN DST/invalid zone, reschedule/cancel/no-show, stale booking/unauthorized calendar event, private handover vs candidate template, due/missing feedback and deduplicated prompts/reminders; actual available-calendar or explicitly unconfigured fallback evidence; commit.
 
 ### Task 7: Decisions, holds and controlled rejection
 
@@ -108,7 +108,7 @@ Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`
 
 **Files:** `app/services/hiring/{pipeline,retention}.rb`, dashboard/history/report controls, retention job/settings and tests.
 
-**Interface:** filters and operational queues cover every issue stage/dimension. Metrics derive from transition timestamps and reasons. Retention removes private content/blobs/links safely and keeps only non-identifying deletion evidence.
+**Interface:** filters and operational queues cover every issue stage/dimension. Metrics derive from transition timestamps and reasons. Internal feedback history adds explicit failed/unknown-delivery recovery using the existing evidence/stopped-worker rules, without automatic retries. Retention removes private content/blobs/links safely and keeps only non-identifying deletion evidence.
 
 - [ ] RED→GREEN empty/missing/withdrawn/repeated-round metrics, all filters, overdue/upcoming queues and pagination; retention with concurrent work, shared inbound mail/other tenant and already-onboarded employee; actual browser report/deletion proof; commit.
 
