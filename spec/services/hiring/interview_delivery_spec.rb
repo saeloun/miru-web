@@ -22,8 +22,9 @@ RSpec.describe "Interview message delivery" do
     end
   end
 
-  def queue_message
-    service = Hiring::InterviewCommunication.new(booking:, actor: admin)
+  def queue_message(booked: true)
+    selected_booking = booking if booked
+    service = Hiring::InterviewCommunication.new(interview: round, booking: selected_booking, actor: admin)
     preview = service.preview!(kind: "interview_invitation", mailbox_id: mailbox.id)
     message, created = service.queue!(attributes: preview.fetch("intent"))
     expect(created).to be(true)
@@ -72,6 +73,40 @@ RSpec.describe "Interview message delivery" do
     HiringDeliveryJob.perform_now(message.id)
     expect(message.reload.state).to eq("failed")
     expect(message.error_code).to eq("interview_changed")
+    expect(ActionMailer::Base.deliveries).to be_empty
+  end
+
+  it "delivers an unbooked invitation once without inventing a confirmed time" do
+    message = queue_message(booked: false)
+    2.times { HiringDeliveryJob.perform_now(message.id) }
+    expect(message.reload.state).to eq("sent")
+    mail = ActionMailer::Base.deliveries.sole
+    expect(mail.body.decoded).to include("No interview time is confirmed", "reply to the hiring team")
+    expect(mail.body.decoded).not_to include("PRIVATE", "Time:", "2026-")
+    expect(HiringInterviewBooking.count).to eq(0)
+  end
+
+  it "blocks an unbooked invitation after a meeting is recorded" do
+    message = queue_message(booked: false)
+    booking
+    HiringDeliveryJob.perform_now(message.id)
+    expect(message.reload.state).to eq("failed")
+    expect(message.error_code).to eq("interview_changed")
+    expect(ActionMailer::Base.deliveries).to be_empty
+  end
+
+  it "rechecks unbooked profile identity and version after constructing the mail" do
+    message = queue_message(booked: false)
+    allow(HiringMailer).to receive(:acknowledgement).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap do |mail|
+        mail.message.delivery_method(:test)
+        mail.message.perform_deliveries = true
+        panel.update!(details: panel.details.merge("booking_url" => "https://calendar.example.test/changed"))
+      end
+    end
+    HiringDeliveryJob.perform_now(message.id)
+    expect(message.reload.state).to eq("failed")
+    expect(message.error_code).to eq("panel_changed")
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 end

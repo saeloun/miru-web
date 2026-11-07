@@ -10,6 +10,7 @@ import Picker from "./Picker";
 import Pager from "./Pager";
 import InterviewBookings from "./InterviewBookings";
 import FeedbackHistory from "./FeedbackHistory";
+import InterviewMessages from "./InterviewMessages";
 import {
   accessDenied,
   failureMessage,
@@ -538,6 +539,16 @@ export default function ApplicationInterviews({
                   companyId={companyId}
                   path={`applications/${application.id}/interviews/${record.id}/feedback`}
                   title={`Feedback for round ${record.number}`}
+                  onDenied={failed}
+                />
+                <InterviewMessages
+                  companyId={companyId}
+                  path={`applications/${application.id}/interviews/${record.id}/messages`}
+                  context={{
+                    kind: "round",
+                    number: record.number,
+                    version: record.lock_version,
+                  }}
                   onDenied={failed}
                 />
                 <div className="flex flex-wrap gap-3">

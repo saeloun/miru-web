@@ -610,7 +610,11 @@ export default function InterviewBookings({
                 <InterviewMessages
                   companyId={companyId}
                   path={`${path}/${booking.id}/messages`}
-                  bookingNumber={booking.number}
+                  context={{
+                    kind: "booking",
+                    number: booking.number,
+                    version: booking.lock_version,
+                  }}
                   onDenied={failed}
                 />
               </li>

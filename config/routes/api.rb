@@ -348,6 +348,11 @@ namespace :api, defaults: { format: "json" } do
       end
       resources :applications, only: [:index, :show, :create] do
         resources :interviews, only: [:index, :create, :update] do
+          resources :messages, only: [:index, :create], controller: :interview_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
           resources :bookings, only: [:index, :create, :update] do
             post :import, on: :collection
             resources :messages, only: [:index, :create], controller: :interview_messages do

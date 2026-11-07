@@ -1,6 +1,6 @@
 # Candidate interview messages — Task 6 increment
 
-Local implementation for [Sonam's ATS request](https://github.com/saeloun/miru-web/issues/2463). Admins can preview and explicitly queue invitations, confirmations, reschedules and cancellations for recorded bookings. Task 6 stays incomplete: invitations before a booking exists, internal Admin notifications and feedback prompts/overdue reminders remain required.
+Local implementation for [Sonam's ATS request](https://github.com/saeloun/miru-web/issues/2463). Admins can preview and explicitly queue invitations, confirmations, reschedules and cancellations for recorded bookings. The later [unbooked invitation increment](unbooked-invitations-20261107.md) adds invitations to arrange a time. Task 6 stays incomplete: internal Admin notifications and feedback prompts/overdue reminders remain required.
 
 ## Behavior
 
@@ -32,7 +32,7 @@ Post-commit browser closure initially missed one booking-control click: precedin
 1. Reuse the existing settings approval and outbox rather than create a second template/transport system. Cost: changing an interview template also invalidates the shared acknowledgement approval; queued stale versions require review.
 2. One operation per booking/message type, with immutable retry chains. Cost: another send requires an explicit retry or a new booking; confirming a different inbox/body cannot create an accidental second root.
 3. Revalidate all captured interview versions before sending. Cost: even an otherwise harmless application/round update can block queued mail; an Admin must review the current preview before retrying.
-4. Add versioned public booking facts to approved plain text. Cost: this increment has no arbitrary template expressions, candidate rescheduling endpoint or external calendar write. Unbooked invitations and internal reminders remain tracked in Task 6.
+4. Add versioned public booking facts to approved plain text. Cost: this increment has no arbitrary template expressions, candidate rescheduling endpoint or external calendar write. Unbooked invitations were added in the later increment; internal reminders remain tracked in Task 6.
 5. Clear the whole candidate view on a scoped child 403/404 rather than leave sibling PII visible. Cost: a missing nested record requires retrying the application; a catalogue-only 404 preserves the unsaved task selection/draft.
 
 ## Browser evidence and release limits

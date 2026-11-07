@@ -16,7 +16,7 @@ class HiringMessage < ApplicationRecord
   scope :operations, -> { where(original_message_id: nil) }
 
   validates :kind, inclusion: { in: ["acknowledgement"] + INTERVIEW_KINDS }
-  validates :event_key, format: { with: /\A(?:acknowledgement|booking:[1-9]\d{0,18})\z/ }
+  validates :event_key, format: { with: /\A(?:acknowledgement|booking:[1-9]\d{0,18}|round:[1-9]\d{0,18}:\d{1,10})\z/ }
   validates :state, inclusion: { in: %w[queued sending sent failed uncertain] }
   validates :attempt_number, numericality: { only_integer: true, greater_than: 0 }
   validate :matching_tenant

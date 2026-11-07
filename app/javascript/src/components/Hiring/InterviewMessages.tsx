@@ -22,7 +22,7 @@ import {
 } from "./types";
 
 type Content = { to: string; reply_to: string; subject: string; body: string };
-type Preview = Content & { intent: Record<string, string | number> };
+type Preview = Content & { intent: Record<string, string | number | null> };
 type Message = Pick<
   HiringMessage,
   | "id"
@@ -36,7 +36,7 @@ type Message = Pick<
   | "resolution"
   | "resolution_details"
   | "sent_at"
-> & { content: Content };
+> & { content: Content; current_context: boolean };
 type History = {
   company_id: number;
   messages: Message[];
@@ -46,12 +46,12 @@ type History = {
 export default function InterviewMessages({
   companyId,
   path,
-  bookingNumber,
+  context,
   onDenied,
 }: {
   companyId: number;
   path: string;
-  bookingNumber: number;
+  context: { kind: "booking" | "round"; number: number; version: number };
   onDenied: (failure: unknown) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -114,7 +114,7 @@ export default function InterviewMessages({
       active = false;
       controller.abort();
     };
-  }, [expanded, path, companyId, page, refresh]);
+  }, [expanded, path, companyId, page, refresh, context.version]);
 
   const loadPreview = async (message: Message | null = null) => {
     if (!mailbox || busy) return;
@@ -214,12 +214,13 @@ export default function InterviewMessages({
     }
   };
 
-  const id = `booking-messages-${bookingNumber}`;
+  const contextLabel = `${context.kind} ${context.number}`;
+  const id = `${context.kind}-messages-${context.number}`;
 
   return (
     <section
       className="min-w-0 space-y-3"
-      aria-label={`Candidate messages for booking ${bookingNumber}`}
+      aria-label={`Candidate messages for ${contextLabel}`}
     >
       <Button
         type="button"
@@ -235,16 +236,24 @@ export default function InterviewMessages({
           setData(null);
         }}
       >
-        {expanded ? "Hide" : "Candidate messages for"} booking {bookingNumber}
+        {expanded ? "Hide" : "Candidate messages for"} {contextLabel}
       </Button>
       {expanded && (
         <>
           <h5 className="font-semibold">Candidate messages</h5>
           <p className="text-sm text-muted-foreground">
-            Saving a booking sends no email. Choose an approved template and
-            reply inbox, then confirm the exact preview. Internal feedback and
-            cancellation reasons are excluded.
+            Saving interview details sends no email. Choose an approved template
+            and reply inbox, then confirm the exact preview. Internal feedback
+            and cancellation reasons are excluded.
           </p>
+          {context.kind === "round" && (
+            <p className="text-sm text-muted-foreground">
+              Arrange a time before a booking exists. Use booking history for a
+              confirmed meeting, rescheduling or cancellation. After changing
+              the round, review its previous invitations before sending updated
+              details; resolve unknown deliveries first.
+            </p>
+          )}
           {(error || notice) && (
             <p
               ref={status}
@@ -278,11 +287,17 @@ export default function InterviewMessages({
                 setRetryOf(null);
               }}
             >
-              {interviewMessageKinds.map(item => (
-                <option key={item.key} value={item.key}>
-                  {item.label}
-                </option>
-              ))}
+              {interviewMessageKinds
+                .filter(
+                  item =>
+                    context.kind === "booking" ||
+                    item.key === "interview_invitation"
+                )
+                .map(item => (
+                  <option key={item.key} value={item.key}>
+                    {item.label}
+                  </option>
+                ))}
             </select>
             <Picker
               id={`${id}-inbox`}
@@ -336,7 +351,7 @@ export default function InterviewMessages({
           {data && (
             <>
               {!data.messages.length && (
-                <p>No messages recorded for this booking.</p>
+                <p>No messages recorded for this {context.kind}.</p>
               )}
               <ol className="space-y-3">
                 {data.messages.map(message => (
@@ -352,6 +367,13 @@ export default function InterviewMessages({
                       }{" "}
                       · Attempt {message.attempt_number}
                     </h6>
+                    {context.kind === "round" && (
+                      <p>
+                        {message.current_context
+                          ? "Current round details"
+                          : "Earlier round details"}
+                      </p>
+                    )}
                     <p>
                       {deliveryStateLabels[message.state]}
                       {message.error_code &&

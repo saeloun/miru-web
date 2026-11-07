@@ -43,6 +43,15 @@ RSpec.shared_context "interview message records" do
     configuration.approve!(lock_version: setting.lock_version)
   end
 
+  def change_round(preparation = "Bring an updated project")
+    round.reload
+    Hiring::Interviews.new(application:, actor: admin).update!(record: round, attributes: {
+      "company_id" => company.id, "application_version" => application.reload.lock_version,
+      "interview_version" => round.lock_version, "action" => "update", "details" => round.details.merge("preparation" => preparation),
+      "panel" => round.panel_snapshot.map { |member| member.slice("panel_member_id", "compensation_access") }
+    })
+  end
+
   before do
     admin.add_role(:admin, company)
     interviewer.add_role(:employee, company)
