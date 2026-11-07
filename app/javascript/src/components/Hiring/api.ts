@@ -6,7 +6,10 @@ const workspaceChanged =
   "The hiring workspace changed. Reload the current workspace.";
 
 export const accessDenied = (error: unknown) =>
-  axios.isAxiosError(error) && [403, 404].includes(error.response?.status ?? 0);
+  (error instanceof Error && error.message === workspaceChanged) ||
+  (axios.isAxiosError(error) &&
+    ([403, 404].includes(error.response?.status ?? 0) ||
+      error.response?.data?.workspace_changed === true));
 
 export const failureMessage = (error: unknown) => {
   const errors = axios.isAxiosError(error)

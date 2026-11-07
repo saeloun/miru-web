@@ -6,6 +6,7 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Pager from "./Pager";
 import CandidateMessages from "./CandidateMessages";
+import Onboarding from "./Onboarding";
 import {
   accessDenied,
   failureMessage,
@@ -30,7 +31,7 @@ export type OfferTerms = {
   expires_on: string;
   time_zone?: string;
 };
-type Offer = {
+export type Offer = {
   id: number;
   state: string;
   lock_version: number;
@@ -465,6 +466,30 @@ export default function ApplicationOffers({
                     </>
                   )}
                   {record.revoked_at && <p>Private link revoked</p>}
+                  {record.state === "accepted" && (
+                    <Onboarding
+                      companyId={companyId}
+                      applicationId={application.id}
+                      offer={record}
+                      onDenied={failed}
+                      changed={result => {
+                        changed(result.application);
+                        setVersion(result.application.lock_version);
+                        setData(
+                          current =>
+                            current && {
+                              ...current,
+                              application: result.application,
+                              offers: current.offers.map(item =>
+                                item.id === result.offer.id
+                                  ? result.offer
+                                  : item
+                              ),
+                            }
+                        );
+                      }}
+                    />
+                  )}
                   {record.state !== "preparing" && (
                     <CandidateMessages
                       companyId={companyId}

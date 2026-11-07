@@ -1,5 +1,11 @@
-import React, { lazy, useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { lazy, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import Api from "apis/api";
 import { useUserContext } from "context/UserContext";
 import { Button } from "../ui/button";
@@ -19,8 +25,19 @@ import "./signatures.css";
 const Editor = lazy(() => import("./Editor"));
 type PartyLink = { client_id?: number; employment_id?: number };
 
-function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
-  const [kind, setKind] = useState("");
+function ProfileLink({
+  change,
+  companyId,
+  employmentId,
+  expectedCompanyId,
+}: {
+  change: (link: PartyLink) => void;
+  companyId: number | string;
+  employmentId?: string;
+  expectedCompanyId: string | null;
+}) {
+  const [kind, setKind] = useState(employmentId ? "consultant" : "");
+  const [prefill, setPrefill] = useState(employmentId);
   const [query, setQuery] = useState("");
   const [parties, setParties] = useState<
     { id: number; name: string; email: string }[]
@@ -30,19 +47,62 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
   const [refresh, setRefresh] = useState(0);
   useEffect(() => {
     if (!kind) return;
+
+    if (
+      prefill &&
+      (!/^[1-9]\d{0,18}$/.test(prefill) ||
+        !Number.isSafeInteger(Number(prefill)) ||
+        expectedCompanyId !== String(companyId))
+    ) {
+      setError(
+        "This profile handoff belongs to another workspace or is invalid. Open it again from Hiring."
+      );
+      change({});
+
+      return;
+    }
     const controller = new window.AbortController();
     const timer = setTimeout(() => {
       Api.get("/agreements/parties", {
         ...quiet,
         signal: controller.signal,
-        params: { kind, query },
+        params: {
+          kind,
+          query,
+          company_id: companyId,
+          ...(prefill ? { employment_id: prefill } : {}),
+        },
       })
         .then(({ data }) => {
+          if (controller.signal.aborted) return;
+
+          if (
+            String(data.company_id) !== String(companyId) ||
+            (prefill &&
+              (data.parties.length !== 1 ||
+                String(data.parties[0].id) !== prefill))
+          ) {
+            setError(
+              "The document profile changed. Open the handoff again from Hiring."
+            );
+            change({});
+
+            return;
+          }
           setParties(data.parties);
           setError("");
+          if (prefill) {
+            setSelected(prefill);
+            change({ employment_id: Number(prefill) });
+          }
         })
         .catch(failure => {
-          if (!controller.signal.aborted) setError(failureMessage(failure));
+          if (!controller.signal.aborted) {
+            setParties([]);
+            setSelected("");
+            change({});
+            setError(failureMessage(failure));
+          }
         });
     }, 250);
 
@@ -50,7 +110,7 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [kind, query, refresh]);
+  }, [kind, query, refresh, companyId, prefill, expectedCompanyId, change]);
 
   return (
     <div className="space-y-2">
@@ -61,6 +121,8 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
         value={kind}
         onChange={event => {
           setKind(event.target.value);
+          setPrefill(undefined);
+          setError("");
           setSelected("");
           setParties([]);
           change({});
@@ -68,7 +130,7 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
       >
         <option value="">Standalone document</option>
         <option value="client">Client</option>
-        <option value="consultant">Consultant</option>
+        <option value="consultant">Employee or consultant</option>
       </select>
       {kind && (
         <>
@@ -79,6 +141,7 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
             value={query}
             onChange={event => {
               setQuery(event.target.value);
+              setPrefill(undefined);
               setSelected("");
               change({});
             }}
@@ -131,17 +194,23 @@ function ProfileLink({ change }: { change: (link: PartyLink) => void }) {
 
 function Workspace({ companyId }: { companyId: number | string }) {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const employmentId = searchParams.get("employment_id") || undefined;
   const [records, setRecords] = useState<Summary[] | null>(null);
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [refresh, setRefresh] = useState(0);
-  const [creating, setCreating] = useState(false);
+  const [creating, setCreating] = useState(Boolean(employmentId));
   const [title, setTitle] = useState("");
   const [files, setFiles] = useState<File[]>([]);
   const [party, setParty] = useState<PartyLink>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const key = useRef(window.crypto.randomUUID());
+  const changeParty = useCallback((link: PartyLink) => {
+    setParty(link);
+    key.current = window.crypto.randomUUID();
+  }, []);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -348,10 +417,10 @@ function Workspace({ companyId }: { companyId: number | string }) {
                 />
               </div>
               <ProfileLink
-                change={link => {
-                  setParty(link);
-                  key.current = window.crypto.randomUUID();
-                }}
+                change={changeParty}
+                companyId={companyId}
+                employmentId={employmentId}
+                expectedCompanyId={searchParams.get("company_id")}
               />
             </fieldset>
             {error && (
@@ -382,6 +451,7 @@ function Workspace({ companyId }: { companyId: number | string }) {
 export default function DocumentSignatures() {
   const { company } = useUserContext();
   const { requestId } = useParams();
+  const location = useLocation();
   if (!company?.id) {
     return (
       <p role="status" className="p-6">
@@ -405,6 +475,9 @@ export default function DocumentSignatures() {
       companyId={company.id}
     />
   ) : (
-    <Workspace key={company.id} companyId={company.id} />
+    <Workspace
+      key={`${company.id}:${location.search}`}
+      companyId={company.id}
+    />
   );
 }

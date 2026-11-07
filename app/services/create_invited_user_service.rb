@@ -36,18 +36,30 @@ class CreateInvitedUserService
     invitation_valid!
     user_valid!
     invitation.company.with_employee_number_lock do |company|
-      invitation.lock!
+      invitation.reload
       raise InvitationExpired unless invitation.company_id == company.id
 
-      invitation_valid!
-      user_valid!
-      update_invitation!
-      ensure_seat_available!
-      find_or_create_user!
-      add_role_to_invited_user
-      create_client_member
-      create_notification_preference
+      source_offer_id = invitation.hiring_offer_id
+      Hiring::Onboarding.with_invitation(invitation) do |onboarding|
+        invitation.lock!
+        raise InvitationExpired unless invitation.company_id == company.id && invitation.hiring_offer_id == source_offer_id
+
+        invitation_valid!
+        user_valid!
+        onboarding&.validate_invitation!(invitation)
+        update_invitation!
+        ensure_seat_available!
+        find_or_create_user! { |recipient| onboarding&.validate_recipient!(recipient) }
+        onboarding&.create_employment!(user)
+        add_role_to_invited_user
+        create_client_member
+        create_notification_preference
+        onboarding&.record_acceptance!(user, invitation)
+      end
     end
+  rescue ActiveRecord::RecordNotFound
+    @error = InvitationExpired.new
+    service_failed(@error.message)
   rescue ActiveRecord::LockWaitTimeout => e
     @error = e
     service_failed("Your account is being updated. Reopen your invitation link and try again.")
@@ -88,11 +100,13 @@ class CreateInvitedUserService
 
     def find_or_create_user!
       if (@user = User.lock("FOR NO KEY UPDATE NOWAIT").find_by(email: invitation.recipient_email))
+        yield @user if block_given?
         @user.update!(current_workspace_id: invitation.company.id)
         activate_employment_status unless invitation.client
         sync_invitable_metadata!
       else
         create_invited_user!
+        yield @user if block_given?
         create_reset_password_token
         @new_user = true
       end

@@ -23,6 +23,7 @@ class Employment < ApplicationRecord
   has_many :employee_documents, dependent: :destroy
   has_many :employee_payments, dependent: :destroy
   has_many :employee_occasion_deliveries, dependent: :destroy
+  has_many :hiring_offers, dependent: :restrict_with_exception
 
   # Validations
   validates :designation, :employment_type, :joined_at, :employee_id, presence: true, on: :update
@@ -30,7 +31,7 @@ class Employment < ApplicationRecord
   validate :employee_number_within_range, if: :will_save_change_to_employee_id?
   validates :resigned_at, comparison: { greater_than: :joined_at }, unless: -> { resigned_at.nil? }
   validates :joined_at, comparison: { less_than_or_equal_to: -> { Date.current }, message: "date must be in past" },
-    on: :update
+    on: :update, if: :will_save_change_to_joined_at?
   # Callbacks
   before_destroy :remove_user_invitations
   around_save :reserve_employee_number, if: -> { will_save_change_to_employee_id? && employee_id.present? }

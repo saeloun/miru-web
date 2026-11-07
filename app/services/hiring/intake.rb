@@ -12,6 +12,8 @@ module Hiring
       end
     end
 
+    class WorkspaceChanged < Conflict; end
+
     KEYS = %w[company_id request_key full_name email role_id owner_employment_id notes received_at].freeze
     UUID = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/i
 

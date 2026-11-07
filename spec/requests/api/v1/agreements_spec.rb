@@ -17,6 +17,19 @@ RSpec.describe "Private agreement drafts", type: :request do
     sign_in admin
   end
 
+  it "finds the exact current-workspace employment for a generic upload handoff" do
+    target = create(:employment, company:, resigned_at: nil)
+    get "/api/v1/agreements/parties", params: { kind: "consultant", company_id: company.id, employment_id: target.id }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("company_id")).to eq(company.id)
+    expect(response.parsed_body.fetch("parties").pluck("id")).to eq([target.id])
+    other = create(:employment)
+    get "/api/v1/agreements/parties", params: { kind: "consultant", company_id: company.id, employment_id: other.id }
+    expect(response).to have_http_status(:not_found)
+    get "/api/v1/agreements/parties", params: { kind: "consultant", company_id: other.company_id, employment_id: target.id }
+    expect(response).to have_http_status(:conflict)
+  end
+
   def generate(**attributes)
     post "/api/v1/agreements", params: { agreement: { company_id: company.id,
       agreement_template_id: master.id, client_id: client.id, title: "Synthetic client contract", field_values: {}

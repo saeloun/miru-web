@@ -90,7 +90,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: {
       notice: I18n.t("user.super_admin_delete.success", email: target_user.email)
     }, status: 200
-  rescue ActiveRecord::InvalidForeignKey
+  rescue ActiveRecord::InvalidForeignKey, ActiveRecord::DeleteRestrictionError
     render json: { errors: I18n.t("user.super_admin_delete.retained_history") }, status: 422
   end
 

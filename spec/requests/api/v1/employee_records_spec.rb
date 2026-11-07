@@ -69,6 +69,18 @@ RSpec.describe "Employee records", type: :request do
     expect(record.reload.private_details).to include("bank_account_number" => nil, "salary_amount" => "123.45")
   end
 
+  it "allows active Admin prehire preparation without allowing a future employee to access records early" do
+    employment.update_columns(joined_at: Date.tomorrow)
+    get "/api/v1/employee_records", params: { user_id: employee.id }
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.dig("employee_record", "employment", "joined_at")).to eq(Date.tomorrow.iso8601)
+    update_record({ emergency_contact_name: "Future staff contact" })
+    expect(response).to have_http_status(:ok)
+    sign_in employee
+    get "/api/v1/employee_records", params: { user_id: employee.id }
+    expect(response).to have_http_status(:forbidden)
+  end
+
   it "lets active owners manage and active employees edit their own non-salary fields" do
     admin.remove_role(:admin, company)
     admin.add_role(:owner, company)

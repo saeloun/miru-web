@@ -19,7 +19,7 @@ RSpec.describe EmployeeRecordPolicy do
     end
   end
 
-  it "rejects future, former, discarded, client and foreign-workspace actors and targets" do
+  it "rejects future actors and former, discarded, client and foreign-workspace actors and targets" do
     target = create(:user, current_workspace: company)
     target.add_role(:employee, company)
     target_employment = create(:employment, company:, user: target, joined_at: nil, resigned_at: nil)
@@ -27,7 +27,9 @@ RSpec.describe EmployeeRecordPolicy do
     target_policy = described_class.new(user, target_employment)
     expect(target_policy.show?).to be(true)
     [[user, employment], [target, target_employment]].each do |member, membership|
-      [{ joined_at: Date.tomorrow }, { resigned_at: Date.yesterday }, { discarded_at: Time.current }].each do |attributes|
+      changes = [{ resigned_at: Date.yesterday }, { discarded_at: Time.current }]
+      changes.unshift({ joined_at: Date.tomorrow }) if member == user
+      changes.each do |attributes|
         membership.update_columns(attributes)
         expect(target_policy.show?).to be(false), attributes.inspect
         membership.update_columns(joined_at: nil, resigned_at: nil, discarded_at: nil)
@@ -53,5 +55,16 @@ RSpec.describe EmployeeRecordPolicy do
     coworker.add_role(:employee, company)
     other = create(:employment, company:, user: coworker, joined_at: nil, resigned_at: nil)
     expect(described_class.new(user, other).show?).to be(false)
+  end
+
+  it "lets an active Admin prepare a future staff record without granting that future member access" do
+    user.add_role(:admin, company)
+    future = create(:user, current_workspace: company)
+    membership = create(:employment, company:, user: future, joined_at: Date.tomorrow, resigned_at: nil)
+    future.add_role(:employee, company)
+    expect(described_class.new(user, membership).show?).to be(true)
+    expect(described_class.new(user, membership).update?).to be(true)
+    expect(described_class.new(future, membership).index?).to be(false)
+    expect(described_class.new(future, membership).show?).to be(false)
   end
 end

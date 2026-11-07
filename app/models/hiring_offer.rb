@@ -9,14 +9,16 @@ class HiringOffer < ApplicationRecord
   belongs_to :hiring_application
   belongs_to :created_by, class_name: "User", optional: true
   belongs_to :issued_by, class_name: "User", optional: true
-  %i[request_details edit_details issue_details response_details details].each do |field|
+  belongs_to :employment, optional: true
+  has_one :onboarding_invitation, class_name: "Invitation", dependent: :destroy
+  %i[request_details edit_details issue_details response_details details onboarding_details onboarding_completion_details].each do |field|
     serialize field, coder: JSON, type: Hash
     encrypts field
   end
   encrypts :access_token, deterministic: true
   has_secure_token :access_token, length: 32, on: :create
-  self.filter_attributes += [:request_details, :edit_details, :issue_details, :response_details, :details, :access_token]
-  audited associated_with: :company, only: [:state, :issued_by_id, :issued_at, :responded_at, :revoked_at]
+  self.filter_attributes += [:request_details, :edit_details, :issue_details, :response_details, :details, :access_token, :onboarding_details, :onboarding_completion_details]
+  audited associated_with: :company, only: [:state, :issued_by_id, :issued_at, :responded_at, :revoked_at, :onboarding_started_at, :onboarded_at, :employment_id]
 
   validates :state, inclusion: { in: STATES }
   validates :request_key, format: { with: /\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i }
@@ -24,6 +26,7 @@ class HiringOffer < ApplicationRecord
   validate :valid_details
   validate :matching_application
   validate :valid_lifecycle
+  validate :valid_onboarding
   validate :fixed_history, on: :update
 
   def review_details
@@ -72,6 +75,7 @@ class HiringOffer < ApplicationRecord
 
     def matching_application
       errors.add(:base, "Choose an application in this workspace") unless hiring_application&.company_id == company_id
+      errors.add(:base, "Choose a profile in this workspace") if employment && employment.company_id != company_id
     end
 
     def valid_lifecycle
@@ -112,6 +116,18 @@ class HiringOffer < ApplicationRecord
       fixed = %w[company_id hiring_application_id created_by_id request_key request_details access_token created_at]
       fixed += %w[details edit_details issue_details issued_at issued_by_id expires_at] unless state_in_database == "preparing"
       fixed += %w[state response_details responded_at] if %w[accepted declined expired].include?(state_in_database)
+      fixed += %w[onboarding_details onboarding_started_at] if onboarding_started_at_in_database
+      fixed += %w[employment_id onboarded_at onboarding_completion_details] if onboarded_at_in_database
       errors.add(:base, "Issued offer terms and recorded responses cannot be rewritten") if fixed.any? { |key| will_save_change_to_attribute?(key) }
+    end
+
+    def valid_onboarding
+      valid = if onboarding_started_at
+        state == "accepted" && onboarding_details.present? &&
+          (onboarded_at ? employment.present? && onboarding_completion_details.present? : employment.nil? && onboarding_completion_details.empty?)
+      else
+        onboarding_details.empty? && onboarding_completion_details.empty? && onboarded_at.nil? && employment.nil?
+      end
+      errors.add(:base, "Confirm accepted offer onboarding before linking a profile") unless valid
     end
 end

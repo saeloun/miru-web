@@ -40,7 +40,7 @@ RSpec.shared_context "hiring SMTP transport" do
         delivery.message.perform_deliveries = true
       end
     end
-    Timeout.timeout(5) { yield commands, messages }
+    Timeout.timeout(5) { yield commands, messages, server.addr[1] }
     listener.value
   ensure
     server&.close

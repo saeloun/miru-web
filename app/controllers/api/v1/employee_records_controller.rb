@@ -143,7 +143,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
       unless (user_id.is_a?(String) || user_id.is_a?(Integer)) && user_id.to_s.match?(/\A[1-9]\d{0,18}\z/)
         raise ActionController::BadRequest
       end
-      employment = policy(EmployeeRecord).active_employments.find_by!(user_id:)
+      employment = policy(EmployeeRecord).visible_employments.find_by!(user_id:)
       authorize employment, :show?, policy_class: EmployeeRecordPolicy
       employment
     end

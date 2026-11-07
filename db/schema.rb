@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_08_020100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_030100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -978,14 +978,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_020100) do
     t.integer "lock_version", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "onboarding_details"
+    t.text "onboarding_completion_details"
+    t.datetime "onboarding_started_at"
+    t.datetime "onboarded_at"
+    t.bigint "employment_id"
     t.index ["access_token"], name: "index_hiring_offers_on_access_token", unique: true
     t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_offers_for_history"
     t.index ["company_id", "hiring_application_id"], name: "index_hiring_offers_one_active", unique: true, where: "((state)::text = ANY ((ARRAY['preparing'::character varying, 'sent'::character varying, 'accepted'::character varying])::text[]))"
     t.index ["company_id", "id"], name: "index_hiring_offers_on_company_id_and_id", unique: true
     t.index ["company_id", "request_key"], name: "index_hiring_offers_on_company_id_and_request_key", unique: true
     t.index ["created_by_id"], name: "index_hiring_offers_on_created_by_id"
+    t.index ["employment_id"], name: "index_hiring_offers_on_employment_id"
     t.index ["expires_at"], name: "index_hiring_offers_pending_expiry", where: "((state)::text = 'sent'::text)"
     t.index ["issued_by_id"], name: "index_hiring_offers_on_issued_by_id"
+    t.check_constraint "onboarding_started_at IS NULL AND onboarding_details IS NULL AND onboarded_at IS NULL AND employment_id IS NULL AND onboarding_completion_details IS NULL OR state::text = 'accepted'::text AND onboarding_started_at IS NOT NULL AND onboarding_details IS NOT NULL AND (onboarded_at IS NULL AND employment_id IS NULL AND onboarding_completion_details IS NULL OR onboarded_at IS NOT NULL AND employment_id IS NOT NULL AND onboarding_completion_details IS NOT NULL)", name: "hiring_offer_onboarding_state"
     t.check_constraint "state::text = 'preparing'::text AND issued_at IS NULL AND issued_by_id IS NULL AND issue_details IS NULL AND expires_at IS NULL AND responded_at IS NULL AND response_details IS NULL AND revoked_at IS NULL OR (state::text = ANY (ARRAY['sent'::character varying, 'accepted'::character varying, 'declined'::character varying, 'expired'::character varying]::text[])) AND issued_at IS NOT NULL AND issue_details IS NOT NULL AND expires_at IS NOT NULL AND ((state::text = ANY (ARRAY['sent'::character varying, 'expired'::character varying]::text[])) AND responded_at IS NULL AND response_details IS NULL OR (state::text = ANY (ARRAY['accepted'::character varying, 'declined'::character varying]::text[])) AND responded_at IS NOT NULL AND response_details IS NOT NULL)", name: "hiring_offer_state"
   end
 
@@ -1152,11 +1159,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_020100) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.boolean "virtual_verified", default: false
+    t.bigint "hiring_offer_id"
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
     t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["expired_at"], name: "index_invitations_on_expired_at"
     t.index ["first_name"], name: "index_invitations_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["hiring_offer_id"], name: "index_invitations_on_hiring_offer_id", unique: true
     t.index ["last_name"], name: "index_invitations_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email_trgm", opclass: :gin_trgm_ops, using: :gin
@@ -2525,6 +2534,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_020100) do
   add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
   add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
   add_foreign_key "hiring_offers", "companies"
+  add_foreign_key "hiring_offers", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_offers", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_offers", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_offers", "users", column: "issued_by_id", on_delete: :nullify
@@ -2554,6 +2564,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_020100) do
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
+  add_foreign_key "invitations", "hiring_offers", column: ["company_id", "hiring_offer_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_item_time_entries", "invoice_line_items"
   add_foreign_key "invoice_line_item_time_entries", "timesheet_entries"

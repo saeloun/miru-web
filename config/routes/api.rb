@@ -372,6 +372,10 @@ namespace :api, defaults: { format: "json" } do
         end
         resources :screenings, only: [:index, :create]
         resources :offers, only: [:index, :create, :update] do
+          resources :onboarding, only: [:index, :create], controller: "onboarding" do
+            post :renew, on: :collection
+            post :complete, on: :collection
+          end
           post :issue, on: :member
           post :revoke, on: :member
           resources :messages, only: [:index, :create], controller: :offer_messages do

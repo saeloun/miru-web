@@ -15,8 +15,9 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
     render json: { errors: error.message }, status: 422
   end
   rescue_from ::Hiring::Intake::Conflict do |error|
-    render json: { errors: error.message, company_id: current_company.id,
-      existing_application_id: error.existing_application_id }.compact, status: 409
+    details = { errors: error.message, company_id: current_company.id, existing_application_id: error.existing_application_id }.compact
+    details[:workspace_changed] = true if error.is_a?(::Hiring::Intake::WorkspaceChanged)
+    render json: details, status: 409
   end
   rescue_from ActiveRecord::StaleObjectError do
     render json: { errors: "This hiring record changed. Reload before saving." }, status: 409
@@ -48,7 +49,7 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
 
     def require_workspace!(identity)
       unless (identity.is_a?(String) || identity.is_a?(Integer)) && identity.to_s == current_company.id.to_s
-        raise ::Hiring::Intake::Conflict, "The hiring workspace changed. Reload the current workspace."
+        raise ::Hiring::Intake::WorkspaceChanged, "The hiring workspace changed. Reload the current workspace."
       end
     end
 
