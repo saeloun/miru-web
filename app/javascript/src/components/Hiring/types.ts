@@ -209,6 +209,26 @@ export type ReceiptDetailPage = {
 };
 export const stageLabel = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, " ");
+export function answerText(value: FormAnswer | undefined) {
+  if (
+    value === null ||
+    value === undefined ||
+    value === "" ||
+    (Array.isArray(value) && !value.length)
+  ) {
+    return "Not provided";
+  }
+
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+
+  if (Array.isArray(value)) return value.join("\n");
+
+  if (typeof value === "object") {
+    return `${value.amount} ${value.currency} · ${stageLabel(value.period)}`;
+  }
+
+  return value;
+}
 export const receiptLabel = (value: string, zone: string) =>
   new Intl.DateTimeFormat(undefined, {
     dateStyle: "medium",

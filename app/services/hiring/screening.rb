@@ -48,6 +48,7 @@ module Hiring
       end
 
       def cancel_inactive_assignments(stage)
+        @application.close_inactive_interviews!(actor: @actor)
         unless HiringAssignment::ACTIVE_STAGES.include?(stage)
           @application.hiring_assignments.where(ended_at: nil).find_each { |assignment| assignment.cancel_for_stage!(actor: @actor) }
         end

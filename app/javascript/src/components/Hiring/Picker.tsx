@@ -18,6 +18,7 @@ type Choices = {
   company_id: number;
   roles?: Role[];
   templates?: { id: number; title: string }[];
+  panel_members?: { id: number; full_name: string; active: boolean }[];
   mailboxes?: Mailbox[];
   applications?: Application[];
   time_zone?: string;
@@ -48,6 +49,7 @@ export default function Picker({
     | "owners"
     | "mailboxes"
     | "applications"
+    | "panel_members"
     | "assignment_templates";
   value: Choice | null;
   change: (value: Choice | null) => void;
@@ -65,7 +67,9 @@ export default function Picker({
   const trigger = useRef<HTMLButtonElement>(null);
   const search = useRef<HTMLInputElement>(null);
   const searchLabel =
-    kind === "assignment_templates"
+    kind === "panel_members"
+      ? "Search interview panel"
+      : kind === "assignment_templates"
       ? "Search approved tasks"
       : `Search ${kind}`;
 
@@ -99,7 +103,11 @@ export default function Picker({
         .then(data => {
           if (!active) return;
           let choices: Choice[];
-          if (kind === "assignment_templates") {
+          if (kind === "panel_members") {
+            choices = (data.panel_members || [])
+              .filter(member => member.active)
+              .map(member => ({ id: member.id, label: member.full_name }));
+          } else if (kind === "assignment_templates") {
             choices = (data.templates || []).map(task => ({
               id: task.id,
               label: task.title,

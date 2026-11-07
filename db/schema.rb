@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_094000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -567,6 +567,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["company_id", "employee_id"], name: "index_employments_on_company_employee_id", unique: true, where: "((employee_id IS NOT NULL) AND (btrim((employee_id)::text) <> ''::text))"
+    t.index ["company_id", "id"], name: "index_employments_hiring_tenant_identity", unique: true
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
@@ -638,6 +639,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.index ["user_id"], name: "index_expenses_on_user_id"
     t.index ["vendor_id"], name: "index_expenses_on_vendor_id"
     t.check_constraint "currency IS NOT NULL AND currency::text ~ '^[A-Z]{3}$'::text", name: "expenses_currency_iso_code"
+  end
+
+  create_table "hiring_access_grants", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "hiring_panel_member_id", null: false
+    t.bigint "granted_by_id"
+    t.boolean "compensation_access", default: false, null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_panel_member_id", "revoked_at"], name: "index_hiring_grants_for_reviewer"
+    t.index ["granted_by_id"], name: "index_hiring_access_grants_on_granted_by_id"
+    t.index ["hiring_interview_id", "hiring_panel_member_id"], name: "index_hiring_interview_active_grants", unique: true, where: "(revoked_at IS NULL)"
   end
 
   create_table "hiring_applications", force: :cascade do |t|
@@ -777,6 +792,44 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
   end
 
+  create_table "hiring_interview_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "created_by_id"
+    t.integer "interview_version", null: false
+    t.integer "application_version", null: false
+    t.string "action", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_interview_events_on_created_by_id"
+    t.index ["hiring_interview_id", "interview_version"], name: "index_hiring_interview_events_per_version", unique: true
+  end
+
+  create_table "hiring_interviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "previous_interview_id"
+    t.integer "number", null: false
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "details", null: false
+    t.text "panel_snapshot", null: false
+    t.string "status", default: "planned", null: false
+    t.datetime "ended_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_interviews_on_company_id_and_id", unique: true
+    t.index ["created_by_id"], name: "index_hiring_interviews_on_created_by_id"
+    t.index ["hiring_application_id", "number"], name: "index_hiring_interviews_on_hiring_application_id_and_number", unique: true
+    t.index ["hiring_application_id", "request_key"], name: "idx_on_hiring_application_id_request_key_982b41fc90", unique: true
+    t.index ["previous_interview_id"], name: "index_hiring_interviews_on_previous_interview_id"
+    t.check_constraint "number > 0", name: "hiring_interview_number"
+    t.check_constraint "status::text = 'planned'::text AND ended_at IS NULL OR (status::text = ANY (ARRAY['completed'::character varying, 'skipped'::character varying, 'cancelled'::character varying]::text[])) AND ended_at IS NOT NULL", name: "hiring_interview_status"
+  end
+
   create_table "hiring_mailboxes", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.string "name", limit: 200, null: false
@@ -825,6 +878,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.check_constraint "original_message_id IS NULL AND attempt_number = 1 OR original_message_id IS NOT NULL AND original_message_id <> id AND attempt_number > 1", name: "hiring_message_attempt"
     t.check_constraint "resolution IS NULL AND resolved_at IS NULL AND resolved_by_id IS NULL AND resolution_details IS NULL OR resolution IS NOT NULL AND (resolution::text = ANY (ARRAY['accepted'::character varying, 'not_accepted'::character varying]::text[])) AND resolved_at IS NOT NULL AND resolution_details IS NOT NULL", name: "hiring_message_resolution"
     t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
+  end
+
+  create_table "hiring_panel_members", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "employment_id"], name: "index_hiring_panel_members_on_company_id_and_employment_id", unique: true
+    t.index ["company_id", "id"], name: "index_hiring_panel_members_on_company_id_and_id", unique: true
   end
 
   create_table "hiring_portal_accesses", force: :cascade do |t|
@@ -2292,6 +2356,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "expenses", "projects"
   add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "hiring_access_grants", "companies"
+  add_foreign_key "hiring_access_grants", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_access_grants", "hiring_panel_members", column: ["company_id", "hiring_panel_member_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_access_grants", "users", column: "granted_by_id", on_delete: :nullify
   add_foreign_key "hiring_applications", "companies"
   add_foreign_key "hiring_applications", "employments", column: "owner_employment_id", on_delete: :nullify
   add_foreign_key "hiring_applications", "hiring_candidates", column: ["company_id", "hiring_candidate_id"], primary_key: ["company_id", "id"]
@@ -2318,6 +2386,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
   add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_interview_events", "companies"
+  add_foreign_key "hiring_interview_events", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_interview_events", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_interviews", "companies"
+  add_foreign_key "hiring_interviews", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_interviews", "hiring_interviews", column: "previous_interview_id", on_delete: :nullify
+  add_foreign_key "hiring_interviews", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_mailboxes", "companies"
   add_foreign_key "hiring_messages", "companies"
   add_foreign_key "hiring_messages", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
@@ -2326,6 +2401,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "hiring_messages", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
   add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_panel_members", "companies"
+  add_foreign_key "hiring_panel_members", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_portal_accesses", "companies"
   add_foreign_key "hiring_portal_accesses", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
   add_foreign_key "hiring_portal_accesses", "hiring_settings"

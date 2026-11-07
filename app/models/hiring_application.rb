@@ -14,6 +14,7 @@ class HiringApplication < ApplicationRecord
   has_many :hiring_portal_accesses, dependent: :destroy
   has_many :hiring_submissions, dependent: :destroy
   has_many :hiring_screenings, dependent: :destroy
+  has_many :hiring_interviews, dependent: :destroy
   serialize :creation_details, coder: JSON, type: Hash
   encrypts :creation_details, :notes
   audited associated_with: :company, on: :update, only: [:stage, :hiring_role_id, :owner_employment_id]
@@ -26,6 +27,12 @@ class HiringApplication < ApplicationRecord
   validate :immutable_creation, on: :update
 
   def submitted_name = creation_details["full_name"]
+
+  def close_inactive_interviews!(actor:)
+    return if stage == "interview"
+
+    hiring_interviews.where(status: "planned").find_each { |interview| interview.cancel_for_stage!(actor:) }
+  end
 
   private
 

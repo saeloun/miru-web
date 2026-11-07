@@ -388,6 +388,7 @@ module Hiring
       def update_stage!(stage)
         Audited.audit_class.as_user(@actor) { @application.update!(stage:) }
         @application.touch if @application.saved_changes.empty?
+        @application.close_inactive_interviews!(actor: @actor)
       end
   end
 end

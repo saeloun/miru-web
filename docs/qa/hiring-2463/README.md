@@ -1,6 +1,10 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening and assignment issuance/submission/review from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Interviews, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening, assessments and configurable interview rounds from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Scheduling, feedback, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Task 5 interview panels and configurable rounds
+
+Panel profiles, arbitrary rounds, repeat/skip/complete/reassign controls and private assigned-staff handover are implemented locally. Compensation needs an explicit grant; private resume/assessment downloads recheck access after storage reads. Final backend: **5,735/0 with 59 pending**; related hiring: **236/0**; all hiring browser files: **55/0**, including eight new scenarios. No production or published-head claim. [Details, rulings and six screenshots](interviews-20261107.md).
 
 ## Task 4 Admin and designated-reviewer interfaces
 

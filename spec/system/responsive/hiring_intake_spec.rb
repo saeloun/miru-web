@@ -186,8 +186,8 @@ RSpec.describe "Hiring intake", type: :system, js: true do
     expect(page).to have_css("#application-role:focus[aria-expanded='false']", text: "No role yet")
     page.driver.browser.keyboard.type(:down)
     expect(page).to have_css("[cmdk-item]", count: 20)
-    find("#candidate-name").click
-    expect(page).to have_css("#candidate-name:focus")
+    find("#candidate-email").click
+    expect(page).to have_css("#candidate-email:focus")
     expect(page).to have_css("#application-role[aria-expanded='false']")
     expect(@console_errors).to eq([])
   end

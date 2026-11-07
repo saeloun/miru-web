@@ -17,33 +17,11 @@ import Pager from "./Pager";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import {
   receiptLabel,
-  stageLabel,
+  answerText,
   type Application,
   type CandidateFormsPage,
   type CandidateFormReview,
-  type FormAnswer,
 } from "./types";
-
-function answerText(value: FormAnswer | undefined) {
-  if (
-    value === null ||
-    value === undefined ||
-    value === "" ||
-    (Array.isArray(value) && !value.length)
-  ) {
-    return "Not provided";
-  }
-
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-
-  if (Array.isArray(value)) return value.join("\n");
-
-  if (typeof value === "object") {
-    return `${value.amount} ${value.currency} · ${stageLabel(value.period)}`;
-  }
-
-  return value;
-}
 
 export default function ApplicationForms({
   companyId,

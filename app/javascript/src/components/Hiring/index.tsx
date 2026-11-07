@@ -15,6 +15,7 @@ import ReceiptDetail from "./ReceiptDetail";
 import Picker from "./Picker";
 import AssignmentLibrary from "./AssignmentLibrary";
 import AssignmentTemplateEditor from "./AssignmentTemplateEditor";
+import InterviewPanel from "./InterviewPanel";
 import { failureMessage, read } from "./api";
 import {
   receiptLabel,
@@ -307,6 +308,7 @@ function Workspace({ companyId }: { companyId: number }) {
   const settings = location.pathname.endsWith("/communications");
   const inbox = location.pathname.endsWith("/inbox");
   const mailboxes = location.pathname.endsWith("/mailboxes");
+  const panel = location.pathname.endsWith("/panel");
   const library =
     location.pathname.endsWith("/assignment-library") || !!templateId;
 
@@ -328,7 +330,8 @@ function Workspace({ companyId }: { companyId: number }) {
             inbox ||
             mailboxes ||
             receiptId ||
-            library) && (
+            library ||
+            panel) && (
             <Button asChild variant="outline" className="min-h-11">
               <Link to="/hiring">All applications</Link>
             </Button>
@@ -358,6 +361,11 @@ function Workspace({ companyId }: { companyId: number }) {
               <Link to="/hiring/assignment-library">Assignment library</Link>
             </Button>
           )}
+          {!panel && (
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/hiring/panel">Interview panel</Link>
+            </Button>
+          )}
         </nav>
       </header>
       {templateId ? (
@@ -366,6 +374,8 @@ function Workspace({ companyId }: { companyId: number }) {
           companyId={companyId}
           id={templateId}
         />
+      ) : panel ? (
+        <InterviewPanel companyId={companyId} />
       ) : library ? (
         <AssignmentLibrary companyId={companyId} />
       ) : receiptId ? (

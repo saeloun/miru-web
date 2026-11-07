@@ -74,7 +74,9 @@ Assignment domain, Admin/reviewer APIs, candidate portal, Admin issuance/decisio
 
 **Interface:** Admin selects active members, expertise, availability, safe booking URL, round type/duration/panel/criteria/form. Add/skip/repeat/reassign preserves completed records; assigned users see only the required application handover, with explicit compensation access.
 
-- [ ] RED→GREEN screening call/arbitrary rounds, reassignment/membership revocation, cross-company IDs, URL validation, compensation exclusion/grants and no completed-history rewrite; browser panel/round checks; commit.
+- [x] RED→GREEN screening call/arbitrary rounds, reassignment/membership revocation, cross-company IDs, URL validation, compensation exclusion/grants and no completed-history rewrite; browser panel/round checks; commit.
+
+Local panel, round and handover implementation: 15 request cases, 55 hiring browser cases (eight new), and 5,735 backend examples pass, with 59 backend pending. Migrations up/down/up, required Vite/test builds, changed-file lint and new-domain Reek pass. Feedback questions are configured here; feedback records remain Task 6. Publication, exact-head council reviews and whole-branch Task 10 review remain required. [Evidence and implementation rulings](../../qa/hiring-2463/interviews-20261107.md).
 
 ### Task 6: Scheduling and feedback deadlines
 

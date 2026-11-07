@@ -310,6 +310,13 @@ namespace :api, defaults: { format: "json" } do
     end
 
     namespace :hiring do
+      resources :interview_reviews, only: [:index, :show] do
+        get :resume, on: :member
+        get "assignments/:assignment_id/files/:attachment_id", on: :member, action: :download
+      end
+      resources :panel_members, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
       resources :assignment_reviews, only: [:index, :show] do
         post :reviews, on: :member, action: :create
         get "files/:attachment_id", on: :member, action: :download
@@ -338,6 +345,7 @@ namespace :api, defaults: { format: "json" } do
         end
       end
       resources :applications, only: [:index, :show, :create] do
+        resources :interviews, only: [:index, :create, :update]
         post :search, on: :collection
         resources :assignments, only: [:index, :create] do
           post :reassign, on: :member

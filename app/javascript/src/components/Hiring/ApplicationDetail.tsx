@@ -6,6 +6,7 @@ import { failureMessage, read } from "./api";
 import ApplicationForms from "./ApplicationForms";
 import ApplicationScreening from "./ApplicationScreening";
 import ApplicationAssignments from "./ApplicationAssignments";
+import ApplicationInterviews from "./ApplicationInterviews";
 import {
   receiptLabel,
   stageLabel,
@@ -147,6 +148,12 @@ export default function ApplicationDetail({
       />
       <ApplicationAssignments
         key={`assignments:${companyId}:${application.id}`}
+        companyId={companyId}
+        application={application}
+        changed={applicationChanged}
+      />
+      <ApplicationInterviews
+        key={`interviews:${companyId}:${application.id}`}
         companyId={companyId}
         application={application}
         changed={applicationChanged}
