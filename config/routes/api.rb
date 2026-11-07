@@ -374,6 +374,11 @@ namespace :api, defaults: { format: "json" } do
         resources :offers, only: [:index, :create, :update] do
           post :issue, on: :member
           post :revoke, on: :member
+          resources :messages, only: [:index, :create], controller: :offer_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
         end
         resources :decisions, only: [:index, :create, :update] do
           post :finalize, on: :member

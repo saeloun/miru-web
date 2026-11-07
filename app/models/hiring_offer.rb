@@ -27,12 +27,14 @@ class HiringOffer < ApplicationRecord
   validate :fixed_history, on: :update
 
   def review_details
-    value = slice(:id, :lock_version, :created_at, :issued_at, :expires_at, :responded_at, :revoked_at).merge(state: current_state, details:)
+    value = slice(:id, :lock_version, :created_at, :issued_at, :expires_at, :responded_at, :revoked_at).merge(state: current_state, details:, can_email: can_email?)
     value[:private_path] = "/hiring-offer##{access_token}" if issued_at && !revoked_at
     value
   end
 
   def current_state = state == "sent" && expires_at <= Time.current ? "expired" : state
+
+  def can_email? = state == "sent" && available?
 
   def expire!
     with_lock { update!(state: "expired") if state == "sent" && expires_at <= Time.current }

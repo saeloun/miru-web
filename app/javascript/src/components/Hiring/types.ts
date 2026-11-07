@@ -117,6 +117,10 @@ export const decisionMessageFields = [
   { key: "hold_follow_up_subject", label: "Hold follow-up subject" },
   { key: "hold_follow_up_body", label: "Hold follow-up body" },
 ] as const;
+export const offerMessageFields = [
+  { key: "offer_subject", label: "Offer subject" },
+  { key: "offer_body", label: "Offer body" },
+] as const;
 export type HiringSettingsDetails = Record<
   (typeof hiringTextFields)[number]["key"],
   string | null
@@ -125,7 +129,8 @@ export type HiringSettingsDetails = Record<
     Record<
       | (typeof interviewMessageFields)[number]["key"]
       | (typeof feedbackMessageFields)[number]["key"]
-      | (typeof decisionMessageFields)[number]["key"],
+      | (typeof decisionMessageFields)[number]["key"]
+      | (typeof offerMessageFields)[number]["key"],
       string | null
     >
   > & {

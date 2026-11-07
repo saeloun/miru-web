@@ -8,7 +8,7 @@ The [decision-record checkpoint](decisions-20261107.md) adds drafts, explicit im
 
 ## Task 8 private offers — in progress
 
-The [offer increment](offers-20261108.md) adds encrypted Preparing terms, separate approval/immutable private issuance, candidate acceptance/decline, local-date expiry and revocation. **391 hiring backend/schedule checks pass**; the full 105-case hiring Brave run and six affected native cases after the issuer-lifecycle refinement pass. Captures cover desktop/mobile, recovery and privacy. Issuing the private link sends no email. Offer email and accepted-offer→profile→generic agreement onboarding remain required; Task 8 stays unchecked.
+The [offer checkpoint](offers-20261108.md) adds encrypted Preparing terms, separate approval/immutable private issuance, candidate acceptance/decline, local-date expiry and revocation. The newer [approved offer-email increment](offer-email-20261108.md) adds editable approved wording, manual preview/confirmation and the existing delivery/recovery history. **414 hiring backend/schedule checks and all 111 hiring Brave cases pass**, including actual SMTP capture→emailed private link→candidate acceptance. Issuing the private link alone sends no email. Accepted-offer→profile→generic agreement onboarding remains required; Task 8 stays unchecked.
 
 ## Task 6 internal feedback notices
 

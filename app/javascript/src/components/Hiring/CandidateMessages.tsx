@@ -50,15 +50,17 @@ export default function CandidateMessages({
   companyId,
   path,
   context,
+  canCompose = true,
   onDenied,
 }: {
   companyId: number;
   path: string;
   context: {
-    kind: "booking" | "round" | "decision";
+    kind: "booking" | "round" | "decision" | "offer";
     number: number;
     version: number;
   };
+  canCompose?: boolean;
   onDenied: (failure: unknown) => void;
 }) {
   const [expanded, setExpanded] = useState(false);
@@ -66,7 +68,11 @@ export default function CandidateMessages({
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
   const [kind, setKind] = useState(
-    context.kind === "decision" ? "rejection" : "interview_invitation"
+    context.kind === "decision"
+      ? "rejection"
+      : context.kind === "offer"
+      ? "offer"
+      : "interview_invitation"
   );
   const [mailbox, setMailbox] = useState<Choice | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
@@ -126,7 +132,7 @@ export default function CandidateMessages({
   }, [expanded, path, companyId, page, refresh, context.version]);
 
   const loadPreview = async (message: Message | null = null) => {
-    if (!mailbox || busy) return;
+    if (!mailbox || busy || !canCompose) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -158,7 +164,7 @@ export default function CandidateMessages({
   };
 
   const send = async () => {
-    if (!preview || busy) return;
+    if (!preview || busy || !canCompose) return;
     setBusy(true);
     setError("");
     setNotice("");
@@ -227,6 +233,8 @@ export default function CandidateMessages({
   const messageKinds =
     context.kind === "decision"
       ? [{ key: "rejection", label: "Rejection" }]
+      : context.kind === "offer"
+      ? [{ key: "offer", label: "Offer" }]
       : interviewMessageKinds;
   const id = `${context.kind}-messages-${context.number}`;
 
@@ -268,6 +276,18 @@ export default function CandidateMessages({
               details; resolve unknown deliveries first.
             </p>
           )}
+          {context.kind === "offer" && (
+            <p className="text-sm text-muted-foreground">
+              The private link opens the approved terms. Email delivery and the
+              candidate response are tracked separately.
+            </p>
+          )}
+          {!canCompose && (
+            <p>
+              This offer is no longer awaiting a response. Review its message
+              history.
+            </p>
+          )}
           {(error || notice) && (
             <p
               ref={status}
@@ -288,7 +308,7 @@ export default function CandidateMessages({
           </Button>
           {!data && !error && <p role="status">Loading messages…</p>}
           <fieldset
-            disabled={busy || Boolean(preview)}
+            disabled={busy || Boolean(preview) || !canCompose}
             className="min-w-0 space-y-3"
           >
             <Label htmlFor={`${id}-kind`}>Message type</Label>
@@ -348,7 +368,7 @@ export default function CandidateMessages({
               <div className="flex flex-wrap gap-3">
                 <Button
                   type="button"
-                  disabled={busy || preview.can_queue === false}
+                  disabled={busy || !canCompose || preview.can_queue === false}
                   onClick={() => void send()}
                 >
                   Confirm and queue {retryOf ? "retry" : "message"}
@@ -418,7 +438,9 @@ export default function CandidateMessages({
                       <Button
                         type="button"
                         variant="outline"
-                        disabled={busy || !mailbox || Boolean(preview)}
+                        disabled={
+                          busy || !canCompose || !mailbox || Boolean(preview)
+                        }
                         onClick={() => void loadPreview(message)}
                       >
                         Preview retry for attempt {message.attempt_number}

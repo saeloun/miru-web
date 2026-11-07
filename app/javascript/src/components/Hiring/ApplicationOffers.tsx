@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import Pager from "./Pager";
+import CandidateMessages from "./CandidateMessages";
 import {
   accessDenied,
   failureMessage,
@@ -36,6 +37,7 @@ type Offer = {
   details: OfferTerms;
   private_path?: string;
   revoked_at: string | null;
+  can_email: boolean;
 };
 type History = {
   company_id: number;
@@ -193,7 +195,7 @@ export default function ApplicationOffers({
       setRequestKey(window.crypto.randomUUID());
       setNotice(
         operation.action === "issue"
-          ? "Private offer issued. No email was sent."
+          ? "Private offer issued. Email requires a separate preview and confirmation."
           : operation.action === "revoke"
           ? "Private offer link revoked."
           : result.offer.state === "preparing"
@@ -463,6 +465,19 @@ export default function ApplicationOffers({
                     </>
                   )}
                   {record.revoked_at && <p>Private link revoked</p>}
+                  {record.state !== "preparing" && (
+                    <CandidateMessages
+                      companyId={companyId}
+                      path={`${path}/${record.id}/messages`}
+                      context={{
+                        kind: "offer",
+                        number: record.id,
+                        version: record.lock_version,
+                      }}
+                      canCompose={record.can_email}
+                      onDenied={onDenied}
+                    />
+                  )}
                 </article>
               ))}
               <Pager

@@ -6,6 +6,7 @@ class HiringSetting < ApplicationRecord
   INTERVIEW_FIELDS = HiringMessage::INTERVIEW_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
   FEEDBACK_FIELDS = HiringMessage::FEEDBACK_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
   DECISION_FIELDS = HiringMessage::DECISION_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
+  OFFER_FIELDS = %w[offer_subject offer_body].freeze
 
   belongs_to :company
   belongs_to :approved_by, class_name: "User", optional: true
@@ -46,9 +47,9 @@ class HiringSetting < ApplicationRecord
     end
 
     def valid_details
-      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id
+      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + OFFER_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id
         rejection_automation_enabled hold_notifications_enabled decision_mailbox_id]
-      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS).all? do |field|
+      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + OFFER_FIELDS).all? do |field|
         valid_text?(details[field], field.end_with?("_subject") ? 200 : 5_000) &&
           (!field.end_with?("_subject") || details[field].nil? || !details[field].match?(/[[:cntrl:]]/))
       end

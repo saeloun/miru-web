@@ -13,6 +13,7 @@ import {
   interviewMessageFields,
   feedbackMessageFields,
   decisionMessageFields,
+  offerMessageFields,
   type HiringSettings,
   type HiringSettingsDetails,
   type HiringSettingsPage,
@@ -207,6 +208,7 @@ export default function Settings({ companyId }: { companyId: number }) {
                 ...interviewMessageFields,
                 ...feedbackMessageFields,
                 ...decisionMessageFields,
+                ...offerMessageFields,
               ].map(({ key, label }) => (
                 <div key={key} className="min-w-0 space-y-2">
                   <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>

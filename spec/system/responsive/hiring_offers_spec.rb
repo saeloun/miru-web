@@ -52,7 +52,7 @@ RSpec.describe "Hiring offer journeys", type: :system, js: true do
   def issue_saved
     check "I approve these saved terms and the private offer link"
     click_button "Approve and issue private offer"
-    expect(page).to have_text("Private offer issued. No email was sent.")
+    expect(page).to have_text("Private offer issued. Email requires a separate preview and confirmation.")
     company.hiring_offers.sole
   end
 
@@ -76,7 +76,7 @@ RSpec.describe "Hiring offer journeys", type: :system, js: true do
     find_field("I approve these saved terms and the private offer link").native.node.focus
     page.driver.browser.keyboard.type(:space)
     click_button "Approve and issue private offer"
-    expect(page).to have_text("Private offer issued. No email was sent.")
+    expect(page).to have_text("Private offer issued. Email requires a separate preview and confirmation.")
     capture("offer-issued-desktop")
     record = company.hiring_offers.sole
     expect(record.details.fetch("amount")).to eq("135000.50")
