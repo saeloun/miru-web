@@ -7,6 +7,7 @@ import AssessmentWork, { downloadAssessmentFile } from "./AssessmentWork";
 import { failureMessage, read } from "./api";
 import { answerText, type Pagination } from "./types";
 import type { InterviewHandover } from "./interviewTypes";
+import { bookingTimeLabel } from "./bookingTypes";
 
 function Handover({ companyId, id }: { companyId: number; id: string }) {
   const [data, setData] = useState<InterviewHandover | null>(null);
@@ -91,6 +92,60 @@ function Handover({ companyId, id }: { companyId: number; id: string }) {
       {loading && <p role="status">Loading private interview handover…</p>}
       {data && (
         <>
+          {data.handover.booking && (
+            <section
+              aria-label="Interview booking"
+              className="min-w-0 space-y-3 rounded-lg border bg-card p-4"
+            >
+              <h2 className="text-lg font-semibold">Interview booking</h2>
+              <p>
+                {data.handover.booking.status === "no_show"
+                  ? "No-show"
+                  : data.handover.booking.status.charAt(0).toUpperCase() +
+                    data.handover.booking.status.slice(1)}
+              </p>
+              <p className="break-words">
+                <time dateTime={data.handover.booking.starts_at}>
+                  {bookingTimeLabel(
+                    data.handover.booking.starts_at,
+                    data.handover.booking.details.candidate_time_zone
+                  )}
+                </time>{" "}
+                –{" "}
+                {bookingTimeLabel(
+                  data.handover.booking.ends_at,
+                  data.handover.booking.details.candidate_time_zone
+                )}{" "}
+                · {data.handover.booking.details.candidate_time_zone} (UTC
+                {data.handover.booking.details.utc_offset})
+              </p>
+              {data.handover.booking.status === "scheduled" && (
+                <>
+                  <p className="break-words">
+                    Feedback due:{" "}
+                    {bookingTimeLabel(
+                      data.handover.booking.feedback_due_at,
+                      data.handover.booking.details.candidate_time_zone
+                    )}{" "}
+                    · {data.handover.booking.details.candidate_time_zone}
+                  </p>
+                  <p className="whitespace-pre-wrap break-words">
+                    {data.handover.booking.details.booking_instructions}
+                  </p>
+                  {data.handover.booking.details.meeting_url && (
+                    <a
+                      className="inline-flex min-h-11 items-center text-primary underline"
+                      href={data.handover.booking.details.meeting_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Open meeting
+                    </a>
+                  )}
+                </>
+              )}
+            </section>
+          )}
           <section
             aria-label="Interview details"
             className="min-w-0 space-y-4 rounded-lg border bg-card p-4"

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_094000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_110200) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -790,6 +790,36 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_094000) do
     t.index ["company_id", "email"], name: "index_hiring_candidates_on_company_id_and_email", unique: true
     t.index ["company_id", "id"], name: "index_hiring_candidates_on_company_id_and_id", unique: true
     t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
+  end
+
+  create_table "hiring_interview_bookings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "created_by_id"
+    t.integer "number", null: false
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "details", null: false
+    t.text "round_details", null: false
+    t.text "panel_snapshot", null: false
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.datetime "feedback_due_at", null: false
+    t.string "status", default: "scheduled", null: false
+    t.datetime "ended_at"
+    t.text "ending_reason"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_interview_bookings_on_company_id_and_id", unique: true
+    t.index ["created_by_id"], name: "index_hiring_interview_bookings_on_created_by_id"
+    t.index ["hiring_interview_id", "number"], name: "idx_on_hiring_interview_id_number_bf23de476a", unique: true
+    t.index ["hiring_interview_id", "request_key"], name: "idx_on_hiring_interview_id_request_key_f0f8ffec7b", unique: true
+    t.index ["hiring_interview_id"], name: "index_hiring_interview_current_booking", unique: true, where: "((status)::text = 'scheduled'::text)"
+    t.index ["status", "feedback_due_at"], name: "index_hiring_interview_bookings_on_status_and_feedback_due_at"
+    t.check_constraint "ends_at > starts_at AND feedback_due_at > ends_at", name: "hiring_booking_times"
+    t.check_constraint "number > 0", name: "hiring_booking_number"
+    t.check_constraint "status::text = 'scheduled'::text AND ended_at IS NULL AND ending_reason IS NULL OR (status::text = ANY (ARRAY['cancelled'::character varying, 'completed'::character varying, 'no_show'::character varying]::text[])) AND ended_at IS NOT NULL AND ending_reason IS NOT NULL", name: "hiring_booking_status"
   end
 
   create_table "hiring_interview_events", force: :cascade do |t|
@@ -2386,6 +2416,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_094000) do
   add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
   add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_interview_bookings", "companies"
+  add_foreign_key "hiring_interview_bookings", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_interview_bookings", "users", column: "created_by_id", on_delete: :nullify
   add_foreign_key "hiring_interview_events", "companies"
   add_foreign_key "hiring_interview_events", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_interview_events", "users", column: "created_by_id", on_delete: :nullify

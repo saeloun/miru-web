@@ -10,6 +10,7 @@ class HiringInterview < ApplicationRecord
   belongs_to :previous_interview, class_name: "HiringInterview", optional: true
   has_many :hiring_access_grants, dependent: :destroy
   has_many :events, class_name: "HiringInterviewEvent", dependent: :destroy
+  has_many :hiring_interview_bookings, dependent: :destroy
   serialize :details, coder: JSON, type: Hash
   serialize :request_details, coder: JSON, type: Hash
   serialize :panel_snapshot, coder: JSON, type: Array
@@ -31,12 +32,17 @@ class HiringInterview < ApplicationRecord
       return unless status == "planned"
 
       update!(status: "cancelled", ended_at: Time.current)
+      close_bookings!(reason: "Application moved to #{hiring_application.stage}")
       hiring_access_grants.active.update_all(revoked_at: Time.current)
       events.create!(company:, created_by: actor, action: "cancelled", interview_version: lock_version,
         application_version: hiring_application.lock_version,
         details: { "actor_name" => actor&.full_name || "System", "round" => admin_details.deep_stringify_keys,
           "reason" => "Application moved to #{hiring_application.stage}" })
     end
+  end
+
+  def close_bookings!(status: "cancelled", reason:)
+    hiring_interview_bookings.scheduled.find_each { |booking| booking.end!(status:, reason:) }
   end
 
   private

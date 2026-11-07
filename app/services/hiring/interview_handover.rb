@@ -15,7 +15,8 @@ module Hiring
       submission = @application.hiring_submissions.where.not(submitted_at: nil).order(id: :desc).first
       { candidate: { full_name: @application.submitted_name, email: @application.hiring_candidate.email },
         role: @application.hiring_role&.slice(:id, :title), form: submission && form_details(submission),
-        assessment: assessment&.review_details }
+        assessment: assessment&.review_details,
+        booking: @interview.hiring_interview_bookings.order(number: :desc).first&.staff_details }
     end
 
     private

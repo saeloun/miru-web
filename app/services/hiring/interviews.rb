@@ -69,6 +69,7 @@ module Hiring
           update_round!(record, attributes)
         elsif ENDINGS.key?(action) && reason&.strip.present?
           record.update!(status: ENDINGS.fetch(action), ended_at: Time.current)
+          record.close_bookings!(status: action == "complete" ? "completed" : "cancelled", reason:)
           record.hiring_access_grants.active.update_all(revoked_at: Time.current)
           ENDINGS.fetch(action)
         else
@@ -169,12 +170,14 @@ module Hiring
       def update_round!(record, attributes)
         members = selected_panel(attributes["panel"])
         snapshots = members.map { |member, sensitive| panel_snapshot(member, sensitive) }
+        rebooking = record.details != detail_values(attributes) || record.panel_snapshot.pluck("panel_member_id").sort != snapshots.pluck("panel_member_id").sort
         event = record.panel_snapshot.map { |member| member.slice("panel_member_id", "compensation_access") } ==
           snapshots.map { |member| member.slice("panel_member_id", "compensation_access") } ? "updated" : "reassigned"
         record.assign_attributes(details: detail_values(attributes), panel_snapshot: snapshots)
         raise Intake::InvalidInput, "Change the round or panel before saving." unless record.changed?
 
         record.save!
+        record.close_bookings!(reason: "Round or panel changed. Record a new booking.") if rebooking
         grant_access!(record, members)
         event
       end

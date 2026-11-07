@@ -2,6 +2,10 @@
 
 This record covers private intake, email acknowledgements, candidate forms, screening, assessments and configurable interview rounds from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Scheduling, feedback, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
 
+## Task 6 manual scheduling increment
+
+Manual candidate-zone bookings, immutable reschedules, cancellation/no-show and curated staff booking details are implemented locally. Related hiring checks: **257/0**; full backend before the final access guard: **5,754/0, 59 pending**; all hiring browser files: **59/0**. Calendar import, feedback and reminders remain pending. [Details and four actual screenshots](scheduling-20261107.md).
+
 ## Task 5 interview panels and configurable rounds
 
 Panel profiles, arbitrary rounds, repeat/skip/complete/reassign controls and private assigned-staff handover are implemented locally. Compensation needs an explicit grant; private resume/assessment downloads recheck access after storage reads. Final backend: **5,735/0 with 59 pending**; related hiring: **236/0**; all hiring browser files: **55/0**, including eight new scenarios. No production or published-head claim. [Details, rulings and six screenshots](interviews-20261107.md).

@@ -4,6 +4,7 @@ import type {
   Pagination,
 } from "./types";
 import type { Assessment } from "./assessmentTypes";
+import type { StaffBooking } from "./bookingTypes";
 
 export type PanelDetails = {
   expertise?: string;
@@ -63,5 +64,6 @@ export type InterviewHandover = {
     role: { title: string } | null;
     form: CandidateFormReview | null;
     assessment: Assessment | null;
+    booking: StaffBooking | null;
   };
 };

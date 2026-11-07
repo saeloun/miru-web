@@ -9,6 +9,7 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import Picker from "./Picker";
 import Pager from "./Pager";
+import InterviewBookings from "./InterviewBookings";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import {
   stageLabel,
@@ -42,6 +43,7 @@ export default function ApplicationInterviews({
   const [data, setData] = useState<InterviewPage | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [bookingRoundId, setBookingRoundId] = useState<number | null>(null);
   const [choice, setChoice] = useState<Choice | null>(null);
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
@@ -210,6 +212,8 @@ export default function ApplicationInterviews({
   };
 
   const closed = ["rejected", "hired", "withdrawn"].includes(application.stage);
+  const controlsDisabled =
+    busy || loading || !!draft || bookingRoundId !== null;
 
   if (!expanded) {
     return (
@@ -247,7 +251,7 @@ export default function ApplicationInterviews({
       <div className="flex flex-wrap gap-3">
         <Button
           className="min-h-11"
-          disabled={busy || loading || !!draft || closed}
+          disabled={controlsDisabled || closed}
           onClick={() => begin(null)}
         >
           Add interview round
@@ -255,7 +259,7 @@ export default function ApplicationInterviews({
         <Button
           variant="outline"
           className="min-h-11"
-          disabled={busy}
+          disabled={busy || bookingRoundId !== null}
           onClick={() => {
             setDraft(null);
             setChoice(null);
@@ -524,12 +528,20 @@ export default function ApplicationInterviews({
                   ))}
                 </ul>
                 <div className="flex flex-wrap gap-3">
+                  <Button
+                    className="min-h-11"
+                    variant="outline"
+                    disabled={controlsDisabled}
+                    onClick={() => setBookingRoundId(record.id)}
+                  >
+                    Manage booking for round {record.number}
+                  </Button>
                   {record.status === "planned" ? (
                     <>
                       <Button
                         variant="outline"
                         className="min-h-11"
-                        disabled={busy || loading || !!draft || closed}
+                        disabled={controlsDisabled || closed}
                         onClick={() => begin(record)}
                       >
                         Edit round {record.number}
@@ -539,7 +551,7 @@ export default function ApplicationInterviews({
                           key={action}
                           variant="outline"
                           className="min-h-11"
-                          disabled={busy || loading || !!draft || closed}
+                          disabled={controlsDisabled || closed}
                           onClick={() => begin(record, action)}
                         >
                           {stageLabel(action)} round {record.number}
@@ -550,7 +562,7 @@ export default function ApplicationInterviews({
                     <Button
                       variant="outline"
                       className="min-h-11"
-                      disabled={busy || loading || !!draft || closed}
+                      disabled={controlsDisabled || closed}
                       onClick={() => begin(record, "update", true)}
                     >
                       Repeat round {record.number}
@@ -563,9 +575,20 @@ export default function ApplicationInterviews({
           <Pager
             pagination={data.pagination}
             change={setPage}
-            disabled={busy || loading || !!draft}
+            disabled={controlsDisabled}
           />
         </>
+      )}
+      {bookingRoundId !== null && (
+        <InterviewBookings
+          key={`${companyId}:${bookingRoundId}`}
+          companyId={companyId}
+          applicationId={application.id}
+          interviewId={bookingRoundId}
+          applicationVersion={application.lock_version}
+          changed={changed}
+          close={() => setBookingRoundId(null)}
+        />
       )}
     </section>
   );
