@@ -30,7 +30,11 @@ RSpec.describe "Interview candidate communication journeys", type: :system, js: 
     sign_in admin
     page.current_window.resize_to(width, 900)
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_current_path("/hiring/applications/#{application.id}")
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     click_button "View interview rounds"
+    expect(page).to have_css("h4", text: "Round 1 · Project discussion")
     click_button "Manage booking for round 1"
     click_button "Candidate messages for booking 1"
     expect(page).to have_text("No messages recorded for this booking.")

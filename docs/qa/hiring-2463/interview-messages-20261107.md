@@ -25,6 +25,8 @@ Synthetic local PostgreSQL and native headless Brave, CSRF enabled, and a localh
 
 The initial missing-route test was RED. Queue creation initially returned 200 after enqueue reloaded the record; the service now returns an explicit creation result, keeping first creation at 201 and exact recovery at 200. The expired-employment fixture was corrected to the day before resignation, matching the existing inclusive last-working-day policy. Fixture corrections are not claimed as security regressions.
 
+Post-commit browser closure initially missed one booking-control click: preceding application reads returned 200, but no interview-round request started. Its cause is unproven. The helper now checks the current route, waits for screening/assignment controls to settle and verifies the actual round card before opening its booking. Nine targeted cases and a subsequent complete **78-case hiring browser run pass** with those preconditions; no retry loop or longer timeout was added. An incorrect intermediate assertion naming a nonexistent Hide-rounds control was corrected from the source and is excluded from product-regression evidence.
+
 ## Decisions and costs
 
 1. Reuse the existing settings approval and outbox rather than create a second template/transport system. Cost: changing an interview template also invalidates the shared acknowledgement approval; queued stale versions require review.
