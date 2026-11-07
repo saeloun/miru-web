@@ -1,6 +1,8 @@
 # Documenso local validation, 2026-10-24
 
-**Production HOLD; PR #2475 is open for review.** The upload, field-placement, version-bound review, signing and private-archive workflow is implemented and verified locally. Provider dependency repairs and final release checks remain. The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional.
+**Production is unverified; PR #2475 is merged.** The upload, field-placement, version-bound review, signing and private-archive workflow is implemented and verified locally. Final release checks remain. The [corrected requirements](../../superpowers/specs/2026-10-24-generic-document-signing.md) make individual uploads primary and templates optional.
+
+The [7 November verification](verification-20261107.md) records a fresh isolated provider lifecycle using Miru's real client, **187 focused specs and 31 native Brave scenarios**, all passing, with 16 new screenshots. It separates real provider acceptance from fixture-backed browser/archive checks and the earlier completed-signing evidence below. Production readiness is not inferred from these local results.
 
 The [actual signing report and inspected screenshots](actual-signing-and-archive.md) cover two completed packages, all nine field types, email-code verification, partial completion, automatic archives, profile downloads, expiry and rejection. These use a real local provider, persistent worker and fictional recipients; no external signature email or production deployment is claimed. Earlier feasibility results below retain their original scope.
 

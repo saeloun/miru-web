@@ -1,0 +1,10 @@
+{
+  "internal_provider_network": true,
+  "only_proxy_dual_homed": true,
+  "all_published_bindings_loopback_only": true,
+  "expected_provider_image": true,
+  "remaining_api_tokens": 0,
+  "envelopes": 1,
+  "cancelled_envelopes": 1,
+  "organisations_with_nondefault_claim_flags": 0
+}

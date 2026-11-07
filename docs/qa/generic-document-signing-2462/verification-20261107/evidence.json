@@ -1,0 +1,233 @@
+{
+  "revision": "fb5d271d7d6d661de104e494e1a19ac878707108",
+  "runtime": "bun 1.4.4",
+  "cwd": "/Users/sward/.codex/worktrees/abdd/miru-web",
+  "limits": [
+    "No production deployment, DNS, monitoring, backups or external email verification.",
+    "The live provider check used a test-only hashed API token fixture; normal API-key onboarding was not repeated.",
+    "The live provider envelope was cancelled rather than signed; fresh full-file seals and completion callbacks were not exercised.",
+    "The 31 native Brave cases use provider doubles and retained signed fixtures; their passing result does not prove a fresh end-to-end provider completion.",
+    "The fresh certificate is disposable, self-signed and valid for two days; it establishes no legal trust.",
+    "Raw test stderr stays local; expected CSRF-negative tests logged InvalidAuthenticityToken and Rack status deprecation warnings.",
+    "Other provider input rules, concurrency, timeout/recovery and cross-account controls rely on the native regression coverage; they were not all challenged against the real provider.",
+    "Local screenshots and evidence remain unpublished until branch publication passes the exact-head council gate."
+  ],
+  "evidence": [
+    {
+      "command": "python3 /tmp/miru-documenso-current-20261107/provider-lifecycle.py",
+      "contract": "Real Miru client uploads verified original PDFs with all nine field types, distributes to local mail, cancels, and rejects an invalid token",
+      "expected": "Two original PDF byte hashes match; ten fields accepted; DRAFT to PENDING to CANCELLED; both synthetic signers receive captured email; invalid token rejected",
+      "classification": "pass",
+      "observed": {
+        "connection": true,
+        "files": 2,
+        "pages": 3,
+        "field_types": [
+          "signature",
+          "initials",
+          "date",
+          "name",
+          "email",
+          "text",
+          "number",
+          "checkbox",
+          "dropdown"
+        ],
+        "field_count": 10,
+        "original_bytes_verified": true,
+        "states": [
+          "DRAFT",
+          "PENDING",
+          "CANCELLED"
+        ],
+        "local_mail_received_by_both_signers": true,
+        "invalid_token_rejected": true
+      }
+    },
+    {
+      "command": "sandbox-exec -f /tmp/miru-private-doc-network-20261106.sb env GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 RAILS_ENV=test DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_sonam_integration_test_20261104_abdd DB_HOST=127.0.0.1 DB_USER=postgres DB_PASS=postgres SKIP_VITE_TEST_BUILD=1 DISABLE_BOOTSNAP=1 CI=1 rtk proxy mise exec -- bundle exec rspec spec/services/signatures spec/requests/api/v1/signature_requests_spec.rb spec/requests/api/v1/signature_connections_spec.rb spec/requests/api/v1/signature_reviews_spec.rb spec/requests/api/v1/signature_operations_spec.rb spec/requests/api/v1/signature_archives_spec.rb spec/requests/webhooks/documenso_controller_spec.rb --fail-fast",
+      "contract": "Existing signing service, request and callback regressions",
+      "expected": "187 examples, zero failures",
+      "classification": "pass",
+      "observed": "...........................................................................................................................................................................................\n\nFinished in 26.32 seconds (files took 3.69 seconds to load)\n187 examples, 0 failures\n\n"
+    },
+    {
+      "command": "sandbox-exec -f /tmp/miru-private-doc-network-20261106.sb env GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1 RAILS_ENV=test DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_private_downloads_test_20261104_abdd DB_HOST=127.0.0.1 DB_USER=postgres DB_PASS=postgres SKIP_VITE_TEST_BUILD=1 DISABLE_BOOTSNAP=1 CI=1 CAPYBARA_SERVER_PORT=3130 'FERRUM_BROWSER_PATH=/Applications/Brave Browser.app/Contents/MacOS/Brave Browser' SIGNATURE_ARCHIVE_SHOTS=/tmp/miru-documenso-current-20261107/screenshots rtk proxy mise exec -- bundle exec rspec spec/system/responsive/document_signatures_spec.rb spec/system/responsive/signature_delivery_spec.rb spec/system/responsive/signature_archives_spec.rb --fail-fast",
+      "contract": "Existing native Brave upload, placement, delivery and archive regressions",
+      "expected": "31 examples, zero failures, with existing console assertions and hash-checked downloads",
+      "classification": "pass",
+      "observed": "...............................\n\nFinished in 1 minute 25.92 seconds (files took 3.74 seconds to load)\n31 examples, 0 failures\n\n"
+    },
+    {
+      "command": "python3 /tmp/miru-documenso-current-20261107/final-state.py",
+      "contract": "Durable provider cancellation, test token removal and network isolation",
+      "expected": "One cancelled envelope, zero API tokens, no nondefault claim flags; internal services isolated and published ports loopback-only",
+      "classification": "pass",
+      "observed": {
+        "internal_provider_network": true,
+        "only_proxy_dual_homed": true,
+        "all_published_bindings_loopback_only": true,
+        "expected_provider_image": true,
+        "remaining_api_tokens": 0,
+        "envelopes": 1,
+        "cancelled_envelopes": 1,
+        "organisations_with_nondefault_claim_flags": 0
+      }
+    }
+  ],
+  "learning": [
+    {
+      "observationCapture": "001",
+      "observationArgv": [
+        "python3",
+        "/tmp/miru-documenso-current-20261107/provider-lifecycle.py"
+      ],
+      "hypothesis": "Actual provider draft distribution and cancellation passed; run existing native signing regressions for approval authorization, callback processing and archive safety.",
+      "nextCapture": "002",
+      "nextArgv": [
+        "sandbox-exec",
+        "-f",
+        "/tmp/miru-private-doc-network-20261106.sb",
+        "env",
+        "GIT_CONFIG_GLOBAL=/dev/null",
+        "GIT_CONFIG_NOSYSTEM=1",
+        "RAILS_ENV=test",
+        "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_sonam_integration_test_20261104_abdd",
+        "DB_HOST=127.0.0.1",
+        "DB_USER=postgres",
+        "DB_PASS=postgres",
+        "SKIP_VITE_TEST_BUILD=1",
+        "DISABLE_BOOTSNAP=1",
+        "CI=1",
+        "rtk",
+        "proxy",
+        "mise",
+        "exec",
+        "--",
+        "bundle",
+        "exec",
+        "rspec",
+        "spec/services/signatures",
+        "spec/requests/api/v1/signature_requests_spec.rb",
+        "spec/requests/api/v1/signature_connections_spec.rb",
+        "spec/requests/api/v1/signature_reviews_spec.rb",
+        "spec/requests/api/v1/signature_operations_spec.rb",
+        "spec/requests/api/v1/signature_archives_spec.rb",
+        "spec/requests/webhooks/documenso_controller_spec.rb",
+        "--fail-fast"
+      ]
+    },
+    {
+      "observationCapture": "002",
+      "observationArgv": [
+        "sandbox-exec",
+        "-f",
+        "/tmp/miru-private-doc-network-20261106.sb",
+        "env",
+        "GIT_CONFIG_GLOBAL=/dev/null",
+        "GIT_CONFIG_NOSYSTEM=1",
+        "RAILS_ENV=test",
+        "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_sonam_integration_test_20261104_abdd",
+        "DB_HOST=127.0.0.1",
+        "DB_USER=postgres",
+        "DB_PASS=postgres",
+        "SKIP_VITE_TEST_BUILD=1",
+        "DISABLE_BOOTSNAP=1",
+        "CI=1",
+        "rtk",
+        "proxy",
+        "mise",
+        "exec",
+        "--",
+        "bundle",
+        "exec",
+        "rspec",
+        "spec/services/signatures",
+        "spec/requests/api/v1/signature_requests_spec.rb",
+        "spec/requests/api/v1/signature_connections_spec.rb",
+        "spec/requests/api/v1/signature_reviews_spec.rb",
+        "spec/requests/api/v1/signature_operations_spec.rb",
+        "spec/requests/api/v1/signature_archives_spec.rb",
+        "spec/requests/webhooks/documenso_controller_spec.rb",
+        "--fail-fast"
+      ],
+      "hypothesis": "187 focused signing regressions passed; use the existing isolated native Brave system specs to verify upload, field editing, delivery controls and private archive downloads in the rendered app.",
+      "nextCapture": "003",
+      "nextArgv": [
+        "sandbox-exec",
+        "-f",
+        "/tmp/miru-private-doc-network-20261106.sb",
+        "env",
+        "GIT_CONFIG_GLOBAL=/dev/null",
+        "GIT_CONFIG_NOSYSTEM=1",
+        "RAILS_ENV=test",
+        "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_private_downloads_test_20261104_abdd",
+        "DB_HOST=127.0.0.1",
+        "DB_USER=postgres",
+        "DB_PASS=postgres",
+        "SKIP_VITE_TEST_BUILD=1",
+        "DISABLE_BOOTSNAP=1",
+        "CI=1",
+        "CAPYBARA_SERVER_PORT=3130",
+        "FERRUM_BROWSER_PATH=/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+        "SIGNATURE_ARCHIVE_SHOTS=/tmp/miru-documenso-current-20261107/screenshots",
+        "rtk",
+        "proxy",
+        "mise",
+        "exec",
+        "--",
+        "bundle",
+        "exec",
+        "rspec",
+        "spec/system/responsive/document_signatures_spec.rb",
+        "spec/system/responsive/signature_delivery_spec.rb",
+        "spec/system/responsive/signature_archives_spec.rb",
+        "--fail-fast"
+      ]
+    },
+    {
+      "observationCapture": "003",
+      "observationArgv": [
+        "sandbox-exec",
+        "-f",
+        "/tmp/miru-private-doc-network-20261106.sb",
+        "env",
+        "GIT_CONFIG_GLOBAL=/dev/null",
+        "GIT_CONFIG_NOSYSTEM=1",
+        "RAILS_ENV=test",
+        "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_private_downloads_test_20261104_abdd",
+        "DB_HOST=127.0.0.1",
+        "DB_USER=postgres",
+        "DB_PASS=postgres",
+        "SKIP_VITE_TEST_BUILD=1",
+        "DISABLE_BOOTSNAP=1",
+        "CI=1",
+        "CAPYBARA_SERVER_PORT=3130",
+        "FERRUM_BROWSER_PATH=/Applications/Brave Browser.app/Contents/MacOS/Brave Browser",
+        "SIGNATURE_ARCHIVE_SHOTS=/tmp/miru-documenso-current-20261107/screenshots",
+        "rtk",
+        "proxy",
+        "mise",
+        "exec",
+        "--",
+        "bundle",
+        "exec",
+        "rspec",
+        "spec/system/responsive/document_signatures_spec.rb",
+        "spec/system/responsive/signature_delivery_spec.rb",
+        "spec/system/responsive/signature_archives_spec.rb",
+        "--fail-fast"
+      ],
+      "hypothesis": "Live client lifecycle and 31 native browser cases passed; verify durable provider cancellation, token removal, unchanged license flags and isolation before cleanup.",
+      "nextCapture": "004",
+      "nextArgv": [
+        "python3",
+        "/tmp/miru-documenso-current-20261107/final-state.py"
+      ]
+    }
+  ],
+  "verdict": {
+    "status": "pass",
+    "open": []
+  }
+}

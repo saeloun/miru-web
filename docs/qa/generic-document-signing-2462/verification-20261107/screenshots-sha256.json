@@ -1,0 +1,18 @@
+{
+  "signature-review-desktop.png": "2e7c2ace1933ac98e5fcd1c66c987ca6b3f57e35be280e0fb41763b103ceec96",
+  "signature-upload-recovery.png": "35ff95967a64c515b301d762463c2e059ad41a7c2c2a3830d51704329f46c5b7",
+  "signature-placement-desktop.png": "905c450afd962359cc9303ac9dc795110a628e36f59e6f3e35f36ef35698872f",
+  "signature-placement-mobile.png": "96ddf2e74360fe79da6ae5af3ccd3c8c2ce44d5593c4b23bd43bc10466f94c08",
+  "signature-review-email-desktop.png": "d7bdb3713530fbe609b85afab046bf3f9cea8e075335e9fe4bd228e65f594867",
+  "signature-review-mobile.png": "a09de75f280fb7fa7d1e72c8f6a945852ce498511bbe3bd140950ee9fb524f18",
+  "signature-review-email-mobile.png": "eb0c6a981a835f0a628539f41c0bb41b6092feaca0e81e441f16d4aae478b539",
+  "signature-authentication-375.png": "d338d0b9f06c8ebe36650a4c4ab5d6d76cecb810720d564e93658f1309b5c289",
+  "signature-authentication-1440.png": "264059bc449d3f2806fbeb83b287baa6ddb287662ab46a557af6ae2c60b3cff4",
+  "signed-editor-downloads.png": "b3b088b751861b137d46aa800ba7652cefafe73cfc186fc7bb7cc2274f9eadb8",
+  "client-signed-documents.png": "842b0e73718f639b422f26b2bd9f67d9455a01fb03aec1451119ab33b0802a2c",
+  "signed-documents-1440.png": "131c7437701d719f22bc42e936301975a840de3aa21c351b49e3b3464abe6ef4",
+  "signed-documents-375.png": "d6c536a161efc48de2a104e4aa86c5fb60f657dc331d38f5223e118c6ae3abfb",
+  "employee-signed-documents.png": "fe78a4d3f32e887dcc0ab3eb77b0e7703f5dff71ab87d7de95da38f650804ac5",
+  "short-signed-document-rejected-1440.png": "5109a6aeeec5fc2bad85b8cd218ac9a6f1a95d009faefd7a9623ee114f06ad11",
+  "short-signed-document-rejected-375.png": "ef7996e7f8981d7df23ff2dee3269d2cdad3ccf02956c9fc6126723bde142bbe"
+}
