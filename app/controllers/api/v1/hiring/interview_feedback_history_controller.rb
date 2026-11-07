@@ -11,7 +11,15 @@ class Api::V1::Hiring::InterviewFeedbackHistoryController < Api::V1::Hiring::Bas
           rows, pagination = page_records(current_company.hiring_feedbacks.joins(:hiring_interview_booking)
             .where(hiring_interview_bookings: { hiring_interview_id: interview.id })
             .order("hiring_interview_bookings.number DESC", "hiring_feedbacks.id DESC"))
-          render json: { company_id: current_company.id, feedbacks: rows.map(&:review_details), pagination: }
+          notices = current_company.hiring_messages.where(hiring_application_id: application.id, kind: HiringMessage::FEEDBACK_KINDS,
+            event_key: rows.map { |feedback| "feedback:#{feedback.id}" }).order(:id).group_by(&:event_key)
+          feedbacks = rows.map do |feedback|
+            notifications = notices.fetch("feedback:#{feedback.id}", []).map do |message|
+              message.slice(:id, :kind, :state, :error_code, :sent_at).merge(content: message.content.slice("to", "reply_to", "subject", "body"))
+            end
+            feedback.review_details.merge(notifications:)
+          end
+          render json: { company_id: current_company.id, feedbacks:, pagination: }
         end
       end
     end

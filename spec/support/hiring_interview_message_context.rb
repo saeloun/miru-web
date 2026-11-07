@@ -52,6 +52,20 @@ RSpec.shared_context "interview message records" do
     })
   end
 
+  def enable_feedback_notifications
+    setting = approve
+    values = setting.details.merge("feedback_notifications_enabled" => true, "feedback_mailbox_id" => mailbox.id)
+    HiringMessage::FEEDBACK_KINDS.each do |kind|
+      values["#{kind}_subject"] = "Approved #{kind}"
+      values["#{kind}_body"] = "Open Hiring to review the interview."
+    end
+    configuration = Hiring::Configure.new(company:, actor: admin)
+    setting = configuration.save_draft!(details: values, lock_version: setting.lock_version)
+    result = configuration.approve!(lock_version: setting.lock_version)
+    travel 1.second
+    result
+  end
+
   before do
     admin.add_role(:admin, company)
     interviewer.add_role(:employee, company)

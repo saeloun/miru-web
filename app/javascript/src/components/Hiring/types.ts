@@ -103,13 +103,29 @@ export const interviewMessageFields = interviewMessageKinds.flatMap(
     { key: `${key}_body` as const, label: `${label} body` },
   ]
 );
+export const feedbackMessageFields = [
+  { key: "feedback_prompt_subject", label: "Feedback prompt subject" },
+  { key: "feedback_prompt_body", label: "Feedback prompt body" },
+  { key: "feedback_overdue_subject", label: "Overdue feedback subject" },
+  { key: "feedback_overdue_body", label: "Overdue feedback body" },
+  { key: "feedback_received_subject", label: "Admin feedback notice subject" },
+  { key: "feedback_received_body", label: "Admin feedback notice body" },
+] as const;
 export type HiringSettingsDetails = Record<
   (typeof hiringTextFields)[number]["key"],
   string | null
 > &
   Partial<
-    Record<(typeof interviewMessageFields)[number]["key"], string | null>
-  > & { client_count: number | null };
+    Record<
+      | (typeof interviewMessageFields)[number]["key"]
+      | (typeof feedbackMessageFields)[number]["key"],
+      string | null
+    >
+  > & {
+    client_count: number | null;
+    feedback_notifications_enabled?: boolean;
+    feedback_mailbox_id?: number | null;
+  };
 export type HiringSettings = {
   details: HiringSettingsDetails;
   form: FormSchema;
@@ -117,6 +133,7 @@ export type HiringSettings = {
   approved: boolean;
   approved_at: string | null;
   complete: boolean;
+  feedback_mailbox: Choice | null;
   preview: { subject: string; body: string } | null;
 };
 export type HiringSettingsPage = {

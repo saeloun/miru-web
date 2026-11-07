@@ -4,6 +4,7 @@ class HiringSetting < ApplicationRecord
   TEXT_FIELDS = %w[company_intro working_arrangements working_week overlap pto hiring_process
     acknowledgement_subject acknowledgement_body].freeze
   INTERVIEW_FIELDS = HiringMessage::INTERVIEW_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
+  FEEDBACK_FIELDS = HiringMessage::FEEDBACK_KINDS.flat_map { |kind| ["#{kind}_subject", "#{kind}_body"] }.freeze
 
   belongs_to :company
   belongs_to :approved_by, class_name: "User", optional: true
@@ -44,13 +45,18 @@ class HiringSetting < ApplicationRecord
     end
 
     def valid_details
-      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + ["client_count"]
-      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS).all? do |field|
+      allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id]
+      valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS).all? do |field|
         valid_text?(details[field], field.end_with?("_subject") ? 200 : 5_000) &&
           (!field.end_with?("_subject") || details[field].nil? || !details[field].match?(/[[:cntrl:]]/))
       end
       count = details["client_count"]
       valid &&= count.nil? || count.is_a?(Integer) && count.between?(0, 1_000_000)
+      enabled = details["feedback_notifications_enabled"]
+      mailbox = details["feedback_mailbox_id"]
+      valid &&= enabled.nil? || [true, false].include?(enabled)
+      valid &&= mailbox.nil? || mailbox.is_a?(Integer) && mailbox.positive?
+      valid &&= mailbox.present? && FEEDBACK_FIELDS.all? { |key| details[key].present? } if enabled == true
       errors.add(:details, "contain invalid hiring email settings") unless valid
     end
 

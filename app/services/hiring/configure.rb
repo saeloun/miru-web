@@ -13,6 +13,7 @@ module Hiring
         fields = HiringSetting::TEXT_FIELDS + ["client_count"]
         values = fields.index_with(nil).merge(details.transform_keys(&:to_s))
         setting.details = values.transform_values { |value| value.is_a?(String) ? value.strip : value }
+        setting.feedback_notifications_started_at = nil unless setting.details["feedback_notifications_enabled"] == true
         setting.form_schema = form unless form.nil?
         if setting.changed?
           setting.audit_comment = "Saved hiring email configuration."
@@ -27,6 +28,13 @@ module Hiring
       with_setting(lock_version:) do |setting|
         unless setting.persisted? && setting.complete?
           raise Intake::InvalidInput, "Complete the company introduction, client count, hiring terms and enabled application form before approving."
+        end
+
+        if setting.details["feedback_notifications_enabled"] == true
+          unless @company.hiring_mailboxes.exists?(id: setting.details["feedback_mailbox_id"], active: true)
+            raise Intake::InvalidInput, "Choose an enabled reply inbox in this workspace for internal feedback notices."
+          end
+          setting.feedback_notifications_started_at ||= Time.current
         end
 
         setting.assign_attributes(approved_at: Time.current, approved_by: @actor)

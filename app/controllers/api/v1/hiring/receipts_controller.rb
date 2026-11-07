@@ -118,7 +118,7 @@ class Api::V1::Hiring::ReceiptsController < Api::V1::Hiring::BaseController
     def acknowledgement_service(receipt) = ::Hiring::Acknowledgement.new(receipt:, actor: current_user)
 
     def find_message(receipt)
-      current_company.hiring_messages.where(hiring_application_id: receipt.hiring_application_id).find(optional_id(:message_id))
+      current_company.hiring_messages.where(hiring_application_id: receipt.hiring_application_id, kind: "acknowledgement").find(optional_id(:message_id))
     end
 
     def receipt_summary(receipt)
@@ -131,7 +131,7 @@ class Api::V1::Hiring::ReceiptsController < Api::V1::Hiring::BaseController
     def render_receipt(receipt, status: 200)
       details = receipt.details.slice("email", "full_name", "original_date", "text", "text_truncated", "reviewed_identity", "reviewed_reason")
       files = Array(receipt.details["attachments"]).each_with_index.map { |file, index| file.slice("filename", "content_type", "bytes").merge(index:) }
-      messages = current_company.hiring_messages.where(hiring_application_id: receipt.hiring_application_id)
+      messages = current_company.hiring_messages.where(hiring_application_id: receipt.hiring_application_id, kind: "acknowledgement")
         .includes(:queued_by, :resolved_by, audits: :user).order(:id) if receipt.hiring_application_id
       render json: { company_id: current_company.id, receipt: receipt_summary(receipt).merge(details).merge(attachments: files),
         application: receipt.hiring_application && application_details(receipt.hiring_application), time_zone: company_time_zone.tzinfo.name,

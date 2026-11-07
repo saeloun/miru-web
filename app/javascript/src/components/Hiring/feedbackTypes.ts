@@ -40,6 +40,14 @@ export type FeedbackRecord = {
   details: FeedbackContent | null;
   reviewer_name: string;
   late: boolean;
+  notifications?: {
+    id: number;
+    kind: string;
+    state: string;
+    error_code: string | null;
+    sent_at: string | null;
+    content: { to: string; reply_to: string; subject: string; body: string };
+  }[];
   booking: {
     id: number;
     number: number;

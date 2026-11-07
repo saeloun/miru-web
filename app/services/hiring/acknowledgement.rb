@@ -71,7 +71,7 @@ module Hiring
         end
         @company.with_lock do
           message.with_lock do
-            unless message.company_id == @company.id && message.hiring_application_id == @receipt.hiring_application_id
+            unless message.company_id == @company.id && message.hiring_application_id == @receipt.hiring_application_id && message.kind == "acknowledgement"
               raise Pundit::NotAuthorizedError
             end
             raise Intake::Conflict, "This attempt changed. Reload its current status." unless message.lock_version == lock_version

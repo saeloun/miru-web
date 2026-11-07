@@ -7,18 +7,22 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { failureMessage, quiet, read, verifyWorkspace } from "./api";
 import FormSettings from "./FormSettings";
+import Picker from "./Picker";
 import {
   hiringTextFields,
   interviewMessageFields,
+  feedbackMessageFields,
   type HiringSettings,
   type HiringSettingsDetails,
   type HiringSettingsPage,
   type FormSchema,
+  type Choice,
 } from "./types";
 
 export default function Settings({ companyId }: { companyId: number }) {
   const [saved, setSaved] = useState<HiringSettings | null>(null);
   const [draft, setDraft] = useState<HiringSettingsDetails | null>(null);
+  const [feedbackMailbox, setFeedbackMailbox] = useState<Choice | null>(null);
   const [draftForm, setDraftForm] = useState<FormSchema | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
@@ -44,6 +48,7 @@ export default function Settings({ companyId }: { companyId: number }) {
         if (active) {
           setSaved(result.settings);
           setDraft(result.settings.details);
+          setFeedbackMailbox(result.settings.feedback_mailbox);
           setDraftForm(result.settings.form);
           setNotice("");
         }
@@ -113,10 +118,11 @@ export default function Settings({ companyId }: { companyId: number }) {
 
       setSaved(data.settings);
       setDraft(data.settings.details);
+      setFeedbackMailbox(data.settings.feedback_mailbox);
       setDraftForm(data.settings.form);
       setNotice(
         approve
-          ? "Approved. New applications can receive this acknowledgement and any enabled form link. Interview messages require a separate preview and confirmation."
+          ? "Approved. New applications can receive this acknowledgement and any enabled form link. Interview messages require a separate preview and confirmation. Internal feedback notices run only when enabled below."
           : "Draft saved. Outgoing acknowledgements require approval."
       );
     } catch (failure) {
@@ -192,40 +198,91 @@ export default function Settings({ companyId }: { companyId: number }) {
               disabled={busy || loading}
               className="grid min-w-0 gap-4 md:grid-cols-2"
             >
-              {[...hiringTextFields, ...interviewMessageFields].map(
-                ({ key, label }) => (
-                  <div key={key} className="min-w-0 space-y-2">
-                    <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>
-                    {key.endsWith("_subject") ? (
-                      <Input
-                        id={`hiring-setting-${key}`}
-                        className="h-11"
-                        value={draft[key] ?? ""}
-                        maxLength={200}
-                        onChange={event =>
-                          setDraft({ ...draft, [key]: event.target.value })
+              {[
+                ...hiringTextFields,
+                ...interviewMessageFields,
+                ...feedbackMessageFields,
+              ].map(({ key, label }) => (
+                <div key={key} className="min-w-0 space-y-2">
+                  <Label htmlFor={`hiring-setting-${key}`}>{label}</Label>
+                  {key.endsWith("_subject") ? (
+                    <Input
+                      id={`hiring-setting-${key}`}
+                      className="h-11"
+                      value={draft[key] ?? ""}
+                      maxLength={200}
+                      onChange={event =>
+                        setDraft({ ...draft, [key]: event.target.value })
+                      }
+                    />
+                  ) : (
+                    <Textarea
+                      id={`hiring-setting-${key}`}
+                      rows={3}
+                      value={draft[key] ?? ""}
+                      maxLength={5000}
+                      onChange={event =>
+                        setDraft({ ...draft, [key]: event.target.value })
+                      }
+                    />
+                  )}
+                  {key === "pto" && (
+                    <p className="text-xs text-muted-foreground">
+                      Use the applicable employee and consultant terms; this
+                      text appears in every acknowledgement.
+                    </p>
+                  )}
+                </div>
+              ))}
+              <div className="space-y-3 md:col-span-2">
+                <Label className="flex min-h-11 items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={draft.feedback_notifications_enabled === true}
+                    onChange={event =>
+                      setDraft({
+                        ...draft,
+                        feedback_notifications_enabled: event.target.checked,
+                      })
+                    }
+                  />
+                  Enable automatic internal feedback notices
+                </Label>
+                <p className="max-w-3xl text-sm text-muted-foreground">
+                  Requires all six feedback template fields, an enabled reply
+                  inbox, and approval. Applies only to feedback requests created
+                  after activation. Reviewers receive one prompt after the
+                  interview and one overdue reminder if needed. The approving
+                  Admin receives one submission notice. Assessments stay in
+                  Miru; these notices do not advance or reject applications.
+                  Failed or unknown deliveries are shown in Admin feedback
+                  history and are not resent automatically.
+                </p>
+                <Picker
+                  id="hiring-feedback-mailbox"
+                  companyId={companyId}
+                  kind="mailboxes"
+                  label="Internal feedback reply inbox"
+                  value={
+                    feedbackMailbox ||
+                    (draft.feedback_mailbox_id
+                      ? {
+                          id: draft.feedback_mailbox_id,
+                          label: `Inbox #${draft.feedback_mailbox_id}`,
                         }
-                      />
-                    ) : (
-                      <Textarea
-                        id={`hiring-setting-${key}`}
-                        rows={3}
-                        value={draft[key] ?? ""}
-                        maxLength={5000}
-                        onChange={event =>
-                          setDraft({ ...draft, [key]: event.target.value })
-                        }
-                      />
-                    )}
-                    {key === "pto" && (
-                      <p className="text-xs text-muted-foreground">
-                        Use the applicable employee and consultant terms; this
-                        text appears in every acknowledgement.
-                      </p>
-                    )}
-                  </div>
-                )
-              )}
+                      : null)
+                  }
+                  change={choice => {
+                    setFeedbackMailbox(choice);
+                    setDraft({
+                      ...draft,
+                      feedback_mailbox_id: choice?.id ?? null,
+                    });
+                  }}
+                  emptyLabel="Choose internal feedback inbox"
+                  purpose="history"
+                />
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="hiring-client-count">Client count</Label>
                 <Input

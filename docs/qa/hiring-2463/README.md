@@ -1,6 +1,10 @@
 # Hiring intake verification
 
-This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling, feedback and candidate messages before/after booking from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). The sections below retain each milestone's evidence. Internal interview notifications, prompts/reminders, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+This record covers private intake, email acknowledgements, candidate forms, screening, assessments, interview rounds, scheduling, feedback and messages from [Sonam's ATS issue](https://github.com/saeloun/miru-web/issues/2463). Milestone sections below retain their checkpoint status; the latest internal-notice increment is described first. Decisions, offers, retention controls and onboarding remain in the [implementation plan](../../superpowers/plans/2026-10-25-applicant-tracking.md).
+
+## Task 6 internal feedback notices
+
+Optional, explicitly approved reviewer prompts, overdue reminders and submission notices to the approving Admin now reuse the encrypted outbox. Activation excludes the backlog; permission/recipient changes suppress unsent mail; Admin history shows frozen content and uncertain delivery. All hiring services/requests pass **316/0**, and six affected browser files pass **36/0**. [Behavior, verification and three captures](feedback-notifications-20261107.md). Internal manual recovery controls remain a communication-history follow-up; due hold notices and final decisions are Task 7. Publication and whole-branch review remain required.
 
 ## Task 6 invitations before booking
 

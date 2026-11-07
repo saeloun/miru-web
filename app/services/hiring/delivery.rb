@@ -51,6 +51,8 @@ module Hiring
 
         application = @message.hiring_application.reload
         return "application_closed" if %w[withdrawn rejected hired].include?(application.stage)
+        return FeedbackNotifications.blocked_reason(@message) if HiringMessage::FEEDBACK_KINDS.include?(@message.kind)
+
         return "recipient_changed" unless application.hiring_candidate.reload.email == content["to"]
 
         if (access_id = content["portal_access_id"])
