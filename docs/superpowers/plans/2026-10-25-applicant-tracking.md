@@ -90,6 +90,8 @@ Manual scheduling is committed at `d7d08d192`, calendar ownership at `679176d4f`
 
 ### Task 7: Decisions, holds and controlled rejection
 
+Decision records, explicit draft/final confirmation, hold ownership/date/zone and failure→Rejection Pending are implemented locally: **333 hiring backend cases and 26 affected native browser cases pass**. Drafts have no stage/mail effects; finalization preserves immutable history and closes applicable active work. Rejection preview/delivery/automation and due-hold notices remain unfinished; the completion contract stays unchecked. [Behavior, evidence and six captures](../../qa/hiring-2463/decisions-20261107.md).
+
 **Files:** `app/services/hiring/decisions.rb`, Admin decision/template controls, communication/reminder extensions and tests.
 
 **Interface:** Pass notifies Admin; Fail creates Rejection Pending; only confirmed finalized decision or explicitly enabled automation queues rejection. Hold requires reason/owner/follow-up date and due notification. Every transition is audited and stale updates conflict.

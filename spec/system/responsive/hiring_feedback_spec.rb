@@ -158,7 +158,7 @@ RSpec.describe "Interview feedback journeys", type: :system, js: true do
     expect(page).to have_text("No-show date: 2026-11-01")
     expect(feedback.details.fetch("recommendation")).to eq("fail")
     expect(feedback.details.fetch("answers")).to eq([""])
-    expect(application.reload.stage).to eq("interview")
+    expect(application.reload.stage).to eq("rejection_pending")
     expect(@console_errors).to be_empty
   end
 

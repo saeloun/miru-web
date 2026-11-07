@@ -73,7 +73,11 @@ module Hiring
       end
 
       def record_event!
-        @application.touch
+        if @feedback.details["recommendation"] == "fail" && @application.stage == "interview"
+          Audited.audit_class.as_user(@actor) { @application.update!(stage: "rejection_pending") }
+        else
+          @application.touch
+        end
         @interview.touch
         @interview.events.create!(company: @company, created_by: @actor, action: "feedback_submitted",
           application_version: @application.lock_version, interview_version: @interview.lock_version,

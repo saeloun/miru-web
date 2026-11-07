@@ -16,7 +16,7 @@ class HiringInterviewPolicy < ApplicationPolicy
   private
 
     def current_grants
-      unless user && record.company_id == user.current_workspace_id && record.status == "planned" && record.hiring_application.stage == "interview"
+      unless user && record.company_id == user.current_workspace_id && record.status == "planned" && %w[interview rejection_pending].include?(record.hiring_application.stage)
         return HiringAccessGrant.none
       end
 

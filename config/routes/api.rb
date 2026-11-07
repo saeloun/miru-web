@@ -371,6 +371,9 @@ namespace :api, defaults: { format: "json" } do
           get "files/:attachment_id", on: :member, action: :download
         end
         resources :screenings, only: [:index, :create]
+        resources :decisions, only: [:index, :create, :update] do
+          post :finalize, on: :member
+        end
         resources :forms, only: [:index, :create, :destroy] do
           get :resume, on: :member
         end

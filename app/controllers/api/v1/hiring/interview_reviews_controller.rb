@@ -8,7 +8,7 @@ class Api::V1::Hiring::InterviewReviewsController < Api::V1::Hiring::BaseControl
       grants = HiringAccessGrant.active.where(company: current_company).joins(:hiring_panel_member)
         .where(hiring_panel_members: { employment_id: staff_ids }).select(:hiring_interview_id)
       relation = current_company.hiring_interviews.where(id: grants, status: "planned").joins(:hiring_application)
-        .where(hiring_applications: { stage: "interview" }).includes(hiring_application: :hiring_candidate)
+        .where(hiring_applications: { stage: %w[interview rejection_pending] }).includes(hiring_application: :hiring_candidate)
       rows, pagination = page_records(relation.order(id: :desc))
       render json: { company_id: current_company.id, interviews: rows.map do |record|
         { id: record.id, candidate_name: record.hiring_application.submitted_name, title: record.details.fetch("title"),

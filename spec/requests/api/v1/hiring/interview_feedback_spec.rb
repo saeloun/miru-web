@@ -56,6 +56,25 @@ RSpec.describe "Interview feedback", type: :request do
     patch path, params: { hiring_feedback: input }, as: :json
   end
 
+  it "marks a failed recommendation as rejection pending without closing the issued interview or sending candidate mail" do
+    submit(payload(details: details.merge("recommendation" => "fail")))
+    expect(response).to have_http_status(:ok)
+    expect(application.reload.stage).to eq("rejection_pending")
+    expect(round.reload.status).to eq("planned")
+    expect(booking.reload.status).to eq("scheduled")
+    expect(HiringMessage.count).to eq(0)
+    get "/api/v1/hiring/interview_reviews/#{round.id}", params: { company_id: company.id }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).not_to include("PRIVATE ADMIN NOTE")
+    sign_out interviewer
+    stranger = create(:user, current_workspace: company)
+    create(:employment, company:, user: stranger, resigned_at: nil)
+    stranger.add_role(:employee, company)
+    sign_in stranger
+    get "/api/v1/hiring/interview_reviews/#{round.id}", params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+  end
+
   def end_round(action: "complete")
     Hiring::Interviews.new(application:, actor: admin).update!(record: round, attributes: {
       "company_id" => company.id, "application_version" => application.reload.lock_version, "interview_version" => round.reload.lock_version,
@@ -153,13 +172,13 @@ RSpec.describe "Interview feedback", type: :request do
   end
 
   %w[pass fail additional_round_required].each do |recommendation|
-    it "records an explicit #{recommendation} recommendation for a no-show without deciding the outcome" do
+    it "records an explicit #{recommendation} recommendation for a no-show without finalizing a rejection" do
       no_show = details.merge("attendance" => "no_show", "recommendation" => recommendation, "answers" => [""])
       HiringFeedback::ASSESSMENT_FIELDS.each { |key| no_show[key] = "" }
       submit(payload(details: no_show))
       expect(response).to have_http_status(:ok)
       expect(feedback.reload.details.fetch("recommendation")).to eq(recommendation)
-      expect(application.reload.stage).to eq("interview")
+      expect(application.reload.stage).to eq(recommendation == "fail" ? "rejection_pending" : "interview")
     end
   end
 

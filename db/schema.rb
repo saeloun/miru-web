@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_07_161000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_07_170000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -790,6 +790,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_161000) do
     t.index ["company_id", "email"], name: "index_hiring_candidates_on_company_id_and_email", unique: true
     t.index ["company_id", "id"], name: "index_hiring_candidates_on_company_id_and_id", unique: true
     t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
+  end
+
+  create_table "hiring_decisions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "finalized_by_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "edit_details"
+    t.text "finalization_details"
+    t.text "details", null: false
+    t.string "state", default: "draft", null: false
+    t.datetime "finalized_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_decisions_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_decisions_one_draft", unique: true, where: "((state)::text = 'draft'::text)"
+    t.index ["company_id", "id"], name: "index_hiring_decisions_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_decisions_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_decisions_on_created_by_id"
+    t.index ["finalized_by_id"], name: "index_hiring_decisions_on_finalized_by_id"
+    t.check_constraint "state::text = 'draft'::text AND finalized_at IS NULL AND finalized_by_id IS NULL AND finalization_details IS NULL OR state::text = 'finalized'::text AND finalized_at IS NOT NULL AND finalization_details IS NOT NULL", name: "hiring_decision_state"
   end
 
   create_table "hiring_feedbacks", force: :cascade do |t|
@@ -2440,6 +2464,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_07_161000) do
   add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
   add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
   add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_decisions", "companies"
+  add_foreign_key "hiring_decisions", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_decisions", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_decisions", "users", column: "finalized_by_id", on_delete: :nullify
   add_foreign_key "hiring_feedbacks", "companies"
   add_foreign_key "hiring_feedbacks", "hiring_interview_bookings", column: ["company_id", "hiring_interview_booking_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "hiring_feedbacks", "hiring_panel_members", on_delete: :nullify
