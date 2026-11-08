@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Payroll::MercuryPayment do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let(:write_url) { "#{mercury_base}/account/#{account_id}/request-send-money" }
 
@@ -40,6 +40,8 @@ RSpec.describe Payroll::MercuryPayment do
     end
 
     it "rounds the principal half up from the exact decimal division" do
+      match_terms_to(2_100_000)
+      record_synthetic_pto_treatment
       revision = approve_revision(payload: synthetic_payload(amount_minor: 2_100_000))
       instruction = ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
         quote: quote.merge(reference_rate: "85.51")).first
@@ -48,6 +50,8 @@ RSpec.describe Payroll::MercuryPayment do
     end
 
     it "keeps an exact half cent deterministic" do
+      match_terms_to(8_442)
+      record_synthetic_pto_treatment
       revision = approve_revision(payload: synthetic_payload(amount_minor: 8_442))
       instruction = ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
         quote: quote.merge(reference_rate: "85.50")).first
@@ -84,6 +88,8 @@ RSpec.describe Payroll::MercuryPayment do
     end
 
     it "rejects a principal over Mercury's documented maximum" do
+      match_terms_to(90_000_000_000)
+      record_synthetic_pto_treatment
       revision = approve_revision(payload: synthetic_payload(amount_minor: 90_000_000_000))
       expect(blocked_codes do
         ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)
@@ -128,6 +134,7 @@ RSpec.describe Payroll::MercuryPayment do
     it "blocks lines not marked for Mercury funding" do
       ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
         hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: legal_name, change_reason: "Moved to India funding")
+      record_synthetic_pto_treatment
       revision = approve_revision
       expect(blocked_codes do
         ready_payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, quote:)

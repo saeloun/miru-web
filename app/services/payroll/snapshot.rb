@@ -28,22 +28,12 @@ module Payroll
     end
 
     def valid?
-      Entitlement.require!(@run.company_id)
-      return false unless digest
-      return false unless keys?(@payload, %w[schema_version company_id period currency policies exceptions lines])
-      return false unless @payload["schema_version"] == 1 && @payload["company_id"] == @run.company_id
-      return false unless @payload["period"] == @run.period&.iso8601 && @payload["currency"] == @run.currency
-      return false unless @payload["policies"].is_a?(Hash) && (@payload["policies"].keys - POLICIES).empty?
-      return false unless @payload["policies"].values.all? { |policy| valid_policy?(policy) }
-      return false unless @payload["exceptions"].is_a?(Array) && @payload["exceptions"].all? { |code| code?(code) }
-
-      lines = @payload["lines"]
-      return false unless lines.is_a?(Array) && lines.size.between?(1, MAX_LINES)
-      valid_population?(lines)
+      valid_structure? && current_sources?
     end
 
     def approval_issues
-      return ["invalid_snapshot"] unless valid?
+      return ["invalid_snapshot"] unless valid_structure?
+      return ["invalid_snapshot", *stale_terms_issues].uniq unless current_sources?
 
       issues = @payload["exceptions"].dup
       POLICIES.each do |kind|
@@ -59,6 +49,36 @@ module Payroll
     end
 
     private
+
+      def valid_structure?
+        Entitlement.require!(@run.company_id)
+        return false unless digest
+        return false unless keys?(@payload, %w[schema_version company_id period currency policies exceptions lines])
+        return false unless @payload["schema_version"] == 1 && @payload["company_id"] == @run.company_id
+        return false unless @payload["period"] == @run.period&.iso8601 && @payload["currency"] == @run.currency
+        return false unless @payload["policies"].is_a?(Hash) && (@payload["policies"].keys - POLICIES).empty?
+        return false unless @payload["policies"].values.all? { |policy| valid_policy?(policy) }
+        return false unless @payload["exceptions"].is_a?(Array) && @payload["exceptions"].all? { |code| code?(code) }
+
+        lines = @payload["lines"]
+        return false unless lines.is_a?(Array) && lines.size.between?(1, MAX_LINES)
+        valid_population?(lines)
+      end
+
+      def current_sources?
+        @payload["lines"].all? { |line| valid_source_snapshot?(line) }
+      end
+
+      def stale_terms_issues
+        @payload["lines"].flat_map do |line|
+          calculation = line["calculation_snapshot"]
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          next [] unless calculation && employment && line["source_snapshot"].is_a?(Hash) &&
+            calculation_matches?(calculation, line, employment)
+
+          consultant_terms_issues(line, employment, calculation)
+        end
+      end
 
       def valid_population?(lines)
         return false unless lines.all? { |line| valid_line?(line) }
@@ -137,7 +157,6 @@ module Payroll
         return false unless valid_preparation?(line["preparation"])
         return false unless line["employment_id"].is_a?(Integer) && %w[employee consultant].include?(line["pay_type"])
         return false unless line["currency"] == @run.currency
-        return false unless valid_source_snapshot?(line)
         return false unless line["calculation_snapshot"].nil? || PayrollCalculation::Calculator.verify_snapshot?(line["calculation_snapshot"])
         line["source_resolutions"].is_a?(Array) && line["source_resolutions"].all? { |resolution| valid_resolution?(resolution) }
       end
@@ -187,7 +206,9 @@ module Payroll
 
         issues = calculation["review_ready"] ? [] : ["calculation_requires_review"]
         issues.concat(ClaimReference.issues(@run, line, employment))
+        issues.concat(PtoRecovery.issues(@run, line))
         issues.concat(consultant_terms_issues(line, employment, calculation))
+        issues.concat(Array(source.dig("pto", "blockers"))) if line["pay_type"] == "consultant"
         source.fetch("review_exceptions").each do |exception|
           unless resolved?(exception, line, source, calculation)
             issues << "source_exception:#{exception.fetch('code')}"
@@ -214,6 +235,16 @@ module Payroll
           [@run.company_id.to_s, employment.user_id.to_s, @run.period.strftime("%Y-%m"), @run.currency]
         return false unless calculation.dig("input", "engagement_type") == line["pay_type"]
         source = line["source_snapshot"]
+        if line["pay_type"] == "consultant" && source["pto"]
+          pto = source.fetch("pto")
+          return false unless pto["policy_id"] && pto["blockers"] == []
+          expected = pto.fetch("expected_hours").to_d
+          return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_hours").to_d &&
+            calculation.dig("input", "basis_quantity").to_d == expected
+          recoveries = line.fetch("deductions").select { |entry| entry["reason_code"] == "approved_pto_recovery" }
+          return false unless recoveries.sum { |entry| entry["amount_minor"] } == pto.fetch("historical_deduction_minor") &&
+            recoveries.pluck("source_reference").sort == pto.fetch("historical_decision_ids").map { |id| "pto:#{id}" }.sort
+        end
         source_field = calculation.dig("input", "compensation", "basis") == "hourly" ? "hours_source" : "quantity_source"
         return false unless calculation.dig("input", source_field) == source["digest"]
         return false unless calculation.dig("policy", "version") == @payload.dig("policies", "pay", "version")
@@ -264,6 +295,7 @@ module Payroll
           "work_review_required" => "reviewed_override"
         }
         decision = decisions[exception["code"]]
+        decision = "reviewed_pto_ledger" if exception["code"] == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
         return false unless decision
         if exception["code"] == "timeoff_pay_classification_required"
           return false unless calculation.dig("input", "paid_quantity") && calculation.dig("input", "basis_quantity")

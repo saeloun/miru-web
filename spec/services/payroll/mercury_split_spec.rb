@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Mercury spouse split payments" do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let(:spouse_recipient_id) { "66666666-6666-4666-8666-666666666666" }
   let(:split_service) { Payroll::SplitArrangements.new(run) }
@@ -224,6 +224,7 @@ RSpec.describe "Mercury spouse split payments" do
     let!(:base_revision) do
       company.update!(timezone: "Asia/Kolkata")
       employment.update!(joined_at: Date.new(2020, 1, 1))
+      record_synthetic_pto_treatment
       revision = revise_with_claims([claim.id])
       workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
       workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)

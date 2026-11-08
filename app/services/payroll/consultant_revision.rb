@@ -52,7 +52,7 @@ module Payroll
         review = review_for(employment, cutoff, {})
         source = capture(employment)
         unresolvable = unresolvable_codes(source)
-        not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"])
+        not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"]) + Array(review.dig(:pto, "blockers"))
         review.merge(source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
           required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
           current: current_selection(employment), locked: bank_activity?(employment))
@@ -99,7 +99,7 @@ module Payroll
         raise MercuryPayment::Blocked.new(codes) if codes.any?
 
         expenses = @company.expenses.where(id: review[:selected_expense_ids]).order(:id).to_a
-        adjustments = reimbursement_adjustments(expenses) + reviewed_adjustments(input)
+        adjustments = reimbursement_adjustments(expenses) + reviewed_adjustments(input) + pto_adjustments(review)
         calculation = calculate(employment, review, source, adjustments)
         raise MercuryPayment::Blocked.new("calculation_requires_review") unless calculation["review_ready"] && calculation_base(calculation) == review[:fee_estimate].to_d
 
@@ -107,7 +107,7 @@ module Payroll
       end
 
       def line_blockers(employment, review, source, input)
-        codes = unresolvable_codes(source)
+        codes = unresolvable_codes(source) + Array(review.dig(:pto, "blockers"))
         codes << "fee_unavailable" unless review[:fee_estimate]
         codes << "acknowledgement_required" if acknowledgement_codes(source, review).any? && input[:acknowledged] != true
         codes << "consultant_inactive" if employment.user.discarded?
@@ -127,6 +127,14 @@ module Payroll
           raise MercuryPayment::Blocked.new("adjustment_invalid") unless amount.is_a?(String) && amount.match?(AMOUNT_FORMAT) && amount.to_d.positive?
 
           adjustment(kind, kind, amount, "accounts.adjustment", "accounts_reviewed")
+        end
+      end
+
+      def pto_adjustments(review)
+        Array(review.dig(:pto, "historical_decision_ids")).map do |id|
+          entry = PayrollPtoEntry.find(id)
+          adjustment("pto_recovery_#{entry.id}", "other_deduction", (entry.cash_amount_minor.to_d / 100).to_s("F"),
+            "pto:#{entry.id}", "approved_pto_recovery")
         end
       end
 
@@ -186,6 +194,7 @@ module Payroll
       def resolutions(source, review)
         exceptions = source.fetch("review_exceptions").filter_map do |exception|
           decision = DECISIONS[exception["code"]]
+          decision = "reviewed_pto_ledger" if exception["code"] == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
           decision && resolution(exception["code"], decision, source, exception["source_id"])
         end
         warnings = (review[:warnings] & ACKNOWLEDGED_WARNINGS).map { |code| resolution(code, "accounts_acknowledged", source, nil) }

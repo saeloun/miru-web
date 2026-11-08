@@ -1,6 +1,42 @@
 # frozen_string_literal: true
 
+RSpec.shared_context "explicit synthetic PTO policy" do
+  def configure_synthetic_pto_policy(employment: self.employment, actor: owner)
+    Payroll::PtoLedger.new(employment, actor:).configure!(
+      effective_on: "2026-11-01", opening_on: "2026-11-01", opening_hours: "0", monthly_accrual_hours: "0",
+      accrual_day: "1", leave_year_month: "4", leave_year_day: "1", carry_rule: "review", rate_basis: "origin_period_fee",
+      advance_limit_hours: "200", exception_threshold_hours: "8", negative_threshold_hours: "8",
+      reason: "Approved synthetic policy for explicit absence decisions", evidence: "Synthetic reconciled opening",
+      idempotency_key: "synthetic-policy")
+  end
+
+  def record_synthetic_pto_treatment(unpaid_hours: "0", period: run.period, employment: self.employment, actor: owner)
+    facts = Payroll::PtoFacts.new(employment, month: period).call
+    gap = facts.fetch("gap_hours").to_d
+    return if gap.zero?
+
+    unpaid = unpaid_hours.to_d
+    allocations = []
+    allocations << { kind: "unpaid", hours: unpaid.to_s("F") } if unpaid.positive?
+    allocations << { kind: "defer", hours: (gap - unpaid).to_s("F") } if gap > unpaid
+    Payroll::PtoLedger.new(employment, actor:).allocate!(period:, allocations:,
+      reason: "Synthetic explicitly reviewed unpaid hours and deferred remaining absence",
+      expected_digest: facts.fetch("digest"), idempotency_key: SecureRandom.uuid)
+  end
+end
+
+RSpec.shared_context "reviewed mercury consultant payroll" do
+  include_context "approved mercury consultant payroll"
+
+  before do
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
+  end
+end
+
 RSpec.shared_context "approved mercury consultant payroll" do
+  include_context "explicit synthetic PTO policy"
+
   let(:company) { create(:company, base_currency: "INR") }
   let(:accounts) { create(:user) }
   let(:owner) { create(:user) }
@@ -61,6 +97,11 @@ RSpec.shared_context "approved mercury consultant payroll" do
           "origin_period" => "2026-11", "source" => "synthetic.adjustment", "reason" => "reviewed", "reviewed" => true }
       end
     }
+    if pay_type == "consultant" && source.dig("pto", "policy_id")
+      pto = source.fetch("pto")
+      input["paid_quantity"] = (pto.fetch("expected_hours").to_d - pto.fetch("unpaid_hours").to_d).to_s("F")
+      input["basis_quantity"] = pto.fetch("expected_hours")
+    end
     {
       "schema_version" => 1, "company_id" => company.id, "period" => "2026-11-01", "currency" => "INR",
       "policies" => Payroll::Snapshot::POLICIES.index_with do |kind|

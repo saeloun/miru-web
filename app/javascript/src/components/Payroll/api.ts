@@ -1,4 +1,5 @@
 import http from "apis/api";
+import type { PtoFacts } from "./PtoPanel";
 
 export interface Approval {
   stage: string;
@@ -47,6 +48,7 @@ export interface ReviewLine {
     review_exceptions: { code: string }[];
     company_calendar: Facts;
     employment: Facts;
+    pto?: PtoFacts;
   } | null;
   source_resolutions: { code: string; decision: string; reason_code: string }[];
   calculation: {
@@ -137,6 +139,7 @@ export interface PreparationConsultant {
   not_ready_reasons: string[];
   ready: boolean;
   locked: boolean;
+  pto?: PtoFacts;
   current: {
     included: boolean;
     confirmed_unpaid_hours?: string | null;
@@ -277,6 +280,7 @@ export interface MercuryPayments {
 }
 
 export interface IndiaReport {
+  pto?: PtoFacts;
   bank_version: string;
   consultant_name: string;
   period: string;

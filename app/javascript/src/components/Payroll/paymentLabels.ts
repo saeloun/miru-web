@@ -1,4 +1,21 @@
 const labels: Record<string, string> = {
+  pto_policy_required:
+    "Configure an approved PTO policy and reconciled opening before payroll approval.",
+  pto_decision_required:
+    "An owner or admin must record an explicit leave treatment before payroll approval.",
+  pto_decision_source_changed:
+    "Attendance changed after the leave decision. Refresh and approve its treatment again.",
+  pto_accrual_pending:
+    "Configured accrual is not posted. Post it or resolve the protected-period review before approving payroll.",
+  returned_review: "Prior credit needs owner review",
+  pto_decision_superseded:
+    "This leave recovery moved to a later reviewed decision. Prepare a fresh revision before submitting.",
+  pto_recovery_return_review:
+    "Prior credit needs explicit owner review before this recovery is settled.",
+  pto_recovery_already_claimed:
+    "Another payroll already reserved or settled this recovery. Refresh and reconcile it.",
+  pto_historical_source_changed:
+    "The original leave decision or attendance changed. Correct or cancel the unsubmitted historical recovery before payroll approval.",
   ready_for_submission: "Ready for submission",
   submission_uncertain: "Outcome unknown. Reconcile before anything else",
   submission_rejected: "Mercury rejected this request",

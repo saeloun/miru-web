@@ -9,6 +9,7 @@ import {
 } from "./api";
 import { exactAmount } from "./amount";
 import { errorMessage, label } from "./paymentLabels";
+import { PtoPanel, PtoSummary } from "./PtoPanel";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -166,15 +167,22 @@ const ConsultantRow = ({
   selection,
   canPrepare,
   onChange,
+  companyId,
+  month,
+  onSourceChanged,
 }: {
   consultant: PreparationConsultant;
   selection: Selection;
   canPrepare: boolean;
   onChange: (next: Selection) => void;
+  companyId: string;
+  month: string;
+  onSourceChanged: () => void;
 }) => {
   const id = consultant.employment_id;
   const update = (patch: Partial<Selection>) =>
     onChange({ ...selection, ...patch });
+  const [leaveOpen, setLeaveOpen] = useState(false);
 
   return (
     <div className="space-y-3 rounded-md border border-border p-4">
@@ -190,6 +198,20 @@ const ConsultantRow = ({
         {exactAmount(consultant.fee_estimate, "INR", false)} ·{" "}
         {label(consultant.payment_source || "no_funding_source")}
       </p>
+      {consultant.pto && <PtoSummary facts={consultant.pto} />}
+      <details onToggle={event => setLeaveOpen(event.currentTarget.open)}>
+        <summary className="min-h-10 cursor-pointer text-sm font-medium">
+          Approved leave decisions and history
+        </summary>
+        {leaveOpen && (
+          <PtoPanel
+            companyId={companyId}
+            employmentId={id}
+            month={month}
+            onChanged={onSourceChanged}
+          />
+        )}
+      </details>
       {consultant.not_ready_reasons.length > 0 && (
         <ul className="list-disc pl-5 text-sm">
           {consultant.not_ready_reasons.map(reason => (
@@ -237,7 +259,12 @@ const ConsultantRow = ({
                   <Input
                     id={`unpaid-${id}`}
                     inputMode="decimal"
-                    value={selection.unpaid}
+                    readOnly={!!consultant.pto?.policy_id}
+                    value={
+                      consultant.pto?.policy_id
+                        ? consultant.pto.unpaid_hours || "0"
+                        : selection.unpaid
+                    }
                     onChange={event => update({ unpaid: event.target.value })}
                   />
                 </div>
@@ -355,10 +382,12 @@ const ConsultantRow = ({
 export const PrepareRevisionPanel = ({
   companyId,
   runId,
+  month,
   onChanged,
 }: {
   companyId: string;
   runId: string;
+  month: string;
   onChanged: () => void;
 }) => {
   const [data, setData] = useState<RunPreparation | null>(null);
@@ -407,7 +436,9 @@ export const PrepareRevisionPanel = ({
 
             return {
               employment_id: row.employment_id,
-              confirmed_unpaid_hours: selection.unpaid,
+              confirmed_unpaid_hours: row.pto?.policy_id
+                ? row.pto.unpaid_hours || "0"
+                : selection.unpaid,
               unpaid_reason: selection.reason,
               expense_ids: selection.expenseIds,
               acknowledged: selection.acknowledged,
@@ -444,6 +475,9 @@ export const PrepareRevisionPanel = ({
         )}
         {data?.consultants.map(row => (
           <ConsultantRow
+            companyId={companyId}
+            month={month}
+            onSourceChanged={onChanged}
             canPrepare={data.can_prepare}
             consultant={row}
             key={row.employment_id}

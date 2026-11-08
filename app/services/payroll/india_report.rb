@@ -24,6 +24,7 @@ module Payroll
         "legal_entity" => @terms.legal_entity_name, "recorded_hours" => (minutes / 60).round(4).to_s("F"),
         "working_days" => (minutes / 480).round(4).to_s("F"), "leave_entries" => @line.dig("source_snapshot", "timeoff_entries"),
         "monthly_fee" => @terms.monthly_fee.to_s("F"), "confirmed_unpaid_hours" => @line.dig("preparation", "confirmed_unpaid_hours"),
+        "pto" => @line.dig("source_snapshot", "pto")&.deep_dup,
         "line" => @line.deep_dup, "reimbursements" => reimbursements, "bank_details" => self.class.bank_details(@employment),
         "revision_digest" => @run.current_revision.digest, "terms_id" => @terms.id,
         "line_digest" => IndiaHandoff.line_digest(@line), "bank_digest" => MercurySetup.digest(self.class.bank_details(@employment).sort.to_h),

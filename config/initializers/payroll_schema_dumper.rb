@@ -7,6 +7,8 @@ module PayrollSchemaDumper
       super
       return unless @connection.adapter_name == "PostgreSQL"
 
+      dump_pto_guards(stream)
+
       tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
@@ -61,6 +63,32 @@ module PayrollSchemaDumper
           FOR EACH ROW EXECUTE FUNCTION protect_payroll_india_delivery();
         SQL
       RUBY
+    end
+
+    def dump_pto_guards(stream)
+      return unless @connection.table_exists?("payroll_pto_entries")
+
+      functions = %w[protect_payroll_pto_history validate_payroll_pto_policy validate_payroll_pto_entry validate_payroll_pto_recovery validate_payroll_pto_allocation]
+      functions.each do |name|
+        sql = @connection.select_value(<<~SQL)
+          SELECT pg_get_functiondef(p.oid) FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+          WHERE n.nspname = 'public' AND p.proname = #{@connection.quote(name)} AND p.pronargs = 0 AND p.prorettype = 'trigger'::regtype
+        SQL
+        raise "PTO database guards are missing; apply all payroll PTO migrations before dumping schema" unless sql
+
+        stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+      end
+      tables = %w[consultant_pto_policies payroll_pto_entries payroll_pto_allocations payroll_pto_recoveries]
+      names = tables.map { |table| "#{table}_immutable" } + %w[payroll_pto_policy_valid payroll_pto_entry_valid payroll_pto_recovery_valid payroll_pto_allocation_valid]
+      definitions = @connection.select_values(<<~SQL)
+        SELECT pg_get_triggerdef(t.oid) FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid
+        JOIN pg_namespace n ON n.oid = c.relnamespace
+        WHERE n.nspname = 'public' AND c.relname IN (#{tables.map { |name| @connection.quote(name) }.join(',')})
+          AND t.tgname IN (#{names.map { |name| @connection.quote(name) }.join(',')}) ORDER BY t.tgname
+      SQL
+      raise "PTO database triggers are missing; apply all payroll PTO migrations before dumping schema" unless definitions.size == names.size
+
+      definitions.each { |sql| stream.puts "  execute <<~SQL\n    #{sql};\n  SQL" }
     end
 end
 

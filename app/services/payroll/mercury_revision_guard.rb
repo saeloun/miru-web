@@ -54,6 +54,7 @@ module Payroll
         protected_employment_ids = in_flight_groups.map(&:employment_id) + india_handoffs.pluck(:employment_id)
         PayrollExpenseReservation.unsettled.where(payroll_run_id: @run.id).where.not(employment_id: protected_employment_ids)
           .find_each { |reservation| reservation.update!(released_at: Time.current) }
+        PtoRecovery.release!(@run, protected_employment_ids:)
       end
   end
 end

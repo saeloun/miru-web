@@ -373,6 +373,46 @@ RSpec.describe "Consultant payroll review", type: :request, issue: 2458 do
     end
     preview
     expect(report.fetch("eligible_expenses").size).to eq(1)
+    configure_policy = lambda do |membership|
+      ledger = Payroll::PtoLedger.new(membership, actor: admin)
+      ledger.configure!(effective_on: "2026-09-01", opening_on: "2026-09-01", opening_hours: "0",
+        monthly_accrual_hours: "0", accrual_day: "1", leave_year_month: "4", leave_year_day: "1", carry_rule: "review",
+        rate_basis: "origin_period_fee", advance_limit_hours: "80", exception_threshold_hours: "8", negative_threshold_hours: "8",
+        reason: "Synthetic archive policy", evidence: "Synthetic reconciled opening", idempotency_key: "archive-policy")
+      facts = Payroll::PtoFacts.new(membership, month: Date.new(2026, 9, 1)).call
+      ledger.decide!(period: Date.new(2026, 9, 1), kind: "defer", reason: "Synthetic approved archive decision",
+        expected_digest: facts.fetch("digest"), idempotency_key: "archive-decision")
+    end
+    memberships = company.employments.joins(:consultant_compensations).distinct.includes(:user).order(:id).to_a
+    memberships.each { |membership| configure_policy.call(membership) }
+    configured_many = queries.call
+    response.parsed_body.fetch("reviews").each do |row|
+      standalone = Payroll::PtoFacts.new(memberships.find { |membership| membership.id == row.fetch("employment_id") }, month: Date.new(2026, 9, 1)).call
+      expect(row.fetch("pto")).to eq(standalone)
+    end
+    # Isolate one configured row without changing its source or reducing the public page size.
+    only_one = Payroll::ConsultantSources.new(company:, employments: [employment], month: Date.new(2026, 9, 1))
+    sql = []
+    listener = ->(*args) { sql << args.last.fetch(:sql) if args.last.fetch(:sql).start_with?("SELECT") }
+    ActiveRecord::Base.uncached do
+      ActiveSupport::Notifications.subscribed(listener, "sql.active_record") do
+        Payroll::ConsultantReview.new(employment:, month: Date.new(2026, 9, 1), cutoff: Date.new(2026, 10, 19), sources: only_one).process(include_expenses: false)
+      end
+    end
+    # Compare the service loader itself so controller authentication/pagination overhead stays identical.
+    many_sql = []
+    listener = ->(*args) { many_sql << args.last.fetch(:sql) if args.last.fetch(:sql).start_with?("SELECT") }
+    sources = Payroll::ConsultantSources.new(company:, employments: memberships, month: Date.new(2026, 9, 1))
+    ActiveRecord::Base.uncached do
+      ActiveSupport::Notifications.subscribed(listener, "sql.active_record") do
+        memberships.each do |membership|
+          Payroll::ConsultantReview.new(employment: membership, month: Date.new(2026, 9, 1), cutoff: Date.new(2026, 10, 19), sources:).process(include_expenses: false)
+        end
+      end
+    end
+    expect(many_sql.size).to be <= sql.size + 2, "Configured PTO SELECTs grew from #{sql.size} to #{many_sql.size}"
+    puts "PTO archive SELECTs: no-policy #{one.size}/#{eight.size}; approved-policy #{sql.size}/#{many_sql.size} for 1/8 consultants"
+    expect(configured_many.grep(/FROM "expenses"/)).to be_empty
   end
 
   it "keeps batched summaries consistent with fresh previews across consultants, service dates and workspaces" do

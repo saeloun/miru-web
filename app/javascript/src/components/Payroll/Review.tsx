@@ -17,6 +17,7 @@ import { exactAmount } from "./amount";
 import MercuryPaymentsPanel from "./MercuryPayments";
 import IndiaHandoffsPanel from "./IndiaHandoffs";
 import PreflightSummary from "./PreflightSummary";
+import { PtoSummary } from "./PtoPanel";
 import {
   CreateRunForm,
   PrepareRevisionPanel,
@@ -136,6 +137,9 @@ const Line = ({ line }: { line: ReviewLine }) => {
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
+        {line.pay_type === "consultant" && line.source?.pto && (
+          <PtoSummary facts={line.source.pto} />
+        )}
         <Facts
           rows={[
             ["Base pay", exactAmount(line.amounts.base_minor, line.currency)],
@@ -617,6 +621,7 @@ const Review = () => {
           <PrepareRevisionPanel
             companyId={companyId}
             runId={run.id}
+            month={run.period.slice(0, 7)}
             onChanged={() => setRefresh(value => value + 1)}
           />
           {run.revision && (

@@ -12,6 +12,11 @@ RSpec.describe "India payroll accounts handoff API", type: :request do
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: "Synthetic India Ltd",
       change_reason: "India accounts handoff")
   end
+  before do
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
+  end
+
   let!(:revision) { approve_revision }
   let(:path) { "/api/v1/payroll_runs/#{run.id}/india_handoffs" }
   let(:mailbox) { "accounts@example.test" }

@@ -17,12 +17,17 @@ class PayrollIndiaMailer < ActionMailer::Base
       "Legal contracting entity" => report.fetch("legal_entity"), "Handoff ID" => handoff.id,
       "Approved revision" => report.fetch("revision_digest"), "Recorded hours" => report.fetch("recorded_hours"),
       "Working days (recorded hours / 8)" => report.fetch("working_days"),
-      "Approved paid leave" => "Not classified in source records",
+      "Approved paid leave" => report.dig("pto", "paid_hours") || "Not classified in source records",
       "Monthly consultancy fee" => inr(BigDecimal(report.fetch("monthly_fee")) * 100),
       "Reviewed unpaid hours" => report["confirmed_unpaid_hours"].presence || "Not recorded",
       "Final consultancy fee after adjustments and deductions" => inr(amounts.fetch("net_minor") - amounts.fetch("reimbursements_minor", 0)),
       "Total reimbursements" => inr(amounts.fetch("reimbursements_minor", 0)), "Total INR payable" => inr(amounts.fetch("net_minor"))
     }
+    if report.dig("pto", "policy_id")
+      @summary.merge!("Opening PTO hours" => report.dig("pto", "opening_hours"), "Accrued PTO hours" => report.dig("pto", "accrued_hours"),
+        "Advance PTO hours" => report.dig("pto", "advance_hours"), "Deferred hours" => report.dig("pto", "deferred_hours"),
+        "Closing PTO hours" => report.dig("pto", "closing_hours"))
+    end
     @sections = [
       { title: "Recorded leave", headings: ["Date", "Hours"], rows: Array(report["leave_entries"]).map do |entry|
         [entry.fetch("date"), (BigDecimal(entry.fetch("duration_minutes")) / 60).to_s("F")]

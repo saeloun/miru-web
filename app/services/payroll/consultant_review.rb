@@ -24,15 +24,25 @@ class Payroll::ConsultantReview
     @finish = month.end_of_month
   end
 
-  def process(include_expenses: true)
+  def process(include_expenses: true, include_pto: true)
     Payroll::Entitlement.require!(@company.id)
     terms = @sources.terms(@employment.id)
     warnings = []
     work = work_summary(warnings)
     working_days = work[:hours] / 8 if work[:hours]
     leave_hours = leave_summary(@sources.leave_durations(@employment.user_id, service_dates), warnings)
-    unpaid = confirmed_unpaid_hours
-    expected, fee = calculate_fee(terms, work[:covered], unpaid, warnings)
+    pto = Payroll::PtoFacts.new(@employment, month: @month, sources: @sources).call if include_pto
+    unpaid = pto&.fetch("policy_id", nil) ? pto.fetch("unpaid_hours").to_d : confirmed_unpaid_hours
+    if pto&.fetch("policy_id", nil) && @inputs[:confirmed_unpaid_hours].present? && @inputs[:confirmed_unpaid_hours].to_d != unpaid
+      raise InvalidInput, "Unpaid hours come from approved PTO decisions; refresh instead of overriding the ledger"
+    end
+    warnings.concat(pto.fetch("blockers")) if pto
+    covered = work[:covered]
+    if pto&.fetch("policy_id", nil) && covered
+      covered += pto.fetch("paid_hours").to_d + pto.fetch("deferred_hours").to_d
+      covered += pto.fetch("waived_hours").to_d
+    end
+    expected, fee = calculate_fee(terms, covered, unpaid, warnings)
     {
       employment_id: @employment.id, consultant_name: @employment.user.full_name,
       month: @month.strftime("%Y-%m"), cutoff: @cutoff.iso8601, compensation_id: terms&.id,
@@ -42,7 +52,10 @@ class Payroll::ConsultantReview
       not_required_work_hours: money(work[:not_required]&.round(4)),
       pending_work_hours: money(work[:pending]&.round(4)), rejected_work_hours: money(work[:rejected]&.round(4)),
       working_days: money(working_days&.round(4)), recorded_timeoff_hours: money(leave_hours),
-      approved_paid_hours: nil, opening_pto_hours: nil, closing_pto_hours: nil,
+      approved_paid_hours: pto&.fetch("paid_hours", nil), opening_pto_hours: pto&.fetch("opening_hours", nil),
+      closing_pto_hours: pto&.fetch("closing_hours", nil), advance_pto_hours: pto&.fetch("advance_hours", nil),
+      accrued_pto_hours: pto&.fetch("accrued_hours", nil), deferred_pto_hours: pto&.fetch("deferred_hours", nil),
+      unresolved_pto_hours: pto&.fetch("unresolved_hours", nil), pto:,
       confirmed_unpaid_hours: money(unpaid), unpaid_reason: @inputs[:unpaid_reason], fee_estimate: money(fee),
       withholding: nil, warnings:, payment_ready: false, claims_reserved: false
     }.merge(include_expenses ? reimbursement_summary(fee, warnings) : {})

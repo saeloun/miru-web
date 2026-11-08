@@ -40,7 +40,10 @@ module Payroll
         raise Conflict, "Revision changed; reload before approving" unless head && head.digest == expected_digest
 
         approval = head.payroll_approvals.create!(actor:, stage:)
-        ClaimReference.reserve!(@run, head) if stage == "final"
+        if stage == "final"
+          ClaimReference.reserve!(@run, head)
+          PtoRecovery.reserve!(@run, head)
+        end
         approval
       end
     end

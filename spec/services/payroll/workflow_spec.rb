@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Payroll::Workflow do
+  include_context "explicit synthetic PTO policy"
+
   let(:company) { create(:company, base_currency: "INR") }
   let(:accounts) { create(:user) }
   let(:owner) { create(:user) }
@@ -43,6 +45,7 @@ RSpec.describe Payroll::Workflow do
     create(:employment, company:, user: owner, resigned_at: nil)
     accounts.add_role(:book_keeper, company)
     owner.add_role(:owner, company)
+    configure_synthetic_pto_policy
     payload["lines"][0].values_at("extras", "reimbursements", "deductions").flatten.each do |entry|
       entry.merge!("origin_period" => "2026-11-01", "source_reference" => "synthetic.adjustment", "reason_code" => "reviewed")
     end

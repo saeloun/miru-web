@@ -14,6 +14,8 @@ RSpec.describe Payroll::ConsultantRevision do
   before do
     employment.update!(joined_at: Date.new(2020, 1, 1))
     company.update!(timezone: "Asia/Kolkata") if company.timezone.blank?
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
   end
 
   around do |example|
@@ -21,6 +23,9 @@ RSpec.describe Payroll::ConsultantRevision do
   end
 
   def build(unpaid: nil, reason: nil, expenses: [], **extra)
+    if unpaid.is_a?(String) && unpaid.match?(/\A\d+(?:\.\d{1,2})?\z/) && unpaid.to_d.positive? && reason.present?
+      record_synthetic_pto_treatment(unpaid_hours: unpaid)
+    end
     builder.create!(
       consultants: [{ employment_id: employment.id, confirmed_unpaid_hours: unpaid, unpaid_reason: reason, expense_ids: expenses, acknowledged: true }.merge(extra)],
       cutoff:, expected_digest: run.current_revision&.digest, idempotency_key: SecureRandom.uuid
@@ -76,10 +81,10 @@ RSpec.describe Payroll::ConsultantRevision do
   it "records the acknowledging actor against each resolved warning" do
     resolutions = line(build)["source_resolutions"]
     expect(resolutions.pluck("actor_id").uniq).to eq([accounts.id])
-    expect(resolutions.pluck("code")).to include("no_timeoff_entries", "unexplained_hours")
+    expect(resolutions.pluck("code")).to include("no_timeoff_entries", "work_requires_review")
   end
 
-  it "never deducts for missing time without an explicit decision" do
+  it "keeps explicitly deferred missing time out of unpaid deductions" do
     expect(line(build).dig("amounts", "net_minor")).to eq(6_250_000)
   end
 
@@ -448,6 +453,7 @@ RSpec.describe Payroll::ConsultantRevision do
 
         later = PayrollRun.create!(company:, period: Date.new(2026, 12, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
         create(:timesheet_entry, user: worker, project: work_entry.project, work_date: Date.new(2026, 12, 2), duration: 480)
+        record_synthetic_pto_treatment(period: later.period)
         next_builder = described_class.new(later, actor: accounts)
         next_row = next_builder.preparation(cutoff: Date.current.iso8601).find { |entry| entry[:employment_id] == employment.id }
         expect(next_row[:eligible_expenses].pluck(:id)).to eq([claim.id])

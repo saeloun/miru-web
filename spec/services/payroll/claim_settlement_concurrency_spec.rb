@@ -17,13 +17,18 @@ RSpec.describe "Payroll claim settlement concurrency" do
     create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved)
   end
 
-  before { employment.update!(joined_at: Date.new(2020, 1, 1)) }
+  before do
+    employment.update!(joined_at: Date.new(2020, 1, 1))
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
+  end
 
   around do |example|
     travel_to(Time.utc(2027, 1, 5, 12)) { example.run }
   end
 
   def prepare_claim(payroll_run)
+    record_synthetic_pto_treatment(period: payroll_run.period) unless payroll_run.period == run.period
     revision = Payroll::ConsultantRevision.new(payroll_run, actor: accounts).create!(
       consultants: [{ employment_id: employment.id, expense_ids: [claim.id], acknowledged: true }],
       cutoff: Date.current.iso8601, expected_digest: nil, idempotency_key: "claim-#{payroll_run.id}")

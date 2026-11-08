@@ -9,6 +9,8 @@ import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
+import { PtoFacts, PtoPanel, PtoReviewQueue } from "../Payroll/PtoPanel";
+import { label as payrollLabel } from "../Payroll/paymentLabels";
 import {
   Select,
   SelectContent,
@@ -36,6 +38,7 @@ type Terms = {
   created_by: string;
 };
 type ReviewSummary = {
+  pto?: PtoFacts;
   employment_id: number;
   consultant_name: string;
   month: string;
@@ -51,6 +54,9 @@ type ReviewSummary = {
   rejected_work_hours: string | null;
   unresolved_work_hours: string | null;
   working_days: string | null;
+  approved_paid_hours?: string | null;
+  opening_pto_hours?: string | null;
+  closing_pto_hours?: string | null;
   recorded_timeoff_hours: string | null;
   confirmed_unpaid_hours: string;
   unpaid_reason: string | null;
@@ -110,6 +116,11 @@ const PayrollWorkspace = ({
     null
   );
   const [history, setHistory] = useState<History | null>(null);
+  const [pto, setPto] = useState<{
+    employment: number;
+    name: string;
+    month: string;
+  } | null>(null);
   const [selected, setSelected] = useState<Review | null>(null);
   const [unpaid, setUnpaid] = useState("0");
   const [reason, setReason] = useState("");
@@ -210,7 +221,7 @@ const PayrollWorkspace = ({
         }
       );
       setSelected(data.review);
-      setUnpaid("0");
+      setUnpaid(data.review.confirmed_unpaid_hours || "0");
       setReason("");
       setExpenseIds([]);
       setDirty(false);
@@ -401,6 +412,21 @@ const PayrollWorkspace = ({
                       >
                         {t("consultantPayroll.history")}
                       </Button>
+                      <Button
+                        disabled={busy}
+                        size="sm"
+                        variant="outline"
+                        onClick={event => {
+                          dialogFocus.remember(event);
+                          setPto({
+                            employment: row.employment_id,
+                            name: row.consultant_name,
+                            month: row.month,
+                          });
+                        }}
+                      >
+                        PTO and decisions {row.consultant_name}
+                      </Button>
                     </div>
                   </td>
                 </tr>
@@ -434,6 +460,34 @@ const PayrollWorkspace = ({
         </nav>
       )}
 
+      <PtoReviewQueue
+        companyId={String(companyId)}
+        onSelect={(employment, name, reviewMonth, event) => {
+          dialogFocus.remember(event);
+          setPto({ employment, name, month: reviewMonth });
+        }}
+      />
+      <Dialog open={!!pto} onOpenChange={open => !open && setPto(null)}>
+        <DialogContent
+          className="max-w-3xl"
+          onCloseAutoFocus={dialogFocus.restore}
+        >
+          <DialogHeader>
+            <DialogTitle>Approved leave · {pto?.name}</DialogTitle>
+            <DialogDescription>
+              {pto?.month} · Policy, explicit decisions and recovery history
+            </DialogDescription>
+          </DialogHeader>
+          {pto && (
+            <PtoPanel
+              companyId={String(companyId)}
+              employmentId={pto.employment}
+              month={pto.month}
+              onChanged={() => setRefresh(value => value + 1)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
       <Dialog
         open={!!configuration}
         onOpenChange={open => !busy && !open && setConfiguration(null)}
@@ -751,8 +805,17 @@ const PayrollWorkspace = ({
                   ["rejectedWork", selected.rejected_work_hours],
                   ["unresolvedWork", selected.unresolved_work_hours],
                   ["recordedLeave", selected.recorded_timeoff_hours],
-                  ["approvedPaidLeave", t("consultantPayroll.unavailable")],
-                  ["ptoBalances", t("consultantPayroll.unavailable")],
+                  [
+                    "approvedPaidLeave",
+                    selected.approved_paid_hours ??
+                      t("consultantPayroll.unavailable"),
+                  ],
+                  [
+                    "ptoBalances",
+                    selected.opening_pto_hours != null
+                      ? `${selected.opening_pto_hours} → ${selected.closing_pto_hours}`
+                      : t("consultantPayroll.unavailable"),
+                  ],
                 ].map(([key, value]) => (
                   <React.Fragment key={key}>
                     <dt>{t(`consultantPayroll.${key}`)}</dt>
@@ -764,7 +827,9 @@ const PayrollWorkspace = ({
                 <ul className="list-disc space-y-1 rounded-md border p-4 pl-7 text-sm">
                   {selected.warnings.map(warning => (
                     <li key={warning}>
-                      {t(`consultantPayroll.warnings.${warning}`)}
+                      {warning.startsWith("pto_")
+                        ? payrollLabel(warning)
+                        : t(`consultantPayroll.warnings.${warning}`)}
                     </li>
                   ))}
                 </ul>
@@ -780,6 +845,7 @@ const PayrollWorkspace = ({
                   maxLength={9}
                   pattern="[0-9]{1,6}(\.[0-9]{1,2})?"
                   required
+                  readOnly={!!selected.pto?.policy_id}
                   value={unpaid}
                   onChange={event => {
                     setUnpaid(event.target.value);
@@ -787,7 +853,9 @@ const PayrollWorkspace = ({
                   }}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {t("consultantPayroll.unpaidHelp")}
+                  {selected.pto?.policy_id
+                    ? "Derived from approved leave decisions. Change the treatment in PTO and decisions."
+                    : t("consultantPayroll.unpaidHelp")}
                 </p>
               </div>
               <div className="space-y-2">
@@ -798,13 +866,20 @@ const PayrollWorkspace = ({
                   disabled={busy}
                   id="payroll-unpaid-reason"
                   maxLength={1000}
-                  required={Number(unpaid) > 0}
+                  required={!selected.pto?.policy_id && Number(unpaid) > 0}
+                  readOnly={!!selected.pto?.policy_id}
                   value={reason}
                   onChange={event => {
                     setReason(event.target.value);
                     setDirty(true);
                   }}
                 />
+                {selected.pto?.policy_id && (
+                  <p className="text-xs text-muted-foreground">
+                    The approval reason is retained with the leave decision
+                    history.
+                  </p>
+                )}
               </div>
               <fieldset className="space-y-2">
                 <legend className="text-sm font-medium">

@@ -247,6 +247,7 @@ module Payroll
           next if reservation.settled_at
           settle_reservation!(handoff, reservation, entry)
         end
+        PtoRecovery.settle!(@run, handoff.employment_id)
         handoff.update!(fully_credited_at: Time.current)
       end
 
