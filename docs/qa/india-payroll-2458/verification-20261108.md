@@ -68,6 +68,12 @@ The subsequent review caught two real lifecycle cases. Load errors and action er
 
 Historical migration setup now cleans test residue before migrating and tracks whether it created the temporary India tables before tearing them down. A real committed India handoff left before the historical group caused all nine examples to fail before this fix; the ordered populated fixture plus historical cases now pass **10/10**, and the normal historical file passes **9/9**. The original schema version is restored. Independent final backend verification remains **64 examples, zero failures**. Production migration guards are unchanged. Exact-head hosted CI remains required.
 
+Native review then checked the complementary load-error case: a successful action installs fresh data, so it must also clear any earlier load failure. A scoped real GET 503 followed by a real successful POST reproduced the stale alert before the one-line correction; all five India browser examples now pass with their strict console checks. Both Vite builds pass again. TypeScript still matches the same normalized 329-error baseline, with no new or removed diagnostic.
+
+Hosted checkpoint `76785c546` passed **6,177 backend examples, zero failures, 54 pending**. Its browser run had **367 examples and two failures** in initial hiring-detail clicks. Controlled native tests reproduced both physical misses: late assignment data moved the interview control, while late candidate-form data moved the retention control. The helpers now wait for their existing enabled screening/assignment controls; retention also waits for forms. The two other callers of the same interview control and its lazy-load test use the same prerequisites. No product behavior, timeout, privacy assertion or console check was weakened. The identical delayed-response probes pass after the correction.
+
+Full local coverage of the CI browser selection now passes **367 unique examples across all 60 files**. Two isolated-database shards passed 155 and 201 examples; the latest four hiring files passed 18, replacing seven overlapping note/feedback examples and adding the 11 interview/retention examples excluded from those shards. These counts must not be summed without removing that overlap. The final pushed head still requires hosted CI; local coverage is not a deployment or provider acceptance claim.
+
 ## Screenshots
 
 - [Owner report confirmation](screenshots/owner-ready-desktop.png)

@@ -146,6 +146,15 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
   end
 
   it "requires a new owner confirmation when bank details change after the displayed preview" do
+    fail_next_load = false
+    allow_any_instance_of(Api::V1::PayrollIndiaHandoffsController).to receive(:index).and_wrap_original do |original, *arguments|
+      if fail_next_load
+        fail_next_load = false
+        original.receiver.render json: { errors: "Synthetic India handoff refresh failed" }, status: 503
+      else
+        original.call(*arguments)
+      end
+    end
     sign_in owner
     with_forgery_protection do
       visit "/payroll/#{run.id}"
@@ -162,6 +171,9 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         expect(page).to have_button("Send approved report to accounts", disabled: true)
         expect(page).to have_css("[role='alert']", text: "Bank details changed; reload and verify the beneficiary again")
         screenshot("owner-bank-reconfirmation-desktop")
+        fail_next_load = true
+        click_button "Refresh India handoffs"
+        expect(page).to have_css("[role='alert']", text: "Synthetic India handoff refresh failed")
         fill_in "Accounts recipient email", with: mailbox
         check "I verified the beneficiary and recipient mailbox."
         click_button "Send approved report to accounts"

@@ -104,6 +104,8 @@ RSpec.describe "Interview feedback journeys", type: :system, js: true do
     sign_in admin
     page.current_window.resize_to(1440, 1000)
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     click_button "View interview rounds"
     click_button "View feedback for round 1"
     expect(page).to have_text("PRIVATE FEEDBACK EVIDENCE")

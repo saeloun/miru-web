@@ -548,6 +548,7 @@ const IndiaHandoffsPanel = ({
     try {
       const response = await action();
       setData(response.data.india_handoffs);
+      setLoadError("");
       setNotice("Accounts handoff updated.");
 
       return true;
