@@ -76,6 +76,8 @@ RSpec.describe PaymentsProvider, type: :model do
 
     it "fails closed with an incorrect explicit provider key" do
       allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(rotated_key)
+      provider.settings.merge!(secrets)
+      expect(Rails.logger).to receive(:warn).with("PaymentsProvider credential decryption failed").exactly(secrets.size).times
 
       secrets.each_key { |name| expect(provider.public_send(name)).to be_nil }
     end

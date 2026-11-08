@@ -106,6 +106,7 @@ class QuickbooksConnection < ApplicationRecord
       token_encryptor.decrypt_and_verify(value)
     rescue ActiveSupport::MessageVerifier::InvalidSignature,
       ActiveSupport::MessageEncryptor::InvalidMessage
+      Rails.logger.warn("QuickbooksConnection credential decryption failed")
       nil
     end
 

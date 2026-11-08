@@ -241,6 +241,7 @@ class PaymentsProvider < ApplicationRecord
       key_secret_encryptor.decrypt_and_verify(value)
     rescue ActiveSupport::MessageVerifier::InvalidSignature,
       ActiveSupport::MessageEncryptor::InvalidMessage
+      Rails.logger.warn("PaymentsProvider credential decryption failed")
       nil
     end
 

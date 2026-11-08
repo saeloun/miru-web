@@ -48,6 +48,7 @@ RSpec.describe QuickbooksConnection, type: :model do
 
     it "fails closed with an incorrect explicit provider key" do
       allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(rotated_key)
+      expect(Rails.logger).to receive(:warn).with("QuickbooksConnection credential decryption failed").exactly(tokens.size).times
 
       tokens.each_key { |name| expect(connection.public_send(name)).to be_nil }
     end
