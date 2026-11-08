@@ -57,24 +57,37 @@ class HiringSetting < ApplicationRecord
       end
       count = details["client_count"]
       valid &&= count.nil? || count.is_a?(Integer) && count.between?(0, 1_000_000)
+      valid &&= valid_retention? && valid_feedback_notifications? && valid_decision_notifications?
+      errors.add(:details, "contain invalid hiring email settings") unless valid
+    end
+
+    def valid_retention?
       retention = details["retention_enabled"]
       days = details["retention_days"]
-      valid &&= retention.nil? || [true, false].include?(retention)
+      valid = retention.nil? || [true, false].include?(retention)
       valid &&= days.nil? || days.is_a?(Integer) && days.between?(1, 36_500)
       valid &&= days.present? if retention == true
+      valid
+    end
+
+    def valid_feedback_notifications?
       enabled = details["feedback_notifications_enabled"]
       mailbox = details["feedback_mailbox_id"]
-      valid &&= enabled.nil? || [true, false].include?(enabled)
+      valid = enabled.nil? || [true, false].include?(enabled)
       valid &&= mailbox.nil? || mailbox.is_a?(Integer) && mailbox.positive?
       valid &&= mailbox.present? && FEEDBACK_FIELDS.all? { |key| details[key].present? } if enabled == true
+      valid
+    end
+
+    def valid_decision_notifications?
       decision_mailbox = details["decision_mailbox_id"]
-      valid &&= decision_mailbox.nil? || decision_mailbox.is_a?(Integer) && decision_mailbox.positive?
+      valid = decision_mailbox.nil? || decision_mailbox.is_a?(Integer) && decision_mailbox.positive?
       { "rejection_automation_enabled" => "rejection", "hold_notifications_enabled" => "hold_follow_up" }.each do |flag, kind|
         value = details[flag]
         valid &&= value.nil? || [true, false].include?(value)
         valid &&= decision_mailbox.present? && %w[subject body].all? { |part| details["#{kind}_#{part}"].present? } if value == true
       end
-      errors.add(:details, "contain invalid hiring email settings") unless valid
+      valid
     end
 
     def valid_text?(value, maximum)

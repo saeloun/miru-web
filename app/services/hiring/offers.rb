@@ -25,15 +25,8 @@ module Hiring
     def create!(attributes:)
       with_application do
         input!(attributes, CREATE_KEYS)
-        key = attributes["request_key"]
-        raise Intake::InvalidInput, "Use a valid offer request identity." unless key.is_a?(String) && key.match?(/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i)
-
-        existing = @company.hiring_offers.find_by(request_key: key)
-        if existing
-          raise Intake::Conflict, "This offer reference has different saved intent." unless existing.hiring_application_id == @application.id && existing.request_details == attributes
-
-          next [existing, false]
-        end
+        existing = existing_offer(attributes)
+        next [existing, false] if existing
         version!(@application, attributes["application_version"])
         selected!
         Audited.audit_class.as_user(@actor) do
@@ -43,7 +36,7 @@ module Hiring
           raise Intake::Conflict, "Review the existing active offer before preparing another."
         end
         record = Audited.audit_class.as_user(@actor) do
-          @application.hiring_offers.create!(company: @company, created_by: @actor, request_key: key,
+          @application.hiring_offers.create!(company: @company, created_by: @actor, request_key: attributes["request_key"],
             request_details: attributes, details: terms(attributes))
         end
         @application.touch
@@ -85,12 +78,7 @@ module Hiring
         version!(@application, attributes["application_version"])
         version!(offer, attributes["offer_version"])
         decision = selected!
-        zone = offer.details.fetch("time_zone")
-        today = Time.current.in_time_zone(zone).to_date
-        if %w[joining_on expires_on].any? { |key| Date.iso8601(offer.details.fetch(key)) < today }
-          raise Intake::InvalidInput, "Choose joining and expiry dates today or later before issuing."
-        end
-        expires_at = Date.iso8601(offer.details.fetch("expires_on")).in_time_zone(zone).end_of_day
+        expires_at = issue_expiry(offer)
         Audited.audit_class.as_user(@actor) do
           offer.update!(state: "sent", issued_by: @actor, issued_at: Time.current, expires_at:,
             issue_details: { "intent" => attributes, "decision_id" => decision.id, "recipient" => @application.hiring_candidate.reload.email,
@@ -120,6 +108,26 @@ module Hiring
     end
 
     private
+
+      def existing_offer(attributes)
+        key = attributes["request_key"]
+        raise Intake::InvalidInput, "Use a valid offer request identity." unless key.is_a?(String) && key.match?(/\A[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\z/i)
+
+        existing = @company.hiring_offers.find_by(request_key: key)
+        if existing && (existing.hiring_application_id != @application.id || existing.request_details != attributes)
+          raise Intake::Conflict, "This offer reference has different saved intent."
+        end
+        existing
+      end
+
+      def issue_expiry(offer)
+        zone = offer.details.fetch("time_zone")
+        today = Time.current.in_time_zone(zone).to_date
+        if %w[joining_on expires_on].any? { |key| Date.iso8601(offer.details.fetch(key)) < today }
+          raise Intake::InvalidInput, "Choose joining and expiry dates today or later before issuing."
+        end
+        Date.iso8601(offer.details.fetch("expires_on")).in_time_zone(zone).end_of_day
+      end
 
       def input!(attributes, keys)
         unless attributes.is_a?(Hash) && attributes.keys.sort == keys.sort && JSON.generate(attributes).bytesize <= 16.kilobytes

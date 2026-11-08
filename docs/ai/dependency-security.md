@@ -1,6 +1,6 @@
 # Dependency security maintenance
 
-Updated 23 October 2026. Run all checks from the repository root:
+Updated 8 November 2026. Run all checks from the repository root:
 
 ```sh
 rtk mise exec -- bundle exec bundler-audit check --update
@@ -16,7 +16,7 @@ upgraded to 8.1.0. Keep its warnings visible and fix actionable findings.
 
 ## Runtimes and package compatibility
 
-- Rails 8.1.4; Ruby 4.0.9 across mise, Gemfile, Docker, and CI.
+- Rails 8.1.4.1 includes the [November 4 security fixes](https://rubyonrails.org/2026/11/4/Rails-8.0.5.2-and-8.1.4.1-have-been-released); Ruby 4.0.9 across mise, Gemfile, Docker, and CI.
 - Node 24.22.1 LTS across local version files, mise, Docker build arguments, and CI.
   Legacy NodeSource Docker recipes select the Node 24 line and may receive newer patches.
 - pnpm 9.15.9; mise uses the npm backend so pnpm runs on the configured Node runtime.

@@ -86,9 +86,19 @@ module Hiring
         raise Intake::InvalidInput, "Record an internal reason before finalizing." if details["reason"].blank?
 
         owner = hold_owner(details) if details["outcome"] == "hold"
+        apply_finalization!(decision, attributes, owner)
+        decision
+      end
+    rescue ActiveRecord::RecordInvalid
+      raise Intake::InvalidInput, "Complete the decision before finalizing it."
+    end
+
+    private
+
+      def apply_finalization!(decision, attributes, owner)
         Audited.audit_class.as_user(@actor) do
           decision.update!(state: "finalized", finalized_at: Time.current, finalized_by: @actor, finalization_details: attributes)
-          changes = { stage: STAGES.fetch(details.fetch("outcome")) }
+          changes = { stage: STAGES.fetch(decision.details.fetch("outcome")) }
           changes[:owner_employment] = owner if owner
           @application.update!(**changes)
           @application.touch if @application.saved_changes.empty?
@@ -97,13 +107,7 @@ module Hiring
             @application.hiring_assignments.where(ended_at: nil).find_each { |assignment| assignment.cancel_for_stage!(actor: @actor) }
           end
         end
-        decision
       end
-    rescue ActiveRecord::RecordInvalid
-      raise Intake::InvalidInput, "Complete the decision before finalizing it."
-    end
-
-    private
 
       def input!(attributes, keys)
         unless attributes.is_a?(Hash) && attributes.keys.sort == keys.sort && JSON.generate(attributes).bytesize <= 32.kilobytes

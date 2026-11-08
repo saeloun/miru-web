@@ -91,13 +91,13 @@ RSpec.describe "Employee reports and settings", type: :request do
 
   %w[workspace role actor_employment target_employment target_role report_removed].each do |change|
     it "withholds a private CSV after a #{change} change during generation" do
-      account = "9876543210987654"
-      EmployeeRecord.create!(employment:, private_details: { "bank_account_number" => account })
+      record = create(:employee_record, :with_bank_details, employment:)
+      account = record.reload.private_details.fetch("bank_account_number")
       report = EmployeeReport.create!(company:, name: "Synthetic private report", columns: ["bank_account_number"])
       other_company = create(:company) if change == "workspace"
       allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
         csv = original.call(*arguments)
-        expect(csv).to include(account)
+        expect(CSV.parse(csv, headers: true)["Bank account number"]).to include(account)
         case change
         when "workspace" then admin.update!(current_workspace: other_company)
         when "role" then admin.remove_role(:admin, company)
@@ -119,8 +119,8 @@ RSpec.describe "Employee reports and settings", type: :request do
   end
 
   it "downloads with an unchanged CLI context but withholds the CSV after the selected workspace changes" do
-    account = "9876543210987654"
-    EmployeeRecord.create!(employment:, private_details: { "bank_account_number" => account })
+    record = create(:employee_record, :with_bank_details, employment:)
+    account = record.reload.private_details.fetch("bank_account_number")
     report = EmployeeReport.create!(company:, name: "Synthetic CLI report", columns: ["bank_account_number"])
     other_company = create(:company)
     session, token = CliSession.issue_for(user: admin, company:)
@@ -128,7 +128,7 @@ RSpec.describe "Employee reports and settings", type: :request do
 
     get "/api/v1/employee_reports/#{report.id}/download", params: { month: "2026-10" }, headers: { "Authorization" => "Bearer #{token}" }
     expect(response).to have_http_status(:ok)
-    expect(response.body).to include(account)
+    expect(CSV.parse(response.body, headers: true)["Bank account number"]).to include(account)
 
     allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
       original.call(*arguments).tap { admin.update!(current_workspace: other_company) }

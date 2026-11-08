@@ -50,12 +50,17 @@ module Hiring
         return "source_changed" unless mailbox && mailbox.source_email == content["reply_to"]
 
         application = @message.hiring_application.reload
-        return "application_closed" if %w[withdrawn hired].include?(application.stage) || application.stage == "rejected" && @message.kind != "rejection"
-        return DecisionCommunication.blocked_reason(@message) if @message.kind == "rejection"
-        return OfferCommunication.blocked_reason(@message) if @message.kind == "offer"
-        return AssignmentCommunication.blocked_reason(@message) if @message.kind == "assignment"
-        return DecisionNotifications.blocked_reason(@message) if @message.kind == "hold_follow_up"
-        return FeedbackNotifications.blocked_reason(@message) if HiringMessage::FEEDBACK_KINDS.include?(@message.kind)
+        application_blocked_reason(application, content)
+      end
+
+      def application_blocked_reason(application, content)
+        kind = @message.kind
+        return "application_closed" if %w[withdrawn hired].include?(application.stage) || application.stage == "rejected" && kind != "rejection"
+        return DecisionCommunication.blocked_reason(@message) if kind == "rejection"
+        return OfferCommunication.blocked_reason(@message) if kind == "offer"
+        return AssignmentCommunication.blocked_reason(@message) if kind == "assignment"
+        return DecisionNotifications.blocked_reason(@message) if kind == "hold_follow_up"
+        return FeedbackNotifications.blocked_reason(@message) if HiringMessage::FEEDBACK_KINDS.include?(kind)
 
         return "recipient_changed" unless application.hiring_candidate.reload.email == content["to"]
 
@@ -64,7 +69,7 @@ module Hiring
           return "portal_unavailable" unless access&.active?
         end
 
-        return InterviewCommunication.blocked_reason(@message) if HiringMessage::INTERVIEW_KINDS.include?(@message.kind)
+        return InterviewCommunication.blocked_reason(@message) if HiringMessage::INTERVIEW_KINDS.include?(kind)
 
         nil
       end

@@ -35,19 +35,7 @@ module Hiring
           kind = current_kind
           next unless kind
 
-          messages = @company.hiring_messages.where(hiring_application_id: @application.id, kind:, event_key: "feedback:#{@feedback.id}")
-          next if messages.operations.exists?
-
-          recipient = recipient_for(kind, setting)
-          mailbox = @company.hiring_mailboxes.find_by(id: setting.details["feedback_mailbox_id"], active: true)
-          next unless recipient && mailbox
-
-          content = { "feedback_id" => @feedback.id, "recipient_user_id" => recipient.id, "to" => recipient.email,
-            "automatic" => true, "approval_actor_id" => setting.approved_by_id,
-            "mailbox_id" => mailbox.id, "reply_to" => mailbox.source_email,
-            "subject" => setting.details.fetch("#{kind}_subject"), "body" => body(kind, setting) }
-          @company.hiring_messages.create!(hiring_application: @application, hiring_setting: setting, kind:, event_key: "feedback:#{@feedback.id}",
-            approved_setting_version: setting.lock_version, content:)
+          create_notice!(kind, setting)
         end
       end
       ActiveRecord.after_all_transactions_commit { message.enqueue } if message
@@ -68,6 +56,22 @@ module Hiring
     end
 
     private
+
+      def create_notice!(kind, setting)
+        messages = @company.hiring_messages.where(hiring_application_id: @application.id, kind:, event_key: "feedback:#{@feedback.id}")
+        return if messages.operations.exists?
+
+        recipient = recipient_for(kind, setting)
+        mailbox = @company.hiring_mailboxes.find_by(id: setting.details["feedback_mailbox_id"], active: true)
+        return unless recipient && mailbox
+
+        content = { "feedback_id" => @feedback.id, "recipient_user_id" => recipient.id, "to" => recipient.email,
+          "automatic" => true, "approval_actor_id" => setting.approved_by_id,
+          "mailbox_id" => mailbox.id, "reply_to" => mailbox.source_email,
+          "subject" => setting.details.fetch("#{kind}_subject"), "body" => body(kind, setting) }
+        @company.hiring_messages.create!(hiring_application: @application, hiring_setting: setting, kind:, event_key: "feedback:#{@feedback.id}",
+          approved_setting_version: setting.lock_version, content:)
+      end
 
       def enabled?(setting)
         setting && setting.details["feedback_notifications_enabled"] == true && setting.approved? &&

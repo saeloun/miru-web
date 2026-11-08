@@ -51,6 +51,16 @@ module Hiring
         reason = delivery_block(messages)
         raise Intake::Conflict, reason if reason
 
+        delete_records!(messages, receipts, approved_setting_version)
+      end
+      { deleted: true }
+    rescue ActiveJob::EnqueueError, SolidQueue::Job::EnqueueError
+      raise CleanupUnavailable, "Private file cleanup could not be queued. Try deleting again."
+    end
+
+    private
+
+      def delete_records!(messages, receipts, approved_setting_version)
         inbound = exclusive_sources!(receipts)
         candidate = @application.hiring_candidate
         candidate.lock!("FOR UPDATE NOWAIT")
@@ -67,12 +77,6 @@ module Hiring
         remove_audits!
         @company.audits.create!(user: @actor, associated: @company, action: "hiring_application_deleted", audited_changes: {})
       end
-      { deleted: true }
-    rescue ActiveJob::EnqueueError, SolidQueue::Job::EnqueueError
-      raise CleanupUnavailable, "Private file cleanup could not be queued. Try deleting again."
-    end
-
-    private
 
       def with_application(approved_setting_version: nil)
         @actor.with_lock do

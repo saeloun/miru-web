@@ -40,6 +40,10 @@ module Hiring
         invalid! if @page > 99_999
         @minimum, @maximum = %i[experience_min experience_max].map { |key| experience(key) }
         invalid! if @minimum && @maximum && @minimum > @maximum
+        validate_dates!
+      end
+
+      def validate_dates!
         @from, @to = %i[from to].map { |key| date(key) }
         invalid! if @from && @to && @from > @to
       end
@@ -145,11 +149,24 @@ module Hiring
 
       def metrics(records)
         applications = records.to_a
-        ids = applications.map(&:id)
+        visits, edges, hired = transitions(applications)
+        reasons = latest_decisions(records.where(stage: "rejected")).select { |decision| decision.details["outcome"] == "reject" }
+          .group_by { |decision| decision.details.fetch("reason") }.transform_values(&:size)
+        { total_applications: applications.size,
+          stage_counts: HiringApplication::STAGES.index_with { |stage| applications.count { |application| application.stage == stage } },
+          stage_conversions: edges.map do |(from, to), converted|
+            { from:, to:, count: converted.size, recorded_from_count: visits.fetch(from).size,
+              percent: (converted.size.fdiv(visits.fetch(from).size) * 100).round(2) }
+          end,
+          rejection_reasons: reasons, rejected_without_reason: applications.count { |application| application.stage == "rejected" } - reasons.values.sum,
+          time_to_hire: time_to_hire(applications, hired) }
+      end
+
+      def transitions(applications)
         visits = HiringApplication::STAGES.index_with { Set.new }
         applications.each { |application| visits.fetch("received") << application.id }
         edges, hired = {}, {}
-        Audited.audit_class.where(auditable_type: "HiringApplication", auditable_id: ids, action: "update")
+        Audited.audit_class.where(auditable_type: "HiringApplication", auditable_id: applications.map(&:id), action: "update")
           .order(:created_at, :id).each do |audit|
           change = audit.audited_changes["stage"]
           next unless change.is_a?(Array) && change.size == 2 && change.all? { |stage| HiringApplication::STAGES.include?(stage) } && change.first != change.last
@@ -160,23 +177,18 @@ module Hiring
           (edges[[from, to]] ||= Set.new) << audit.auditable_id
           hired[audit.auditable_id] ||= audit.created_at if to == "hired"
         end
+        [visits, edges, hired]
+      end
+
+      def time_to_hire(applications, hired)
         durations = applications.filter_map do |application|
           finished = hired[application.id]
           (finished - application.received_at) / 1.day if finished && finished >= application.received_at
         end
-        reasons = latest_decisions(records.where(stage: "rejected")).select { |decision| decision.details["outcome"] == "reject" }
-          .group_by { |decision| decision.details.fetch("reason") }.transform_values(&:size)
-        { total_applications: applications.size,
-          stage_counts: HiringApplication::STAGES.index_with { |stage| applications.count { |application| application.stage == stage } },
-          stage_conversions: edges.map do |(from, to), converted|
-            { from:, to:, count: converted.size, recorded_from_count: visits.fetch(from).size,
-              percent: (converted.size.fdiv(visits.fetch(from).size) * 100).round(2) }
-          end,
-          rejection_reasons: reasons, rejected_without_reason: applications.count { |application| application.stage == "rejected" } - reasons.values.sum,
-          time_to_hire: { count: durations.size, average_days: durations.empty? ? nil : (durations.sum / durations.size).round(2),
-            hired_without_timing: applications.count do |application|
-              application.stage == "hired" && (!hired[application.id] || hired.fetch(application.id) < application.received_at)
-            end } }
+        { count: durations.size, average_days: durations.empty? ? nil : (durations.sum / durations.size).round(2),
+          hired_without_timing: applications.count do |application|
+            application.stage == "hired" && (!hired[application.id] || hired.fetch(application.id) < application.received_at)
+          end }
       end
   end
 end

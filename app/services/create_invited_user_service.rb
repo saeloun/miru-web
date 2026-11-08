@@ -35,28 +35,7 @@ class CreateInvitedUserService
   def process
     invitation_valid!
     user_valid!
-    invitation.company.with_employee_number_lock do |company|
-      invitation.reload
-      raise InvitationExpired unless invitation.company_id == company.id
-
-      source_offer_id = invitation.hiring_offer_id
-      Hiring::Onboarding.with_invitation(invitation) do |onboarding|
-        invitation.lock!
-        raise InvitationExpired unless invitation.company_id == company.id && invitation.hiring_offer_id == source_offer_id
-
-        invitation_valid!
-        user_valid!
-        onboarding&.validate_invitation!(invitation)
-        update_invitation!
-        ensure_seat_available!
-        find_or_create_user! { |recipient| onboarding&.validate_recipient!(recipient) }
-        onboarding&.create_employment!(user)
-        add_role_to_invited_user
-        create_client_member
-        create_notification_preference
-        onboarding&.record_acceptance!(user, invitation)
-      end
-    end
+    accept_invitation!
   rescue ActiveRecord::RecordNotFound
     @error = InvitationExpired.new
     service_failed(@error.message)
@@ -71,6 +50,35 @@ class CreateInvitedUserService
   end
 
   private
+
+    def accept_invitation!
+      invitation.company.with_employee_number_lock do |company|
+        invitation.reload
+        raise InvitationExpired unless invitation.company_id == company.id
+
+        source_offer_id = invitation.hiring_offer_id
+        Hiring::Onboarding.with_invitation(invitation) do |onboarding|
+          invitation.lock!
+          raise InvitationExpired unless invitation.company_id == company.id && invitation.hiring_offer_id == source_offer_id
+
+          invitation_valid!
+          user_valid!
+          onboarding&.validate_invitation!(invitation)
+          complete_invitation!(onboarding)
+        end
+      end
+    end
+
+    def complete_invitation!(onboarding)
+      update_invitation!
+      ensure_seat_available!
+      find_or_create_user! { |recipient| onboarding&.validate_recipient!(recipient) }
+      onboarding&.create_employment!(user)
+      add_role_to_invited_user
+      create_client_member
+      create_notification_preference
+      onboarding&.record_acceptance!(user, invitation)
+    end
 
     def invitation
       @_invitation ||= find_invitation

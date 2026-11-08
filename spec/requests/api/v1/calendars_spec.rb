@@ -69,7 +69,7 @@ RSpec.describe "Api::V1::Calendars", type: :request do
       )
     get api_v1_calendars_path
     expect(response).to redirect_to(api_v1_events_path("synthetic@example.test"))
-    event_request = stub_request(:get, %r{https://www.googleapis.com/calendar/v3/calendars/synthetic(?:@|%40)example\.test/events})
+    event_request = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/calendar/v3/calendars/synthetic(?:@|%40)example\.test/events(?:\?[^#]*)?\z})
       .with(headers: { "Authorization" => "Bearer synthetic-calendar-token" }).to_return(
         status: 200, headers: { "Content-Type" => "application/json" }, body: { items: [] }.to_json
       )
@@ -87,7 +87,7 @@ RSpec.describe "Api::V1::Calendars", type: :request do
     create(:employment, company:, user: other)
     other.add_role(:employee, company)
     sign_in other
-    calendar_request = stub_request(:get, /www.googleapis.com/).to_return(
+    calendar_request = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/}).to_return(
       status: 200, headers: { "Content-Type" => "application/json" }, body: { items: [] }.to_json
     )
     get api_v1_calendars_path
@@ -101,7 +101,7 @@ RSpec.describe "Api::V1::Calendars", type: :request do
   end
 
   it "requires a connection before listing calendars or reading a supplied event calendar" do
-    provider_request = stub_request(:get, /www.googleapis.com/).to_return(
+    provider_request = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/}).to_return(
       status: 200, headers: { "Content-Type" => "application/json" }, body: { items: [] }.to_json
     )
     get api_v1_calendars_path
@@ -117,7 +117,7 @@ RSpec.describe "Api::V1::Calendars", type: :request do
     create(:employment, company:, user: other)
     other.add_role(:employee, company)
     sign_in other
-    provider_request = stub_request(:get, /www.googleapis.com/)
+    provider_request = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/})
     get api_v1_events_path("synthetic@example.test")
     expect(response).to redirect_to(root_path)
     expect(request.session[:authorization]).to be_nil
@@ -128,7 +128,7 @@ RSpec.describe "Api::V1::Calendars", type: :request do
     user.update!(calendar_connected: true)
     legacy_session = { authorization: { "access_token" => "synthetic-legacy-token" } }
     allow_any_instance_of(Api::V1::CalendarsController).to receive(:session).and_return(legacy_session)
-    provider_request = stub_request(:get, /www.googleapis.com/)
+    provider_request = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/})
     get api_v1_events_path("synthetic@example.test")
     expect(response).to redirect_to(root_path)
     expect(legacy_session).not_to have_key(:authorization)

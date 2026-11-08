@@ -66,7 +66,7 @@ RSpec.describe "Hiring calendar bookings", type: :request do
   end
 
   it "offers manual fallback without querying a provider when disconnected or unconfigured" do
-    provider = stub_request(:get, /www.googleapis.com/)
+    provider = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/})
     get "#{root}/calendar_events", params: { company_id: company.id }
     expect(response).to have_http_status(:ok)
     expect(response.parsed_body).to include("connected" => false, "reason" => "disconnected")
@@ -234,7 +234,7 @@ RSpec.describe "Hiring calendar bookings", type: :request do
   end
 
   it "denies staff, wrong workspaces and forged clock fields before querying Google" do
-    provider = stub_request(:get, /www.googleapis.com/)
+    provider = stub_request(:get, %r{\Ahttps://www\.googleapis\.com/})
     input = attributes
     import_booking(input.merge(starts_at: "2027-01-15T09:00:00Z"))
     expect(response).to have_http_status(:bad_request)

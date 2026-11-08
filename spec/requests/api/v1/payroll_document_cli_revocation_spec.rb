@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "csv"
 
 RSpec.describe "Payroll document CLI revocation", type: :request do
   let(:company) { create(:company, base_currency: "INR") }
@@ -40,13 +41,13 @@ RSpec.describe "Payroll document CLI revocation", type: :request do
   end
 
   it "permanently revokes a CLI session invalidated while a private employee CSV is generated" do
-    account = "9876543210987654"
-    EmployeeRecord.create!(employment:, private_details: { "bank_account_number" => account })
+    record = create(:employee_record, :with_bank_details, employment:)
+    account = record.reload.private_details.fetch("bank_account_number")
     report = EmployeeReport.create!(company:, name: "Synthetic private report", columns: ["bank_account_number"])
     session, token = CliSession.issue_for(user: actor, company:)
     allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
       original.call(*arguments).tap do |csv|
-        expect(csv).to include(account)
+        expect(CSV.parse(csv, headers: true)["Bank account number"]).to include(account)
         actor.remove_role(:admin, company)
       end
     end

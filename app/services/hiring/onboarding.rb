@@ -22,26 +22,7 @@ module Hiring
 
           next [presentation, false]
         end
-        source!
-        versions!(attributes)
-        user, employment = target(lock: true)
-        invitation = pending_invitation(lock: true)
-        references!(attributes, employment, invitation)
-        eligible!(user, employment, invitation)
-        unless attributes["send_invitation"] == (!employment && !invitation&.is_valid?)
-          raise Intake::Conflict, "Invitation availability changed. Review whether an email will be sent before confirming."
-        end
-        Audited.audit_class.as_user(@actor) do
-          @offer.update!(onboarding_started_at: Time.current, onboarding_details: { "intent" => attributes, "confirmed_by_id" => @actor.id })
-          if employment
-            confirm_names!(user, attributes)
-            finish!(employment, { "intent" => attributes, "confirmed_by_id" => @actor.id })
-          else
-            invite!(invitation, attributes)
-            @application.touch
-          end
-        end
-        [presentation, true]
+        start_profile!(attributes)
       end
     rescue ActiveRecord::RecordInvalid
       raise Intake::InvalidInput, "Use valid reviewed first and last names and compatible staff profile details."
@@ -57,24 +38,7 @@ module Hiring
 
           next presentation
         end
-        source!
-        versions!(attributes)
-        raise Intake::InvalidInput, "Start onboarding before linking a profile." unless @offer.onboarding_started_at
-
-        user, employment = target(lock: true)
-        invitation = pending_invitation(lock: true)
-        references!(attributes, employment, invitation)
-        eligible!(user, employment, invitation)
-        raise Intake::InvalidInput, "Review an existing staff profile first." unless employment
-        raise Intake::Conflict, "Review the existing profile handoff without an invitation email." unless attributes["send_invitation"] == false
-
-        confirm_names!(user, attributes)
-        cancelled_invitation = invitation if invitation&.hiring_offer_id == @offer.id && !invitation.accepted_at
-        Audited.audit_class.as_user(@actor) do
-          finish!(employment, { "intent" => attributes, "confirmed_by_id" => @actor.id, "cancelled_invitation_id" => cancelled_invitation&.id })
-          cancelled_invitation&.destroy!
-        end
-        presentation
+        complete_profile!(attributes)
       end
     rescue ActiveRecord::LockWaitTimeout
       raise Intake::Conflict, "The recipient account is being updated. Reload onboarding before confirming."
@@ -94,11 +58,7 @@ module Hiring
         eligible!(user, employment, invitation)
         raise Intake::Conflict, "A profile now exists. Review and link it explicitly." if employment
 
-        Audited.audit_class.as_user(@actor) do
-          invite!(invitation, @offer.onboarding_details.fetch("intent"))
-          @offer.touch
-          @application.touch
-        end
+        renew_invitation!(invitation)
         presentation
       end
     rescue ActiveRecord::RecordInvalid
@@ -145,6 +105,60 @@ module Hiring
     end
 
     private
+
+      def reviewed_target!(attributes)
+        user, employment = target(lock: true)
+        invitation = pending_invitation(lock: true)
+        references!(attributes, employment, invitation)
+        eligible!(user, employment, invitation)
+        [user, employment, invitation]
+      end
+
+      def start_profile!(attributes)
+        source!
+        versions!(attributes)
+        user, employment, invitation = reviewed_target!(attributes)
+        unless attributes["send_invitation"] == (!employment && !invitation&.is_valid?)
+          raise Intake::Conflict, "Invitation availability changed. Review whether an email will be sent before confirming."
+        end
+        Audited.audit_class.as_user(@actor) do
+          @offer.update!(onboarding_started_at: Time.current, onboarding_details: { "intent" => attributes, "confirmed_by_id" => @actor.id })
+          if employment
+            confirm_names!(user, attributes)
+            finish!(employment, { "intent" => attributes, "confirmed_by_id" => @actor.id })
+          else
+            invite!(invitation, attributes)
+            @application.touch
+          end
+        end
+        [presentation, true]
+      end
+
+      def complete_profile!(attributes)
+        source!
+        versions!(attributes)
+        raise Intake::InvalidInput, "Start onboarding before linking a profile." unless @offer.onboarding_started_at
+
+        user, employment, invitation = reviewed_target!(attributes)
+        raise Intake::InvalidInput, "Review an existing staff profile first." unless employment
+        raise Intake::Conflict, "Review the existing profile handoff without an invitation email." unless attributes["send_invitation"] == false
+
+        confirm_names!(user, attributes)
+        cancelled_invitation = invitation if invitation&.hiring_offer_id == @offer.id && !invitation.accepted_at
+        Audited.audit_class.as_user(@actor) do
+          finish!(employment, { "intent" => attributes, "confirmed_by_id" => @actor.id, "cancelled_invitation_id" => cancelled_invitation&.id })
+          cancelled_invitation&.destroy!
+        end
+        presentation
+      end
+
+      def renew_invitation!(invitation)
+        Audited.audit_class.as_user(@actor) do
+          invite!(invitation, @offer.onboarding_details.fetch("intent"))
+          @offer.touch
+          @application.touch
+        end
+      end
 
       def with_offer(&block)
         Offers.new(application: @application, actor: @actor).with_application do
