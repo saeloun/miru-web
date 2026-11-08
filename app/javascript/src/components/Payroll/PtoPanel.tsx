@@ -21,6 +21,7 @@ export interface PtoFacts {
   deferred_hours?: string;
   unresolved_hours?: string;
   gap_hours?: string;
+  gap_minutes?: string;
   blockers: string[];
 }
 
@@ -556,7 +557,9 @@ export const PtoPanel = ({
                                 allocations: Object.entries(allocationHours)
                                   .filter(
                                     ([, hours]) =>
-                                      hours.trim() !== "" && Number(hours) !== 0
+                                      hours === "remaining" ||
+                                      (hours.trim() !== "" &&
+                                        Number(hours) !== 0)
                                   )
                                   .map(([partKind, hours]) => ({
                                     kind: partKind,
@@ -600,6 +603,52 @@ export const PtoPanel = ({
                             total the scheduled source gap exactly. A correction
                             portion keeps payroll blocked.
                           </legend>
+                          <div className="space-y-1 md:col-span-2">
+                            <Label htmlFor={`pto-${employmentId}-remaining`}>
+                              Treatment for remaining gap
+                            </Label>
+                            <select
+                              className={inputClass}
+                              disabled={busy}
+                              id={`pto-${employmentId}-remaining`}
+                              value={
+                                Object.keys(allocationHours).find(
+                                  key => allocationHours[key] === "remaining"
+                                ) || ""
+                              }
+                              onChange={event => {
+                                const selected = event.target.value;
+                                setAllocationHours(previous => ({
+                                  ...Object.fromEntries(
+                                    Object.entries(previous).map(
+                                      ([key, hours]) => [
+                                        key,
+                                        hours === "remaining" ? "" : hours,
+                                      ]
+                                    )
+                                  ),
+                                  ...(selected
+                                    ? { [selected]: "remaining" }
+                                    : {}),
+                                }));
+                              }}
+                            >
+                              <option value="">
+                                Enter every portion explicitly
+                              </option>
+                              {treatments.map(([value, name]) => (
+                                <option key={value} value={value}>
+                                  {name}
+                                </option>
+                              ))}
+                            </select>
+                            <p className="text-sm tabular-nums text-muted-foreground">
+                              Exact source gap:{" "}
+                              {data.facts.gap_minutes ?? "Unavailable"} minutes.{" "}
+                              The chosen treatment receives the exact source gap
+                              left after the other entered hours.
+                            </p>
+                          </div>
                           {allocationFields.map(([key, name]) => (
                             <div className="space-y-1" key={key}>
                               <Label
@@ -608,10 +657,21 @@ export const PtoPanel = ({
                                 {name}
                               </Label>
                               <Input
-                                disabled={busy}
+                                disabled={
+                                  busy || allocationHours[key] === "remaining"
+                                }
                                 id={`pto-${employmentId}-allocation-${key}`}
                                 inputMode="decimal"
-                                value={allocationHours[key] || ""}
+                                value={
+                                  allocationHours[key] === "remaining"
+                                    ? ""
+                                    : allocationHours[key] || ""
+                                }
+                                placeholder={
+                                  allocationHours[key] === "remaining"
+                                    ? "Exact remaining gap"
+                                    : undefined
+                                }
                                 onChange={event =>
                                   setAllocationHours(previous => ({
                                     ...previous,

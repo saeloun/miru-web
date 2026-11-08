@@ -51,7 +51,7 @@ module Payroll
         existing = command_replay(idempotency_key, command_digest, "PTO command was already used for different facts")
         return existing if existing
         raise Workflow::Conflict, "PTO facts changed; refresh before deciding" unless facts["digest"] == expected_digest
-        values = allocation_values(facts, month, kind, canonical_parts, allocations, command_digest)
+        values = allocation_values(facts, month, kind, canonical_parts, command_digest)
         entries.create!(values.merge(company: @company, employment: @employment, actor: @actor, reason:, idempotency_key:))
       end
     end
@@ -105,7 +105,7 @@ module Payroll
         month = period.is_a?(Date) ? period : iso_date(period)
         raise ConsultantReview::InvalidInput, "Choose a month and explicit PTO decision" unless month.day == 1 && (DECISIONS + ["allocation"]).include?(kind)
 
-        canonical_parts = allocations ? canonical_allocations(allocations, nil) : nil
+        canonical_parts = allocations ? canonical_allocations(allocations) : nil
         command_digest = Digest::SHA256.hexdigest(JSON.generate([month.iso8601, kind, reason, expected_digest, canonical_parts]))
         [month, canonical_parts, command_digest]
       end
@@ -148,14 +148,14 @@ module Payroll
         raise Workflow::Conflict, message
       end
 
-      def allocation_values(facts, month, kind, canonical_parts, allocations, command_digest)
+      def allocation_values(facts, month, kind, canonical_parts, command_digest)
         policy = policies.find_by(id: facts["policy_id"])
         raise ConsultantReview::InvalidInput, "Configure an approved PTO policy first" unless policy
 
         previous = entries.heads.find_by(case_key: "month:#{month.iso8601}")
         protect_recovery!(previous)
         quantity = facts.fetch("gap_minutes").to_d
-        parts = approved_parts(allocations, canonical_parts, quantity, kind, previous)
+        parts = approved_parts(canonical_parts, quantity, kind, previous)
         totals = parts.to_h { |part| [part.fetch("kind"), part.fetch("minutes").to_d] }
         zero = 0.to_d
         paid, advance = totals.fetch("paid", zero), totals.fetch("advance", zero)
@@ -170,11 +170,11 @@ module Payroll
           source_digest: facts.fetch("attendance_digest") }
       end
 
-      def approved_parts(allocations, canonical_parts, quantity, kind, previous)
+      def approved_parts(canonical_parts, quantity, kind, previous)
         return [] if quantity.zero? && previous && kind == "correction" && canonical_parts.nil?
         raise ConsultantReview::InvalidInput, "No missing scheduled hours require a decision" unless quantity.positive?
 
-        canonical_parts ? canonical_allocations(allocations, quantity) : [{ "kind" => kind, "minutes" => quantity.to_s("F") }]
+        canonical_parts ? resolve_allocations(canonical_parts, quantity) : [{ "kind" => kind, "minutes" => quantity.to_s("F") }]
       end
 
       def validate_balance!(paid, advance, available, policy)
@@ -363,24 +363,45 @@ module Payroll
         { "amount" => (amount_minutes / 60).to_s("F"), "hours" => (basis_minutes / 60).to_s("F"), "reference" => reference }
       end
 
-      def canonical_allocations(values, total)
+      def canonical_allocations(values)
         unless values.is_a?(Array) && values.size.between?(1, DECISIONS.size)
           raise ConsultantReview::InvalidInput, "Provide the explicit leave breakdown"
         end
-        parts = values.map do |value|
-          value = value.stringify_keys if value.is_a?(Hash)
-          unless value.is_a?(Hash) && value.keys.sort == %w[hours kind] && DECISIONS.include?(value["kind"])
-            raise ConsultantReview::InvalidInput, "Use only a named leave treatment and decimal hours"
-          end
-          quantity = minutes(value.fetch("hours"))
-          raise ConsultantReview::InvalidInput, "Every leave allocation must be positive" unless quantity.positive?
-
-          { "kind" => value.fetch("kind"), "minutes" => quantity.to_s("F") }
+        parts = values.map { |value| allocation_part(value) }
+        if parts.count { |part| part.fetch("minutes") == "remaining" } > 1
+          raise ConsultantReview::InvalidInput, "Choose only one treatment for the remaining source gap"
         end
-        unless parts.pluck("kind").uniq.size == parts.size && (total.nil? || parts.sum(0.to_d) { |part| part.fetch("minutes").to_d } == total)
+        unless parts.pluck("kind").uniq.size == parts.size
           raise ConsultantReview::InvalidInput, "Distinct approved leave allocations must total exactly the source gap"
         end
         parts.sort_by { |part| DECISIONS.index(part.fetch("kind")) }
+      end
+
+      def allocation_part(value)
+        value = value.stringify_keys if value.is_a?(Hash)
+        unless value.is_a?(Hash) && value.keys.sort == %w[hours kind] && DECISIONS.include?(value["kind"])
+          raise ConsultantReview::InvalidInput, "Use only a named leave treatment and decimal hours"
+        end
+        return { "kind" => value.fetch("kind"), "minutes" => "remaining" } if value["hours"] == "remaining"
+
+        quantity = minutes(value.fetch("hours"))
+        raise ConsultantReview::InvalidInput, "Every leave allocation must be positive" unless quantity.positive?
+
+        { "kind" => value.fetch("kind"), "minutes" => quantity.to_s("F") }
+      end
+
+      def resolve_allocations(parts, total)
+        fixed = parts.reject { |part| part.fetch("minutes") == "remaining" }
+        remainder = total - fixed.sum(0.to_d) { |part| part.fetch("minutes").to_d }
+        if fixed.size < parts.size
+          raise ConsultantReview::InvalidInput, "The remaining source gap must be positive" unless remainder.positive?
+
+          parts = parts.map { |part| part.fetch("minutes") == "remaining" ? part.merge("minutes" => remainder.to_s("F")) : part }
+        end
+        unless parts.sum(0.to_d) { |part| part.fetch("minutes").to_d } == total
+          raise ConsultantReview::InvalidInput, "Distinct approved leave allocations must total exactly the source gap"
+        end
+        parts
       end
 
       def entries

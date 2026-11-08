@@ -151,6 +151,79 @@ RSpec.describe Payroll::PtoLedger do
     end
   end
 
+  it "resolves one exact source-gap remainder and binds its canonical intent to idempotent replay" do
+    policy
+    work_entry.update!(duration: 9_001)
+    command = { period: run.period, allocations: [{ kind: "paid", hours: "1" }, { kind: "unpaid", hours: "remaining" }],
+      reason: "Synthetic explicitly unpaid remainder", expected_digest: facts.fetch("digest"), idempotency_key: "exact-remainder" }
+    original = command.deep_dup
+    entry = ledger.allocate!(**command).reload
+    expect(entry.minutes).to eq(599)
+    expect(entry.approved_allocations).to eq([{ "kind" => "paid", "minutes" => "60.0" }, { "kind" => "unpaid", "minutes" => "539.0" }])
+    expect(review).to include(fee_estimate: "94385.42", closing_pto_hours: "39.0")
+    expect(ledger.allocate!(**command.merge(allocations: command[:allocations].reverse)).id).to eq(entry.id)
+    [
+      [{ kind: "paid", hours: "2" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "paid", hours: "remaining" }, { kind: "unpaid", hours: "1" }]
+    ].each do |changed|
+      expect { ledger.allocate!(**command.merge(allocations: changed)) }.to raise_error(Payroll::Workflow::Conflict)
+    end
+    work_entry.update!(duration: 9_002)
+    expect { expect(ledger.allocate!(**command).id).to eq(entry.id) }.not_to change(PayrollPtoEntry, :count)
+    expect { ledger.allocate!(**command.merge(idempotency_key: "stale-remainder")) }.to raise_error(Payroll::Workflow::Conflict)
+    expect(command).to eq(original)
+  end
+
+  it "carries a fractional source-gap remainder into exact advance debt and once-only accrual recovery" do
+    policy(opening: "0", accrual: "16")
+    work_entry.update!(duration: 9_001.002)
+    entry = ledger.allocate!(period: run.period,
+      allocations: [{ kind: "defer", hours: "1" }, { kind: "advance", hours: "remaining" }],
+      reason: "Synthetic deferred hour and explicit advance remainder", expected_digest: facts.fetch("digest"), idempotency_key: "fractional-remainder").reload
+    expect(entry.approved_allocations.sum(0.to_d) { |part| part.fetch("minutes").to_d }).to eq(BigDecimal("598.998"))
+    expect(entry).to have_attributes(balance_delta_minutes: BigDecimal("-538.998"), debt_minutes: BigDecimal("538.998"))
+    expect(review).to include(fee_estimate: "100000.0", deferred_pto_hours: "1.0", advance_pto_hours: "8.9833")
+    2.times { ledger.accrue!(through: Date.new(2026, 10, 1)) }
+    expect(PayrollPtoAllocation.where(origin_entry: entry).pluck(:minutes)).to eq([BigDecimal("538.998")])
+    expect(Payroll::PtoFacts.new(employment, month: Date.new(2026, 10, 1)).call.fetch("closing_minutes")).to eq("421.002")
+  end
+
+  it "rejects ambiguous, nonpositive and overallocated source-gap remainders without widening ordinary hours" do
+    policy
+    invalid = [
+      [{ kind: "paid", hours: "remaining" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "paid", hours: "1" }, { kind: "paid", hours: "remaining" }],
+      [{ kind: "paid", hours: "10" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "paid", hours: "11" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "paid", hours: "0.001" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "unpaid", hours: "Remaining" }]
+    ]
+    expect do
+      invalid.each do |allocations|
+        expect do
+          ledger.allocate!(period: run.period, allocations:, reason: "Synthetic invalid remainder",
+            expected_digest: facts.fetch("digest"), idempotency_key: SecureRandom.uuid)
+        end.to raise_error(Payroll::ConsultantReview::InvalidInput)
+      end
+    end.not_to change(PayrollPtoEntry, :count)
+    command = { period: run.period, allocations: [{ kind: "paid", hours: "1" }, { kind: "unpaid", hours: "remaining" }],
+      reason: "Synthetic explicit remainder intent", expected_digest: facts.fetch("digest"), idempotency_key: "remainder-intent" }
+    ledger.allocate!(**command)
+    expect do
+      ledger.allocate!(**command.merge(allocations: [{ kind: "paid", hours: "1" }, { kind: "unpaid", hours: "9" }]))
+    end.to raise_error(Payroll::Workflow::Conflict)
+    work_entry.update!(duration: 0)
+    [
+      [{ kind: "paid", hours: "remaining" }, { kind: "unpaid", hours: "1" }],
+      [{ kind: "advance", hours: "remaining" }, { kind: "defer", hours: "1" }]
+    ].each do |allocations|
+      expect do
+        ledger.allocate!(period: run.period, allocations:, reason: "Synthetic excessive resolved remainder",
+          expected_digest: facts.fetch("digest"), idempotency_key: SecureRandom.uuid)
+      end.to raise_error(Payroll::ConsultantReview::InvalidInput, /approved available balance|configured limit/)
+    end
+  end
+
   it "rounds the exact 580-minute unpaid proration half up in the estimate and approved calculation" do
     policy
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: run.period,

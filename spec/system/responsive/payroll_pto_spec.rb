@@ -171,37 +171,70 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
     end
   end
 
-  it "reloads an approved fractional-minute unpaid decision and previews the exact fee" do
-    project = create(:project, client: create(:client, company:), billable: false)
-    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 9_001.002, review_status: :approved)
-    sign_in admin
-    with_forgery_protection do
-      visit "/consultant-payroll"
-      click_button "PTO and decisions #{consultant.full_name}"
-      within("[role='dialog']") do
-        configure_opening("40")
-        select "Deduct confirmed unpaid this month", from: "Current leave treatment"
-        fill_in "Leave decision reason", with: "Synthetic exact fractional-minute treatment"
-        click_button "Approve leave decision"
-        expect(page).to have_text("Synthetic exact fractional-minute treatment")
+  [["unpaid", "9.9833", "40.0", "93,760.44"], ["split", "8.9833", "39.0", "94,385.44"]].each do |treatment, unpaid, closing, fee|
+    it "reloads an approved fractional-minute #{treatment} decision and previews the exact fee" do
+      project = create(:project, client: create(:client, company:), billable: false)
+      create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 9_001.002, review_status: :approved)
+      submitted = []
+      if treatment == "split"
+        decision_path = "/payroll_pto/#{employment.id}/decisions"
+        page.driver.browser.on("Network.requestWillBeSent") do |event|
+          request = event.fetch("request")
+          submitted << request["postData"] if request["method"] == "POST" && request.fetch("url").include?(decision_path)
+        end
       end
-      visit "/consultant-payroll"
-      click_button "PTO and decisions #{consultant.full_name}"
-      within("[role='dialog']") do
-        expect_pto_fact("Confirmed unpaid hours", "9.9833")
-        expect_pto_fact("Unresolved hours", "0.0")
-        expect(page).not_to have_text("Attendance changed after the leave decision. Refresh and approve its treatment again.")
-        expect(page).not_to have_css("[role='alert']")
-        click_button "Close"
-      end
-      click_button "Review #{consultant.full_name}"
-      within("[role='dialog']") do
-        expect(page).to have_field("payroll-unpaid", with: "9.9833", readonly: true)
-        click_button "Recalculate preview"
-        expect(page).to have_button("Recalculate preview", disabled: false)
-        expect(page).not_to have_css("[role='alert']")
-        expect(page).to have_text("93,760.44")
-        page.save_screenshot("/tmp/miru-pto-fractional-unpaid-preview-20261109.png")
+      sign_in admin
+      with_forgery_protection do
+        visit "/consultant-payroll"
+        click_button "PTO and decisions #{consultant.full_name}"
+        within("[role='dialog']") do
+          configure_opening("40")
+          if treatment == "split"
+            select "Approve an explicit split", from: "Current leave treatment"
+            fill_in "Paid allocation hours", with: "1"
+            select "Deduct confirmed unpaid this month", from: "Treatment for remaining gap"
+            expect(page).to have_field("Paid allocation hours", with: "1")
+            expect(page).to have_field("Unpaid allocation hours", disabled: true, placeholder: "Exact remaining gap")
+            expect(page).to have_text("Exact source gap: 598.998 minutes.")
+            select "Defer recovery with full pay", from: "Treatment for remaining gap"
+            expect(page).to have_field("Unpaid allocation hours", with: "", disabled: false)
+            expect(page).to have_field("Deferred allocation hours", disabled: true, placeholder: "Exact remaining gap")
+            select "Deduct confirmed unpaid this month", from: "Treatment for remaining gap"
+            expect(page).to have_field("Deferred allocation hours", with: "", disabled: false)
+            expect(page).to have_field("Paid allocation hours", with: "1")
+            page.execute_script("document.querySelector('[id$=\"-remaining\"]').scrollIntoView({block: 'center'})")
+            page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done));")
+            page.save_screenshot("/tmp/miru-pto-explicit-remainder-form-20261109.png")
+          else
+            select "Deduct confirmed unpaid this month", from: "Current leave treatment"
+          end
+          fill_in "Leave decision reason", with: "Synthetic exact fractional-minute treatment"
+          click_button "Approve leave decision"
+          expect(page).to have_text("Synthetic exact fractional-minute treatment")
+          if treatment == "split"
+            expect(JSON.parse(submitted.sole).dig("pto_decision", "allocations"))
+              .to eq([{ "kind" => "paid", "hours" => "1" }, { "kind" => "unpaid", "hours" => "remaining" }])
+          end
+        end
+        visit "/consultant-payroll"
+        click_button "PTO and decisions #{consultant.full_name}"
+        within("[role='dialog']") do
+          expect_pto_fact("Confirmed unpaid hours", unpaid)
+          expect_pto_fact("Closing PTO hours", closing)
+          expect_pto_fact("Unresolved hours", "0.0")
+          expect(page).not_to have_text("Attendance changed after the leave decision. Refresh and approve its treatment again.")
+          expect(page).not_to have_css("[role='alert']")
+          click_button "Close"
+        end
+        click_button "Review #{consultant.full_name}"
+        within("[role='dialog']") do
+          expect(page).to have_field("payroll-unpaid", with: unpaid, readonly: true)
+          click_button "Recalculate preview"
+          expect(page).to have_button("Recalculate preview", disabled: false)
+          expect(page).not_to have_css("[role='alert']")
+          expect(page).to have_text(fee)
+          page.save_screenshot("/tmp/miru-pto-fractional-#{treatment}-preview-20261109.png")
+        end
       end
     end
   end

@@ -40,6 +40,41 @@ RSpec.describe "Approved payroll PTO", type: :request do
     expect(response).to have_http_status(409)
   end
 
+  it "accepts one explicit exact remainder and rejects ambiguous or changed replay intent" do
+    sign_in owner
+    post "#{path}/policy", params: { company_id: company.id, pto_policy: configuration }
+    expect(response).to have_http_status(201)
+    expected = Payroll::PtoFacts.new(employment, month: run.period).call.fetch("expected_hours").to_d * 60
+    work_entry.update!(duration: expected - 599, review_status: "approved")
+    digest = Payroll::PtoFacts.new(employment, month: run.period).call.fetch("digest")
+    command = { period: run.period.iso8601, kind: "allocation", reason: "Synthetic explicit API remainder",
+      allocations: [{ kind: "paid", hours: "1" }, { kind: "unpaid", hours: "remaining" }],
+      expected_digest: digest, idempotency_key: "api-remainder" }
+    post "#{path}/decisions", params: { company_id: company.id, pto_decision: command }
+    expect(response).to have_http_status(201)
+    entry = PayrollPtoEntry.find(response.parsed_body.fetch("entry").fetch("id"))
+    expect(entry.approved_allocations).to eq([{ "kind" => "paid", "minutes" => "60.0" }, { "kind" => "unpaid", "minutes" => "539.0" }])
+    expect do
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: command.merge(allocations: command[:allocations].reverse) }
+      expect(response).to have_http_status(201)
+      expect(response.parsed_body.fetch("entry").fetch("id")).to eq(entry.id)
+    end.not_to change(PayrollPtoEntry, :count)
+    post "#{path}/decisions", params: { company_id: company.id, pto_decision: command.merge(
+      allocations: [{ kind: "paid", hours: "remaining" }, { kind: "unpaid", hours: "1" }]) }
+    expect(response).to have_http_status(409)
+    post "#{path}/decisions", params: { company_id: company.id, pto_decision: command.merge(idempotency_key: "stale-api-remainder") }
+    expect(response).to have_http_status(409)
+    current = Payroll::PtoFacts.new(employment, month: run.period).call.fetch("digest")
+    [
+      [{ kind: "paid", hours: "remaining" }, { kind: "unpaid", hours: "remaining" }],
+      [{ kind: "paid", hours: "11" }, { kind: "unpaid", hours: "remaining" }]
+    ].each do |allocations|
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: command.merge(
+        allocations:, expected_digest: current, idempotency_key: SecureRandom.uuid) }
+      expect(response).to have_http_status(422)
+    end
+  end
+
   it "denies employees, cross-workspace records and accounts approval of a PTO treatment" do
     sign_in accounts
     post "#{path}/policy", params: { company_id: company.id, pto_policy: configuration }
