@@ -54,8 +54,8 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
       handoff = PayrollIndiaHandoff.sole
       expect(handoff.entitlement_minor).to eq(6_300_025)
       Payroll::IndiaDelivery.new(handoff.payroll_india_deliveries.sole).deliver
+      click_button "Refresh India handoffs"
       within("[aria-label='India accounts payments']") do
-        click_button "Refresh India handoffs"
         expect(page).to have_text("Sent to Accounts — Awaiting Payment")
         expect(page).to have_no_button("Record confirmed credit")
         screenshot("owner-awaiting-payment-desktop")
@@ -145,8 +145,49 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
     end
   end
 
+  it "refreshes the payroll revision and totals before confirming a newly approved report" do
+    sign_in owner
+    with_forgery_protection do
+      visit "/payroll/#{run.id}"
+      expect_payroll_fact("Current revision", "#{@revision.number} · #{@revision.digest.first(12)}")
+      expect_payroll_fact("Recorded net payroll total", "INR 63,000.25")
+      within("[aria-label='India accounts payments']") do
+        fill_in "Accounts recipient email", with: mailbox
+        check "I verified the beneficiary and recipient mailbox."
+      end
+
+      fresh_revision = approve_revision(parent: @revision.digest)
+      expect(fresh_revision.digest).not_to eq(@revision.digest)
+      click_button "Refresh India handoffs"
+
+      expect_payroll_fact("Current revision", "#{fresh_revision.number} · #{fresh_revision.digest.first(12)}")
+      expect_payroll_fact("Calculation revision", fresh_revision.digest.first(12))
+      expect_payroll_fact("Recorded net payroll total", "INR 62,500.00")
+      expect_payroll_fact("Calculated net total", "INR 62,500.00")
+      expect(page).to have_css("p", text: "#{company.name} · Owner approved", exact_text: true)
+      within("[aria-label='India accounts payments']") do
+        expect(page).to have_no_css("[role='alert']")
+        expect(page).to have_unchecked_field("I verified the beneficiary and recipient mailbox.")
+        expect(page).to have_field("Accounts recipient email", with: "")
+        expect(page).to have_button("Send approved report to accounts", disabled: true)
+        screenshot("owner-refreshed-payroll-desktop")
+      end
+    end
+  end
+
   it "requires a new owner confirmation when bank details change after the displayed preview" do
     fail_next_load = false
+    fail_next_response = false
+    handoff_statuses = []
+    allow_any_instance_of(Api::V1::PayrollIndiaHandoffsController).to receive(:render).and_wrap_original do |original, *arguments, **options|
+      if original.receiver.action_name == "create" && fail_next_response
+        fail_next_response = false
+        options = options.merge(json: { errors: "Synthetic India handoff response failed" }, status: 503)
+      end
+      result = original.call(*arguments, **options)
+      handoff_statuses << original.receiver.response.status if original.receiver.action_name == "create"
+      result
+    end
     allow_any_instance_of(Api::V1::PayrollIndiaHandoffsController).to receive(:index).and_wrap_original do |original, *arguments|
       if fail_next_load
         fail_next_load = false
@@ -165,20 +206,34 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999998888"))
         click_button "Send approved report to accounts"
         expect(page).to have_text("••••8888")
+        expect(handoff_statuses).to eq([409])
         expect(PayrollIndiaHandoff.count).to eq(0)
+        expect(PayrollIndiaDelivery.count).to eq(0)
         expect(page).to have_unchecked_field("I verified the beneficiary and recipient mailbox.")
         expect(page).to have_field("Accounts recipient email", with: "")
         expect(page).to have_button("Send approved report to accounts", disabled: true)
         expect(page).to have_css("[role='alert']", text: "Bank details changed; reload and verify the beneficiary again")
         screenshot("owner-bank-reconfirmation-desktop")
-        fail_next_load = true
-        click_button "Refresh India handoffs"
-        expect(page).to have_css("[role='alert']", text: "Synthetic India handoff refresh failed")
         fill_in "Accounts recipient email", with: mailbox
         check "I verified the beneficiary and recipient mailbox."
+        fail_next_response = true
+        fail_next_load = true
         click_button "Send approved report to accounts"
-        expect(page).to have_text("Email queued")
+        expect(page).to have_css("[role='alert']", text: "Synthetic India handoff refresh failed")
+        expect(page).to have_css("[role='alert']", text: "Synthetic India handoff response failed")
+        expect(handoff_statuses).to eq([409, 503])
+        expect(PayrollIndiaHandoff.count).to eq(1)
+        expect(PayrollIndiaDelivery.count).to eq(1)
+        expect(page).to have_field("Accounts recipient email", with: mailbox)
+        expect(page).to have_checked_field("I verified the beneficiary and recipient mailbox.")
+        expect do
+          click_button "Send approved report to accounts"
+          expect(page).to have_text("Email queued")
+        end.not_to have_enqueued_job
         expect(page).to have_no_css("[role='alert']")
+        expect(handoff_statuses).to eq([409, 503, 201])
+        expect(PayrollIndiaHandoff.count).to eq(1)
+        expect(PayrollIndiaDelivery.count).to eq(1)
       end
       expect(PayrollIndiaHandoff.sole.report.dig("bank_details", "bank_account_number")).to eq("999999998888")
     end
@@ -199,6 +254,10 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
       screenshot("confidential-email-#{width}")
     end
+  end
+
+  def expect_payroll_fact(label, value)
+    expect(find("dt", exact_text: label).find(:xpath, "..").find("dd")).to have_text(value, exact: true)
   end
 
   def screenshot(name)
