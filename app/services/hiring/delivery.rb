@@ -53,6 +53,7 @@ module Hiring
         return "application_closed" if %w[withdrawn hired].include?(application.stage) || application.stage == "rejected" && @message.kind != "rejection"
         return DecisionCommunication.blocked_reason(@message) if @message.kind == "rejection"
         return OfferCommunication.blocked_reason(@message) if @message.kind == "offer"
+        return AssignmentCommunication.blocked_reason(@message) if @message.kind == "assignment"
         return DecisionNotifications.blocked_reason(@message) if @message.kind == "hold_follow_up"
         return FeedbackNotifications.blocked_reason(@message) if HiringMessage::FEEDBACK_KINDS.include?(@message.kind)
 

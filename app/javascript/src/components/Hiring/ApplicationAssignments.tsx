@@ -5,6 +5,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
+import CandidateMessages from "./CandidateMessages";
 import Picker from "./Picker";
 import Pager from "./Pager";
 import AssessmentWork, { downloadAssessmentFile } from "./AssessmentWork";
@@ -644,6 +645,17 @@ export default function ApplicationAssignments({
                     ))}
                   </ol>
                 </details>
+                <CandidateMessages
+                  companyId={companyId}
+                  path={`${path}/${record.id}/messages`}
+                  context={{
+                    kind: "assignment",
+                    number: record.id,
+                    version: record.lock_version,
+                  }}
+                  canCompose={record.status === "issued" && Boolean(record.url)}
+                  onDenied={onDenied}
+                />
               </div>
             </details>
           ))}

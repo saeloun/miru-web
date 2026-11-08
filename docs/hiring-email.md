@@ -1,6 +1,6 @@
 # Hiring email intake
 
-Active workspace owners and admins can manage hiring inboxes, retain email files, review applicants, record screening decisions, maintain an assignment library, issue assignments, and approve acknowledgements and private candidate forms. Candidates can submit disclosed work privately, and designated reviewers can record assessments. Interviews, offers and retention remain later milestones of the applicant-tracking plan.
+Active workspace owners and admins can manage hiring inboxes, review applicants, issue assignments, coordinate interviews and feedback, approve offers, link accepted hires to employee or consultant invitations, and review pipeline metrics. Candidates can submit private forms and assignments, and designated reviewers can record assessments. Candidate communications require the applicable saved wording and explicit approval or send confirmation. Forms and retention start disabled; enabling automation requires explicit approval. See the [acceptance matrix](qa/hiring-2463/acceptance-matrix-20261108.md) for verified workflows and remaining external-provider checks.
 
 ## Configure an inbox
 
@@ -50,7 +50,7 @@ Each decision retains its actor, previous and resulting stage, role/owner snapsh
 
 If another action changes the application while you edit, saving fails without losing your choices or reason. Use **Reload screening**, review the retained draft against the current application, then save separately. Browsing history pages does not rebase an unsaved decision. Older form-history responses cannot reset a newer displayed stage. A lost save response does not authorize an automatic duplicate decision: reload the retained history first.
 
-Assignment issuance/review and candidate information-request/rejection communications remain required work in the full ATS plan. The screening history in this increment is internal only.
+Screening history is internal. Assignment issuance and review, interview decisions, and candidate hold/rejection communications use separate actions and approval rules; saving a screening decision does not itself send a candidate message.
 
 ## Maintain the assignment library
 
@@ -60,7 +60,7 @@ Any later edit returns the task to draft. **Task revision history** retains the 
 
 Stale saves retain your draft. **Reload saved task** asks for explicit discard when you have unsaved changes. A failed read can be retried without leaving the editor. Browsing history does not adopt a newer write version for an unsaved edit. After a connection failure during creation, check the library before creating another draft.
 
-From an application, an active owner/admin can issue an approved task version with an explicit deadline and designated reviewer. Candidates receive a private link for files, repository links, setup instructions, their own-contribution statement and AI-use disclosure. The separate **Assignment reviews** queue exposes only the current reviewer's assigned work. Reviews record all six assessment dimensions and Pass, Fail or Clarification Required. Admins explicitly choose revision, cancellation, advancement or pending rejection. Issuance and these decisions do not send a candidate email in this increment.
+From an application, an active owner/admin can issue an approved task version with an explicit deadline and designated reviewer. The private candidate link accepts files, repository links, setup instructions, an own-contribution statement and AI-use disclosure. The separate **Assignment reviews** queue exposes only the current reviewer's assigned work. Reviews record all six assessment dimensions and Pass, Fail or Clarification Required. Admins explicitly choose revision, cancellation, advancement or pending rejection. Issuance and these decisions do not themselves email the candidate. Use the separate assignment-message preview and confirmation to queue the private link for the confirmed recipient; queued delivery is not proof of mail-server acceptance.
 
 ## Understand attempts and delivery reviews
 
@@ -82,6 +82,6 @@ Generic SMTP errors also remain unknown: an error while closing the connection c
 
 Recording a delivery review does not send an email or invent a mail-server acceptance timestamp. Operator reports are labelled separately from Miru's observed result, including a later conflicting result. A recorded review and its evidence are final and cannot be edited in this milestone. An operator-confirmed non-acceptance permits a separate retry request with fresh approval and recipient confirmation. SMTP cannot guarantee exactly-once delivery after an ambiguous failure: an incorrect external confirmation can cause a duplicate email.
 
-Source retention has no automatic expiry policy in this milestone. Review the complete applicant-tracking retention work before broad production use.
+Retention starts disabled. An active owner/admin must review and approve the saved retention settings before the recurring sweep can delete candidate material from eligible closed applications after the approved retention period. The deletion review identifies what will be removed, including cancellation of pending onboarding invitations; existing employment and legal records are preserved. Review the [pipeline and retention evidence](qa/hiring-2463/pipeline-retention-20261108.md) and verify the deployed worker, recurring dispatcher and private storage before enabling the policy.
 
 Newly uploaded email objects are removed if intake rolls back, including failures inside an enclosing admin transaction. Reused transport objects remain available to their existing receipts.

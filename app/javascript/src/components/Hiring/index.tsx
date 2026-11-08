@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
 import { Button } from "../ui/button";
@@ -17,7 +17,7 @@ import AssignmentLibrary from "./AssignmentLibrary";
 import AssignmentTemplateEditor from "./AssignmentTemplateEditor";
 import InterviewPanel from "./InterviewPanel";
 import Pipeline from "./Pipeline";
-import { failureMessage, read } from "./api";
+import { failureMessage, read, watchWorkspaceAccess } from "./api";
 import {
   receiptLabel,
   stageLabel,
@@ -302,6 +302,7 @@ function Applications({ companyId }: { companyId: number }) {
 }
 
 function Workspace({ companyId }: { companyId: number }) {
+  const [denial, setDenial] = useState("");
   const { applicationId, receiptId, templateId } = useParams();
   const location = useLocation();
   const newApplication = location.pathname.endsWith("/new");
@@ -313,6 +314,28 @@ function Workspace({ companyId }: { companyId: number }) {
   const pipeline = location.pathname.endsWith("/pipeline");
   const library =
     location.pathname.endsWith("/assignment-library") || !!templateId;
+
+  useLayoutEffect(
+    () => watchWorkspaceAccess(companyId, setDenial),
+    [companyId]
+  );
+
+  if (denial) {
+    return (
+      <div
+        role="alert"
+        tabIndex={-1}
+        ref={element => element?.focus()}
+        className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6"
+      >
+        <h1 className="text-2xl font-semibold">Hiring access unavailable</h1>
+        <p className="text-destructive">{denial}</p>
+        <Button asChild variant="outline" className="min-h-11">
+          <Link to="/dashboard">Back to dashboard</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div

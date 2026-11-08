@@ -31,7 +31,8 @@ class Api::V1::Hiring::BaseController < Api::V1::ApplicationController
   rescue_from ActiveStorage::FileNotFoundError do
     render json: { errors: "File unavailable." }, status: 404
   end
-  rescue_from HiringSubmission::StorageUnavailable, IOError, SystemCallError do
+  rescue_from HiringSubmission::StorageUnavailable, IOError, SystemCallError do |error|
+    Rails.logger.warn("[Hiring storage] unavailable error_class=#{error.class.name} request_id=#{request.request_id}")
     render json: { errors: "Private hiring storage is unavailable. Please try again." }, status: 503
   end
 

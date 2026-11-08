@@ -1,5 +1,7 @@
 # Deploying Miru on Render
 
+> Historical deployment template. As of the November 8, 2026 release review, the inspected Miru Render web and worker services are suspended. These instructions do not identify the current origin of `app.miru.so` or authorize reactivation or a DNS change. Identify the serving origin, deployed source/image and private configuration differences before following any deployment or cutover step; use the [production rules](../../ai/production.md).
+
 Miru 3.0 is designed to run on Render with:
 
 - one web service

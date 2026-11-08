@@ -304,7 +304,12 @@ function AssessmentPortal({ token }: { token: string }) {
           >
             <p className="text-sm">
               Expected effort: {assignment.details.expected_minutes} minutes.
-              Due {new Date(assignment.due_at).toLocaleString()}.
+              Due{" "}
+              <time dateTime={assignment.due_at}>
+                {new Date(assignment.due_at).toLocaleString()} (
+                {Intl.DateTimeFormat().resolvedOptions().timeZone})
+              </time>
+              .
             </p>
             {[
               ["Instructions", assignment.details.instructions],

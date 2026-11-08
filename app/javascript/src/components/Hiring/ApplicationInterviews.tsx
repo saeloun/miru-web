@@ -348,6 +348,7 @@ export default function ApplicationInterviews({
                   [
                     ["criteria", "Assessment criteria"],
                     ["preparation", "Candidate preparation"],
+                    ["hiring_notes", "Hiring notes for assigned interviewers"],
                   ] as const
                 ).map(([key, label]) => (
                   <div key={key} className="space-y-2">
@@ -356,7 +357,7 @@ export default function ApplicationInterviews({
                       id={`round-${key}`}
                       required={key === "criteria"}
                       maxLength={5000}
-                      value={draft.details[key]}
+                      value={draft.details[key] || ""}
                       onChange={event =>
                         setDraft({
                           ...draft,
@@ -367,6 +368,14 @@ export default function ApplicationInterviews({
                         })
                       }
                     />
+                    {key === "hiring_notes" && (
+                      <p className="text-sm text-muted-foreground">
+                        Shared with this round's assigned interviewers and
+                        excluded from candidate emails. General Admin notes stay
+                        private. Editing only these notes preserves existing
+                        bookings.
+                      </p>
+                    )}
                   </div>
                 ))}
                 <div className="space-y-2">

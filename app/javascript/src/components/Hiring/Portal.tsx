@@ -343,8 +343,12 @@ function Portal({ token }: { token: string }) {
           )}
           <p className="text-xs text-muted-foreground">
             Keep your original link private. It expires{" "}
-            {new Date(form.expires_at).toLocaleString()}. Your answers are sent
-            when you submit; uploads are saved immediately.
+            <time dateTime={form.expires_at}>
+              {new Date(form.expires_at).toLocaleString()} (
+              {Intl.DateTimeFormat().resolvedOptions().timeZone})
+            </time>
+            . Your answers are sent when you submit; uploads are saved
+            immediately.
           </p>
         </>
       )}

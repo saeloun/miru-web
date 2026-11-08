@@ -186,6 +186,16 @@ function Handover({ companyId, id }: { companyId: number; id: string }) {
                 </p>
               </div>
             )}
+            {data.interview.details.hiring_notes && (
+              <section aria-label="Scoped hiring notes">
+                <h4 className="font-medium">
+                  Hiring notes shared with this panel
+                </h4>
+                <p className="whitespace-pre-wrap break-words">
+                  {data.interview.details.hiring_notes}
+                </p>
+              </section>
+            )}
             <div>
               <h4 className="font-medium">Feedback questions</h4>
               <ul className="list-inside list-disc break-words">

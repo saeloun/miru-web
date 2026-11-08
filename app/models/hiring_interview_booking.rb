@@ -67,7 +67,7 @@ class HiringInterviewBooking < ApplicationRecord
       valid = valid_source? &&
         hours.is_a?(Integer) && hours.between?(1, 8760) && text?(details["booking_instructions"], 5000) &&
         text?(details["meeting_url"], 2048) && safe_meeting_url?(details["meeting_url"]) &&
-        round_details.keys.sort == HiringInterview::DETAIL_KEYS.sort &&
+        round_details.except("hiring_notes").keys.sort == HiringInterview::DETAIL_KEYS.sort &&
         round_details["duration_minutes"].is_a?(Integer) && round_details["duration_minutes"].between?(1, 1440) && panel_snapshot.present?
       errors.add(:base, "Use valid booking details and an explicit feedback deadline") unless valid
     end

@@ -170,7 +170,8 @@ module Hiring
       def update_round!(record, attributes)
         members = selected_panel(attributes["panel"])
         snapshots = members.map { |member, sensitive| panel_snapshot(member, sensitive) }
-        rebooking = record.details != detail_values(attributes) || record.panel_snapshot.pluck("panel_member_id").sort != snapshots.pluck("panel_member_id").sort
+        rebooking = record.details.except("hiring_notes") != detail_values(attributes).except("hiring_notes") ||
+          record.panel_snapshot.pluck("panel_member_id").sort != snapshots.pluck("panel_member_id").sort
         event = record.panel_snapshot.map { |member| member.slice("panel_member_id", "compensation_access") } ==
           snapshots.map { |member| member.slice("panel_member_id", "compensation_access") } ? "updated" : "reassigned"
         record.assign_attributes(details: detail_values(attributes), panel_snapshot: snapshots)

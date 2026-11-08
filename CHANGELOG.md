@@ -4,7 +4,7 @@
 
 ### Added
 
-- Private hiring intake and inbox review, approved acknowledgement previews, retained send attempts, explicit delivery reconciliation, configurable private candidate forms, encrypted screening history and a versioned assignment library
+- Private hiring intake, forms and assignment review; separately confirmed candidate communications with retained attempts and delivery reconciliation; interviews and feedback, approved offers and hire invitations, pipeline reporting, and explicitly approved retention. Forms and retention start disabled; local verification does not establish external-provider or production readiness
 - Consultant payroll can now be prepared, reviewed and approved in the app, with reimbursement claims reserved against the run and never prorated, spouse-split transfers, and Mercury approval requests with bank status tracking and INR credit reconciliation. Disabled by default; Mercury writes need a separate server switch and have not been exercised against a real Mercury account
 - Razorpay account connection: workspace owners and admins can connect or create a Razorpay account on Razorpay's hosted flow and collect INR invoice payments into it. Off unless `RAZORPAY_OAUTH_ENABLED` and `RAZORPAY_OAUTH_COLLECTIONS_ENABLED` are set; it does not activate Payroll or payouts
 - Editable organization profitability plans with saved baselines, monthly capacity/rate/compensation and overhead assumptions, cash/runway scenarios, original source warnings, and authorized expiring CSV exports

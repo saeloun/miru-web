@@ -30,6 +30,56 @@ export const verifyWorkspace = (
   if (data.company_id !== companyId) throw new Error(workspaceChanged);
 };
 
+export const watchWorkspaceAccess = (
+  companyId: number,
+  deny: (message: string) => void
+) => {
+  const requests = new WeakSet<object>();
+  const request = Api.interceptors.request.use(config => {
+    if (/^\/(?:api\/v1\/)?hiring(?:\/|$)/.test(config.url || "")) {
+      requests.add(config);
+    }
+
+    return config;
+  });
+
+  const response = Api.interceptors.response.use(
+    result => {
+      if (
+        requests.has(result.config) &&
+        result.data &&
+        typeof result.data === "object" &&
+        "company_id" in result.data
+      ) {
+        try {
+          verifyWorkspace(result.data, companyId);
+        } catch (error) {
+          deny(failureMessage(error));
+          throw error;
+        }
+      }
+
+      return result;
+    },
+    error => {
+      if (
+        requests.has(error.config) &&
+        (error.response?.status === 403 ||
+          error.response?.data?.workspace_changed === true)
+      ) {
+        deny(failureMessage(error));
+      }
+
+      return Promise.reject(error);
+    }
+  );
+
+  return () => {
+    Api.interceptors.request.eject(request);
+    Api.interceptors.response.eject(response);
+  };
+};
+
 export const read = async <T extends { company_id: number }>(
   path: string,
   companyId: number,

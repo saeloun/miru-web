@@ -31,6 +31,7 @@ export type RoundDetails = {
   criteria: string;
   preparation: string;
   feedback_questions: string[];
+  hiring_notes?: string;
 };
 export type RoundMember = {
   panel_member_id: number;

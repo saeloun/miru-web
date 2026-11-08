@@ -60,7 +60,8 @@ class HiringInterview < ApplicationRecord
           !value.match?(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/)
       end
       questions = details["feedback_questions"]
-      valid = details.keys.sort == DETAIL_KEYS.sort && text.call(details["title"], 200, true) &&
+      valid = details.except("hiring_notes").keys.sort == DETAIL_KEYS.sort &&
+        (!details.key?("hiring_notes") || text.call(details["hiring_notes"], 5000)) && text.call(details["title"], 200, true) &&
         text.call(details["kind"], 100, true) && text.call(details["criteria"], 5000, true) &&
         text.call(details["preparation"], 5000) && details["duration_minutes"].is_a?(Integer) &&
         details["duration_minutes"].between?(1, 1440) && questions.is_a?(Array) && questions.size.between?(1, 20) &&

@@ -200,12 +200,24 @@ class CreatePayrollMercuryPayments < ActiveRecord::Migration[8.1]
   end
 
   def down
-    drop_table :payroll_payment_events
-    drop_table :payroll_payment_instructions
-    drop_table :payroll_payment_groups
-    drop_table :payroll_mercury_recipient_links
-    drop_table :payroll_mercury_connections
-    drop_table :payroll_split_arrangements
-    drop_table :payroll_expense_reservations
+    tables = %w[payroll_payment_events payroll_payment_instructions payroll_payment_groups payroll_mercury_recipient_links
+      payroll_mercury_connections payroll_split_arrangements payroll_expense_reservations]
+    connection.transaction do
+      # Serialize the emptiness check with writers until rollback finishes.
+      safety_assured do
+        execute "LOCK TABLE #{tables.map { |table| connection.quote_table_name(table) }.join(', ')} IN ACCESS EXCLUSIVE MODE"
+      end
+      if tables.any? { |table| select_value("SELECT EXISTS (SELECT 1 FROM #{connection.quote_table_name(table)})") }
+        raise ActiveRecord::IrreversibleMigration, "Preserve recorded Mercury payroll history before rolling back."
+      end
+
+      drop_table :payroll_payment_events
+      drop_table :payroll_payment_instructions
+      drop_table :payroll_payment_groups
+      drop_table :payroll_mercury_recipient_links
+      drop_table :payroll_mercury_connections
+      drop_table :payroll_split_arrangements
+      drop_table :payroll_expense_reservations
+    end
   end
 end

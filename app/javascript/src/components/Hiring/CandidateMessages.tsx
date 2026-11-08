@@ -56,7 +56,13 @@ export default function CandidateMessages({
   companyId: number;
   path: string;
   context: {
-    kind: "booking" | "round" | "decision" | "offer" | "feedback";
+    kind:
+      | "booking"
+      | "round"
+      | "decision"
+      | "offer"
+      | "assignment"
+      | "feedback";
     number: number;
     version: number;
   };
@@ -72,6 +78,8 @@ export default function CandidateMessages({
       ? "rejection"
       : context.kind === "offer"
       ? "offer"
+      : context.kind === "assignment"
+      ? "assignment"
       : "interview_invitation"
   );
   const [mailbox, setMailbox] = useState<Choice | null>(null);
@@ -256,6 +264,8 @@ export default function CandidateMessages({
     ? [{ key: "rejection", label: "Rejection" }]
     : context.kind === "offer"
     ? [{ key: "offer", label: "Offer" }]
+    : context.kind === "assignment"
+    ? [{ key: "assignment", label: "Assignment" }]
     : interviewMessageKinds;
   const id = `${context.kind}-messages-${context.number}`;
 
@@ -309,10 +319,19 @@ export default function CandidateMessages({
               candidate response are tracked separately.
             </p>
           )}
+          {context.kind === "assignment" && (
+            <p className="text-sm text-muted-foreground">
+              The private link opens the frozen task until its deadline. Email
+              delivery and the candidate submission are tracked separately.
+            </p>
+          )}
           {!canCompose && (
             <p>
-              This offer is no longer awaiting a response. Review its message
-              history.
+              {context.kind === "offer"
+                ? "This offer is no longer awaiting a response. Review its message history."
+                : context.kind === "assignment"
+                ? "This assignment is no longer open for submission. Review its message history."
+                : "New messages are unavailable here. Review the message history."}
             </p>
           )}
           {(error || notice) && (
