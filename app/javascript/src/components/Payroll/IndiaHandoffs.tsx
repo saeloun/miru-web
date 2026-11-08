@@ -491,7 +491,8 @@ const IndiaHandoffsPanel = ({
   runId: string;
 }) => {
   const [data, setData] = useState<IndiaHandoffs | null>(null);
-  const [error, setError] = useState("");
+  const [loadError, setLoadError] = useState("");
+  const [actionError, setActionError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [refresh, setRefresh] = useState(0);
@@ -508,7 +509,7 @@ const IndiaHandoffsPanel = ({
           generation.current === currentGeneration
         ) {
           setData(response.data.india_handoffs);
-          setError("");
+          setLoadError("");
         }
       })
       .catch(reason => {
@@ -516,7 +517,7 @@ const IndiaHandoffsPanel = ({
           !controller.signal.aborted &&
           generation.current === currentGeneration
         ) {
-          setError(errorMessage(reason, issueLabel));
+          setLoadError(errorMessage(reason, issueLabel));
         }
       });
 
@@ -542,7 +543,7 @@ const IndiaHandoffsPanel = ({
   const perform = async (action: () => Promise<any>) => {
     generation.current += 1;
     setBusy(true);
-    setError("");
+    setActionError("");
     setNotice("");
     try {
       const response = await action();
@@ -551,7 +552,7 @@ const IndiaHandoffsPanel = ({
 
       return true;
     } catch (reason) {
-      setError(errorMessage(reason, issueLabel));
+      setActionError(errorMessage(reason, issueLabel));
       const status = (reason as any)?.response?.status;
       if (status === 403) setData(null);
 
@@ -582,9 +583,14 @@ const IndiaHandoffsPanel = ({
         </p>
       </CardHeader>
       <CardContent className="space-y-6" aria-busy={busy}>
-        {error && (
+        {loadError && (
           <p role="alert" className="text-sm text-destructive">
-            {error}
+            {loadError}
+          </p>
+        )}
+        {actionError && (
+          <p role="alert" className="text-sm text-destructive">
+            {actionError}
           </p>
         )}
         {notice && (
@@ -592,7 +598,7 @@ const IndiaHandoffsPanel = ({
             {notice}
           </p>
         )}
-        {!data && !error && (
+        {!data && !loadError && !actionError && (
           <p className="text-sm">Loading India accounts handoffs…</p>
         )}
         {data?.consultants.length === 0 && (

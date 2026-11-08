@@ -11,13 +11,15 @@ RSpec.describe "Mercury payroll migration rollback" do
 
   before(:context) do
     @original_version = ActiveRecord::Base.connection_pool.migration_context.current_version
+    DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata]
     ActiveRecord::Base.connection_pool.migration_context.migrate(VERSION)
     # Current payroll guards require India records even while Mercury DDL is tested historically.
     CreatePayrollIndiaHandoffs.new.up
+    @created_india_tables = true
   end
 
   after(:context) do
-    CreatePayrollIndiaHandoffs.new.down if ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
+    CreatePayrollIndiaHandoffs.new.down if @created_india_tables && ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
     ActiveRecord::Base.connection_pool.migration_context.migrate(@original_version)
   end
 

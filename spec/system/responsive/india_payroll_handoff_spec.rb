@@ -160,11 +160,13 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         expect(page).to have_unchecked_field("I verified the beneficiary and recipient mailbox.")
         expect(page).to have_field("Accounts recipient email", with: "")
         expect(page).to have_button("Send approved report to accounts", disabled: true)
+        expect(page).to have_css("[role='alert']", text: "Bank details changed; reload and verify the beneficiary again")
         screenshot("owner-bank-reconfirmation-desktop")
         fill_in "Accounts recipient email", with: mailbox
         check "I verified the beneficiary and recipient mailbox."
         click_button "Send approved report to accounts"
         expect(page).to have_text("Email queued")
+        expect(page).to have_no_css("[role='alert']")
       end
       expect(PayrollIndiaHandoff.sole.report.dig("bank_details", "bank_account_number")).to eq("999999998888")
     end
