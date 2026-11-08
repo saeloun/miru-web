@@ -30,6 +30,9 @@ RSpec.describe "Private hiring retention", type: :system, js: true do
     page.current_window.resize_to(width, 900)
     visit "/hiring/applications/#{application.id}"
     expect(page).to have_css("h2", text: candidate_name)
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
+    expect(page).to have_button("Refresh forms", disabled: false)
     click_button "Review hiring data deletion"
     expect(page).to have_button("Permanently delete hiring data", disabled: true)
     expect(page).to have_field(confirmation)

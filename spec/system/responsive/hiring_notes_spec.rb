@@ -31,6 +31,8 @@ RSpec.describe "Scoped hiring note handover", type: :system, js: true do
     page.driver.browser.on("Runtime.exceptionThrown") { |event| errors << event }
     sign_in admin
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     click_button "View interview rounds"
     click_button "Edit round 1"
     fill_in "Hiring notes for assigned interviewers", with: notes

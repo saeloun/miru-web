@@ -43,6 +43,8 @@ RSpec.describe "Interview scheduling", type: :system, js: true do
     sign_in admin
     page.current_window.resize_to(width, 900)
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     click_button "View interview rounds"
     click_button "Manage booking for round 1"
     expect(page).to have_css('section[aria-label="Interview bookings"]')

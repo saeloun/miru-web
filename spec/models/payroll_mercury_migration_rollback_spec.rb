@@ -2,6 +2,7 @@
 
 require "rails_helper"
 require Rails.root.join("db/migrate/20261103090000_create_payroll_mercury_payments")
+require Rails.root.join("db/migrate/20261108120000_create_payroll_india_handoffs")
 
 RSpec.describe "Mercury payroll migration rollback" do
   TABLES = %w[payroll_payment_events payroll_payment_instructions payroll_payment_groups payroll_mercury_recipient_links
@@ -10,10 +11,15 @@ RSpec.describe "Mercury payroll migration rollback" do
 
   before(:context) do
     @original_version = ActiveRecord::Base.connection_pool.migration_context.current_version
+    DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata]
     ActiveRecord::Base.connection_pool.migration_context.migrate(VERSION)
+    # Current payroll guards require India records even while Mercury DDL is tested historically.
+    CreatePayrollIndiaHandoffs.new.up
+    @created_india_tables = true
   end
 
   after(:context) do
+    CreatePayrollIndiaHandoffs.new.down if @created_india_tables && ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
     ActiveRecord::Base.connection_pool.migration_context.migrate(@original_version)
   end
 
@@ -139,6 +145,8 @@ RSpec.describe "Mercury payroll migration rollback" do
   end
 
   it "supports an empty rollback and reapplication at the migration's historical version" do
+    triggers = ActiveRecord::Base.connection.select_values("SELECT tgname FROM pg_trigger WHERE tgrelid = 'payroll_india_credits'::regclass AND NOT tgisinternal")
+    expect(triggers).to eq(["payroll_india_credits_immutable"])
     # schema.rb can deparse equivalent CHECK casts differently from the original migration.
     CreatePayrollMercuryPayments.new.down
     CreatePayrollMercuryPayments.new.up

@@ -15,6 +15,7 @@ import {
 } from "./api";
 import { exactAmount } from "./amount";
 import MercuryPaymentsPanel from "./MercuryPayments";
+import IndiaHandoffsPanel from "./IndiaHandoffs";
 import PreflightSummary from "./PreflightSummary";
 import {
   CreateRunForm,
@@ -627,6 +628,11 @@ const Review = () => {
             />
           )}
           <MercuryPaymentsPanel companyId={companyId} runId={run.id} />
+          <IndiaHandoffsPanel
+            key={`${companyId}:${run.id}:${run.status}:${run.revision?.digest}`}
+            companyId={companyId}
+            runId={run.id}
+          />
           {preflight && (
             <>
               <PreflightSummary

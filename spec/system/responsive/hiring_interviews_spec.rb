@@ -41,7 +41,11 @@ RSpec.describe "Interview panels and private handover", type: :system, js: true 
     sign_in admin
     page.current_window.resize_to(width, 900)
     visit path
-    click_button "View interview rounds" if path.start_with?("/hiring/applications/")
+    if path.start_with?("/hiring/applications/")
+      expect(page).to have_button("Reload screening", disabled: false)
+      expect(page).to have_button("Reload saved state", disabled: false)
+      click_button "View interview rounds"
+    end
   end
 
   def record_round(compensation: false)
@@ -122,6 +126,8 @@ RSpec.describe "Interview panels and private handover", type: :system, js: true 
     end
     sign_in admin
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     expect(page).to have_button("View interview rounds")
     expect(reads).to be_empty
     click_button "View interview rounds"

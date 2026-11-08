@@ -42,6 +42,9 @@ default: &default
         hiring_delivery_recovery:
           class: HiringDeliveryRecoveryJob
           schedule: '*/5 * * * *'
+        payroll_india_delivery_recovery:
+          class: PayrollIndiaRecoveryJob
+          schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob
           schedule: '2-59/5 * * * *'
@@ -125,6 +128,9 @@ production:
           schedule: '17 * * * *'
         hiring_delivery_recovery:
           class: HiringDeliveryRecoveryJob
+          schedule: '*/5 * * * *'
+        payroll_india_delivery_recovery:
+          class: PayrollIndiaRecoveryJob
           schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob

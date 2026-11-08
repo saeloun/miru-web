@@ -1025,6 +1025,12 @@ const MercuryPaymentsPanel = ({
   }
 
   const context: Context = { companyId, runId, data, apply, busy };
+  const consultants = data.consultants.filter(
+    consultant =>
+      !consultant.blockers.includes("funding_not_mercury") ||
+      consultant.legs.length > 0
+  );
+  if (data.consultants.length > 0 && consultants.length === 0) return null;
 
   return (
     <section className="space-y-4">
@@ -1035,8 +1041,8 @@ const MercuryPaymentsPanel = ({
         </p>
       )}
       <Setup {...context} />
-      {data.consultants.length ? (
-        data.consultants.map(consultant => (
+      {consultants.length ? (
+        consultants.map(consultant => (
           <Consultant
             consultant={consultant}
             context={context}

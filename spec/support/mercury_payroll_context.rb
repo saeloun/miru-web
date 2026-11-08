@@ -91,6 +91,10 @@ RSpec.shared_context "approved mercury consultant payroll" do
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: latest.payment_source, legal_entity_name: legal_name, change_reason: "Synthetic amount")
   end
 
+  def synthetic_india_bank_digest
+    Payroll::MercurySetup.digest(Payroll::IndiaReport.bank_details(employment.reload).sort.to_h)
+  end
+
   def approve_revision(payload: synthetic_payload, key: "synthetic-#{SecureRandom.hex(4)}", parent: nil)
     revision = workflow.revise!(actor: accounts, payload:, idempotency_key: key, expected_digest: parent)
     workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
