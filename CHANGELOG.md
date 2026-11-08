@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 3.0.7 - 2026-11-08
 
 ### Added
 
@@ -37,6 +37,7 @@
 
 ### Fixed
 
+- Manual India handoff refresh now updates the payroll revision, approval status and totals and resets the previous confirmation.
 - Purchase analytics and plan purchase alerts are no longer lost when queueing fails or a process dies after a subscription becomes paid. Run the migration and restart the Solid Queue dispatcher to load the new recovery job.
 
 ## 3.0.6 - 2026-10-23

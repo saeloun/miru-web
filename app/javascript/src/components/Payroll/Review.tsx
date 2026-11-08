@@ -632,6 +632,7 @@ const Review = () => {
             key={`${companyId}:${run.id}:${run.status}:${run.revision?.digest}`}
             companyId={companyId}
             runId={run.id}
+            onRefresh={() => setRefresh(value => value + 1)}
           />
           {preflight && (
             <>

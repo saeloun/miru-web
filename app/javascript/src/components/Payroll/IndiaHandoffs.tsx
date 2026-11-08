@@ -486,9 +486,11 @@ const QueueForm = ({
 const IndiaHandoffsPanel = ({
   companyId,
   runId,
+  onRefresh,
 }: {
   companyId: string;
   runId: string;
+  onRefresh: () => void;
 }) => {
   const [data, setData] = useState<IndiaHandoffs | null>(null);
   const [loadError, setLoadError] = useState("");
@@ -570,11 +572,7 @@ const IndiaHandoffsPanel = ({
       <CardHeader>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg font-semibold">India accounts payments</h2>
-          <Button
-            disabled={busy}
-            variant="outline"
-            onClick={() => setRefresh(value => value + 1)}
-          >
+          <Button disabled={busy} variant="outline" onClick={onRefresh}>
             Refresh India handoffs
           </Button>
         </div>
