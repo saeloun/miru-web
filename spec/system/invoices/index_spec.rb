@@ -112,6 +112,7 @@ RSpec.describe "Invoice listing", type: :system, js: true do
         expect(page).to have_css("[data-testid^='invoice-row-']", count: 5)
         find_field(placeholder: "Search invoices...").set("INV-OVER-004")
         expect(page).to have_field(placeholder: "Search invoices...", with: "INV-OVER-004")
+        find_field(placeholder: "Search invoices...").send_keys(:enter)
         expect(page).to have_css("[data-testid^='invoice-row-']", count: 1)
 
         within("table") do
