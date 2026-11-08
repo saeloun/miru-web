@@ -237,6 +237,14 @@ jobs:
           bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb
           spec/system/auth/two_factor_spec.rb spec/system/invoices spec/system/time_tracking/add_entry_spec.rb
 
+      - name: Upload browser failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: browser-failure-screenshots
+          path: tmp/capybara/*.png
+          if-no-files-found: warn
+
   security-audit:
     name: Security audit
     runs-on: ubuntu-latest

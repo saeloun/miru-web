@@ -37,7 +37,8 @@ RSpec.describe "Scoped hiring note handover", type: :system, js: true do
     expect(page).to have_text("General Admin notes stay private")
     capture("notes-editor-desktop")
     click_button "Save interview round"
-    expect(page).to have_no_field("Hiring notes for assigned interviewers")
+    expect(page).to have_text("Interview round saved")
+    expect(page).to have_no_field("Hiring notes for assigned interviewers", disabled: :all)
     expect(round.reload.details.fetch("hiring_notes")).to eq(notes)
     expect(issued.reload.status).to eq("scheduled")
 

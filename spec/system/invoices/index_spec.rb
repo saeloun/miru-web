@@ -109,10 +109,11 @@ RSpec.describe "Invoice listing", type: :system, js: true do
       with_forgery_protection do
         visit "/invoices"
 
-        find_field(placeholder: "Search invoices...").send_keys(
-          "INV-OVER-004",
-          :enter
-        )
+        expect(page).to have_css("[data-testid^='invoice-row-']", count: 5, wait: 10)
+        find_field(placeholder: "Search invoices...").set("INV-OVER-004")
+        expect(page).to have_field(placeholder: "Search invoices...", with: "INV-OVER-004")
+        find_field(placeholder: "Search invoices...").send_keys(:enter)
+        expect(page).to have_css("[data-testid^='invoice-row-']", count: 1)
 
         within("table") do
           expect(page).to have_content("INV-OVER-004", wait: 10)
