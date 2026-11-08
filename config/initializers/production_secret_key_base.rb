@@ -9,8 +9,8 @@ if Rails.env.production? && ENV["SECRET_KEY_BASE_DUMMY"] != "1"
     raise "SECRET_KEY_BASE must be set to a stable production secret. Changing it invalidates all Rails sessions."
   end
 
-  provider_credentials_secret = ENV["PROVIDER_CREDENTIALS_ENCRYPTION_SECRET"].to_s
-  if provider_credentials_secret.match?(/\A(?:dummy|DUMMY|changeme|change-me|placeholder)\z/)
+  provider_credentials_secret = ENV["PROVIDER_CREDENTIALS_ENCRYPTION_SECRET"].to_s.strip
+  if provider_credentials_secret.match?(/\A(?:dummy|changeme|change-me|placeholder)\z/i)
     raise "PROVIDER_CREDENTIALS_ENCRYPTION_SECRET must not be a placeholder. Preserve the existing credential encryption secret."
   end
 end

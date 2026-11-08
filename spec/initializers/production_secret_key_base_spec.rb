@@ -16,7 +16,7 @@ RSpec.describe "Production credential key validation" do
   end
 
   it "rejects known placeholder provider secrets with a constant error" do
-    %w[dummy DUMMY changeme change-me placeholder].each do |value|
+    (%w[dummy DUMMY changeme change-me placeholder Dummy CHANGEME CHANGE-ME PLACEHOLDER] + [" changeme ", "\tDUMMY\n"]).each do |value|
       allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(value)
 
       expect { load_initializer }.to raise_error(RuntimeError,
