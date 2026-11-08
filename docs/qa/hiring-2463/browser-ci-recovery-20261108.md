@@ -9,7 +9,7 @@ Feature candidate `680727ffc` was merged into `develop` through #2493 at `18244d
 - Invoice search: the isolated original case and whole file already passed locally, so no production UI defect is claimed. The test now proves all five initial rows loaded, sets and checks the actual input, retains the original Enter interaction, and waits for exactly one filtered row. A separate real-browser probe confirms no enclosing form, unchanged input and the correct results after Enter. All excluded-invoice and matching-count assertions remain.
 - Browser failure screenshots were not uploaded by the old job: the downloaded `test-results` artifact contained only backend XML/runtime files. The browser job now uploads its own PNGs on failure using the existing pinned artifact action. No logs, environment values or production data were added to this artifact.
 
-Focused Brave checks pass **nine hiring examples** and **sixteen invoice examples**. Controlled diagnostics demonstrate the pending-save and layout conditions; the original isolated examples also passed, so no spontaneous local RED reproduction is claimed. Rubocop and workflow YAML parsing pass. No sleeps, increased timeouts, disabled checks or removed assertions were added.
+Focused Brave checks pass **nine hiring examples** and **sixteen invoice examples**. Controlled diagnostics demonstrate the pending-save and layout conditions; the original isolated examples also passed, so no spontaneous local RED reproduction is claimed. Rubocop and workflow YAML parsing pass. The initial five-row check carries forward the original positive assertion's ten-second loading allowance, as requested by the small follow-up's actual CodeRabbit review. Existing timeouts and assertions are preserved.
 
 The exact complete CI browser command passed **362 examples, zero failures**, in 12 minutes 43 seconds at `a4339a50c`:
 
@@ -21,6 +21,8 @@ bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb \
 
 The subsequent one-line restoration of Enter passes a real-browser probe and all sixteen invoice examples; a new combined/remote run is not inferred from that focused result. Logs: `/tmp/miru-2493-full-ci-browser-20261108.log`, `/tmp/miru-hiring-ci-recovery-green-20261108.log`, `/tmp/miru-invoice-enter-probe-20261108-abdd.log` and `/tmp/miru-invoice-enter-file-green-20261108-abdd.log`. The changed files are bound by [the source manifest](browser-ci-source-SHA256SUMS-20261108.txt).
 
-Fresh native engineering/design/devex review metadata is recorded separately for the final commit. CodeRabbit's success status actually means **review skipped: 631 files exceed its 150-file limit**; neither its status nor its truncated comment supplies review approval. No reply or dismissal was posted. The original committed review reports remain historical checkpoints.
+The CodeRabbit loading-allowance correction also passes all sixteen invoice examples and Rubocop: `/tmp/miru-2494-coderabbit-invoice-green-20261108.log`.
+
+Fresh native engineering/design/devex review metadata is recorded separately for the final commit. The feature PR's CodeRabbit success status actually meant **review skipped: 631 files exceed its 150-file limit**. The six-file follow-up received a real CodeRabbit review; its initial-loading allowance finding was fixed. No reply or dismissal was posted. The original committed review reports remain historical checkpoints.
 
 Production origin, configuration parity, provider accounts/transfers, monitoring, backup recovery and compliance remain unverified. No production action was taken.
