@@ -372,7 +372,7 @@ module Payroll
           raise ConsultantReview::InvalidInput, "Choose only one treatment for the remaining source gap"
         end
         unless parts.pluck("kind").uniq.size == parts.size
-          raise ConsultantReview::InvalidInput, "Distinct approved leave allocations must total exactly the source gap"
+          raise ConsultantReview::InvalidInput, "Use each leave treatment only once in the breakdown"
         end
         parts.sort_by { |part| DECISIONS.index(part.fetch("kind")) }
       end
