@@ -277,6 +277,7 @@ export interface MercuryPayments {
 }
 
 export interface IndiaReport {
+  bank_version: string;
   consultant_name: string;
   period: string;
   legal_entity: string;

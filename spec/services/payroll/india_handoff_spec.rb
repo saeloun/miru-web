@@ -27,7 +27,7 @@ RSpec.describe Payroll::IndiaHandoff do
 
   def queue_handoff(revision = approve_revision)
     service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
-      accounts_email: mailbox, bank_confirmed: true)
+      accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: synthetic_india_bank_digest)
   end
 
   def delivered(handoff)
@@ -44,16 +44,53 @@ RSpec.describe Payroll::IndiaHandoff do
     expect { queue_handoff(revision) }.to raise_error(Payroll::MercuryPayment::Blocked) { |error| expect(error.codes).to include("run_not_approved") }
     workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
     workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
-    expect { service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, accounts_email: mailbox, bank_confirmed: false) }
+    expect { service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, accounts_email: mailbox, bank_confirmed: false,
+      expected_bank_digest: synthetic_india_bank_digest) }
       .to raise_error(Payroll::MercuryPayment::Blocked)
-    expect { service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, accounts_email: "a@example.test,b@example.test", bank_confirmed: true) }
+    expect { service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest, accounts_email: "a@example.test,b@example.test", bank_confirmed: true,
+      expected_bank_digest: synthetic_india_bank_digest) }
       .to raise_error(Payroll::MercuryPayment::Blocked)
+  end
+
+  it "requires the bank version the owner reviewed before creating a handoff" do
+    revision = approve_revision
+    expect do
+      service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
+        accounts_email: mailbox, bank_confirmed: true)
+    end.to raise_error(Payroll::Workflow::Conflict, /Bank details changed/)
+    expect(PayrollIndiaHandoff.where(payroll_run: run)).to be_empty
+  end
+
+  it "rejects a bank change after preview until the owner reviews the fresh beneficiary version" do
+    revision = approve_revision
+    bank_version = service.preview(employment_id: employment.id).fetch(:report).fetch("bank_digest")
+    changed_details = bank_details.merge("bank_account_number" => "999999999999")
+    employment.employee_record.update!(private_details: changed_details)
+    expect do
+      service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
+        accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: bank_version)
+    end.to raise_error(Payroll::Workflow::Conflict, "Bank details changed; reload and verify the beneficiary again")
+    expect(PayrollIndiaHandoff.where(payroll_run: run)).to be_empty
+    expect(PayrollIndiaDelivery.joins(:payroll_india_handoff).where(payroll_india_handoffs: { payroll_run_id: run.id })).to be_empty
+
+    fresh_version = service.preview(employment_id: employment.id).fetch(:report).fetch("bank_digest")
+    expect(fresh_version).not_to eq(bank_version)
+    handoff = service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
+      accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: fresh_version)
+    expect(handoff.report.fetch("bank_details")).to eq(changed_details.slice(*Payroll::IndiaReport::BANK_FIELDS))
+    expect(handoff.payroll_india_deliveries.sole.state).to eq("queued")
+    expect do
+      service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
+        accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: bank_version)
+    end.to raise_error(Payroll::Workflow::Conflict, /Bank details changed/)
+    expect(handoff.payroll_india_deliveries.count).to eq(1)
   end
 
   it "rejects structured, nonpositive and malformed record IDs at the service boundary" do
     revision = approve_revision
     [[], {}, true, false, nil, "-1", 0, "1.0", "1e3"].each do |id|
-      expect { service.create!(actor: owner, employment_id: id, expected_digest: revision.digest, accounts_email: mailbox, bank_confirmed: true) }
+      expect { service.create!(actor: owner, employment_id: id, expected_digest: revision.digest, accounts_email: mailbox, bank_confirmed: true,
+        expected_bank_digest: synthetic_india_bank_digest) }
         .to raise_error(Payroll::MercuryPayment::Blocked)
       expect { service.void!(actor: owner, handoff_id: id) }.to raise_error(Payroll::MercuryPayment::Blocked)
     end
@@ -73,7 +110,7 @@ RSpec.describe Payroll::IndiaHandoff do
     expect(queue_handoff(run.current_revision).id).to eq(handoff.id)
     expect(handoff.payroll_india_deliveries.count).to eq(1)
     expect { service.create!(actor: owner, employment_id: employment.id, expected_digest: run.current_revision.digest,
-      accounts_email: "different@example.test", bank_confirmed: true) }.to raise_error(Payroll::Workflow::Conflict)
+      accounts_email: "different@example.test", bank_confirmed: true, expected_bank_digest: synthetic_india_bank_digest) }.to raise_error(Payroll::Workflow::Conflict)
   end
 
   it "rechecks bank, source and creator authorization before dispatch" do

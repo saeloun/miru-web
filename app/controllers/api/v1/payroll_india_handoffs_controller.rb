@@ -11,7 +11,7 @@ class Api::V1::PayrollIndiaHandoffsController < Api::V1::PayrollBaseController
   def create
     authorize @payroll_run, :manage_india_handoffs?
     workflow.create!(actor: current_user, employment_id: params[:employment_id], expected_digest: params[:expected_digest],
-      accounts_email: params[:accounts_email], bank_confirmed: params[:bank_confirmed])
+      accounts_email: params[:accounts_email], bank_confirmed: params[:bank_confirmed], expected_bank_digest: params[:expected_bank_digest])
     render_review(201)
   end
 

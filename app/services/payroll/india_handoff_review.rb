@@ -41,7 +41,7 @@ module Payroll
 
       def report_detail(report)
         bank = report.fetch("bank_details")
-        { consultant_name: report["consultant_name"], period: report["period"], legal_entity: report["legal_entity"],
+        { consultant_name: report["consultant_name"], period: report["period"], legal_entity: report["legal_entity"], bank_version: report["bank_digest"],
           recorded_hours: report["recorded_hours"], working_days: report["working_days"], monthly_fee: report["monthly_fee"],
           confirmed_unpaid_hours: report["confirmed_unpaid_hours"], leave_entries: report["leave_entries"],
           reimbursements: report["reimbursements"], amounts: report.dig("line", "amounts")&.transform_values(&:to_s),

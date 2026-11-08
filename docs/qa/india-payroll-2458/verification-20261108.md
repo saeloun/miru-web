@@ -12,7 +12,7 @@ The report includes hours/days, fees, adjustments/withholding, itemized claims, 
 
 - Domain/payroll regression checkpoint: 186 examples, zero failures. After small service extraction and session-key-independent reference hashing, domain + API: 29 examples, zero failures. These overlap; do not add the counts.
 - Delivery/mail/privacy + existing hiring transport regressions: 57 examples, zero failures. Includes actual Solid Queue persisted ID-only job/claim/perform and real local SMTP, duplicate/concurrent workers, no SMTP inside a transaction, and SMTP QUIT failure after DATA acceptance held uncertain.
-- Final review fixes: 48 domain/API/delivery/mail examples, zero failures. Native Brave: five examples, zero failures, including the unchanged Mercury return regression. Real owner send, assigned-accounts partial/full credit, uncertain-delivery reconciliation/retry, actionable bank readiness, receipt settlement, no console errors, and actual rendered email at 1400/390px. Six regenerated screenshots below contain synthetic data only.
+- Final review fixes and bank-confirmation regression: 51 domain/API/delivery/mail examples, zero failures (43 domain/delivery/mail plus eight API examples). Native Brave: six examples, zero failures, including the unchanged Mercury return regression. Real owner send, assigned-accounts partial/full credit, uncertain-delivery reconciliation/retry, actionable bank/date validation, stale-bank reconfirmation, receipt settlement, no console errors, and actual rendered email at 1400/390px. Seven regenerated screenshots below contain synthetic data only.
 - Required `rtk mise exec -- timeout 30 bin/vite build` and test-mode asset build passed. Project TypeScript still reports its existing 329 errors; no new Payroll error was reported. Compare normalized paths against the existing baseline before calling the whole type check clean.
 - Whole-project Reek passed. Focused Ruby lint passed. Brakeman has the same two weak warnings as the unchanged develop tree (`pg_searchable.rb` and `signature_request_reviews_controller.rb`), no new warning/error.
 - Schema dump/load preserves financial-history triggers. Direct SQL mutation, real concurrent credit/revision/compensation and reference replay are exercised.
@@ -27,6 +27,8 @@ Kimi completed the read-only design/source map (`f6407264-8dfa-4262-90dc-cdde450
 Claude also completed a bounded actual-source critique (session `7ec06305-cc55-46a4-9e7d-bf016552af42`, four supplied files, no runtime access). Its framework-default drift concern was addressed with explicit domain-separated HMAC-SHA256 and a pre-send key-configuration check; Unicode reference formatting now normalizes with NFKC. Its proposed cap would discard actual overpayment evidence, contrary to the approved design and visible overpayment display. Its reservation, missing-key and JSON-type concerns were checked against the complete Workflow/Snapshot/report/expense source and existing executable cases; omitted context explains those claims. Generic DB/programmer failures remain failures. The immutable-ciphertext maintenance limit below is real and documented. An independent native engineering reviewer checked all eight dispositions. The broader committed Kimi review timed out after 180 seconds; it is not a clean source review.
 
 Native design/DX discovery reviews found actionable India blocker text, history touch size, mobile email item readability, safe render-failure correlation and reproducible commands. These are corrected and get fresh source/browser checks; discovery findings are preserved rather than rewritten as clean history.
+
+The final native engineering pass also caught bank details changing between preview and owner confirmation. Masked preview `bank_version` is now required as POST `expected_bank_digest`; stale/missing versions conflict before persistence or idempotent return. A changed preview version clears the confirmation/mailbox. Domain and API regressions prove bank A cannot silently authorize bank B; the browser must show B and require a fresh owner confirmation. Validation errors retain their actionable instructions, while conflicts/unknown request outcomes refresh durable state and permission revocation clears the displayed handoff.
 
 ## Reproducing the checks
 
@@ -48,6 +50,7 @@ Preserve the configured Active Record deterministic key used by the versioned ba
 ## Screenshots
 
 - [Owner report confirmation](screenshots/owner-ready-desktop.png)
+- [Changed bank requires fresh confirmation](screenshots/owner-bank-reconfirmation-desktop.png)
 - [Delivered, awaiting manual payment](screenshots/owner-awaiting-payment-desktop.png)
 - [Partial credit on mobile](screenshots/accounts-partial-mobile.png)
 - [Fully credited on mobile](screenshots/accounts-credited-mobile.png)

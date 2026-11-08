@@ -27,7 +27,7 @@ RSpec.describe Payroll::IndiaDelivery do
   let(:revision) { approve_revision }
   let(:handoff) do
     Payroll::IndiaHandoff.new(run).create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
-      accounts_email: "accounts@example.test", bank_confirmed: true)
+      accounts_email: "accounts@example.test", bank_confirmed: true, expected_bank_digest: synthetic_india_bank_digest)
   end
   let(:attempt) { handoff.payroll_india_deliveries.sole }
 

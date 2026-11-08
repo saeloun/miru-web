@@ -21,7 +21,7 @@ Design: [India payroll handoff](../specs/2026-11-08-india-payroll-handoff-design
 
 ## Shared interfaces
 
-`Payroll::IndiaHandoff.new(run)` provides `create!(actor:, employment_id:, expected_digest:, accounts_email:, bank_confirmed:)`, `retry!(actor:, handoff_id:)`, `void!(actor:, handoff_id:)`, `reconcile_delivery!(actor:, handoff_id:, outcome:, evidence_reference:, worker_stopped:)`, `record_credit!(actor:, handoff_id:, amount:, credited_on:, reference:)`. All return the handoff. Failures reuse Workflow::Conflict/NotAuthorized and MercuryPayment::Blocked safe codes.
+`Payroll::IndiaHandoff.new(run)` provides `create!(actor:, employment_id:, expected_digest:, accounts_email:, bank_confirmed:, expected_bank_digest:)`, `retry!(actor:, handoff_id:)`, `void!(actor:, handoff_id:)`, `reconcile_delivery!(actor:, handoff_id:, outcome:, evidence_reference:, worker_stopped:)`, `record_credit!(actor:, handoff_id:, amount:, credited_on:, reference:)`. All return the handoff. Failures reuse Workflow::Conflict/NotAuthorized and MercuryPayment::Blocked safe codes. The masked preview exposes the keyed fingerprint as `bank_version`; POST binds it as `expected_bank_digest`. Missing/stale versions conflict before any handoff write, and a changed preview version resets the owner's confirmation and mailbox fields.
 
 `dispatch_blocker(handoff)` returns nil or a safe code using freshly checked current approvals/line/terms/bank/creator permissions. Caller holds run lock before handoff/delivery lock, following that order everywhere. It performs no SMTP or state mutation.
 

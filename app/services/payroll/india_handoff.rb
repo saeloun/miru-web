@@ -33,14 +33,14 @@ module Payroll
       { report: codes.empty? ? IndiaReport.new(@run, employment:, line:, terms:).call : nil, blockers: codes }
     end
 
-    def create!(actor:, employment_id:, expected_digest:, accounts_email:, bank_confirmed:)
+    def create!(actor:, employment_id:, expected_digest:, accounts_email:, bank_confirmed:, expected_bank_digest: nil)
       Entitlement.require!(@run.company_id)
       @run.with_lock do
         authorize!(actor, "final")
         conflict!("Revision changed; reload before sending") unless @run.current_revision&.digest == expected_digest
         blocked!("bank_confirmation_required") unless bank_confirmed == true
         blocked!("accounts_email_invalid") unless valid_mailbox?(accounts_email)
-        report = queue_report!(employment_id, accounts_email)
+        report = queue_report!(employment_id, accounts_email, expected_bank_digest)
         existing = handoffs.active.find_by(employment_id:)
         if existing
           conflict!("An active handoff already exists with a different report") unless existing.report == report
@@ -180,10 +180,12 @@ module Payroll
         codes
       end
 
-      def queue_report!(employment_id, accounts_email)
+      def queue_report!(employment_id, accounts_email, expected_bank_digest)
         prepared = preview(employment_id:)
         blocked!(prepared[:blockers]) if prepared[:blockers].any?
-        prepared.fetch(:report).merge("accounts_email" => accounts_email.strip)
+        report = prepared.fetch(:report)
+        conflict!("Bank details changed; reload and verify the beneficiary again") unless expected_bank_digest == report["bank_digest"]
+        report.merge("accounts_email" => accounts_email.strip)
       end
 
       def valid_mailbox?(value)

@@ -25,6 +25,38 @@ const statusLabel = (state: string) =>
 
 const issueLabel = (code: string) =>
   ({
+    credit_amount_invalid:
+      "Enter a positive INR amount with at most two decimal places.",
+    credit_date_invalid:
+      "Enter a credit date within or after this payroll month and not in the future.",
+    credit_reference_invalid:
+      "Enter a bank transaction reference of 1–200 characters without control characters.",
+    accounts_email_invalid:
+      "Enter one valid accounts email address, without spaces or a list of recipients.",
+    bank_confirmation_required:
+      "Verify the displayed beneficiary and accounts mailbox, then confirm before sending.",
+    employment_id_invalid:
+      "Reload the payroll report and select a consultant from this workspace.",
+    handoff_id_invalid:
+      "Reload the payroll report and select an existing accounts handoff.",
+    india_handoff_input_invalid:
+      "Reload the payroll report and complete the handoff form again.",
+    handoff_voided:
+      "This unsent handoff was voided. Reload the current report before preparing another.",
+    handoff_not_voidable:
+      "Only confirmed-unsent handoffs without credits can be voided. Review any uncertain delivery first.",
+    delivery_not_retryable:
+      "Only a confirmed-unsent email can be retried. Resolve any uncertain outcome with accounts first.",
+    delivery_not_uncertain:
+      "This delivery no longer needs outcome review. Refresh the handoff history.",
+    delivery_not_confirmed:
+      "Verify and record the email delivery outcome before recording credit for this handoff.",
+    worker_stop_confirmation_required:
+      "Confirm that the previous delivery worker has stopped before resolving its outcome.",
+    delivery_evidence_required:
+      "Enter a provider or mailbox evidence reference of 1–200 characters without line breaks.",
+    delivery_outcome_invalid:
+      "Choose the verified delivery outcome from the list.",
     payroll_reference_key_missing:
       "An administrator must configure the stable payroll reference key before any report is sent.",
     run_not_approved:
@@ -397,6 +429,7 @@ const QueueForm = ({
                         expected_digest: data.revision_digest,
                         accounts_email: email,
                         bank_confirmed: confirmed,
+                        expected_bank_digest: consultant.preview?.bank_version,
                       }
                     )
                   )
@@ -519,7 +552,10 @@ const IndiaHandoffsPanel = ({
       return true;
     } catch (reason) {
       setError(errorMessage(reason, issueLabel));
-      setRefresh(value => value + 1);
+      const status = (reason as any)?.response?.status;
+      if (status === 403) setData(null);
+
+      if (status !== 403 && status !== 422) setRefresh(value => value + 1);
 
       return false;
     } finally {
@@ -566,7 +602,9 @@ const IndiaHandoffsPanel = ({
         )}
         {data?.consultants.map(consultant => (
           <QueueForm
-            key={consultant.employment_id}
+            key={`${consultant.employment_id}:${
+              consultant.preview?.bank_version || "unavailable"
+            }`}
             consultant={consultant}
             data={data}
             companyId={companyId}

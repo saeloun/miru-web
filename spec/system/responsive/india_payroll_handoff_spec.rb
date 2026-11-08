@@ -70,6 +70,11 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         expect(page).to have_text("Sent to Accounts — Awaiting Payment", wait: 15)
         expect(page).to have_no_button("Send approved report to accounts")
         fill_in "Actual INR credit", with: "1000.00"
+        fill_in "Credit date", with: "2026-12-06"
+        fill_in "Bank transaction reference", with: "SYNTHETIC-INR-PART-1"
+        click_button "Record confirmed credit"
+        expect(page).to have_css("[role='alert']", text: "Enter a credit date within or after this payroll month and not in the future.")
+        expect(handoff.payroll_india_credits.count).to eq(0)
         fill_in "Credit date", with: "2026-12-05"
         fill_in "Bank transaction reference", with: "SYNTHETIC-INR-PART-1"
         click_button "Record confirmed credit"
@@ -113,7 +118,7 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
 
   it "lets accounts resolve an unknown email before the owner retries just the unsent attempt" do
     handoff = Payroll::IndiaHandoff.new(run).create!(actor: owner, employment_id: employment.id,
-      expected_digest: @revision.digest, accounts_email: mailbox, bank_confirmed: true)
+      expected_digest: @revision.digest, accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: synthetic_india_bank_digest)
     handoff.payroll_india_deliveries.sole.update!(state: "uncertain", started_at: 20.minutes.ago)
     sign_in accounts
     with_forgery_protection do
@@ -140,9 +145,34 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
     end
   end
 
+  it "requires a new owner confirmation when bank details change after the displayed preview" do
+    sign_in owner
+    with_forgery_protection do
+      visit "/payroll/#{run.id}"
+      within("[aria-label='India accounts payments']") do
+        expect(page).to have_text("••••9012", wait: 15)
+        fill_in "Accounts recipient email", with: mailbox
+        check "I verified the beneficiary and recipient mailbox."
+        employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999998888"))
+        click_button "Send approved report to accounts"
+        expect(page).to have_text("••••8888")
+        expect(PayrollIndiaHandoff.count).to eq(0)
+        expect(page).to have_unchecked_field("I verified the beneficiary and recipient mailbox.")
+        expect(page).to have_field("Accounts recipient email", with: "")
+        expect(page).to have_button("Send approved report to accounts", disabled: true)
+        screenshot("owner-bank-reconfirmation-desktop")
+        fill_in "Accounts recipient email", with: mailbox
+        check "I verified the beneficiary and recipient mailbox."
+        click_button "Send approved report to accounts"
+        expect(page).to have_text("Email queued")
+      end
+      expect(PayrollIndiaHandoff.sole.report.dig("bank_details", "bank_account_number")).to eq("999999998888")
+    end
+  end
+
   it "renders the actual confidential email clearly at desktop and mobile widths" do
     handoff = Payroll::IndiaHandoff.new(run).create!(actor: owner, employment_id: employment.id,
-      expected_digest: @revision.digest, accounts_email: mailbox, bank_confirmed: true)
+      expected_digest: @revision.digest, accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: synthetic_india_bank_digest)
     html = PayrollIndiaMailer.report(handoff.payroll_india_deliveries.sole.id).message.html_part.body.decoded
     [1400, 390].each do |width|
       page.driver.resize(width, 1000)

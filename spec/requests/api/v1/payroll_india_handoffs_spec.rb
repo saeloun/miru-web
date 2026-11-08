@@ -16,9 +16,9 @@ RSpec.describe "India payroll accounts handoff API", type: :request do
   let(:path) { "/api/v1/payroll_runs/#{run.id}/india_handoffs" }
   let(:mailbox) { "accounts@example.test" }
 
-  def queue_handoff
+  def queue_handoff(expected_bank_digest: synthetic_india_bank_digest)
     post path, params: { company_id: company.id, employment_id: employment.id, expected_digest: revision.digest,
-                        accounts_email: mailbox, bank_confirmed: true }, as: :json
+                        accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: }, as: :json
   end
 
   def handoff_action(id, action, attributes = {})
@@ -46,6 +46,25 @@ RSpec.describe "India payroll accounts handoff API", type: :request do
     expect(handoff.payroll_india_deliveries.count).to eq(1)
     expect(response.body).not_to include(bank_details.fetch("bank_account_number"))
     expect(json_response.dig("india_handoffs", "consultants", 0, "handoffs", 0, "accounts_email")).to eq(mailbox)
+  end
+
+  it "binds bank confirmation to the masked preview instead of accepting an unseen changed profile" do
+    sign_in owner
+    get path, as: :json
+    shown_version = json_response.dig("india_handoffs", "consultants", 0, "preview", "bank_version")
+    expect(shown_version).to match(/\A[0-9a-f]{64}\z/)
+    employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999998888"))
+    queue_handoff(expected_bank_digest: shown_version)
+    expect(response).to have_http_status(:conflict)
+    expect(PayrollIndiaHandoff.count).to eq(0)
+    queue_handoff(expected_bank_digest: nil)
+    expect(response).to have_http_status(:conflict)
+    get path, as: :json
+    refreshed = json_response.dig("india_handoffs", "consultants", 0, "preview", "bank_version")
+    expect(refreshed).not_to eq(shown_version)
+    queue_handoff(expected_bank_digest: refreshed)
+    expect(response).to have_http_status(:created)
+    expect(PayrollIndiaHandoff.sole.report.dig("bank_details", "bank_account_number")).to eq("999999998888")
   end
 
   it "requires the explicitly bound current workspace on every write" do
