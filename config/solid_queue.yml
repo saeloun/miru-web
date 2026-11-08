@@ -51,6 +51,9 @@ default: &default
         hiring_offer_expiry:
           class: HiringOfferExpiryJob
           schedule: '4-59/5 * * * *'
+        hiring_retention:
+          class: HiringRetentionJob
+          schedule: '37 3 * * *'
         subscription_purchase_delivery_recovery:
           class: SubscriptionPurchaseDeliveryRecoveryJob
           schedule: '*/10 * * * *'
@@ -132,6 +135,9 @@ production:
         hiring_offer_expiry:
           class: HiringOfferExpiryJob
           schedule: '4-59/5 * * * *'
+        hiring_retention:
+          class: HiringRetentionJob
+          schedule: '37 3 * * *'
         subscription_purchase_delivery_recovery:
           class: SubscriptionPurchaseDeliveryRecoveryJob
           schedule: '*/10 * * * *'

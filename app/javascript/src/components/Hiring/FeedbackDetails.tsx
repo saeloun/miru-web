@@ -1,5 +1,6 @@
 import React from "react";
 import InternalNoticeHistory from "./InternalNoticeHistory";
+import CandidateMessages from "./CandidateMessages";
 import { Badge } from "../ui/badge";
 import { stageLabel } from "./types";
 import { bookingTimeLabel } from "./bookingTypes";
@@ -11,8 +12,14 @@ import {
 
 export default function FeedbackDetails({
   record,
+  recovery,
 }: {
   record: FeedbackRecord;
+  recovery?: {
+    companyId: number;
+    path: string;
+    onDenied: (failure: unknown) => void;
+  };
 }) {
   const details = record.details;
 
@@ -92,10 +99,25 @@ export default function FeedbackDetails({
           </dl>
         </>
       )}
-      <InternalNoticeHistory
-        title="Internal feedback delivery history"
-        notifications={record.notifications}
-      />
+      {recovery && record.notifications ? (
+        <section aria-label="Internal feedback delivery history">
+          <CandidateMessages
+            companyId={recovery.companyId}
+            path={recovery.path}
+            context={{
+              kind: "feedback",
+              number: record.id,
+              version: record.lock_version,
+            }}
+            onDenied={recovery.onDenied}
+          />
+        </section>
+      ) : (
+        <InternalNoticeHistory
+          title="Internal feedback delivery history"
+          notifications={record.notifications}
+        />
+      )}
     </article>
   );
 }

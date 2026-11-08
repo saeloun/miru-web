@@ -114,14 +114,16 @@ The explicit accepted-offer→employee/consultant→generic PDF handoff is compl
 
 ### Task 9: Dashboard, communication history and retention
 
+Implemented and verified locally: the overview and all filters/queues/transition metrics, explicit internal-notice evidence/retry recovery, reviewed private-data deletion and default-off approved retention policy/daily job. **827 related backend and 154 combined native Brave examples pass**, plus three browser checks after the final deletion-warning clarification. Independent Playwright verifies filtering/deletion with zero console errors/warnings. Fresh Task 9 Claude review is dispositioned; pending-invitation cancellation is intentional source erasure and now explicitly explained before confirmation. Nineteen captures and 33 source hashes are retained in [the Task 9 report](../../qa/hiring-2463/pipeline-retention-20261108.md). No production deletion or release is implied.
+
 **Files:** `app/services/hiring/{pipeline,retention}.rb`, dashboard/history/report controls, retention job/settings and tests.
 
 **Interface:** filters and operational queues cover every issue stage/dimension. Metrics derive from transition timestamps and reasons. Internal feedback history adds explicit failed/unknown-delivery recovery using the existing evidence/stopped-worker rules, without automatic retries. Retention removes private content/blobs/links safely and keeps only non-identifying deletion evidence.
 
-- [ ] RED→GREEN empty/missing/withdrawn/repeated-round metrics, all filters, overdue/upcoming queues and pagination; retention with concurrent work, shared inbound mail/other tenant and already-onboarded employee; actual browser report/deletion proof; commit.
+- [x] RED→GREEN empty/missing/withdrawn/repeated-round metrics, all filters, overdue/upcoming queues and pagination; retention with concurrent work, shared inbound mail/other tenant and already-onboarded employee; actual browser report/deletion proof; commit.
 
 ### Task 10: Full issue and release audit
 
-- [ ] Build an evidence row for every design/issue requirement, including mailbox/source/dedup, configurable form/company policy, all assessment/round/decision outcomes, candidate vs interviewer privacy, message uncertainty, analytics and retention. Missing/indirect evidence stays incomplete.
+- [x] Build an evidence row for every design/issue requirement, including mailbox/source/dedup, configurable form/company policy, all assessment/round/decision outcomes, candidate vs interviewer privacy, message uncertainty, analytics and retention. Missing/indirect evidence stays incomplete. See the [103-row requirement matrix](../../qa/hiring-2463/acceptance-matrix-20261108.md); assignment email, scoped interviewer notes and continuous full journey remain explicit gaps.
 - [ ] Execute the full synthetic relay→portal→assignment/interview→offer→employee/consultant→agreement journey with actual queue, local mail, authorized private downloads and screenshots. Run focused/related suites, required Vite build and desktop/mobile/keyboard/console QA.
 - [ ] Fresh whole-branch Rails/security/design review, actionable CodeRabbit resolution, exact-head CI, screenshots in a reviewable PR; preserve private production differences and verify its immutable image before any authorized release. Close no issue or claim no external integration/production success without live proof.

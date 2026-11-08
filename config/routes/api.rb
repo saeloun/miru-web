@@ -310,6 +310,8 @@ namespace :api, defaults: { format: "json" } do
     end
 
     namespace :hiring do
+      get :pipeline, to: "pipeline#index"
+      post "pipeline/search", to: "pipeline#search"
       resources :interview_feedback, only: [:index, :show, :update]
       resources :interview_reviews, only: [:index, :show] do
         get :feedback, on: :member
@@ -347,6 +349,7 @@ namespace :api, defaults: { format: "json" } do
         end
       end
       resources :applications, only: [:index, :show, :create] do
+        resource :retention, only: [:show, :destroy], controller: :retention
         resources :interviews, only: [:index, :create, :update] do
           resources :messages, only: [:index, :create], controller: :candidate_messages do
             post :preview, on: :collection
@@ -362,7 +365,13 @@ namespace :api, defaults: { format: "json" } do
             end
           end
           resources :calendar_events, only: :index
-          resources :feedback, only: :index, controller: :interview_feedback_history
+          resources :feedback, only: :index, controller: :interview_feedback_history do
+            resources :messages, only: :index, controller: :feedback_messages do
+              post :preview, on: :collection
+              post :retry, on: :member
+              post :reconcile, on: :member
+            end
+          end
         end
         post :search, on: :collection
         resources :assignments, only: [:index, :create] do

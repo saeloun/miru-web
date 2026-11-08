@@ -9,6 +9,7 @@ import ApplicationAssignments from "./ApplicationAssignments";
 import ApplicationInterviews from "./ApplicationInterviews";
 import ApplicationDecisions from "./ApplicationDecisions";
 import ApplicationOffers from "./ApplicationOffers";
+import ApplicationRetention from "./ApplicationRetention";
 import {
   receiptLabel,
   stageLabel,
@@ -27,6 +28,7 @@ export default function ApplicationDetail({
   const [page, setPage] = useState(1);
   const [retry, setRetry] = useState(0);
   const [error, setError] = useState("");
+  const [deleted, setDeleted] = useState(false);
   const denied = useCallback((failure: unknown) => {
     setData(null);
     setError(failureMessage(failure));
@@ -75,6 +77,17 @@ export default function ApplicationDetail({
       controller.abort();
     };
   }, [companyId, id, page, retry]);
+
+  if (deleted) {
+    return (
+      <div className="space-y-3">
+        <p role="status">
+          Hiring application deleted. Employee and legal records were preserved.
+        </p>
+        <Link to="/hiring">All applications</Link>
+      </div>
+    );
+  }
 
   if (error) {
     return (
@@ -190,6 +203,16 @@ export default function ApplicationDetail({
         timeZone={data.time_zone}
         changed={applicationChanged}
         onDenied={denied}
+      />
+      <ApplicationRetention
+        companyId={companyId}
+        applicationId={application.id}
+        applicationVersion={application.lock_version}
+        onDenied={denied}
+        onDeleted={() => {
+          setData(null);
+          setDeleted(true);
+        }}
       />
       <section
         className="rounded-lg border bg-card p-4 sm:p-6"

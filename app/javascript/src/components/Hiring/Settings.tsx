@@ -372,6 +372,50 @@ export default function Settings({ companyId }: { companyId: number }) {
                   Leave blank until confirmed. Zero is an explicit value.
                 </p>
               </div>
+              <fieldset className="space-y-3 rounded border p-4">
+                <legend>Hiring data retention</legend>
+                <label className="flex min-h-11 items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={draft.retention_enabled === true}
+                    onChange={event =>
+                      setDraft({
+                        ...draft,
+                        retention_enabled: event.target.checked,
+                      })
+                    }
+                  />
+                  Automatically delete old closed applications
+                </label>
+                <Label htmlFor="hiring-retention-days">
+                  Days after last hiring activity
+                </Label>
+                <Input
+                  id="hiring-retention-days"
+                  type="number"
+                  min={1}
+                  max={36500}
+                  step={1}
+                  value={draft.retention_days ?? ""}
+                  onChange={event =>
+                    setDraft({
+                      ...draft,
+                      retention_days:
+                        event.target.value === ""
+                          ? null
+                          : Number(event.target.value),
+                    })
+                  }
+                />
+                <p className="text-sm text-muted-foreground">
+                  Off by default. Choose your organisation's retention period,
+                  then save and approve. Deletion is permanent. Employee,
+                  payroll and legal agreement records are preserved; shared mail
+                  remains while another application needs it. Active or unknown
+                  deliveries block deletion. Private files are removed through
+                  the background cleanup queue.
+                </p>
+              </fieldset>
               <FormSettings value={draftForm} change={setDraftForm} />
             </fieldset>
             <div className="flex flex-wrap gap-3">

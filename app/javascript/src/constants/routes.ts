@@ -300,6 +300,7 @@ export const ROUTES = [
       { path: "new", Component: Hiring },
       { path: "roles", Component: Hiring },
       { path: "panel", Component: Hiring },
+      { path: "pipeline", Component: Hiring },
       { path: "assignment-library", Component: Hiring },
       { path: "assignment-library/:templateId", Component: Hiring },
       { path: "communications", Component: Hiring },

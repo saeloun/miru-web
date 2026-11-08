@@ -56,7 +56,7 @@ export default function CandidateMessages({
   companyId: number;
   path: string;
   context: {
-    kind: "booking" | "round" | "decision" | "offer";
+    kind: "booking" | "round" | "decision" | "offer" | "feedback";
     number: number;
     version: number;
   };
@@ -132,7 +132,14 @@ export default function CandidateMessages({
   }, [expanded, path, companyId, page, refresh, context.version]);
 
   const loadPreview = async (message: Message | null = null) => {
-    if (!mailbox || busy || !canCompose) return;
+    if (
+      !mailbox ||
+      busy ||
+      !canCompose ||
+      (context.kind === "feedback" && !message)
+    ) {
+      return;
+    }
     setBusy(true);
     setError("");
     setNotice("");
@@ -164,7 +171,14 @@ export default function CandidateMessages({
   };
 
   const send = async () => {
-    if (!preview || busy || !canCompose) return;
+    if (
+      !preview ||
+      busy ||
+      !canCompose ||
+      (context.kind === "feedback" && !retryOf)
+    ) {
+      return;
+    }
     setBusy(true);
     setError("");
     setNotice("");
@@ -230,23 +244,30 @@ export default function CandidateMessages({
   };
 
   const contextLabel = `${context.kind} ${context.number}`;
-  const messageKinds =
-    context.kind === "decision"
-      ? [{ key: "rejection", label: "Rejection" }]
-      : context.kind === "offer"
-      ? [{ key: "offer", label: "Offer" }]
-      : interviewMessageKinds;
+  const internal = context.kind === "feedback";
+  const title = internal ? "Internal feedback notices" : "Candidate messages";
+  const messageKinds = internal
+    ? [
+        { key: "feedback_prompt", label: "Feedback request" },
+        { key: "feedback_overdue", label: "Overdue feedback" },
+        { key: "feedback_received", label: "Feedback received" },
+      ]
+    : context.kind === "decision"
+    ? [{ key: "rejection", label: "Rejection" }]
+    : context.kind === "offer"
+    ? [{ key: "offer", label: "Offer" }]
+    : interviewMessageKinds;
   const id = `${context.kind}-messages-${context.number}`;
 
   return (
     <section
       className="min-w-0 space-y-3"
-      aria-label={`Candidate messages for ${contextLabel}`}
+      aria-label={`${title} for ${contextLabel}`}
     >
       <Button
         type="button"
         variant="outline"
-        className="min-h-11"
+        className="h-auto min-h-11 whitespace-normal"
         disabled={busy}
         onClick={() => {
           setExpanded(value => !value);
@@ -257,16 +278,22 @@ export default function CandidateMessages({
           setData(null);
         }}
       >
-        {expanded ? "Hide" : "Candidate messages for"} {contextLabel}
+        {expanded ? "Hide" : `${title} for`} {contextLabel}
       </Button>
       {expanded && (
         <>
-          <h5 className="font-semibold">Candidate messages</h5>
+          <h5 className="font-semibold">{title}</h5>
           <p className="text-sm text-muted-foreground">
-            Choose an approved template and reply inbox, then confirm the exact
-            preview. Internal feedback, decision reasons and cancellation
-            reasons are excluded. Review existing delivery history before
-            sending.
+            {internal ? (
+              "Internal notices are not resent automatically. Review unknown delivery using evidence before any explicit retry. Choose the approved reply inbox and confirm the frozen notice preview."
+            ) : (
+              <>
+                Choose an approved template and reply inbox, then confirm the
+                exact preview. Internal feedback, decision reasons and
+                cancellation reasons are excluded. Review existing delivery
+                history before sending.
+              </>
+            )}
           </p>
           {context.kind === "round" && (
             <p className="text-sm text-muted-foreground">
@@ -311,45 +338,52 @@ export default function CandidateMessages({
             disabled={busy || Boolean(preview) || !canCompose}
             className="min-w-0 space-y-3"
           >
-            <Label htmlFor={`${id}-kind`}>Message type</Label>
-            <select
-              id={`${id}-kind`}
-              value={kind}
-              className="h-11 w-full rounded-md border bg-background px-3"
-              onChange={event => {
-                setKind(event.target.value);
-                setRetryOf(null);
-              }}
-            >
-              {messageKinds
-                .filter(
-                  item =>
-                    context.kind !== "round" ||
-                    item.key === "interview_invitation"
-                )
-                .map(item => (
-                  <option key={item.key} value={item.key}>
-                    {item.label}
-                  </option>
-                ))}
-            </select>
+            {!internal && (
+              <>
+                <Label htmlFor={`${id}-kind`}>Message type</Label>
+                <select
+                  id={`${id}-kind`}
+                  value={kind}
+                  className="h-11 w-full rounded-md border bg-background px-3"
+                  onChange={event => {
+                    setKind(event.target.value);
+                    setRetryOf(null);
+                  }}
+                >
+                  {messageKinds
+                    .filter(
+                      item =>
+                        context.kind !== "round" ||
+                        item.key === "interview_invitation"
+                    )
+                    .map(item => (
+                      <option key={item.key} value={item.key}>
+                        {item.label}
+                      </option>
+                    ))}
+                </select>
+              </>
+            )}
             <Picker
               id={`${id}-inbox`}
               label="Reply inbox"
               companyId={companyId}
               kind="mailboxes"
               purpose="intake"
+              onDenied={failed}
               value={mailbox}
               change={setMailbox}
               emptyLabel="Choose enabled inbox"
             />
-            <Button
-              type="button"
-              disabled={!mailbox || busy || Boolean(preview)}
-              onClick={() => void loadPreview()}
-            >
-              Preview candidate message
-            </Button>
+            {!internal && (
+              <Button
+                type="button"
+                disabled={!mailbox || busy || Boolean(preview)}
+                onClick={() => void loadPreview()}
+              >
+                Preview candidate message
+              </Button>
+            )}
           </fieldset>
           {preview && (
             <div className="min-w-0 space-y-3 rounded-lg border p-3">

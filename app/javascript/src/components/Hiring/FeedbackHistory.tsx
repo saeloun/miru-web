@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button } from "../ui/button";
 import Pager from "./Pager";
 import FeedbackDetails from "./FeedbackDetails";
-import { failureMessage, read } from "./api";
+import { accessDenied, failureMessage, read } from "./api";
 import type { FeedbackPage } from "./feedbackTypes";
 
 export default function FeedbackHistory({
@@ -35,10 +34,8 @@ export default function FeedbackHistory({
       .catch(failure => {
         if (active) {
           setError(failureMessage(failure));
-          if (
-            axios.isAxiosError(failure) &&
-            [403, 404].includes(failure.response?.status ?? 0)
-          ) {
+          if (accessDenied(failure)) {
+            setData(null);
             onDenied(failure);
           }
         }
@@ -82,7 +79,15 @@ export default function FeedbackHistory({
                 <p>No feedback recorded for this view.</p>
               )}
               {data.feedbacks.map(record => (
-                <FeedbackDetails key={record.id} record={record} />
+                <FeedbackDetails
+                  key={record.id}
+                  record={record}
+                  recovery={{
+                    companyId,
+                    path: `${path}/${record.id}/messages`,
+                    onDenied,
+                  }}
+                />
               ))}
               <Pager
                 pagination={data.pagination}

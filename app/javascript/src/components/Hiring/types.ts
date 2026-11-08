@@ -140,6 +140,8 @@ export type HiringSettingsDetails = Record<
     rejection_automation_enabled?: boolean;
     hold_notifications_enabled?: boolean;
     decision_mailbox_id?: number | null;
+    retention_enabled?: boolean;
+    retention_days?: number | null;
   };
 export type HiringSettings = {
   details: HiringSettingsDetails;

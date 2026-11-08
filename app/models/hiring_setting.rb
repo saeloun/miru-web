@@ -48,13 +48,18 @@ class HiringSetting < ApplicationRecord
 
     def valid_details
       allowed = TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + OFFER_FIELDS + %w[client_count feedback_notifications_enabled feedback_mailbox_id
-        rejection_automation_enabled hold_notifications_enabled decision_mailbox_id]
+        rejection_automation_enabled hold_notifications_enabled decision_mailbox_id retention_enabled retention_days]
       valid = (details.keys - allowed).empty? && (TEXT_FIELDS + INTERVIEW_FIELDS + FEEDBACK_FIELDS + DECISION_FIELDS + OFFER_FIELDS).all? do |field|
         valid_text?(details[field], field.end_with?("_subject") ? 200 : 5_000) &&
           (!field.end_with?("_subject") || details[field].nil? || !details[field].match?(/[[:cntrl:]]/))
       end
       count = details["client_count"]
       valid &&= count.nil? || count.is_a?(Integer) && count.between?(0, 1_000_000)
+      retention = details["retention_enabled"]
+      days = details["retention_days"]
+      valid &&= retention.nil? || [true, false].include?(retention)
+      valid &&= days.nil? || days.is_a?(Integer) && days.between?(1, 36_500)
+      valid &&= days.present? if retention == true
       enabled = details["feedback_notifications_enabled"]
       mailbox = details["feedback_mailbox_id"]
       valid &&= enabled.nil? || [true, false].include?(enabled)

@@ -5,6 +5,13 @@ require "yaml"
 require "erb"
 
 RSpec.describe "Solid Queue schedule" do
+  it "runs explicitly approved hiring retention daily in default and production" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_retention")
+      expect(task).to include("class" => "HiringRetentionJob", "schedule" => "37 3 * * *")
+    end
+  end
+
   it "expires issued hiring offers in default and production" do
     %w[default production].each do |environment|
       task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "hiring_offer_expiry")

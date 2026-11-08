@@ -16,6 +16,7 @@ import Picker from "./Picker";
 import AssignmentLibrary from "./AssignmentLibrary";
 import AssignmentTemplateEditor from "./AssignmentTemplateEditor";
 import InterviewPanel from "./InterviewPanel";
+import Pipeline from "./Pipeline";
 import { failureMessage, read } from "./api";
 import {
   receiptLabel,
@@ -309,6 +310,7 @@ function Workspace({ companyId }: { companyId: number }) {
   const inbox = location.pathname.endsWith("/inbox");
   const mailboxes = location.pathname.endsWith("/mailboxes");
   const panel = location.pathname.endsWith("/panel");
+  const pipeline = location.pathname.endsWith("/pipeline");
   const library =
     location.pathname.endsWith("/assignment-library") || !!templateId;
 
@@ -331,7 +333,8 @@ function Workspace({ companyId }: { companyId: number }) {
             mailboxes ||
             receiptId ||
             library ||
-            panel) && (
+            panel ||
+            pipeline) && (
             <Button asChild variant="outline" className="min-h-11">
               <Link to="/hiring">All applications</Link>
             </Button>
@@ -339,6 +342,11 @@ function Workspace({ companyId }: { companyId: number }) {
           {!roles && (
             <Button asChild variant="outline" className="min-h-11">
               <Link to="/hiring/roles">Manage roles</Link>
+            </Button>
+          )}
+          {!pipeline && (
+            <Button asChild variant="outline" className="min-h-11">
+              <Link to="/hiring/pipeline">Hiring overview</Link>
             </Button>
           )}
           {!settings && (
@@ -374,6 +382,8 @@ function Workspace({ companyId }: { companyId: number }) {
           companyId={companyId}
           id={templateId}
         />
+      ) : pipeline ? (
+        <Pipeline companyId={companyId} />
       ) : panel ? (
         <InterviewPanel companyId={companyId} />
       ) : library ? (

@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Label } from "../ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { Command, CommandInput, CommandItem, CommandList } from "../ui/command";
-import { failureMessage, read } from "./api";
+import { accessDenied, failureMessage, read } from "./api";
 import {
   receiptLabel,
   type Application,
@@ -40,6 +40,7 @@ export default function Picker({
   change,
   emptyLabel,
   purpose,
+  onDenied,
 }: {
   id: string;
   label: string;
@@ -55,6 +56,7 @@ export default function Picker({
   change: (value: Choice | null) => void;
   emptyLabel: string;
   purpose: "intake" | "history";
+  onDenied?: (failure: unknown) => void;
 }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -105,7 +107,7 @@ export default function Picker({
           let choices: Choice[];
           if (kind === "panel_members") {
             choices = (data.panel_members || [])
-              .filter(member => member.active)
+              .filter(member => purpose === "history" || member.active)
               .map(member => ({ id: member.id, label: member.full_name }));
           } else if (kind === "assignment_templates") {
             choices = (data.templates || []).map(task => ({
@@ -153,6 +155,10 @@ export default function Picker({
         })
         .catch(failure => {
           if (active) {
+            if (accessDenied(failure)) {
+              setOptions([]);
+              onDenied?.(failure);
+            }
             setError(failureMessage(failure));
             setLoading(false);
           }

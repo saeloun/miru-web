@@ -23,7 +23,7 @@ class Api::V1::Hiring::SettingsController < Api::V1::Hiring::BaseController
     def configuration = ::Hiring::Configure.new(company: current_company, actor: current_user)
 
     def render_settings(setting)
-      fields = HiringSetting::TEXT_FIELDS + ["client_count"]
+      fields = HiringSetting::TEXT_FIELDS + %w[client_count retention_enabled retention_days]
       complete = setting&.complete? || false
       mailbox = current_company.hiring_mailboxes.find_by(id: setting&.details&.fetch("feedback_mailbox_id", nil))
       decision_mailbox = current_company.hiring_mailboxes.find_by(id: setting&.details&.fetch("decision_mailbox_id", nil))
