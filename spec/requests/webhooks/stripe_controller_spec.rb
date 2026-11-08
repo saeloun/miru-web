@@ -180,6 +180,22 @@ RSpec.describe "Stripe webhooks", type: :request do
     expect(InvoicePayment::StripeCheckoutFulfillment).to have_received(:process).with(event)
   end
 
+  it "rejects a completed checkout with a mismatched invoice intent without treating it as a server failure" do
+    invoice = create(:invoice, company:, status: "sent", amount: 100, amount_due: 100, amount_paid: 0,
+      payment_infos: { stripe_payment_intent: "pi_expected" })
+    event = Stripe::Event.construct_from(id: "evt_mismatch", type: "checkout.session.completed", created: Time.current.to_i,
+      data: { object: { id: "cs_mismatch", mode: "payment", status: "complete", payment_status: "paid", payment_intent: "pi_wrong",
+        amount_total: 10_000, currency: "usd", metadata: { invoice_id: invoice.id } } })
+    allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+
+    post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+    expect(response).to have_http_status(:bad_request)
+    expect(response.parsed_body).to eq("message" => "Invalid payload!")
+    expect(invoice.reload).to be_sent
+    expect(invoice.payments).to be_empty
+  end
+
   it "settles invoice payment on payment_intent.succeeded" do
     event = OpenStruct.new(
       type: "payment_intent.succeeded",
@@ -224,5 +240,88 @@ RSpec.describe "Stripe webhooks", type: :request do
 
     expect(response).to have_http_status(:ok)
     expect(InvoicePayment::StripePaymentSucceeded).to have_received(:process).with(event)
+  end
+
+  %w[payment_intent.succeeded checkout.session.completed].each do |event_type|
+    it "records a late #{event_type} capture once without settling the invoice again" do
+      company.update!(base_currency: "INR")
+      invoice = create(:invoice, company:, currency: "INR", status: "sent",
+        amount: 100, amount_due: 100, amount_paid: 0, payment_infos: { stripe_payment_intent: "pi_late" })
+      InvoicePayment::Settle.process(
+        { invoice_id: invoice.id, transaction_date: Date.current, transaction_type: "razorpay",
+          amount: 100, payment_currency: "INR", provider_event_id: "razorpay:pay_first" }, invoice)
+      object = if event_type == "payment_intent.succeeded"
+        { id: "pi_late", amount_received: 10_000, currency: "inr" }
+      else
+        { id: "cs_late", mode: "payment", status: "complete", payment_status: "paid", payment_intent: "pi_late",
+          amount_total: 10_000, currency: "inr", metadata: { invoice_id: invoice.id } }
+      end
+      event = Stripe::Event.construct_from(id: "evt_late", type: event_type, created: Time.current.to_i, data: { object: })
+      allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+
+      expect do
+        post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+      end.to change { invoice.payments.count }.by(1)
+
+      expect(response).to have_http_status(:ok)
+      payment = invoice.payments.find_by!(provider_event_id: "stripe:pi_late")
+      expect(payment).to have_attributes(amount: 100, payment_currency: "INR", status: "partially_paid",
+        note: "Stripe_Payment_Already_Paid_Reconciliation")
+      expect(invoice.reload).to have_attributes(status: "paid", amount_due: 0, amount_paid: 100)
+
+      expect do
+        post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+        other_type = event_type == "payment_intent.succeeded" ? "checkout.session.completed" : "payment_intent.succeeded"
+        other_object = if other_type == "payment_intent.succeeded"
+          { id: "pi_late", amount_received: 10_000, currency: "inr" }
+        else
+          { id: "cs_other_late", mode: "payment", status: "complete", payment_status: "paid", payment_intent: "pi_late",
+            amount_total: 10_000, currency: "inr", metadata: { invoice_id: invoice.id } }
+        end
+        other_event = Stripe::Event.construct_from(
+          id: "evt_other_late", type: other_type, created: Time.current.to_i, data: { object: other_object })
+        allow(Stripe::Webhook).to receive(:construct_event).and_return(other_event)
+        post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+      end.not_to change { invoice.payments.count }
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "requests a retry and reports a #{event_type} settlement failure" do
+      invoice = create(:invoice, company:, status: "sent", amount: 100, amount_due: 100, amount_paid: 0,
+        payment_infos: { stripe_payment_intent: "pi_retry" })
+      object = if event_type == "payment_intent.succeeded"
+        { id: "pi_retry", amount_received: 10_000, currency: "usd" }
+      else
+        { id: "cs_retry", mode: "payment", status: "complete", payment_status: "paid", payment_intent: "pi_retry",
+          amount_total: 10_000, currency: "usd", metadata: { invoice_id: invoice.id } }
+      end
+      event = Stripe::Event.construct_from(id: "evt_retry", type: event_type, created: Time.current.to_i, data: { object: })
+      error = StandardError.new("Synthetic settlement unavailable")
+      allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+      allow(InvoicePayment::Settle).to receive(:process).and_raise(error)
+      allow(Sentry).to receive(:capture_exception)
+
+      post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+
+      expect(response).to have_http_status(:internal_server_error)
+      expect(response.parsed_body).to eq("message" => "Payment settlement failed")
+      expect(invoice.reload).to be_sent
+      expect(invoice.payments).to be_empty
+      expect(Sentry).to have_received(:capture_exception).with(error)
+
+      allow(InvoicePayment::Settle).to receive(:process).and_call_original
+
+      expect do
+        post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+      end.to change { invoice.payments.count }.by(1)
+
+      expect(response).to have_http_status(:ok)
+      expect(invoice.reload).to be_paid
+
+      expect do
+        post "/webhooks/stripe/checkout/fulfillment", params: "{}", headers: headers
+      end.not_to change { invoice.payments.count }
+      expect(response).to have_http_status(:ok)
+    end
   end
 end

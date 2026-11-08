@@ -6,6 +6,8 @@ module EmployeeReports
   class DownloadService
     MAX_EMPLOYEES = 2_000
 
+    attr_reader :employment_ids
+
     def initialize(report:, month:, employments:)
       raise ArgumentError, "Month must use YYYY-MM" unless month.is_a?(String) && month.match?(/\A\d{4}-(0[1-9]|1[0-2])\z/)
       @month = Date.iso8601("#{month}-01")
@@ -13,6 +15,7 @@ module EmployeeReports
       @company = report.company
       @employments = employments.includes(:employee_record, user: :addresses).order(:id).limit(MAX_EMPLOYEES + 1).to_a
       raise ArgumentError, "Report exceeds #{MAX_EMPLOYEES} active employees" if @employments.size > MAX_EMPLOYEES
+      @employment_ids = @employments.map(&:id).freeze
     end
 
     def process

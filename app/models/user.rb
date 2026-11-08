@@ -425,6 +425,8 @@ class User < ApplicationRecord
     end
 
     def send_to_hubspot
+      return if invited_by_id.present?
+
       HubspotIntegrationJob.perform_later(email, first_name, last_name)
     rescue StandardError => error
       Rails.logger.warn("HubSpot signup enqueue failed for user_id=#{id}: #{error.class}: #{error.message}")

@@ -40,7 +40,9 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       document.fonts.ready.then(() => Promise.all(document.getAnimations().map(animation => animation.finished.catch(() => {}))))
         .then(() => requestAnimationFrame(() => requestAnimationFrame(done)));
     JS
-    page.save_screenshot(Rails.root.join("tmp/capybara/#{filename}"), full: true)
+    directory = Rails.root.join(ENV.fetch("EMPLOYEE_RECORD_SHOTS", "tmp/capybara"))
+    FileUtils.mkdir_p(directory)
+    page.save_screenshot(directory.join(filename), full: true)
   end
 
   def downloaded_file(filename, &action)

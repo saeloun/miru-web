@@ -1,0 +1,85 @@
+{
+  "application_id": 46,
+  "candidate_id": 46,
+  "queues": [
+    {
+      "id": 1,
+      "class_name": "ActionMailbox::RoutingJob",
+      "active_job_id": "a0934be4-970d-49d9-82f5-109695bc9a71",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    },
+    {
+      "id": 2,
+      "class_name": "ActionMailbox::RoutingJob",
+      "active_job_id": "2c9e6a4c-8eec-481f-8483-3fb724a98dd8",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    },
+    {
+      "id": 3,
+      "class_name": "HiringDeliveryJob",
+      "active_job_id": "1a2266f3-466f-44f1-9595-bb66f628d9df",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    },
+    {
+      "id": 4,
+      "class_name": "HiringDeliveryJob",
+      "active_job_id": "0b759e75-228c-4724-92e3-3198fe88aa3a",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    },
+    {
+      "id": 5,
+      "class_name": "HiringDeliveryJob",
+      "active_job_id": "633d78a3-7b10-47a3-8bfd-b7d0dec11992",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    },
+    {
+      "id": 6,
+      "class_name": "ActionMailer::MailDeliveryJob",
+      "active_job_id": "fa15e9be-4cfa-4f0b-b13a-d178dd5c1ab7",
+      "finished_at": "2026-11-03 12:00:00 UTC"
+    }
+  ],
+  "smtp_subjects": [
+    "Approved synthetic acknowledgement_subject",
+    "Your practical assignment",
+    "Your private offer",
+    "You're invited to join Miru"
+  ],
+  "private_downloads": [
+    {
+      "status": 200,
+      "bytes": 4867,
+      "cache": "private, no-store",
+      "hash": "b10f5a570976f423f4edb722dbf9441792957e1ae3c637eda96c9192388b24f5",
+      "boundary": "retained-relay-source"
+    },
+    {
+      "status": 200,
+      "bytes": 2978,
+      "cache": "private, no-store",
+      "hash": "95b2d60dcdf489fd788fa0fef6de5fc88442961577cecd51b7fe1d57e69645f6",
+      "boundary": "admin-resume"
+    },
+    {
+      "status": 200,
+      "bytes": 2978,
+      "cache": "private, no-store",
+      "hash": "95b2d60dcdf489fd788fa0fef6de5fc88442961577cecd51b7fe1d57e69645f6",
+      "boundary": "designated-reviewer-assignment"
+    },
+    {
+      "status": 200,
+      "bytes": 2978,
+      "cache": "private, no-store",
+      "hash": "95b2d60dcdf489fd788fa0fef6de5fc88442961577cecd51b7fe1d57e69645f6",
+      "boundary": "original-legal-pdf-1"
+    },
+    {
+      "status": 200,
+      "bytes": 1800,
+      "cache": "private, no-store",
+      "hash": "55b31192caeff420591e7a3d1bc55e99dbd9cd735f8944480a75df99cfa7db6b",
+      "boundary": "original-legal-pdf-2"
+    }
+  ]
+}

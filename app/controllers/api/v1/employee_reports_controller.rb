@@ -36,11 +36,19 @@ class Api::V1::EmployeeReportsController < Api::V1::EmployeeRecordAdminControlle
 
   def download
     report = reports.find(params[:id])
-    csv = EmployeeReports::DownloadService.new(report:, month: params[:month],
-      employments: report_employments).process
-    report.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
-    send_data csv, type: "text/csv; charset=utf-8", disposition: "attachment",
-      filename: "employee-report-#{report.id}-#{params[:month]}.csv"
+    generator = EmployeeReports::DownloadService.new(report:, month: params[:month], employments: report_employments)
+    csv = generator.process
+    with_download_workspace do
+      authorize_access
+      report = reports.find(params[:id])
+      unless report_employments.where(id: generator.employment_ids).count == generator.employment_ids.size
+        raise Pundit::NotAuthorizedError
+      end
+
+      report.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+      send_data csv, type: "text/csv; charset=utf-8", disposition: "attachment",
+        filename: "employee-report-#{report.id}-#{params[:month]}.csv"
+    end
   rescue ArgumentError, Date::Error => exception
     render json: { errors: exception.message }, status: 400
   end

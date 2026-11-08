@@ -110,33 +110,97 @@ RSpec.describe InvoicePayment::Settle do
       expect(client1_sent_invoice1.status).to eq("paid")
     end
   end
+end
 
-  context "when Stripe settles the invoice" do
-    let(:invoice) do
-      create(
-        :invoice,
-        client: client1,
-        status: "sent",
-        amount: 100,
-        amount_due: 100,
-        amount_paid: 0
-      )
-    end
-    let(:payment_params) do
-      {
-        invoice_id: invoice.id,
-        transaction_date: Date.current,
-        transaction_type: "stripe",
-        amount: 100,
-        note: "Stripe payment"
-      }
-    end
+RSpec.describe InvoicePayment::Settle, "Stripe confirmation commits" do
+  before do
+    DatabaseCleaner.clean
+    DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
+    invoice
+    clear_enqueued_jobs
+  end
 
-    it "enqueues payment confirmations at settlement time" do
-      expect {
+  let(:invoice) { create(:invoice, status: "sent", amount: 100, amount_due: 100, amount_paid: 0) }
+  let(:payment_params) do
+    { invoice_id: invoice.id, transaction_date: Date.current, transaction_type: "stripe", amount: 100 }
+  end
+
+  it "enqueues both confirmations after a standalone settlement commits" do
+    expect do
+      described_class.process(payment_params, invoice)
+    end.to have_enqueued_mail(PaymentMailer, :payment)
+      .and have_enqueued_mail(ClientPaymentMailer, :payment)
+  end
+
+  it "enqueues both confirmations only after the invoice lock commits" do
+    expect do
+      invoice.with_lock do
         described_class.process(payment_params, invoice)
-      }.to have_enqueued_mail(PaymentMailer, :payment)
-        .and have_enqueued_mail(ClientPaymentMailer, :payment)
+
+        expect(enqueued_jobs).to be_empty
+      end
+    end.to have_enqueued_mail(PaymentMailer, :payment)
+      .and have_enqueued_mail(ClientPaymentMailer, :payment)
+  end
+
+  it "keeps a captured payment when a confirmation cannot be enqueued" do
+    error = StandardError.new("Synthetic mail queue unavailable")
+    allow(PaymentMailer).to receive_message_chain(:with, :payment, :deliver_later).and_raise(error)
+    allow(Sentry).to receive(:capture_exception)
+
+    expect do
+      invoice.with_lock { described_class.process(payment_params, invoice) }
+    end.not_to raise_error
+
+    expect(invoice.reload).to be_paid
+    expect(invoice.payments.count).to eq(1)
+    expect(Sentry).to have_received(:capture_exception).with(error)
+  end
+
+  it "does not send confirmations for a rolled-back settlement" do
+    invoice.with_lock do
+      described_class.process(payment_params, invoice)
+      raise ActiveRecord::Rollback
+    end
+
+    expect(invoice.reload).to be_sent
+    expect(invoice.payments).to be_empty
+    expect(enqueued_jobs).to be_empty
+  end
+
+  it "commits a reconciliation payment without updating the paid invoice or sending confirmations" do
+    described_class.process(payment_params.merge(provider_event_id: "stripe:pi_first"), invoice)
+    clear_enqueued_jobs
+
+    payment = nil
+    expect do
+      invoice.with_lock do
+        payment = described_class.process(payment_params.merge(provider_event_id: "stripe:pi_late"), invoice,
+          reconcile: true)
+      end
+    end.to change(Payment, :count).by(1)
+
+    expect(payment).to have_attributes(status: "partially_paid", amount: 100)
+    expect(invoice.reload).to have_attributes(status: "paid", amount_paid: 100, amount_due: 0)
+    expect(enqueued_jobs).to be_empty
+  end
+
+  [nil, "evt_legacy"].each do |legacy_reference|
+    it "flags ambiguous capture evidence instead of duplicating a legacy #{legacy_reference.inspect} payment" do
+      described_class.process(payment_params.merge(provider_event_id: legacy_reference), invoice)
+      clear_enqueued_jobs
+      allow(Sentry).to receive(:capture_message)
+      late_params = payment_params.merge(provider_event_id: "stripe:pi_late")
+
+      expect do
+        invoice.with_lock { described_class.process(late_params, invoice, reconcile: true) }
+      end.not_to change(Payment, :count)
+
+      expect(Sentry).to have_received(:capture_message).with(
+        "Stripe capture requires legacy payment reconciliation", level: :warning,
+        extra: { invoice_id: invoice.id, provider_event_id: "stripe:pi_late" })
+      expect(invoice.reload).to have_attributes(status: "paid", amount_paid: 100, amount_due: 0)
+      expect(enqueued_jobs).to be_empty
     end
   end
 end

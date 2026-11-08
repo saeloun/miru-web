@@ -89,6 +89,61 @@ RSpec.describe "Employee reports and settings", type: :request do
     expect(response).to have_http_status(:bad_request)
   end
 
+  %w[workspace role actor_employment target_employment target_role report_removed].each do |change|
+    it "withholds a private CSV after a #{change} change during generation" do
+      record = create(:employee_record, :with_bank_details, employment:)
+      account = record.reload.private_details.fetch("bank_account_number")
+      report = EmployeeReport.create!(company:, name: "Synthetic private report", columns: ["bank_account_number"])
+      other_company = create(:company) if change == "workspace"
+      allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
+        csv = original.call(*arguments)
+        expect(CSV.parse(csv, headers: true)["Bank account number"]).to include(account)
+        case change
+        when "workspace" then admin.update!(current_workspace: other_company)
+        when "role" then admin.remove_role(:admin, company)
+        when "actor_employment" then admin_employment.update_column(:resigned_at, Date.yesterday)
+        when "target_employment" then employment.update_column(:resigned_at, Date.yesterday)
+        when "target_role" then employee.remove_role(:employee, company)
+        when "report_removed" then report.destroy!
+        end
+        csv
+      end
+
+      get "/api/v1/employee_reports/#{report.id}/download", params: { month: "2026-10" }
+
+      expect(response).to have_http_status(change == "report_removed" ? :not_found : :forbidden)
+      expect(response.media_type).to eq("application/json")
+      expect(response.body).not_to include(account)
+      expect(report.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  it "downloads with an unchanged CLI context but withholds the CSV after the selected workspace changes" do
+    record = create(:employee_record, :with_bank_details, employment:)
+    account = record.reload.private_details.fetch("bank_account_number")
+    report = EmployeeReport.create!(company:, name: "Synthetic CLI report", columns: ["bank_account_number"])
+    other_company = create(:company)
+    session, token = CliSession.issue_for(user: admin, company:)
+    sign_out admin
+
+    get "/api/v1/employee_reports/#{report.id}/download", params: { month: "2026-10" }, headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:ok)
+    expect(CSV.parse(response.body, headers: true)["Bank account number"]).to include(account)
+
+    allow_any_instance_of(EmployeeReports::DownloadService).to receive(:process).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap { admin.update!(current_workspace: other_company) }
+    end
+
+    get "/api/v1/employee_reports/#{report.id}/download", params: { month: "2026-10" }, headers: { "Authorization" => "Bearer #{token}" }
+
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include(account)
+    expect(admin.reload.current_workspace_id).to eq(other_company.id)
+    expect(session.reload.revoked_at).to be_nil
+    expect(report.audits.where(action: "download", user: admin).count).to eq(1)
+    expect(CliSession.authenticate(token)&.company_id).to eq(company.id)
+  end
+
   it "returns one workspace conflict before validating malformed columns on create and update" do
     report = EmployeeReport.create!(company:, name: "Original", columns: ["name"])
     [nil, company.id + 1].each do |company_id|

@@ -1,0 +1,19 @@
+{
+  "kind": "native-rspec-and-brave-evidence",
+  "backend_examples": 67,
+  "backend_failures": 0,
+  "browser_examples": 10,
+  "browser_failures": 0,
+  "sources": {
+    "spec/system/expenses/index_spec.rb": "2b1f24089f1c965bb2f4402457602436634ab770420db599d1c0dbc820590225",
+    "app/policies/expense_policy.rb": "a072e8bca3fc91e48db3fd4c84ef281a20f98848b6d71772ddee9e5ff7817e60",
+    "app/models/expense.rb": "3ed5680560228a818656e5f3a2a35d0054f3d0bec2e3d4cbb3ebad93f9d113c1",
+    "app/javascript/src/components/Expenses/ExpensesTable.tsx": "fbf3a62d91a1c098ca73f5ecee98bd73dab43db7873cf57c5e6d77dbeff5a19b"
+  },
+  "screenshot": {
+    "file": "paid-expense-read-only-20261104.png",
+    "sha256": "ba6c052eacd478f46ad828049600f66bc6983bbeda90466759bb759a47e55c0a",
+    "width": 1400,
+    "height": 1123
+  }
+}

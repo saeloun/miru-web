@@ -30,7 +30,7 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
 
   context "4. All five 160-hour examples and service policies" do
     it "pays the full monthly fee for 150 worked plus 10 approved paid PTO and changes opening 40 to closing 30 PTO hours"
-    it "persists approval of 60 unpaid hours against 160 expected hours and pays exactly 62.5 percent once"
+    # Confirmed unpaid example: payroll_run_preparation_spec.rb exercises real facts, both approvals, a single mocked Mercury request and recorded INR credit.
     it "pays the full monthly fee for 100 worked plus 60 approved advance-PTO hours and records the resulting negative balance"
     it "requests correction of the unexplained 60 hours after 100 worked without making an unpaid deduction"
     it "pays a fully worked current month with historical PTO minus 40 and opens a separate historical-balance review"
@@ -50,25 +50,17 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "6. Reimbursement settlement" do
-    it "atomically reserves a claim for one run when two payroll approvals select it concurrently"
-    it "prevents direct expense settlement from paying a claim reserved by an approved payroll run"
-    it "freezes approved claim amounts and requires reapproval or an adjustment after material claim changes"
-    it "carries a claim approved after cutoff into the next run or an explicitly separate payment"
-    it "releases a reservation only after cancellation or failure proves no outstanding payment and retains it for uncertain outcomes"
-    it "settles an approved reimbursement once and retains its receipt, original currency, approved amount and payment allocation"
+    # Concurrent run reservation and both direct-settlement orderings: claim_settlement_concurrency_spec.rb.
+    # Immutable amounts/reapproval and next-run cutoff carryover: consultant_revision_spec.rb.
+    # No-funds release, uncertain-outcome retention and split siblings: consultant_revision_spec.rb and mercury_split_spec.rb.
+    # Mercury settlement after reapproval, split credit gating, receipt retention and retries: the same two service specs.
+    it "protects reimbursement reservations until outstanding India accounts-handoff payments are resolved"
+    it "settles an India accounts-handoff reimbursement once with its receipt, original currency, approved amount and payment allocation"
   end
 
   context "7. Mercury USD wires and bank credit" do
-    it "requires provider-onboarded Indian international-wire beneficiaries with verified SWIFT and routing data"
     it "requires enabled funding-account capability and payment scopes independently of a read-only balance connection"
-    it "records source and observation time for INR-per-USD R and calculates principal P divided by R minus 1.50"
-    it "rejects zero or negative buffered rates and rounds each principal to USD cents"
-    it "records configurable company-paid OUR fees, initially 15 USD where applicable, outside consultant income"
     it "requires approval of principal plus fees and renews approval when a stale quote changes"
-    it "persists an idempotency identity before submitting an international-wire approval request"
-    it "polls Mercury approval separately from transaction processing and retains correlated provider references"
-    it "keeps provider sent status distinct from actual receiving-bank INR credit"
-    it "records actual INR credit and requires accounts resolution of any entitlement shortfall"
   end
 
   context "8. India accounts handoff" do
@@ -79,14 +71,8 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "9. Consultant and spouse allocations" do
-    it "requires full spouse beneficiary details, accounts verification and admin approval for setup and changes"
-    it "validates fixed-INR and percentage allocations with an explicit remainder and an exact entitlement sum"
     it "splits after fee and PTO adjustments and keeps reimbursements with the consultant unless reallocation is explicitly approved"
     it "allocates withholding once and reconciles INR rounding without a zero or negative USD transfer leg"
-    it "uses the same approved buffered rate for both principals and charges OUR separately for each transfer"
-    it "retains independent provider identities and statuses for both beneficiaries"
-    it "retries only a confirmed failed leg when the other leg succeeded and reconciles uncertain outcomes first"
-    it "requires all necessary credits and shortfall resolutions before marking the overall settlement fully credited"
     it "retains consultant service-provider identity and tax ownership when a spouse receives an allocation"
   end
 
@@ -113,7 +99,6 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     it "invalidates payment approval after fee, attendance, leave, claim, beneficiary, split, quote or provider-fee changes"
     it "tracks each applicable not-ready, awaiting-approval, ready, accounts-handoff, Mercury-approval, processing, sent, partial-credit, credited, failed, cancelled and returned state"
     it "prevents duplicate run, reservation, transfer, invoice and email creation across repeated clicks and interrupted processing"
-    it "reconciles an uncertain provider submission before authorizing a replacement transfer"
     it "deduplicates repeated bank events and rejects stale out-of-order transitions"
     it "reopens reconciliation for a late return while preserving the original payment, invoice and returned-amount history"
     it "retains actors and immutable source, PTO-decision, bank, approval, fee, claim, reference and invoice versions without confidential payloads"

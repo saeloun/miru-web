@@ -18,10 +18,13 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
 
   def parties
     authorize Agreement, :index?
+    if params[:company_id] && params[:company_id].to_s != current_company.id.to_s
+      return render json: { errors: "The document workspace changed. Reload the current workspace." }, status: 409
+    end
     kind = params[:kind]
     query = params[:query] || ""
     unless %w[client consultant].include?(kind) && query.is_a?(String) && query.length <= 100
-      return render json: { errors: "Choose a client or consultant and use at most 100 search characters" }, status: 400
+      return render json: { errors: "Choose a client, employee or consultant and use at most 100 search characters" }, status: 400
     end
     pattern = "%#{ActiveRecord::Base.sanitize_sql_like(query)}%"
     records = if kind == "client"
@@ -29,6 +32,12 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
     else
       current_company.employments.kept.joins(:user).merge(User.kept).includes(:user)
         .where("concat_ws(' ', users.first_name, users.last_name) ILIKE :query OR users.email ILIKE :query OR employments.employee_id ILIKE :query", query: pattern)
+    end
+    if params.key?(:employment_id)
+      unless kind == "consultant" && params[:company_id] && params[:employment_id].is_a?(String) && params[:employment_id].match?(/\A[1-9]\d{0,18}\z/)
+        return render json: { errors: "Use the reviewed employment and workspace for this upload." }, status: 400
+      end
+      records = records.where(id: records.find(params[:employment_id]).id)
     end
     page, pagination = agreement_page(records)
     parties = page.map do |record|
@@ -39,7 +48,7 @@ class Api::V1::AgreementsController < Api::V1::ApplicationController
           employment_type: record.employment_type, employee_id: record.employee_id }
       end
     end
-    render json: { parties:, pagination: }
+    render json: { company_id: current_company.id, parties:, pagination: }
   end
 
   def create

@@ -1,0 +1,3 @@
+2b944817608bbb9e481c5ef3a82b725b467cae533cd63137f0def5097dc21a67  spec/system/projects/add_team_member_spec.rb
+9b602f970190b92f5987359a7506fc891a1eac4a3aecf7f02c165276778efbf0  output/playwright/project-members-verification-20261106/project-members-empty.png
+d96baaf81cafbf6a11c7376245cde40194bb4c55781e1dcdd66b7ccadd50772e  output/playwright/project-members-verification-20261106/project-members-removed.png

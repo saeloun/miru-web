@@ -7,7 +7,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
   let(:user) { create(:user, current_workspace_id: company.id) }
 
   before do
-    create(:employment, company:, user:)
+    create(:employment, company:, user:, resigned_at: nil)
     user.add_role :admin, company
     sign_in(user)
   end
@@ -230,6 +230,7 @@ RSpec.describe "Settings - Payment", type: :system, js: true do
         expect(page).to have_content("payout.updated")
         expect(page).to have_field("razorpay_key_id", with: "rzp_test_123")
         expect(page).to have_field("razorpay_payout_upi", with: "vendor@upi")
+        page.save_screenshot(Rails.root.join("tmp", "razorpay-launch-checklist.png"), full: true)
       end
     end
 

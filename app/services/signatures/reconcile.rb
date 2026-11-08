@@ -86,6 +86,9 @@ class Signatures::Reconcile
 
     def stage(bytes, kind, index: nil)
       facts = inspect_pdf(bytes, kind)
+      if kind == "signed" && facts.fetch("pages").size < @revision.documents.fetch(index).fetch("pages").size
+        raise Signatures::PdfInfo::InvalidDocument, "The completed PDF has fewer pages than the approved document."
+      end
       filename = "agreement-v#{@revision.number}-#{index ? "document-#{index + 1}-signed" : kind.tr('_', '-')}.pdf"
       io = StringIO.new(bytes)
       blob = ActiveStorage::Blob.build_after_unfurling(io:, filename:, content_type: "application/pdf", identify: false)

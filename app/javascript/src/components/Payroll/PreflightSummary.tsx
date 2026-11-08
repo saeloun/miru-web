@@ -24,7 +24,7 @@ interface Props {
 const blockerLabels: Readonly<Record<string, string>> = {
   provider_setup_required: "Provider connection has not been verified.",
   roster_binding_required: "The complete payroll roster has not been verified.",
-  dry_run_only: "This dry run cannot send payments.",
+  dry_run_only: "This run record never sends money itself.",
   invalid_expected_binding:
     "Confirm the company, currency and provider account.",
   balance_binding_mismatch: "The balance does not match the selected account.",
@@ -106,7 +106,7 @@ const PreflightSummary = ({
       <Card className="w-full max-w-3xl border-border">
         <CardHeader className="gap-3">
           <p className="text-sm font-medium text-muted-foreground">
-            Dry run preview only
+            {payrollOnly ? "Run record" : "Dry run preview only"}
           </p>
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0 space-y-1">
@@ -114,7 +114,9 @@ const PreflightSummary = ({
                 className="break-words text-xl font-semibold text-foreground"
                 id={headingId}
               >
-                Payroll balance review
+                {payrollOnly
+                  ? "Recorded payroll total"
+                  : "Payroll balance review"}
               </h2>
               <p className="break-words text-sm text-muted-foreground">
                 {companyLabel?.trim() || "Company unavailable"}
@@ -122,13 +124,15 @@ const PreflightSummary = ({
                 {month?.trim() || "Payroll month unavailable"}
               </p>
             </div>
-            <Badge variant={ready ? "secondary" : "outline"}>
-              {ready ? "Ready for manual review" : "Blocked"}
-            </Badge>
+            {!payrollOnly && (
+              <Badge variant={ready ? "secondary" : "outline"}>
+                {ready ? "Ready for manual review" : "Blocked"}
+              </Badge>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
             {payrollOnly
-              ? "Recorded payroll totals are shown below. Provider balance, fees and reserve are unavailable until the connection is verified. Payments remain blocked."
+              ? "Recorded payroll totals are shown below. This summary never sends money. Mercury requests have their own checks in the payment section."
               : "This preview compares the recorded balance with payroll, fees and reserve. It does not authorize or send payments."}
           </p>
         </CardHeader>
@@ -153,7 +157,7 @@ const PreflightSummary = ({
               </dd>
             </div>
           </dl>
-          {!ready && (
+          {!ready && !payrollOnly && (
             <div className="space-y-2">
               <h3 className="text-base font-semibold text-foreground">
                 Before manual review

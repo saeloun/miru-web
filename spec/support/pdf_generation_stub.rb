@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "base64"
+
 # Stub for Ferrum-based PDF generation services
 # This stub prevents actual browser launches during tests
 
@@ -15,7 +17,7 @@ RSpec.configure do |config|
         quit: nil,
         go_to: nil,
         network: double("network", wait_for_idle: nil),
-        pdf: "%PDF-1.4\nMocked PDF content"
+        pdf: Base64.strict_encode64("%PDF-1.4\nMocked PDF content")
       ))
     end
   end

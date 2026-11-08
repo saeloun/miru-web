@@ -60,7 +60,9 @@ RSpec.describe "Signed document archives", type: :system, js: true do
         .map(animation => animation.finished.catch(() => {}))))
         .then(() => requestAnimationFrame(() => requestAnimationFrame(done)));
     JS
-    page.save_screenshot(Rails.root.join("tmp/capybara/#{filename}"), full: true)
+    directory = Rails.root.join(ENV.fetch("SIGNATURE_ARCHIVE_SHOTS", "tmp/capybara"))
+    FileUtils.mkdir_p(directory)
+    page.save_screenshot(directory.join(filename), full: true)
   end
 
   it "shows an employee only their own archive and downloads all files at desktop and mobile widths" do
@@ -113,15 +115,27 @@ RSpec.describe "Signed document archives", type: :system, js: true do
   end
 
   it "keeps failed verification visible without a signed download or cancellation action" do
-    record = approved_signature_request(company:, actor: admin)
-    record.current_revision.update!(signature_connection: @connection, operation_id: SecureRandom.uuid,
-      provider_envelope_id: "envelope_failed", provider_status: "COMPLETED", status: "awaiting_signatures", archive_error: "verification_failed")
+    record = approved_signature_request(company:, actor: admin,
+      sources: [Rails.root.join("docs/qa/agreement-editor-2462/agreement-long.pdf")])
+    revision = record.current_revision
+    revision.update!(signature_connection: @connection, operation_id: SecureRandom.uuid,
+      provider_envelope_id: "envelope_failed", provider_status: "PENDING", status: "awaiting_signatures")
+    allow(provider).to receive(:get).with(revision.provider_envelope_id).and_return(provider_signature_record(revision))
+    allow(provider).to receive(:original).with("item_0").and_return(revision.original_bytes(revision.documents.first.fetch("key")).first)
+    allow(provider).to receive(:signed).with("item_0").and_return(File.binread(Rails.root.join("spec/fixtures/files/signature-sealed-synthetic.pdf")))
+    expect(Signatures::Reconcile.new(revision).process).to be(false)
+    expect(revision.reload.archive_error).to eq("verification_failed")
     open_page(admin, "/agreements/documents/#{record.id}")
     expect(page).to have_css('[data-pdf-ready="true"]')
     expect(page).to have_content("Completed files could not be verified")
     expect(page).not_to have_button("Cancel signature request")
     expect(page).not_to have_css("button", text: /agreement-v\d+-document/)
     expect(page).to have_button("Check signing status")
+    [1440, 375].each do |width|
+      page.current_window.resize_to(width, 1000)
+      expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+      capture_archive("short-signed-document-rejected-#{width}.png")
+    end
     expect(@console_errors).to be_empty
   end
 

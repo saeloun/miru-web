@@ -27,8 +27,7 @@ RSpec.describe "Invoice status transitions", type: :system, js: true do
       expect(page).to have_content("Sent", wait: 10)
       expect(page).to have_content("Paid", wait: 10)
       expect(page).to have_content("Overdue", wait: 10)
-      expect(page).to have_content("OUTSTANDING", wait: 10)
-        .or have_content("Outstanding", wait: 10)
+      expect(page).to have_content("UNPAID", wait: 10)
     end
   end
 

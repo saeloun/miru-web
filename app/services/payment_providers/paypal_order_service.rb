@@ -30,10 +30,9 @@ module PaymentProviders
       raise PaypalClient::Error, "PayPal did not return an order id" if order_id.blank?
       raise PaypalClient::Error, "PayPal did not return an approval link" if approval_url.blank?
 
-      invoice.update!(
-        paypal_order_id: order_id,
-        paypal_order_status: response["status"].presence || "CREATED"
-      )
+      invoice.with_lock do
+        invoice.update!(paypal_order_id: order_id, paypal_order_status: response["status"].presence || "CREATED")
+      end
       approval_url
     rescue PaypalAmount::UnsupportedAmountError => error
       raise PaypalClient::Error, error.message

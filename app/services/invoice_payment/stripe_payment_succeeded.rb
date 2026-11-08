@@ -11,17 +11,21 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
   end
 
   def process
+    return false if data_object.id.blank?
+
     @invoice = Invoice.where("payment_infos ->> 'stripe_payment_intent' = ?", data_object.id).first
     return false if invoice.blank?
 
     invoice.with_lock do
-      return true if invoice.paid? || Payment.exists?(provider_event_id: event.id)
+      return true if Payment.exists?(
+        provider_event_id: ["stripe:#{data_object.id}", event.id].compact_blank)
 
-      InvoicePayment::Settle.process(payment_params, invoice)
+      InvoicePayment::Settle.process(payment_params, invoice, reconcile: invoice.paid?)
     end
   rescue StandardError => error
     Rails.logger.error error.message
     Rails.logger.error error.backtrace.join("\n")
+    Sentry.capture_exception(error)
     nil
   end
 
@@ -34,8 +38,8 @@ class InvoicePayment::StripePaymentSucceeded < ApplicationService
         transaction_type: "stripe",
         amount: Money.from_cents(amount_total_cents, data_object.currency).amount,
         payment_currency: data_object.currency.upcase,
-        note: "Stripe_Payment_Success",
-        provider_event_id: event.id
+        note: invoice.paid? ? "Stripe_Payment_Already_Paid_Reconciliation" : "Stripe_Payment_Success",
+        provider_event_id: "stripe:#{data_object.id}"
       }
     end
 

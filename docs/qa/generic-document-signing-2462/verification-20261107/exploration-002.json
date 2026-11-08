@@ -1,0 +1,66 @@
+{
+  "observationCapture": "001",
+  "observationArgv": [
+    "python3",
+    "/tmp/miru-documenso-current-20261107/provider-lifecycle.py"
+  ],
+  "observed": {
+    "connection": true,
+    "files": 2,
+    "pages": 3,
+    "field_types": [
+      "signature",
+      "initials",
+      "date",
+      "name",
+      "email",
+      "text",
+      "number",
+      "checkbox",
+      "dropdown"
+    ],
+    "field_count": 10,
+    "original_bytes_verified": true,
+    "states": [
+      "DRAFT",
+      "PENDING",
+      "CANCELLED"
+    ],
+    "local_mail_received_by_both_signers": true,
+    "invalid_token_rejected": true
+  },
+  "hypothesis": "Actual provider draft distribution and cancellation passed; run existing native signing regressions for approval authorization, callback processing and archive safety.",
+  "nextCapture": "002",
+  "nextArgv": [
+    "sandbox-exec",
+    "-f",
+    "/tmp/miru-private-doc-network-20261106.sb",
+    "env",
+    "GIT_CONFIG_GLOBAL=/dev/null",
+    "GIT_CONFIG_NOSYSTEM=1",
+    "RAILS_ENV=test",
+    "DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/miru_sonam_integration_test_20261104_abdd",
+    "DB_HOST=127.0.0.1",
+    "DB_USER=postgres",
+    "DB_PASS=postgres",
+    "SKIP_VITE_TEST_BUILD=1",
+    "DISABLE_BOOTSNAP=1",
+    "CI=1",
+    "rtk",
+    "proxy",
+    "mise",
+    "exec",
+    "--",
+    "bundle",
+    "exec",
+    "rspec",
+    "spec/services/signatures",
+    "spec/requests/api/v1/signature_requests_spec.rb",
+    "spec/requests/api/v1/signature_connections_spec.rb",
+    "spec/requests/api/v1/signature_reviews_spec.rb",
+    "spec/requests/api/v1/signature_operations_spec.rb",
+    "spec/requests/api/v1/signature_archives_spec.rb",
+    "spec/requests/webhooks/documenso_controller_spec.rb",
+    "--fail-fast"
+  ]
+}

@@ -309,10 +309,147 @@ namespace :api, defaults: { format: "json" } do
       resources :devices, only: [:create, :index, :show, :update, :destroy], controller: "users/devices"
     end
 
+    namespace :hiring do
+      get :pipeline, to: "pipeline#index"
+      post "pipeline/search", to: "pipeline#search"
+      resources :interview_feedback, only: [:index, :show, :update]
+      resources :interview_reviews, only: [:index, :show] do
+        get :feedback, on: :member
+        get :resume, on: :member
+        get "assignments/:assignment_id/files/:attachment_id", on: :member, action: :download
+      end
+      resources :panel_members, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+      resources :assignment_reviews, only: [:index, :show] do
+        post :reviews, on: :member, action: :create
+        get "files/:attachment_id", on: :member, action: :download
+      end
+      resources :assignment_templates, only: [:index, :show, :create, :update] do
+        post :search, on: :collection
+        post :approve, on: :member
+        post :archive, on: :member
+      end
+      resource :settings, only: [:show, :update] do
+        post :approve
+      end
+      resources :mailboxes, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+      resources :receipts, only: [:index, :show, :create] do
+        member do
+          post :accept
+          post :dismiss
+          post :reprocess
+          post :acknowledgement
+          post "messages/:message_id/retry", action: :retry_acknowledgement
+          post "messages/:message_id/reconcile", action: :reconcile_acknowledgement
+          get :source
+          get "attachments/:attachment_index", action: :attachment
+        end
+      end
+      resources :applications, only: [:index, :show, :create] do
+        resource :retention, only: [:show, :destroy], controller: :retention
+        resources :interviews, only: [:index, :create, :update] do
+          resources :messages, only: [:index, :create], controller: :candidate_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
+          resources :bookings, only: [:index, :create, :update] do
+            post :import, on: :collection
+            resources :messages, only: [:index, :create], controller: :candidate_messages do
+              post :preview, on: :collection
+              post :retry, on: :member
+              post :reconcile, on: :member
+            end
+          end
+          resources :calendar_events, only: :index
+          resources :feedback, only: :index, controller: :interview_feedback_history do
+            resources :messages, only: :index, controller: :feedback_messages do
+              post :preview, on: :collection
+              post :retry, on: :member
+              post :reconcile, on: :member
+            end
+          end
+        end
+        post :search, on: :collection
+        resources :assignments, only: [:index, :create] do
+          post :reassign, on: :member
+          post :decision, on: :member
+          get "files/:attachment_id", on: :member, action: :download
+          resources :messages, only: [:index, :create], controller: :assignment_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
+        end
+        resources :screenings, only: [:index, :create]
+        resources :offers, only: [:index, :create, :update] do
+          resources :onboarding, only: [:index, :create], controller: "onboarding" do
+            post :renew, on: :collection
+            post :complete, on: :collection
+          end
+          post :issue, on: :member
+          post :revoke, on: :member
+          resources :messages, only: [:index, :create], controller: :offer_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
+        end
+        resources :decisions, only: [:index, :create, :update] do
+          post :finalize, on: :member
+          resources :messages, only: [:index, :create], controller: :decision_messages do
+            post :preview, on: :collection
+            post :retry, on: :member
+            post :reconcile, on: :member
+          end
+        end
+        resources :forms, only: [:index, :create, :destroy] do
+          get :resume, on: :member
+        end
+      end
+      get "owners", to: "applications#owners"
+      post "owners/search", to: "applications#search_owners"
+      resources :roles, only: [:index, :create, :update] do
+        post :search, on: :collection
+      end
+    end
+
     resource :profile, only: [:update], controller: "profile"
 
-    resources :payroll_runs, only: [:index, :show] do
-      get :preflight, on: :member
+    resource :payroll_mercury_connection, only: [:update] do
+      post :verify
+      post :recipients
+    end
+
+    resources :payroll_runs, only: [:index, :show, :create] do
+      member do
+        get :preflight
+        get :preparation
+        post :revisions
+        post :approvals
+      end
+      resources :mercury_payments, only: [:index, :create], controller: "payroll_mercury_payments" do
+        member do
+          post :submit
+          post :void
+          post :refresh
+          post :reconcile
+          post :confirm_request
+          post :attest_absence
+          post :record_credit
+          post :resolve_shortfall
+        end
+      end
+      resources :split_arrangements, only: [:create], controller: "payroll_split_arrangements" do
+        member do
+          post :verify
+          post :approve
+          post :withdraw
+        end
+      end
     end
 
     resources :expenses, only: [:create, :index, :show, :update, :destroy] do

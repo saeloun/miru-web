@@ -21,18 +21,18 @@ module PdfGeneration
     private
 
       def build_invoice_locals
-        subtotal = calculate_subtotal
-        total = calculate_total(subtotal)
+        amounts = formatted_invoice_amounts
+        subtotal = Invoice.line_item_subtotal(invoice.invoice_line_items.pluck(:quantity, :rate))
 
         {
           invoice: invoice,
-          **formatted_invoice_amounts,
+          **amounts,
           company_logo: company_logo_url || "",
           client: invoice.client,
           invoice_line_items: build_line_items,
           invoice_taxes: build_invoice_taxes,
           sub_total: format_currency(subtotal),
-          total: format_currency(total),
+          total: amounts[:invoice_amount],
           signature_url: resolve_signature_url
         }
       end
@@ -41,16 +41,6 @@ module PdfGeneration
         invoice.invoice_line_items.map do |item|
           InvoiceLineItemPresenter.new(item).pdf_row(invoice.currency)
         end
-      end
-
-      def calculate_subtotal
-        invoice.invoice_line_items.total_cost_of_all_line_items
-      end
-
-      def calculate_total(subtotal = calculate_subtotal)
-        tax = invoice.tax || 0
-        discount = invoice.discount || 0
-        subtotal + tax - discount
       end
 
       def build_invoice_taxes

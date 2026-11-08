@@ -331,6 +331,17 @@ RSpec.describe User, type: :model do
   end
 
   describe "#send_to_hubspot" do
+    it "enqueues public signups" do
+      new_user = build(:user)
+      expect { new_user.save! }.to have_enqueued_job(HubspotIntegrationJob).with(new_user.email, new_user.first_name, new_user.last_name)
+    end
+
+    it "does not market invited members as public signups" do
+      sender = create(:user)
+      new_user = build(:user, invited_by: sender)
+      expect { new_user.save! }.not_to have_enqueued_job(HubspotIntegrationJob)
+    end
+
     it "does not fail user creation when the HubSpot job cannot be enqueued" do
       allow(HubspotIntegrationJob).to receive(:perform_later).and_raise(StandardError, "queue unavailable")
       allow(Rails.logger).to receive(:warn)

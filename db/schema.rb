@@ -10,12 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
   enable_extension "unaccent"
+
+  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "message_id", null: false
+    t.string "message_checksum", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
@@ -490,7 +499,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.bigint "uploaded_by_id", null: false
     t.index ["employment_id"], name: "index_employee_documents_on_employment_id"
     t.index ["uploaded_by_id"], name: "index_employee_documents_on_uploaded_by_id"
-    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying, 'contract'::character varying]::text[])", name: "employee_documents_kind"
+    t.check_constraint "kind::text = ANY (ARRAY['pan'::character varying::text, 'contract'::character varying::text])", name: "employee_documents_kind"
   end
 
   create_table "employee_occasion_deliveries", force: :cascade do |t|
@@ -558,6 +567,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["company_id", "employee_id"], name: "index_employments_on_company_employee_id", unique: true, where: "((employee_id IS NOT NULL) AND (btrim((employee_id)::text) <> ''::text))"
+    t.index ["company_id", "id"], name: "index_employments_hiring_tenant_identity", unique: true
     t.index ["company_id"], name: "index_employments_on_company_id"
     t.index ["discarded_at"], name: "index_employments_on_discarded_at"
     t.index ["user_id"], name: "index_employments_on_user_id"
@@ -631,6 +641,474 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.check_constraint "currency IS NOT NULL AND currency::text ~ '^[A-Z]{3}$'::text", name: "expenses_currency_iso_code"
   end
 
+  create_table "hiring_access_grants", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "hiring_panel_member_id", null: false
+    t.bigint "granted_by_id"
+    t.boolean "compensation_access", default: false, null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_panel_member_id", "revoked_at"], name: "index_hiring_grants_for_reviewer"
+    t.index ["granted_by_id"], name: "index_hiring_access_grants_on_granted_by_id"
+    t.index ["hiring_interview_id", "hiring_panel_member_id"], name: "index_hiring_interview_active_grants", unique: true, where: "(revoked_at IS NULL)"
+  end
+
+  create_table "hiring_applications", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_candidate_id", null: false
+    t.bigint "hiring_role_id"
+    t.bigint "owner_employment_id"
+    t.bigint "created_by_id"
+    t.uuid "request_key", null: false
+    t.text "creation_details", null: false
+    t.text "notes"
+    t.string "source", default: "manual", null: false
+    t.string "stage", default: "received", null: false
+    t.datetime "received_at", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email_key", limit: 64
+    t.index ["company_id", "email_key"], name: "index_hiring_applications_on_company_id_and_email_key", unique: true, where: "(email_key IS NOT NULL)"
+    t.index ["company_id", "id"], name: "index_hiring_applications_on_company_id_and_id", unique: true
+    t.index ["company_id", "received_at", "id"], name: "index_hiring_applications_for_pipeline"
+    t.index ["company_id", "request_key"], name: "index_hiring_applications_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_applications_on_created_by_id"
+    t.index ["hiring_candidate_id", "received_at", "id"], name: "index_hiring_applications_for_candidate"
+    t.index ["owner_employment_id"], name: "index_hiring_applications_on_owner_employment_id"
+    t.check_constraint "source::text = 'manual'::text AND email_key IS NULL OR source::text = 'email'::text AND email_key::text ~ '^[a-f0-9]{64}$'::text", name: "hiring_application_supported_source"
+    t.check_constraint "stage::text = ANY (ARRAY['received'::character varying, 'information_pending'::character varying, 'screening'::character varying, 'shortlisted'::character varying, 'assignment_assigned'::character varying, 'assignment_review'::character varying, 'interview'::character varying, 'final_decision'::character varying, 'offer'::character varying, 'hired'::character varying, 'on_hold'::character varying, 'rejection_pending'::character varying, 'rejected'::character varying, 'withdrawn'::character varying, 'no_show'::character varying]::text[])", name: "hiring_application_stage"
+  end
+
+  create_table "hiring_assignment_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.bigint "created_by_id"
+    t.integer "assignment_version", null: false
+    t.string "action", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_assignment_events_on_created_by_id"
+    t.index ["hiring_assignment_id", "assignment_version"], name: "index_hiring_assignment_events_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.bigint "submission_id", null: false
+    t.bigint "created_by_id"
+    t.integer "assignment_version", null: false
+    t.integer "review_round", null: false
+    t.string "outcome", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_assignment_reviews_on_created_by_id"
+    t.index ["hiring_assignment_id", "assignment_version"], name: "index_hiring_assessment_reviews_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_id", null: false
+    t.text "answers", null: false
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_assignment_id", "id"], name: "index_hiring_work_for_tenant_assignment", unique: true
+    t.index ["hiring_assignment_id"], name: "index_hiring_assignment_submissions_on_hiring_assignment_id", unique: true
+  end
+
+  create_table "hiring_assignment_template_revisions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_assignment_template_id", null: false
+    t.bigint "created_by_id"
+    t.integer "template_version", null: false
+    t.text "snapshot", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_task_revisions_for_tenant", unique: true
+    t.index ["created_by_id"], name: "index_hiring_assignment_template_revisions_on_created_by_id"
+    t.index ["hiring_assignment_template_id", "template_version"], name: "index_hiring_task_revisions_per_version", unique: true
+  end
+
+  create_table "hiring_assignment_templates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_role_id"
+    t.string "title", null: false
+    t.string "skills", default: "", null: false
+    t.string "experience", default: "", null: false
+    t.string "status", default: "draft", null: false
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_assignment_templates_on_company_id_and_id", unique: true
+    t.index ["company_id", "title", "id"], name: "index_hiring_assignment_templates_for_library"
+    t.check_constraint "status::text = ANY (ARRAY['draft'::character varying, 'approved'::character varying, 'archived'::character varying]::text[])", name: "hiring_assignment_template_status"
+  end
+
+  create_table "hiring_assignments", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "template_revision_id", null: false
+    t.bigint "reviewer_employment_id"
+    t.bigint "issued_by_id"
+    t.bigint "previous_assignment_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "terms", null: false
+    t.text "candidate_note"
+    t.text "access_token", null: false
+    t.datetime "due_at", null: false
+    t.datetime "ended_at"
+    t.string "status", default: "issued", null: false
+    t.integer "review_round", default: 0, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_hiring_assignments_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_assignments_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_assignments_one_active", unique: true, where: "(ended_at IS NULL)"
+    t.index ["company_id", "id"], name: "index_hiring_assignments_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_assignments_on_company_id_and_request_key", unique: true
+    t.index ["issued_by_id"], name: "index_hiring_assignments_on_issued_by_id"
+    t.index ["previous_assignment_id"], name: "index_hiring_assignments_on_previous_assignment_id"
+    t.index ["reviewer_employment_id"], name: "index_hiring_assignments_on_reviewer_employment_id"
+    t.check_constraint "(status::text = ANY (ARRAY['issued'::character varying, 'submitted'::character varying, 'reviewed'::character varying]::text[])) AND ended_at IS NULL OR (status::text = ANY (ARRAY['completed'::character varying, 'cancelled'::character varying, 'superseded'::character varying]::text[])) AND ended_at IS NOT NULL", name: "hiring_assignment_status"
+  end
+
+  create_table "hiring_candidates", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "full_name", limit: 200, null: false
+    t.string "email", limit: 254, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "email"], name: "index_hiring_candidates_on_company_id_and_email", unique: true
+    t.index ["company_id", "id"], name: "index_hiring_candidates_on_company_id_and_id", unique: true
+    t.check_constraint "email::text = lower(btrim(email::text))", name: "hiring_candidate_normalized_email"
+  end
+
+  create_table "hiring_decisions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "finalized_by_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "edit_details"
+    t.text "finalization_details"
+    t.text "details", null: false
+    t.string "state", default: "draft", null: false
+    t.datetime "finalized_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "finalized_at", "id"], name: "index_hiring_decisions_finalized", where: "((state)::text = 'finalized'::text)"
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_decisions_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_decisions_one_draft", unique: true, where: "((state)::text = 'draft'::text)"
+    t.index ["company_id", "id"], name: "index_hiring_decisions_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_decisions_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_decisions_on_created_by_id"
+    t.index ["finalized_by_id"], name: "index_hiring_decisions_on_finalized_by_id"
+    t.check_constraint "state::text = 'draft'::text AND finalized_at IS NULL AND finalized_by_id IS NULL AND finalization_details IS NULL OR state::text = 'finalized'::text AND finalized_at IS NOT NULL AND finalization_details IS NOT NULL", name: "hiring_decision_state"
+  end
+
+  create_table "hiring_feedbacks", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_booking_id", null: false
+    t.bigint "hiring_panel_member_id"
+    t.bigint "issued_panel_member_id", null: false
+    t.text "panel_snapshot", null: false
+    t.bigint "submitted_by_id"
+    t.uuid "request_key"
+    t.text "request_details"
+    t.text "details"
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_feedbacks_on_company_id_and_id", unique: true
+    t.index ["hiring_interview_booking_id", "issued_panel_member_id"], name: "index_hiring_feedbacks_on_issued_request", unique: true
+    t.index ["hiring_panel_member_id", "submitted_at", "id"], name: "index_hiring_feedbacks_for_reviewer"
+    t.index ["submitted_by_id"], name: "index_hiring_feedbacks_on_submitted_by_id"
+    t.check_constraint "submitted_at IS NULL AND submitted_by_id IS NULL AND request_key IS NULL AND request_details IS NULL AND details IS NULL OR submitted_at IS NOT NULL AND request_key IS NOT NULL AND request_details IS NOT NULL AND details IS NOT NULL", name: "hiring_feedback_submission"
+  end
+
+  create_table "hiring_interview_bookings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "created_by_id"
+    t.integer "number", null: false
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "details", null: false
+    t.text "round_details", null: false
+    t.text "panel_snapshot", null: false
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
+    t.datetime "feedback_due_at", null: false
+    t.string "status", default: "scheduled", null: false
+    t.datetime "ended_at"
+    t.text "ending_reason"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_interview_bookings_on_company_id_and_id", unique: true
+    t.index ["created_by_id"], name: "index_hiring_interview_bookings_on_created_by_id"
+    t.index ["hiring_interview_id", "number"], name: "idx_on_hiring_interview_id_number_bf23de476a", unique: true
+    t.index ["hiring_interview_id", "request_key"], name: "idx_on_hiring_interview_id_request_key_f0f8ffec7b", unique: true
+    t.index ["hiring_interview_id"], name: "index_hiring_interview_current_booking", unique: true, where: "((status)::text = 'scheduled'::text)"
+    t.index ["status", "feedback_due_at"], name: "index_hiring_interview_bookings_on_status_and_feedback_due_at"
+    t.check_constraint "ends_at > starts_at AND feedback_due_at > ends_at", name: "hiring_booking_times"
+    t.check_constraint "number > 0", name: "hiring_booking_number"
+    t.check_constraint "status::text = 'scheduled'::text AND ended_at IS NULL AND ending_reason IS NULL OR (status::text = ANY (ARRAY['cancelled'::character varying, 'completed'::character varying, 'no_show'::character varying]::text[])) AND ended_at IS NOT NULL AND ending_reason IS NOT NULL", name: "hiring_booking_status"
+  end
+
+  create_table "hiring_interview_events", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_interview_id", null: false
+    t.bigint "created_by_id"
+    t.integer "interview_version", null: false
+    t.integer "application_version", null: false
+    t.string "action", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_hiring_interview_events_on_created_by_id"
+    t.index ["hiring_interview_id", "interview_version"], name: "index_hiring_interview_events_per_version", unique: true
+  end
+
+  create_table "hiring_interviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "previous_interview_id"
+    t.integer "number", null: false
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "details", null: false
+    t.text "panel_snapshot", null: false
+    t.string "status", default: "planned", null: false
+    t.datetime "ended_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_interviews_on_company_id_and_id", unique: true
+    t.index ["created_by_id"], name: "index_hiring_interviews_on_created_by_id"
+    t.index ["hiring_application_id", "number"], name: "index_hiring_interviews_on_hiring_application_id_and_number", unique: true
+    t.index ["hiring_application_id", "request_key"], name: "idx_on_hiring_application_id_request_key_982b41fc90", unique: true
+    t.index ["previous_interview_id"], name: "index_hiring_interviews_on_previous_interview_id"
+    t.check_constraint "number > 0", name: "hiring_interview_number"
+    t.check_constraint "status::text = 'planned'::text AND ended_at IS NULL OR (status::text = ANY (ARRAY['completed'::character varying, 'skipped'::character varying, 'cancelled'::character varying]::text[])) AND ended_at IS NOT NULL", name: "hiring_interview_status"
+  end
+
+  create_table "hiring_mailboxes", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "name", limit: 200, null: false
+    t.string "source_email", limit: 254, null: false
+    t.uuid "routing_key", null: false
+    t.boolean "active", default: true, null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_mailboxes_on_company_id_and_id", unique: true
+    t.index ["company_id", "source_email"], name: "index_hiring_mailboxes_on_company_id_and_source_email", unique: true
+    t.index ["routing_key"], name: "index_hiring_mailboxes_on_routing_key", unique: true
+    t.check_constraint "source_email::text = lower(btrim(source_email::text))", name: "hiring_mailbox_normalized_email"
+  end
+
+  create_table "hiring_messages", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_setting_id", null: false
+    t.bigint "queued_by_id"
+    t.integer "approved_setting_version", null: false
+    t.string "kind", default: "acknowledgement", null: false
+    t.string "state", default: "queued", null: false
+    t.string "error_code", limit: 64
+    t.text "content", null: false
+    t.datetime "enqueued_at"
+    t.datetime "started_at"
+    t.datetime "sent_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "original_message_id"
+    t.integer "attempt_number", default: 1, null: false
+    t.string "resolution", limit: 32
+    t.text "resolution_details"
+    t.bigint "resolved_by_id"
+    t.datetime "resolved_at"
+    t.string "event_key", default: "acknowledgement", null: false
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_messages_on_tenant_application_id", unique: true
+    t.index ["company_id", "hiring_application_id", "kind", "event_key"], name: "index_hiring_messages_on_original_operation", unique: true, where: "(original_message_id IS NULL)"
+    t.index ["company_id", "original_message_id", "attempt_number"], name: "index_hiring_messages_on_retry_attempt", unique: true, where: "(original_message_id IS NOT NULL)"
+    t.index ["hiring_setting_id"], name: "index_hiring_messages_on_hiring_setting_id"
+    t.index ["queued_by_id"], name: "index_hiring_messages_on_queued_by_id"
+    t.index ["resolved_by_id"], name: "index_hiring_messages_on_resolved_by_id"
+    t.index ["state", "enqueued_at"], name: "index_hiring_messages_on_state_and_enqueued_at"
+    t.check_constraint "kind::text = 'acknowledgement'::text AND event_key::text = 'acknowledgement'::text OR (kind::text = ANY (ARRAY['interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying]::text[])) AND event_key::text ~ '^booking:[1-9][0-9]{0,18}$'::text OR kind::text = 'interview_invitation'::text AND event_key::text ~ '^round:[1-9][0-9]{0,18}:[0-9]{1,10}$'::text OR (kind::text = ANY (ARRAY['feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying]::text[])) AND event_key::text ~ '^feedback:[1-9][0-9]{0,18}$'::text OR (kind::text = ANY (ARRAY['rejection'::character varying, 'hold_follow_up'::character varying]::text[])) AND event_key::text ~ '^decision:[1-9][0-9]{0,18}$'::text OR kind::text = 'offer'::text AND event_key::text ~ '^offer:[1-9][0-9]{0,18}$'::text OR kind::text = 'assignment'::text AND event_key::text ~ '^assignment:[1-9][0-9]{0,18}$'::text", name: "hiring_message_event"
+    t.check_constraint "kind::text = ANY (ARRAY['acknowledgement'::character varying, 'interview_invitation'::character varying, 'interview_confirmation'::character varying, 'interview_reschedule'::character varying, 'interview_cancellation'::character varying, 'feedback_prompt'::character varying, 'feedback_overdue'::character varying, 'feedback_received'::character varying, 'rejection'::character varying, 'hold_follow_up'::character varying, 'offer'::character varying, 'assignment'::character varying]::text[])", name: "hiring_message_kind"
+    t.check_constraint "original_message_id IS NULL AND attempt_number = 1 OR original_message_id IS NOT NULL AND original_message_id <> id AND attempt_number > 1", name: "hiring_message_attempt"
+    t.check_constraint "resolution IS NULL AND resolved_at IS NULL AND resolved_by_id IS NULL AND resolution_details IS NULL OR resolution IS NOT NULL AND (resolution::text = ANY (ARRAY['accepted'::character varying, 'not_accepted'::character varying]::text[])) AND resolved_at IS NOT NULL AND resolution_details IS NOT NULL", name: "hiring_message_resolution"
+    t.check_constraint "state::text = ANY (ARRAY['queued'::character varying::text, 'sending'::character varying::text, 'sent'::character varying::text, 'failed'::character varying::text, 'uncertain'::character varying::text])", name: "hiring_message_state"
+  end
+
+  create_table "hiring_offers", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.bigint "issued_by_id"
+    t.uuid "request_key", null: false
+    t.text "request_details", null: false
+    t.text "edit_details"
+    t.text "issue_details"
+    t.text "response_details"
+    t.text "details", null: false
+    t.text "access_token", null: false
+    t.string "state", default: "preparing", null: false
+    t.datetime "issued_at"
+    t.datetime "expires_at"
+    t.datetime "responded_at"
+    t.datetime "revoked_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "onboarding_details"
+    t.text "onboarding_completion_details"
+    t.datetime "onboarding_started_at"
+    t.datetime "onboarded_at"
+    t.bigint "employment_id"
+    t.index ["access_token"], name: "index_hiring_offers_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_offers_for_history"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_offers_one_active", unique: true, where: "((state)::text = ANY ((ARRAY['preparing'::character varying, 'sent'::character varying, 'accepted'::character varying])::text[]))"
+    t.index ["company_id", "id"], name: "index_hiring_offers_on_company_id_and_id", unique: true
+    t.index ["company_id", "request_key"], name: "index_hiring_offers_on_company_id_and_request_key", unique: true
+    t.index ["created_by_id"], name: "index_hiring_offers_on_created_by_id"
+    t.index ["employment_id"], name: "index_hiring_offers_on_employment_id"
+    t.index ["expires_at"], name: "index_hiring_offers_pending_expiry", where: "((state)::text = 'sent'::text)"
+    t.index ["issued_by_id"], name: "index_hiring_offers_on_issued_by_id"
+    t.check_constraint "onboarding_started_at IS NULL AND onboarding_details IS NULL AND onboarded_at IS NULL AND employment_id IS NULL AND onboarding_completion_details IS NULL OR state::text = 'accepted'::text AND onboarding_started_at IS NOT NULL AND onboarding_details IS NOT NULL AND (onboarded_at IS NULL AND employment_id IS NULL AND onboarding_completion_details IS NULL OR onboarded_at IS NOT NULL AND employment_id IS NOT NULL AND onboarding_completion_details IS NOT NULL)", name: "hiring_offer_onboarding_state"
+    t.check_constraint "state::text = 'preparing'::text AND issued_at IS NULL AND issued_by_id IS NULL AND issue_details IS NULL AND expires_at IS NULL AND responded_at IS NULL AND response_details IS NULL AND revoked_at IS NULL OR (state::text = ANY (ARRAY['sent'::character varying, 'accepted'::character varying, 'declined'::character varying, 'expired'::character varying]::text[])) AND issued_at IS NOT NULL AND issue_details IS NOT NULL AND expires_at IS NOT NULL AND ((state::text = ANY (ARRAY['sent'::character varying, 'expired'::character varying]::text[])) AND responded_at IS NULL AND response_details IS NULL OR (state::text = ANY (ARRAY['accepted'::character varying, 'declined'::character varying]::text[])) AND responded_at IS NOT NULL AND response_details IS NOT NULL)", name: "hiring_offer_state"
+  end
+
+  create_table "hiring_panel_members", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "employment_id"], name: "index_hiring_panel_members_on_company_id_and_employment_id", unique: true
+    t.index ["company_id", "id"], name: "index_hiring_panel_members_on_company_id_and_id", unique: true
+  end
+
+  create_table "hiring_portal_accesses", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_setting_id", null: false
+    t.bigint "issued_by_id"
+    t.integer "approved_setting_version", null: false
+    t.text "access_token", null: false
+    t.text "form_schema", null: false
+    t.text "introduction", null: false
+    t.datetime "expires_at", null: false
+    t.datetime "revoked_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["access_token"], name: "index_hiring_portal_accesses_on_access_token", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_portal_accesses_for_submission", unique: true
+    t.index ["company_id", "hiring_application_id"], name: "idx_on_company_id_hiring_application_id_8e04c271d1"
+    t.index ["hiring_setting_id"], name: "index_hiring_portal_accesses_on_hiring_setting_id"
+    t.index ["issued_by_id"], name: "index_hiring_portal_accesses_on_issued_by_id"
+  end
+
+  create_table "hiring_receipts", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_mailbox_id", null: false
+    t.bigint "inbound_email_id"
+    t.bigint "hiring_application_id"
+    t.bigint "reviewed_by_id"
+    t.datetime "reviewed_at"
+    t.datetime "received_at", null: false
+    t.string "source_checksum", limit: 64, null: false
+    t.string "message_key", limit: 64
+    t.string "state", default: "pending", null: false
+    t.string "review_reason", limit: 64
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_mailbox_id", "source_checksum"], name: "index_hiring_receipts_on_mailbox_and_source", unique: true
+    t.index ["company_id", "message_key"], name: "index_hiring_receipts_on_company_id_and_message_key"
+    t.index ["company_id", "state", "received_at"], name: "index_hiring_receipts_on_company_id_and_state_and_received_at"
+    t.index ["hiring_application_id"], name: "index_hiring_receipts_on_hiring_application_id"
+    t.index ["inbound_email_id"], name: "index_hiring_receipts_on_inbound_email_id"
+    t.index ["reviewed_by_id"], name: "index_hiring_receipts_on_reviewed_by_id"
+    t.check_constraint "state::text = ANY (ARRAY['pending'::character varying::text, 'review'::character varying::text, 'accepted'::character varying::text, 'dismissed'::character varying::text])", name: "hiring_receipt_state"
+  end
+
+  create_table "hiring_roles", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.string "title", limit: 200, null: false
+    t.string "status", default: "open", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "id"], name: "index_hiring_roles_on_company_id_and_id", unique: true
+    t.check_constraint "status::text = ANY (ARRAY['open'::character varying, 'closed'::character varying]::text[])", name: "hiring_role_status"
+  end
+
+  create_table "hiring_screenings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "created_by_id"
+    t.string "action", null: false
+    t.string "from_stage", null: false
+    t.string "to_stage", null: false
+    t.integer "application_version", null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_application_id", "application_version"], name: "index_hiring_screenings_per_version", unique: true
+    t.index ["company_id", "hiring_application_id", "id"], name: "idx_on_company_id_hiring_application_id_id_d076a476bc"
+    t.index ["created_by_id"], name: "index_hiring_screenings_on_created_by_id"
+  end
+
+  create_table "hiring_settings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "approved_by_id"
+    t.datetime "approved_at"
+    t.text "details", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "form_schema"
+    t.datetime "feedback_notifications_started_at"
+    t.datetime "rejection_automation_started_at"
+    t.datetime "hold_notifications_started_at"
+    t.index ["approved_by_id"], name: "index_hiring_settings_on_approved_by_id"
+    t.index ["company_id", "id"], name: "index_hiring_settings_on_company_id_and_id", unique: true
+    t.index ["company_id"], name: "index_hiring_settings_on_company_id", unique: true
+  end
+
+  create_table "hiring_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "hiring_application_id", null: false
+    t.bigint "hiring_portal_access_id", null: false
+    t.text "answers", null: false
+    t.datetime "submitted_at"
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "hiring_application_id"], name: "idx_on_company_id_hiring_application_id_bcbb7e18bf"
+    t.index ["hiring_portal_access_id"], name: "index_hiring_submissions_on_hiring_portal_access_id", unique: true
+  end
+
   create_table "holiday_infos", force: :cascade do |t|
     t.integer "category", default: 0, null: false
     t.datetime "created_at", null: false
@@ -681,11 +1159,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.string "token", null: false
     t.datetime "updated_at", null: false
     t.boolean "virtual_verified", default: false
+    t.bigint "hiring_offer_id"
     t.index ["accepted_at"], name: "index_invitations_on_accepted_at"
     t.index ["client_id"], name: "index_invitations_on_client_id"
     t.index ["company_id"], name: "index_invitations_on_company_id"
     t.index ["expired_at"], name: "index_invitations_on_expired_at"
     t.index ["first_name"], name: "index_invitations_on_first_name_trgm", opclass: :gin_trgm_ops, using: :gin
+    t.index ["hiring_offer_id"], name: "index_invitations_on_hiring_offer_id", unique: true
     t.index ["last_name"], name: "index_invitations_on_last_name_trgm", opclass: :gin_trgm_ops, using: :gin
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email"
     t.index ["recipient_email"], name: "index_invitations_on_recipient_email_trgm", opclass: :gin_trgm_ops, using: :gin
@@ -943,7 +1423,196 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.index ["actor_id"], name: "index_payroll_approvals_on_actor_id"
     t.index ["payroll_revision_id", "stage"], name: "index_payroll_approvals_on_payroll_revision_id_and_stage", unique: true
     t.index ["payroll_revision_id"], name: "index_payroll_approvals_on_payroll_revision_id"
-    t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying, 'final'::character varying]::text[])", name: "payroll_approval_stage"
+    t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying::text, 'final'::character varying::text])", name: "payroll_approval_stage"
+  end
+
+  create_table "payroll_expense_reservations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "expense_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "amount_minor", null: false
+    t.datetime "settled_at"
+    t.datetime "released_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_expense_reservations_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_expense_reservations_on_employment_id"
+    t.index ["expense_id"], name: "index_payroll_expense_reservations_on_expense_id"
+    t.index ["expense_id"], name: "index_payroll_expense_reservations_one_active", unique: true, where: "(released_at IS NULL)"
+    t.index ["payroll_revision_id"], name: "index_payroll_expense_reservations_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_expense_reservations_on_payroll_run_id"
+    t.check_constraint "amount_minor > 0", name: "payroll_expense_reservation_amount"
+  end
+
+  create_table "payroll_mercury_connections", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "configured_by_id", null: false
+    t.bigint "verified_by_id"
+    t.text "api_token", null: false
+    t.string "environment", null: false
+    t.string "source_account_id", null: false
+    t.string "expected_legal_business_name", null: false
+    t.bigint "wire_fee_minor", default: 1500, null: false
+    t.integer "credential_version", default: 1, null: false
+    t.integer "verified_version"
+    t.datetime "verified_at"
+    t.string "verified_account_name"
+    t.string "verified_account_mask"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_mercury_connections_on_company_id", unique: true
+    t.index ["configured_by_id"], name: "index_payroll_mercury_connections_on_configured_by_id"
+    t.index ["verified_by_id"], name: "index_payroll_mercury_connections_on_verified_by_id"
+    t.check_constraint "environment::text = ANY (ARRAY['live'::character varying, 'sandbox'::character varying]::text[])", name: "payroll_mercury_connection_environment"
+    t.check_constraint "wire_fee_minor > 0", name: "payroll_mercury_connection_fee"
+  end
+
+  create_table "payroll_mercury_recipient_links", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "split_arrangement_id"
+    t.bigint "verified_by_id", null: false
+    t.string "beneficiary", null: false
+    t.string "mercury_recipient_id", null: false
+    t.string "recipient_digest", null: false
+    t.string "bank_details_digest", null: false
+    t.string "display_name", null: false
+    t.string "account_mask", null: false
+    t.string "swift_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_mercury_recipient_links_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_mercury_recipient_links_on_employment_id"
+    t.index ["split_arrangement_id"], name: "index_payroll_mercury_recipient_links_on_split_arrangement_id"
+    t.index ["verified_by_id"], name: "index_payroll_mercury_recipient_links_on_verified_by_id"
+    t.check_constraint "beneficiary::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])", name: "payroll_recipient_beneficiary"
+  end
+
+  create_table "payroll_payment_events", force: :cascade do |t|
+    t.bigint "payroll_payment_instruction_id", null: false
+    t.bigint "actor_id"
+    t.string "kind", null: false
+    t.jsonb "data", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_payroll_payment_events_on_actor_id"
+    t.index ["payroll_payment_instruction_id"], name: "index_payroll_payment_events_on_payroll_payment_instruction_id"
+  end
+
+  create_table "payroll_payment_groups", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "split_arrangement_id"
+    t.string "line_digest", null: false
+    t.bigint "entitlement_minor", null: false
+    t.bigint "reimbursement_minor", default: 0, null: false
+    t.integer "required_legs", null: false
+    t.datetime "fully_credited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_payment_groups_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_payment_groups_on_employment_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_payment_groups_on_payroll_revision_id"
+    t.index ["payroll_run_id", "employment_id"], name: "idx_on_payroll_run_id_employment_id_49550bdfda", unique: true
+    t.index ["payroll_run_id"], name: "index_payroll_payment_groups_on_payroll_run_id"
+    t.index ["split_arrangement_id"], name: "index_payroll_payment_groups_on_split_arrangement_id"
+    t.check_constraint "entitlement_minor > 0", name: "payroll_payment_group_entitlement"
+    t.check_constraint "required_legs = ANY (ARRAY[1, 2])", name: "payroll_payment_group_legs"
+  end
+
+  create_table "payroll_payment_instructions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_payment_group_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "consultant_compensation_id", null: false
+    t.bigint "recipient_link_id", null: false
+    t.bigint "prepared_by_id", null: false
+    t.bigint "rate_entered_by_id"
+    t.bigint "submitted_by_id"
+    t.bigint "absent_confirmed_by_id"
+    t.string "beneficiary", null: false
+    t.integer "connection_version", null: false
+    t.string "environment", null: false
+    t.string "source_account_id", null: false
+    t.string "revision_digest", null: false
+    t.string "bank_details_digest", null: false
+    t.string "recipient_digest", null: false
+    t.string "mercury_recipient_id", null: false
+    t.bigint "entitlement_minor", null: false
+    t.string "entitlement_currency", default: "INR", null: false
+    t.decimal "reference_rate", precision: 18, scale: 10, null: false
+    t.decimal "buffered_rate", precision: 18, scale: 10, null: false
+    t.string "rate_source", null: false
+    t.string "rate_mode", null: false
+    t.datetime "rate_observed_at", null: false
+    t.datetime "rate_valid_until", null: false
+    t.bigint "principal_minor", null: false
+    t.bigint "fee_minor", null: false
+    t.bigint "company_debit_minor", null: false
+    t.string "charge_type", default: "ours", null: false
+    t.string "purpose_category", null: false
+    t.string "purpose_info", null: false
+    t.string "idempotency_key", null: false
+    t.string "frozen_digest", null: false
+    t.string "submission_state", default: "prepared", null: false
+    t.integer "submission_attempts", default: 0, null: false
+    t.datetime "submission_started_at"
+    t.datetime "absent_confirmed_at"
+    t.string "provider_request_id"
+    t.string "request_status"
+    t.datetime "provider_request_created_at"
+    t.datetime "request_approved_at"
+    t.boolean "requester_may_approve"
+    t.integer "approvers_required"
+    t.date "scheduled_send_on"
+    t.string "provider_transaction_id"
+    t.string "transaction_status"
+    t.string "transaction_link_state", default: "none", null: false
+    t.string "transaction_failure_reason"
+    t.string "credit_state", default: "none", null: false
+    t.bigint "credited_minor", default: 0, null: false
+    t.string "held_reason"
+    t.string "last_error_code"
+    t.datetime "last_checked_at"
+    t.datetime "released_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["absent_confirmed_by_id"], name: "index_payroll_payment_instructions_on_absent_confirmed_by_id"
+    t.index ["company_id", "idempotency_key"], name: "idx_on_company_id_idempotency_key_837e390706", unique: true
+    t.index ["company_id", "provider_request_id"], name: "index_payroll_payment_instructions_on_provider_request", unique: true, where: "(provider_request_id IS NOT NULL)"
+    t.index ["company_id", "provider_transaction_id"], name: "index_payroll_payment_instructions_on_provider_transaction", unique: true, where: "(provider_transaction_id IS NOT NULL)"
+    t.index ["company_id"], name: "index_payroll_payment_instructions_on_company_id"
+    t.index ["consultant_compensation_id"], name: "idx_on_consultant_compensation_id_f822a508f1"
+    t.index ["employment_id"], name: "index_payroll_payment_instructions_on_employment_id"
+    t.index ["payroll_payment_group_id", "beneficiary"], name: "index_payroll_payment_instructions_one_open_leg", unique: true, where: "(released_at IS NULL)"
+    t.index ["payroll_payment_group_id"], name: "index_payroll_payment_instructions_on_payroll_payment_group_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_payment_instructions_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_payment_instructions_on_payroll_run_id"
+    t.index ["prepared_by_id"], name: "index_payroll_payment_instructions_on_prepared_by_id"
+    t.index ["rate_entered_by_id"], name: "index_payroll_payment_instructions_on_rate_entered_by_id"
+    t.index ["recipient_link_id"], name: "index_payroll_payment_instructions_on_recipient_link_id"
+    t.index ["submitted_by_id"], name: "index_payroll_payment_instructions_on_submitted_by_id"
+    t.check_constraint "beneficiary::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])", name: "payroll_payment_beneficiary"
+    t.check_constraint "charge_type::text = 'ours'::text", name: "payroll_payment_charge_type"
+    t.check_constraint "company_debit_minor = (principal_minor + fee_minor)", name: "payroll_payment_company_debit"
+    t.check_constraint "credit_state::text = ANY (ARRAY['none'::character varying, 'partial'::character varying, 'credited'::character varying, 'shortfall_resolved'::character varying]::text[])", name: "payroll_payment_credit_state"
+    t.check_constraint "credited_minor >= 0", name: "payroll_payment_credit"
+    t.check_constraint "entitlement_currency::text = 'INR'::text", name: "payroll_payment_entitlement_currency"
+    t.check_constraint "entitlement_minor > 0", name: "payroll_payment_entitlement_positive"
+    t.check_constraint "environment::text = ANY (ARRAY['live'::character varying, 'sandbox'::character varying]::text[])", name: "payroll_payment_environment"
+    t.check_constraint "fee_minor > 0", name: "payroll_payment_fee"
+    t.check_constraint "principal_minor >= 1 AND principal_minor <= 1000000000", name: "payroll_payment_principal_range"
+    t.check_constraint "rate_mode::text = ANY (ARRAY['exchange_rate'::character varying, 'manual'::character varying]::text[])", name: "payroll_payment_rate_mode"
+    t.check_constraint "request_status IS NULL OR (request_status::text = ANY (ARRAY['pendingApproval'::character varying, 'approved'::character varying, 'rejected'::character varying, 'cancelled'::character varying]::text[]))", name: "payroll_payment_request_status"
+    t.check_constraint "submission_state::text = ANY (ARRAY['prepared'::character varying, 'submitting'::character varying, 'accepted'::character varying, 'uncertain'::character varying, 'rejected'::character varying, 'voided'::character varying]::text[])", name: "payroll_payment_submission_state"
+    t.check_constraint "transaction_link_state::text = ANY (ARRAY['none'::character varying, 'linked'::character varying, 'reconciliation_required'::character varying]::text[])", name: "payroll_payment_link_state"
+    t.check_constraint "transaction_status IS NULL OR (transaction_status::text = ANY (ARRAY['pending'::character varying, 'sent'::character varying, 'cancelled'::character varying, 'failed'::character varying, 'reversed'::character varying, 'blocked'::character varying]::text[]))", name: "payroll_payment_transaction_status"
   end
 
   create_table "payroll_revisions", force: :cascade do |t|
@@ -980,6 +1649,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
     t.check_constraint "accounts_reviewer_id <> final_reviewer_id", name: "payroll_distinct_reviewers"
     t.check_constraint "currency::text ~ '^[A-Z]{3}$'::text", name: "payroll_run_currency"
     t.check_constraint "dry_run = true", name: "payroll_run_dry_run_only"
+  end
+
+  create_table "payroll_split_arrangements", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "requested_by_id", null: false
+    t.bigint "verified_by_id"
+    t.bigint "approved_by_id"
+    t.bigint "withdrawn_by_id"
+    t.text "details", null: false
+    t.string "allocation_kind", null: false
+    t.decimal "allocation_value", precision: 14, scale: 2, null: false
+    t.string "allocated_to", null: false
+    t.string "remainder_to", null: false
+    t.datetime "verified_at"
+    t.datetime "approved_at"
+    t.datetime "withdrawn_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approved_by_id"], name: "index_payroll_split_arrangements_on_approved_by_id"
+    t.index ["company_id"], name: "index_payroll_split_arrangements_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_split_arrangements_on_employment_id"
+    t.index ["requested_by_id"], name: "index_payroll_split_arrangements_on_requested_by_id"
+    t.index ["verified_by_id"], name: "index_payroll_split_arrangements_on_verified_by_id"
+    t.index ["withdrawn_by_id"], name: "index_payroll_split_arrangements_on_withdrawn_by_id"
+    t.check_constraint "(allocated_to::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])) AND (remainder_to::text = ANY (ARRAY['consultant'::character varying, 'spouse'::character varying]::text[])) AND allocated_to::text <> remainder_to::text", name: "payroll_split_parties"
+    t.check_constraint "allocation_kind::text = ANY (ARRAY['percentage'::character varying, 'fixed_inr'::character varying]::text[])", name: "payroll_split_kind"
+    t.check_constraint "allocation_value > 0::numeric", name: "payroll_split_value"
   end
 
   create_table "previous_employments", force: :cascade do |t|
@@ -1780,11 +2477,94 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "expenses", "projects"
   add_foreign_key "expenses", "users"
   add_foreign_key "expenses", "vendors"
+  add_foreign_key "hiring_access_grants", "companies"
+  add_foreign_key "hiring_access_grants", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_access_grants", "hiring_panel_members", column: ["company_id", "hiring_panel_member_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_access_grants", "users", column: "granted_by_id", on_delete: :nullify
+  add_foreign_key "hiring_applications", "companies"
+  add_foreign_key "hiring_applications", "employments", column: "owner_employment_id", on_delete: :nullify
+  add_foreign_key "hiring_applications", "hiring_candidates", column: ["company_id", "hiring_candidate_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_applications", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_applications", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_events", "companies"
+  add_foreign_key "hiring_assignment_events", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_events", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_reviews", "companies"
+  add_foreign_key "hiring_assignment_reviews", "hiring_assignment_submissions", column: ["company_id", "hiring_assignment_id", "submission_id"], primary_key: ["company_id", "hiring_assignment_id", "id"]
+  add_foreign_key "hiring_assignment_reviews", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_reviews", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_submissions", "companies"
+  add_foreign_key "hiring_assignment_submissions", "hiring_assignments", column: ["company_id", "hiring_assignment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_template_revisions", "companies"
+  add_foreign_key "hiring_assignment_template_revisions", "hiring_assignment_templates", column: ["company_id", "hiring_assignment_template_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignment_template_revisions", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_assignment_templates", "companies"
+  add_foreign_key "hiring_assignment_templates", "hiring_roles", column: ["company_id", "hiring_role_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "companies"
+  add_foreign_key "hiring_assignments", "employments", column: "reviewer_employment_id", on_delete: :nullify
+  add_foreign_key "hiring_assignments", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "hiring_assignment_template_revisions", column: ["company_id", "template_revision_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_assignments", "hiring_assignments", column: "previous_assignment_id", on_delete: :nullify
+  add_foreign_key "hiring_assignments", "users", column: "issued_by_id", on_delete: :nullify
+  add_foreign_key "hiring_candidates", "companies"
+  add_foreign_key "hiring_decisions", "companies"
+  add_foreign_key "hiring_decisions", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_decisions", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_decisions", "users", column: "finalized_by_id", on_delete: :nullify
+  add_foreign_key "hiring_feedbacks", "companies"
+  add_foreign_key "hiring_feedbacks", "hiring_interview_bookings", column: ["company_id", "hiring_interview_booking_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_feedbacks", "hiring_panel_members", on_delete: :nullify
+  add_foreign_key "hiring_feedbacks", "users", column: "submitted_by_id", on_delete: :nullify
+  add_foreign_key "hiring_interview_bookings", "companies"
+  add_foreign_key "hiring_interview_bookings", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_interview_bookings", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_interview_events", "companies"
+  add_foreign_key "hiring_interview_events", "hiring_interviews", column: ["company_id", "hiring_interview_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_interview_events", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_interviews", "companies"
+  add_foreign_key "hiring_interviews", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_interviews", "hiring_interviews", column: "previous_interview_id", on_delete: :nullify
+  add_foreign_key "hiring_interviews", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_mailboxes", "companies"
+  add_foreign_key "hiring_messages", "companies"
+  add_foreign_key "hiring_messages", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_messages", "hiring_messages", column: ["company_id", "hiring_application_id", "original_message_id"], primary_key: ["company_id", "hiring_application_id", "id"], name: "hiring_message_original", on_delete: :cascade
+  add_foreign_key "hiring_messages", "hiring_settings"
+  add_foreign_key "hiring_messages", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_messages", "users", column: "queued_by_id", on_delete: :nullify
+  add_foreign_key "hiring_messages", "users", column: "resolved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_offers", "companies"
+  add_foreign_key "hiring_offers", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_offers", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_offers", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_offers", "users", column: "issued_by_id", on_delete: :nullify
+  add_foreign_key "hiring_panel_members", "companies"
+  add_foreign_key "hiring_panel_members", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"], on_delete: :cascade
+  add_foreign_key "hiring_portal_accesses", "companies"
+  add_foreign_key "hiring_portal_accesses", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_portal_accesses", "hiring_settings"
+  add_foreign_key "hiring_portal_accesses", "hiring_settings", column: ["company_id", "hiring_setting_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_portal_accesses", "users", column: "issued_by_id", on_delete: :nullify
+  add_foreign_key "hiring_receipts", "action_mailbox_inbound_emails", column: "inbound_email_id", on_delete: :nullify
+  add_foreign_key "hiring_receipts", "companies"
+  add_foreign_key "hiring_receipts", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_receipts", "hiring_mailboxes", column: ["company_id", "hiring_mailbox_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_receipts", "users", column: "reviewed_by_id", on_delete: :nullify
+  add_foreign_key "hiring_roles", "companies"
+  add_foreign_key "hiring_screenings", "companies"
+  add_foreign_key "hiring_screenings", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_screenings", "users", column: "created_by_id", on_delete: :nullify
+  add_foreign_key "hiring_settings", "companies"
+  add_foreign_key "hiring_settings", "users", column: "approved_by_id", on_delete: :nullify
+  add_foreign_key "hiring_submissions", "companies"
+  add_foreign_key "hiring_submissions", "hiring_applications", column: ["company_id", "hiring_application_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "hiring_submissions", "hiring_portal_accesses", column: ["company_id", "hiring_application_id", "hiring_portal_access_id"], primary_key: ["company_id", "hiring_application_id", "id"], name: "fk_hiring_submission_application_access"
   add_foreign_key "holiday_infos", "holidays"
   add_foreign_key "holidays", "companies", validate: false
   add_foreign_key "identities", "users"
   add_foreign_key "invitations", "clients"
   add_foreign_key "invitations", "companies"
+  add_foreign_key "invitations", "hiring_offers", column: ["company_id", "hiring_offer_id"], primary_key: ["company_id", "id"], on_delete: :cascade
   add_foreign_key "invitations", "users", column: "sender_id"
   add_foreign_key "invoice_line_item_time_entries", "invoice_line_items"
   add_foreign_key "invoice_line_item_time_entries", "timesheet_entries"
@@ -1806,11 +2586,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "payroll_approvals", "payroll_revisions"
   add_foreign_key "payroll_approvals", "users", column: "actor_id"
+  add_foreign_key "payroll_expense_reservations", "companies"
+  add_foreign_key "payroll_expense_reservations", "employments"
+  add_foreign_key "payroll_expense_reservations", "expenses"
+  add_foreign_key "payroll_expense_reservations", "payroll_revisions"
+  add_foreign_key "payroll_expense_reservations", "payroll_runs"
+  add_foreign_key "payroll_mercury_connections", "companies"
+  add_foreign_key "payroll_mercury_connections", "users", column: "configured_by_id"
+  add_foreign_key "payroll_mercury_connections", "users", column: "verified_by_id"
+  add_foreign_key "payroll_mercury_recipient_links", "companies"
+  add_foreign_key "payroll_mercury_recipient_links", "employments"
+  add_foreign_key "payroll_mercury_recipient_links", "payroll_split_arrangements", column: "split_arrangement_id"
+  add_foreign_key "payroll_mercury_recipient_links", "users", column: "verified_by_id"
+  add_foreign_key "payroll_payment_events", "payroll_payment_instructions"
+  add_foreign_key "payroll_payment_events", "users", column: "actor_id"
+  add_foreign_key "payroll_payment_groups", "companies"
+  add_foreign_key "payroll_payment_groups", "employments"
+  add_foreign_key "payroll_payment_groups", "payroll_revisions"
+  add_foreign_key "payroll_payment_groups", "payroll_runs"
+  add_foreign_key "payroll_payment_groups", "payroll_split_arrangements", column: "split_arrangement_id"
+  add_foreign_key "payroll_payment_instructions", "companies"
+  add_foreign_key "payroll_payment_instructions", "consultant_compensations"
+  add_foreign_key "payroll_payment_instructions", "employments"
+  add_foreign_key "payroll_payment_instructions", "payroll_mercury_recipient_links", column: "recipient_link_id"
+  add_foreign_key "payroll_payment_instructions", "payroll_payment_groups"
+  add_foreign_key "payroll_payment_instructions", "payroll_revisions"
+  add_foreign_key "payroll_payment_instructions", "payroll_runs"
+  add_foreign_key "payroll_payment_instructions", "users", column: "absent_confirmed_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "prepared_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "rate_entered_by_id"
+  add_foreign_key "payroll_payment_instructions", "users", column: "submitted_by_id"
   add_foreign_key "payroll_revisions", "payroll_runs"
   add_foreign_key "payroll_revisions", "users", column: "created_by_id"
   add_foreign_key "payroll_runs", "companies"
   add_foreign_key "payroll_runs", "users", column: "accounts_reviewer_id"
   add_foreign_key "payroll_runs", "users", column: "final_reviewer_id"
+  add_foreign_key "payroll_split_arrangements", "companies"
+  add_foreign_key "payroll_split_arrangements", "employments"
+  add_foreign_key "payroll_split_arrangements", "users", column: "approved_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "requested_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "verified_by_id"
+  add_foreign_key "payroll_split_arrangements", "users", column: "withdrawn_by_id"
   add_foreign_key "previous_employments", "users"
   add_foreign_key "profitability_billing_rates", "projects"
   add_foreign_key "profitability_billing_rates", "users"
@@ -1900,6 +2716,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_03_120000) do
   SQL
   execute <<~SQL
     CREATE TRIGGER payroll_approvals_immutable BEFORE UPDATE OR DELETE ON payroll_approvals
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_mercury_recipient_links_immutable BEFORE UPDATE OR DELETE ON payroll_mercury_recipient_links
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_payment_events_immutable BEFORE UPDATE OR DELETE ON payroll_payment_events
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
   SQL
 end

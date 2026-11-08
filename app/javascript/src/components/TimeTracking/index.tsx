@@ -844,7 +844,7 @@ const TimeTracking: React.FC<Iprops> = ({ user, isAdminUser }) => {
     >
       <div className="pb-14">
         <div className="mt-0 h-full p-4 lg:mt-6 lg:p-0">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex items-center justify-between lg:min-h-10">
             {isDesktop && (
               <div className="flex flex-col items-start gap-3">
                 <p className="text-sm text-muted-foreground">

@@ -21,6 +21,7 @@ class Invitation < ApplicationRecord
   belongs_to :company
   belongs_to :client, optional: true
   belongs_to :sender, class_name: "User"
+  belongs_to :hiring_offer, optional: true
 
   # Validations
   validates :recipient_email, :role, :token, presence: true
@@ -33,6 +34,7 @@ class Invitation < ApplicationRecord
     length: { maximum: 20 }
   validate :non_existing_company_user
   validate :recipient_email_not_changed
+  validate :valid_hiring_offer
   # Scopes
   scope :valid_invitations, -> {
     where(accepted_at: nil, expired_at: Time.current...(Time.current + MAX_EXPIRATION_DAY))
@@ -69,6 +71,18 @@ class Invitation < ApplicationRecord
   end
 
   private
+
+    def valid_hiring_offer
+      if hiring_offer && (hiring_offer.company_id != company_id || !hiring_offer.onboarding_started_at || !employee? || client_id)
+        errors.add(:base, "Use the employee invitation for this workspace's approved hiring onboarding")
+      end
+      if persisted? && hiring_offer_id_in_database && will_save_change_to_hiring_offer_id?
+        errors.add(:hiring_offer, "cannot be reassigned")
+      end
+      if hiring_offer && hiring_offer.onboarding_details["intent"]&.slice("first_name", "last_name") != attributes.slice("first_name", "last_name")
+        errors.add(:base, "Names are fixed by confirmed onboarding; edit the member's profile after acceptance")
+      end
+    end
 
     def set_expired_at
       self.expired_at = Time.current + MAX_EXPIRATION_DAY

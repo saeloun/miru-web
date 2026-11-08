@@ -1,0 +1,12 @@
+{
+  "date": "2026-11-04",
+  "url": "http://localhost:3130",
+  "healthScore": 100,
+  "provisional": true,
+  "issues": [],
+  "categoryScores": {
+    "Functional": 100,
+    "Console": 100
+  },
+  "coverage": "Selected automated regression assertions only; other categories excluded."
+}

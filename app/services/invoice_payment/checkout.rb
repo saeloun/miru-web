@@ -35,7 +35,7 @@ module InvoicePayment
       end
 
       def description
-        "Invoice from #{company.name} for #{currency} #{invoice.amount} due on #{invoice.due_date}"
+        "Invoice from #{company.name} due on #{invoice.due_date}"
       end
 
       def currency
@@ -71,7 +71,7 @@ module InvoicePayment
       end
 
       def update_invoice!
-        invoice.update!(stripe_payment_intent: @checkout_session.payment_intent)
+        invoice.with_lock { invoice.update!(stripe_payment_intent: @checkout_session.payment_intent) }
       end
   end
 end

@@ -1,8 +1,13 @@
 <div class="flex flex-col min-h-full pt-16 pb-12 my-auto">
   <main class="flex flex-col self-center justify-center flex-grow w-full px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
     <div class="flex justify-center flex-shrink-0">
-      <svg class="w-auto h-16 text-red-400 bg-red-200 rounded-full shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      <svg class="w-auto h-16 <%= @payment_confirming || @unconfirmed_payment ? 'text-muted-foreground bg-muted' : 'text-red-400 bg-red-200' %> rounded-full shadow-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <% if @payment_confirming || @unconfirmed_payment %>
+          <circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" stroke-width="1.5" />
+          <path d="M10 5v5l3 2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        <% else %>
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+        <% end %>
       </svg>
     </div>
 
@@ -10,21 +15,31 @@
       <div class="text-center">
         <p class="text-sm font-semibold tracking-wide uppercase text-primary">Invoice #<%= @invoice.invoice_number %></p>
         <% if @unconfirmed_payment %>
-          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">We could not confirm your payment.</h1>
-          <p class="mt-2 text-base text-gray-500">
+          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">We could not confirm your payment.</h1>
+          <p class="mt-2 text-base text-muted-foreground">
             If your account was charged, do not pay again. Contact <%= @invoice.company.name %> and quote invoice #<%= @invoice.invoice_number %>.
           </p>
         <% elsif @payment_not_started %>
-          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">We could not start your payment.</h1>
-          <p class="mt-2 text-base text-gray-500">
-            You have not been charged. Contact <%= @invoice.company.name %> and quote invoice #<%= @invoice.invoice_number %>.
+          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">We could not start your payment.</h1>
+          <p class="mt-2 text-base text-muted-foreground">
+            If your account was charged, do not pay again. Contact <%= @invoice.company.name %> and quote invoice #<%= @invoice.invoice_number %>.
+          </p>
+        <% elsif @payment_confirming %>
+          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Payment needs confirmation</h1>
+          <p class="mt-2 text-base text-muted-foreground">
+            The previous payment attempt is not confirmed. Please do not pay again. Contact <%= @invoice.company.name %> and quote invoice #<%= @invoice.invoice_number %>.
           </p>
         <% else %>
-          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">Payment was cancelled.</h1>
-          <p class="mt-2 text-base text-gray-500">Didn't cancel the payment?</p>
+          <h1 class="mt-2 text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Payment was cancelled.</h1>
+          <p class="mt-2 text-base text-muted-foreground">Didn't cancel the payment?</p>
           <div class="mt-6 group">
             <%= link_to "Try again", new_invoice_payment_url(@invoice.external_view_key), class: "text-base font-medium text-primary group-hover:text-primary", target: "_blank", rel: "nofollow" %>
             <span aria-hidden="true" class="text-base font-medium text-primary group-hover:text-primary"> &rarr;</span>
+          </div>
+        <% end %>
+        <% if (@payment_confirming || @unconfirmed_payment || @payment_not_started) && !@invoice.discarded? %>
+          <div class="mt-6">
+            <%= link_to "Back to invoice", "/invoices/#{@invoice.external_view_key}/view", class: "inline-flex min-h-10 items-center rounded border border-border px-4 py-2 text-base font-medium text-primary" %>
           </div>
         <% end %>
       </div>

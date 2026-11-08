@@ -156,23 +156,41 @@ class Payroll::ConsultantReview
     def expense_candidates
       zone = @company.resolved_time_zone
       cutoff_time = zone.local(@cutoff.year, @cutoff.month, @cutoff.day).end_of_day
-      candidates = @company.expenses.kept.where(user_id: @employment.user_id, status: :approved, paid_at: nil)
-        .where("date <= ?", @cutoff).includes(:receipts_attachments).order(:date, :id)
+      claims = @company.expenses.kept.where(user_id: @employment.user_id).where("date <= ?", @cutoff).includes(:receipts_attachments)
+      candidates = claims.where(status: :approved, paid_at: nil).or(claims.where(id: own_settled_expense_ids)).order(:date, :id)
       eligible = []
       excluded = Hash.new(0)
+      reserved = reserved_expense_ids(candidates)
       candidates.each do |expense|
-        reason = if expense.approved_at.nil?
-          "unknown_approval_time"
-        elsif expense.approved_at > cutoff_time
-          "approved_after_cutoff"
-        elsif expense.currency != "INR"
-          "foreign_currency"
-        elsif !expense.amount.finite? || !expense.amount.positive?
-          "invalid_amount"
-        end
+        reason = exclusion_reason(expense, reserved, cutoff_time)
         reason ? excluded[reason] += 1 : eligible << expense
       end
       [eligible, excluded]
+    end
+
+    def exclusion_reason(expense, reserved, cutoff_time)
+      if reserved.include?(expense.id)
+        "reserved_by_payroll"
+      elsif expense.approved_at.nil?
+        "unknown_approval_time"
+      elsif expense.approved_at > cutoff_time
+        "approved_after_cutoff"
+      elsif expense.currency != "INR"
+        "foreign_currency"
+      elsif !expense.amount.finite? || !expense.amount.positive?
+        "invalid_amount"
+      end
+    end
+
+    def own_settled_expense_ids
+      return [] unless @inputs[:own_run_id]
+
+      PayrollExpenseReservation.active.where(payroll_run_id: @inputs[:own_run_id]).where.not(settled_at: nil).pluck(:expense_id)
+    end
+
+    def reserved_expense_ids(candidates)
+      PayrollExpenseReservation.active.where(expense_id: candidates.map(&:id))
+        .where.not(payroll_run_id: @inputs[:own_run_id]).pluck(:expense_id)
     end
 
     def expense_ids

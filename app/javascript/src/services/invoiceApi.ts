@@ -490,8 +490,16 @@ class InvoiceApiService {
           apiInvoice.client?.previous_invoice_number,
       },
       status: apiInvoice.status,
-      issueDate: apiInvoice.issueDate || apiInvoice.issue_date,
-      dueDate: apiInvoice.dueDate || apiInvoice.due_date,
+      issueDate:
+        apiInvoice.issueDateIso ||
+        apiInvoice.issue_date_iso ||
+        apiInvoice.issueDate ||
+        apiInvoice.issue_date,
+      dueDate:
+        apiInvoice.dueDateIso ||
+        apiInvoice.due_date_iso ||
+        apiInvoice.dueDate ||
+        apiInvoice.due_date,
       amount: parseFloat(apiInvoice.amount || 0),
       baseCurrencyAmount: parseFloat(
         apiInvoice.baseCurrencyAmount || apiInvoice.base_currency_amount || 0

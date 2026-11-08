@@ -1,0 +1,422 @@
+[
+  {
+    "path": "additional/agreement-create-recovery.png",
+    "bytes": 92879,
+    "sha256": "d9a119c7c69fafe046e98a8a3ddc958297bdda5157fc6d4809c4d1e59758e363"
+  },
+  {
+    "path": "additional/agreement-import-recovery.png",
+    "bytes": 163299,
+    "sha256": "276aa4ec036c62e491d26e237a2856b9e34ea70e6f6a9d04aa21d7d78e883031"
+  },
+  {
+    "path": "additional/agreement-long-mobile-draft.png",
+    "bytes": 59538,
+    "sha256": "21ccdf9c0ab70f64098fa1f7d347a7a06e31eeda575478c9d37772331a5d7028"
+  },
+  {
+    "path": "additional/agreement-long-mobile-field-settings.png",
+    "bytes": 38330,
+    "sha256": "b11e5f0e3be52135e4eb2ff686a12c3ad873b0004ebf1758f0d7eec515d93a06"
+  },
+  {
+    "path": "additional/agreement-pdf-recovery.png",
+    "bytes": 127585,
+    "sha256": "29b787172cc4d563e2357d77f2037dbd636af06fc3e7c99aa5ee035a520efe1b"
+  },
+  {
+    "path": "additional/client-agreement-details-1440.png",
+    "bytes": 132873,
+    "sha256": "35841474de963d87533d5af339c1515567246ce8ed7f890a2bfa3edaa1da90bf"
+  },
+  {
+    "path": "additional/client-agreement-details-390.png",
+    "bytes": 45516,
+    "sha256": "acf21d03a33c5ac0fc30086cf61ab88a37f1c5afcf66935d7c1ac4c7522c4a65"
+  },
+  {
+    "path": "additional/client-agreement-fields-1440.png",
+    "bytes": 118657,
+    "sha256": "63b8d87a6f74c236e7d84cc4a0d1fedf717dde06e10e477997f7a684f6832851"
+  },
+  {
+    "path": "additional/client-agreement-fields-390.png",
+    "bytes": 54041,
+    "sha256": "c1881eea3e83f03e305629f6211ddf01d4395bbd1e3fac60ab5a11639bcf59df"
+  },
+  {
+    "path": "additional/india-tax-2025.png",
+    "bytes": 337969,
+    "sha256": "6b1f70efab7bc4b0029f49dcb9c22e9b719146b4267f5cd4c086688484824b9a"
+  },
+  {
+    "path": "additional/india-tax-2026.png",
+    "bytes": 336677,
+    "sha256": "29047d760466a8cd05a0d59dec62532cbc3e4d794f0a01fc0e5d5ddf2c605e53"
+  },
+  {
+    "path": "additional/india-tax-deductions-mobile.png",
+    "bytes": 328442,
+    "sha256": "da2e38b8f129959132bbbb4dd1d1e59840468e51febfe74c822dce055c3f691b"
+  },
+  {
+    "path": "additional/india-tax-no-stale.png",
+    "bytes": 220485,
+    "sha256": "750226652aca9857c9249ee311a622fa47df9f3c1980a838cdf33ec5b549ac67"
+  },
+  {
+    "path": "additional/signature-authentication-1440.png",
+    "bytes": 128315,
+    "sha256": "604e0fd17d8f66e8fbb442a11ac50178449cb903dc537cc036e484630ada2ba4"
+  },
+  {
+    "path": "additional/signature-authentication-375.png",
+    "bytes": 46679,
+    "sha256": "e1f0c3cc67ef52271a2fad9e541f868801932fa2335a4177d86f1a35ce25b666"
+  },
+  {
+    "path": "additional/signature-placement-desktop.png",
+    "bytes": 269128,
+    "sha256": "905c450afd962359cc9303ac9dc795110a628e36f59e6f3e35f36ef35698872f"
+  },
+  {
+    "path": "additional/signature-placement-mobile.png",
+    "bytes": 45657,
+    "sha256": "96ddf2e74360fe79da6ae5af3ccd3c8c2ce44d5593c4b23bd43bc10466f94c08"
+  },
+  {
+    "path": "additional/signature-review-desktop.png",
+    "bytes": 155380,
+    "sha256": "78fcdc53a44f8dfed70756c443ca841a0b27dad9774f9e7ea591b452fa2bea2c"
+  },
+  {
+    "path": "additional/signature-review-email-desktop.png",
+    "bytes": 68817,
+    "sha256": "60a1892406fec208e158618b025bda937e3523ad04d3face71a48fced239fa88"
+  },
+  {
+    "path": "additional/signature-review-email-mobile.png",
+    "bytes": 58585,
+    "sha256": "49ef45e641e39791ea1b2a5468e628a68924e3b716f6d2cbd7d793a6a3df3d8e"
+  },
+  {
+    "path": "additional/signature-review-mobile.png",
+    "bytes": 58177,
+    "sha256": "2247e49eadece2b643f655984f4761820e13cc168b9426890a4a0f5b9b9bb0f3"
+  },
+  {
+    "path": "additional/signature-upload-recovery.png",
+    "bytes": 96857,
+    "sha256": "be32b9105f1dde08caa20f3d7004986b42457813daed22d059aff5cdc10d3638"
+  },
+  {
+    "path": "employee-records/employee-records-admin-mobile.png",
+    "bytes": 473107,
+    "sha256": "6aa58c36626108ecd4e64520f3fd59558fac4e56e74a7f3a3d6fcf0caba6c969"
+  },
+  {
+    "path": "employee-records/employee-records-staff.png",
+    "bytes": 207335,
+    "sha256": "d41d246a72cbe02c12c14dc88a1cac68914f3141a75ada98ec910732f3623180"
+  },
+  {
+    "path": "employee-records/employee-report-editor-desktop.png",
+    "bytes": 510350,
+    "sha256": "e3142dd135eebd4c8708be0638b9ac3e6976fc74e29cf6de782efe501b77942b"
+  },
+  {
+    "path": "employee-records/employee-report-editor-mobile.png",
+    "bytes": 469526,
+    "sha256": "865d4705ed6b59288a38afcfd8b53f3e25554d1b0147ce6a61fb18329d754822"
+  },
+  {
+    "path": "employee-records/employee-report-saved-mobile.png",
+    "bytes": 462771,
+    "sha256": "43ed067b1478c982f4c1cc0da7dee0e07d60e39095b94ca63b992830086e0aec"
+  },
+  {
+    "path": "focused-signing/short-signed-document-rejected-1440.png",
+    "bytes": 411484,
+    "sha256": "b3809f64976c343f3feb75d64811ef194dc441b152da0753feac6d3bd80365b9"
+  },
+  {
+    "path": "focused-signing/short-signed-document-rejected-375.png",
+    "bytes": 226844,
+    "sha256": "d5016e052e9700948c96f1b2c0013507af02a1ca62eb31410671b64f72f2e949"
+  },
+  {
+    "path": "hiring/admin-download.png",
+    "bytes": 334999,
+    "sha256": "9eb7801f023a4a03575a2fe19cd64028e552c11d98d7fe2748050bec2e3126e6"
+  },
+  {
+    "path": "hiring/reviewer-download.png",
+    "bytes": 120058,
+    "sha256": "9e398f8051afc16e576c69d9e1681d9e871bb63bf6dea1f6daf9f5daca6dbe46"
+  },
+  {
+    "path": "mercury/returned-after-refresh-1400.png",
+    "bytes": 479551,
+    "sha256": "d38a60b03a93a6106f29711f15d2eca651e7eb571017c21f14abeedf78b4546f"
+  },
+  {
+    "path": "mercury/returned-after-refresh-390.png",
+    "bytes": 402523,
+    "sha256": "ff10ac0e8730cdd1a0b882812ace81698e686b0d5dd7900ba5bb7df4b4e15a9b"
+  },
+  {
+    "path": "razorpay/01-not-configured-desktop.png",
+    "bytes": 11647,
+    "sha256": "3358d1a633d13587dd9f271c38af6ee0822ea4d1602777303e93f649f3b4c507"
+  },
+  {
+    "path": "razorpay/01-not-configured-mobile.png",
+    "bytes": 13196,
+    "sha256": "327876db33955e63e17817a496a93a1b8ae012dac84f0d682e9f1ef49161f6c5"
+  },
+  {
+    "path": "razorpay/02-legacy-api-keys-desktop.png",
+    "bytes": 14272,
+    "sha256": "9e3043649ee72cd449ead66628b1dddd68e57eaa393fcd589090d037f884aba6"
+  },
+  {
+    "path": "razorpay/02-legacy-api-keys-mobile.png",
+    "bytes": 15094,
+    "sha256": "8c099376870cac6017354ac9817cf3b2f5d0c7f2b8ef5ce80dd57a99cf90362f"
+  },
+  {
+    "path": "razorpay/03-connect-or-create-desktop.png",
+    "bytes": 22665,
+    "sha256": "b6c57ac2efb4a07378e8b2ce8539fad593f5d326c51e4b4f2e500163d575cc35"
+  },
+  {
+    "path": "razorpay/03-connect-or-create-mobile.png",
+    "bytes": 24021,
+    "sha256": "0e631b541fa89609aa7b650d23287bfbf2e8324fb9fd055fd9ac8a124fe84185"
+  },
+  {
+    "path": "razorpay/04-connected-desktop.png",
+    "bytes": 28707,
+    "sha256": "9db3d88082b757acea5fe70e0e44d68fbd0b6dd4a882ffd5af7ff11d5dd1faad"
+  },
+  {
+    "path": "razorpay/04-connected-mobile.png",
+    "bytes": 30964,
+    "sha256": "53faa7ceda1df589e6b3282009fde17c905f55290ad541d62b0b23f80a890121"
+  },
+  {
+    "path": "razorpay/05-public-invoice-collecting-desktop.png",
+    "bytes": 99532,
+    "sha256": "e78c590de8a696e45249b936a16b2400fbd25dba4ad6c213de2eda3b4a101f56"
+  },
+  {
+    "path": "razorpay/05-public-invoice-collecting-mobile.png",
+    "bytes": 67392,
+    "sha256": "ca453b5fabf46b65a7b97e7d0341db1ae8f47a1d12e4cf2abf9857c542ae4061"
+  },
+  {
+    "path": "razorpay/06-merchant-unconfirmed-desktop.png",
+    "bytes": 41775,
+    "sha256": "35570fdfee3a6fc2ca4ee53da657b72be0a4e02355d801499769b4b3efefbdb9"
+  },
+  {
+    "path": "razorpay/06-merchant-unconfirmed-mobile.png",
+    "bytes": 44779,
+    "sha256": "07aa63184dbd8d39622e44f9c734de83fead2e3e971b7f4081abb8e2adbf02b5"
+  },
+  {
+    "path": "razorpay/08-revocation-pending-desktop.png",
+    "bytes": 16773,
+    "sha256": "f3febbae34ab5a8ecb54d4ae16c179c36af43a1f781b8cbe4beb612c40941c91"
+  },
+  {
+    "path": "razorpay/08-revocation-pending-mobile.png",
+    "bytes": 16937,
+    "sha256": "dcb7b564f7529b047c5dc14d4608e8f6f34176b22764aaa8af216cda1662a61b"
+  },
+  {
+    "path": "razorpay/09-recovery-needed-desktop.png",
+    "bytes": 23120,
+    "sha256": "93343effbe202fc33070420c665b05525f55b79670c3bc847a52366b670943ff"
+  },
+  {
+    "path": "razorpay/09-recovery-needed-mobile.png",
+    "bytes": 22842,
+    "sha256": "6e1fb18edd7864f155c29686b4f648ae3caa73df3d5fe4385815bef8122d3743"
+  },
+  {
+    "path": "razorpay/10-recovery-in-progress-desktop.png",
+    "bytes": 44375,
+    "sha256": "099bb7bcf8cfc1aaef33325e2703f9e835f89238b61704505f8130e63d79b91b"
+  },
+  {
+    "path": "razorpay/10-recovery-in-progress-mobile.png",
+    "bytes": 46187,
+    "sha256": "62eb8cf6859c33438620aef742755489f2cc553f87816d17102014c096b07916"
+  },
+  {
+    "path": "razorpay/11-revoked-reconnect-desktop.png",
+    "bytes": 23943,
+    "sha256": "d7d22a59de9ccf328808447680202c7aacab8f77a38fecc22fe57dd959d5426c"
+  },
+  {
+    "path": "razorpay/11-revoked-reconnect-mobile.png",
+    "bytes": 25705,
+    "sha256": "297a797a281537d937aaa3332fe18d5a59a5dc10ff0b6048de767f31e80f4a4a"
+  },
+  {
+    "path": "razorpay/12-payment-needs-review-desktop.png",
+    "bytes": 59949,
+    "sha256": "a45825da3b3104ba7d92f87e73670e0c262f5f6d8de38838ce932c489179709c"
+  },
+  {
+    "path": "razorpay/12-payment-needs-review-mobile.png",
+    "bytes": 61565,
+    "sha256": "ff0522a1055211811517916d6bfda0b1b76bbd4b8be275535a7d220b1b60dc6e"
+  },
+  {
+    "path": "razorpay/13-payment-unknown-amount-desktop.png",
+    "bytes": 58578,
+    "sha256": "4b09b03dc672bb75bcfaf3e27197dc28d824abaaa29b38cf549a72c2f9232fac"
+  },
+  {
+    "path": "razorpay/13-payment-unknown-amount-mobile.png",
+    "bytes": 60431,
+    "sha256": "fa010e7a242504dc6ef73b65ee6e3fef9a45d7b08e026401f4948d59e7bf1c9a"
+  },
+  {
+    "path": "razorpay/14-link-needs-confirmation-desktop.png",
+    "bytes": 67788,
+    "sha256": "19b49fe57bf325658b9f538f67fa55306fcf9fa07e6c7efd3408a1ccf47bbbec"
+  },
+  {
+    "path": "razorpay/14-link-needs-confirmation-mobile.png",
+    "bytes": 72370,
+    "sha256": "c2edc308a7c298097d4f1437c52aaba1e4e428c456e889218ed34080e5f3ec02"
+  },
+  {
+    "path": "razorpay/15-status-unavailable-desktop.png",
+    "bytes": 11184,
+    "sha256": "2103bac046b07851b34b32b8c00edde9ad8154d632820b25f3b80ce85ffee931"
+  },
+  {
+    "path": "razorpay/15-status-unavailable-mobile.png",
+    "bytes": 10463,
+    "sha256": "69b3441f2ed0e6ce42e0cb3253a5704075103b5fa55bc3b978cfd1d12f8585ba"
+  },
+  {
+    "path": "razorpay/16-last-known-status-desktop.png",
+    "bytes": 41798,
+    "sha256": "41601cacc285fd969859f539dbdfede5e5ba1857ee8440ed8c6a45daeb147834"
+  },
+  {
+    "path": "razorpay/16-last-known-status-mobile.png",
+    "bytes": 44011,
+    "sha256": "d4713d15fc9633744be29642b4e987031a735aa4cb4edf9b2decfd60d41f6d0c"
+  },
+  {
+    "path": "razorpay/17-invalid-link-id-desktop.png",
+    "bytes": 69607,
+    "sha256": "9ab36e5c3023aa0e355e695dc5d5739e29f019aaa9ab28c565be159307e0d857"
+  },
+  {
+    "path": "razorpay/17-invalid-link-id-mobile.png",
+    "bytes": 73474,
+    "sha256": "6a77e439d9f535c9f249310d7368ce2f1d34ca9b4c6a7939940bf44801bfaf1e"
+  },
+  {
+    "path": "razorpay/18-invalid-link-id-light-desktop.png",
+    "bytes": 69032,
+    "sha256": "8516bf4429ab78028b188dda5f88edf48d84ec1219318f2e6a56d695727ce755"
+  },
+  {
+    "path": "razorpay/18-invalid-link-id-light-mobile.png",
+    "bytes": 72852,
+    "sha256": "ec26c4b6ec5fefb1878cb9951585e9d73bcfd037d8921d3648b852e53eaebae8"
+  },
+  {
+    "path": "razorpay/19-public-invoice-on-hold-desktop.png",
+    "bytes": 105439,
+    "sha256": "3f88597b254e81dd997c62571e4cc2cec625b3597c3fc796329db689e1486d55"
+  },
+  {
+    "path": "razorpay/19-public-invoice-on-hold-mobile.png",
+    "bytes": 74974,
+    "sha256": "826831a64301ea22b6aea3df7b18b78c90fe04abf1ac2abb9d3b6678154fb419"
+  },
+  {
+    "path": "razorpay/20-public-invoice-under-review-desktop.png",
+    "bytes": 108815,
+    "sha256": "85acf5c23d48791d75bb866a3a34396661111d77a308b6324b91d028fc655820"
+  },
+  {
+    "path": "razorpay/20-public-invoice-under-review-mobile.png",
+    "bytes": 76044,
+    "sha256": "c53db0f31264c277f830b5b3895613c15d19ea5d4a218f11d5469c1bef52a1b5"
+  },
+  {
+    "path": "razorpay/21-client-invoice-on-hold-desktop.png",
+    "bytes": 128509,
+    "sha256": "7fbe8043bb40dcfc804408be24f1c5b09367c248cd7bfd234f4d908c45854f30"
+  },
+  {
+    "path": "razorpay/21-client-invoice-on-hold-mobile.png",
+    "bytes": 81241,
+    "sha256": "577fb84bbcd6ad134ef55f8042e4cdfc5963fa39a84264844095055d2e5c14b5"
+  },
+  {
+    "path": "razorpay/22-payment-confirmation-page-desktop.png",
+    "bytes": 33817,
+    "sha256": "35653aa64aad3a3f3dcfcdf8da7577fa07722269e7364b3b96da85857645949a"
+  },
+  {
+    "path": "razorpay/22-payment-confirmation-page-mobile.png",
+    "bytes": 27873,
+    "sha256": "a1b103f9502adc6f0aa9f65cd1f83345137efdba16ab07ca3b6e1458eebd6e37"
+  },
+  {
+    "path": "razorpay/23-paid-invoice-closed-desktop.png",
+    "bytes": 99416,
+    "sha256": "95eab5c0a0be91e4261c72034ef2dbb4ce2364fbf29bcc874a0ab86df576d739"
+  },
+  {
+    "path": "razorpay/23-paid-invoice-closed-mobile.png",
+    "bytes": 67626,
+    "sha256": "c6889566f758d1e62ff9309321ce3d7dfc716fb7a76f616da40d58b2b01c774b"
+  },
+  {
+    "path": "signing/client-signed-documents.png",
+    "bytes": 124432,
+    "sha256": "10c8a6ee2675c9185516ac05b92fb4d51748510f375fae0d16cf7fbee96c07c9"
+  },
+  {
+    "path": "signing/employee-signed-documents.png",
+    "bytes": 514819,
+    "sha256": "f443ca0fa65acd4432b5d3d92a00bef1d868911477ce1468411959afcd1387e5"
+  },
+  {
+    "path": "signing/short-signed-document-rejected-1440.png",
+    "bytes": 411836,
+    "sha256": "ec81dd70cf7ec1286a0fcd7bb4fce74739ba0001463f58c5d4691c8041725e2a"
+  },
+  {
+    "path": "signing/short-signed-document-rejected-375.png",
+    "bytes": 227054,
+    "sha256": "a4a49a1cc110e53a042ddbb7ef72c8bd57501296786a799b123cb1a049ec5ee9"
+  },
+  {
+    "path": "signing/signed-documents-1440.png",
+    "bytes": 84422,
+    "sha256": "a61b3d5f89b4f3342ba2f5f47ff50295d3e9d2bbf7f509e67cd1b5e08e19cafa"
+  },
+  {
+    "path": "signing/signed-documents-375.png",
+    "bytes": 34013,
+    "sha256": "4c4aba0dd6a229ed1d6ab849d5c73797d810955165c3a68e4c3706bf2b8bc039"
+  },
+  {
+    "path": "signing/signed-editor-downloads.png",
+    "bytes": 304109,
+    "sha256": "3283e3ad62b2622261bc10098d104155ae9be2455b9a3f82e23dec9662462d6d"
+  }
+]

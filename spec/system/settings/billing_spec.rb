@@ -49,7 +49,9 @@ RSpec.describe "Settings billing", type: :system, js: true do
 
       expect(page).to have_content("2/3 seats used", wait: 10)
       expect(page).to have_content("Client portal users included in seat count", wait: 10)
-      expect(page).to have_content("Your seat count includes 1 client portal user(s) who have login access", wait: 10)
+      expect(page).to have_content("1 client portal user(s) have login access", wait: 10)
+      expect(page).to have_content("they are not billed — only team members are charged", wait: 10)
+      page.save_screenshot(Rails.root.join("tmp", "billing-client-portal-seats.png"), full: true)
     end
   end
 

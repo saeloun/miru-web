@@ -9,7 +9,7 @@ class Api::V1::Invoices::BulkDeletionController < Api::V1::ApplicationController
 
     if undeletable_invoice_ids.any?
       render json: {
-        error: "Some invoices could not be deleted because they have recorded payments.",
+        error: "Some invoices could not be deleted because they have recorded payments or pending payment evidence.",
         undeletable_invoice_ids:
       }, status: 422
     else

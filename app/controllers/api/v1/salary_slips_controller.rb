@@ -67,10 +67,19 @@ class Api::V1::SalarySlipsController < Api::V1::ApplicationController
     slip = find_slip
     authorize slip
     response.headers["X-Content-Type-Options"] = "nosniff"
-    data = slip.file.download
-    slip.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
-    send_data data, filename: "salary-slip-#{slip.pay_month.strftime('%Y-%m')}.pdf",
-      type: "application/pdf", disposition: "attachment"
+    blob = slip.file.blob
+    raise ActiveStorage::FileNotFoundError unless blob
+
+    data = blob.download
+    with_download_workspace do
+      current = find_slip
+      authorize current, :download?, policy_class: SalarySlipPolicy
+      raise ActiveStorage::FileNotFoundError unless current.file.blob_id == blob.id
+
+      current.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+      send_data data, filename: "salary-slip-#{current.pay_month.strftime('%Y-%m')}.pdf",
+        type: "application/pdf", disposition: "attachment"
+    end
   rescue ActiveStorage::FileNotFoundError
     render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
   end

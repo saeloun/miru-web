@@ -42,6 +42,9 @@ RSpec.describe "Auth flows", type: :system, js: true do
 
     with_forgery_protection do
       visit invitations_accepts_path(token: invitation.token)
+      expect(page).to have_button("Accept invitation")
+      expect(User.exists?(email: invitation.recipient_email)).to be(false)
+      click_button "Accept invitation"
 
       expect(page).to have_current_path(/\/users\/password\/edit\?reset_password_token=/)
       expect(page).to have_text("Reset Password")

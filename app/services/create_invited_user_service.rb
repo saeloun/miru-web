@@ -35,21 +35,50 @@ class CreateInvitedUserService
   def process
     invitation_valid!
     user_valid!
-    invitation.company.with_employee_number_lock do
-      update_invitation!
-      ensure_seat_available!
-      find_or_create_user!
-      add_role_to_invited_user
-      create_client_member
-      create_notification_preference
-    end
+    accept_invitation!
+  rescue ActiveRecord::RecordNotFound
+    @error = InvitationExpired.new
+    service_failed(@error.message)
+  rescue ActiveRecord::LockWaitTimeout => e
+    @error = e
+    service_failed("Your account is being updated. Reopen your invitation link and try again.")
   rescue StandardError => e
+    @error = e
     service_failed(e.message)
     Rails.logger.error e.message
     Rails.logger.error e.backtrace.join("\n")
   end
 
   private
+
+    def accept_invitation!
+      invitation.company.with_employee_number_lock do |company|
+        invitation.reload
+        raise InvitationExpired unless invitation.company_id == company.id
+
+        source_offer_id = invitation.hiring_offer_id
+        Hiring::Onboarding.with_invitation(invitation) do |onboarding|
+          invitation.lock!
+          raise InvitationExpired unless invitation.company_id == company.id && invitation.hiring_offer_id == source_offer_id
+
+          invitation_valid!
+          user_valid!
+          onboarding&.validate_invitation!(invitation)
+          complete_invitation!(onboarding)
+        end
+      end
+    end
+
+    def complete_invitation!(onboarding)
+      update_invitation!
+      ensure_seat_available!
+      find_or_create_user! { |recipient| onboarding&.validate_recipient!(recipient) }
+      onboarding&.create_employment!(user)
+      add_role_to_invited_user
+      create_client_member
+      create_notification_preference
+      onboarding&.record_acceptance!(user, invitation)
+    end
 
     def invitation
       @_invitation ||= find_invitation
@@ -60,7 +89,7 @@ class CreateInvitedUserService
     end
 
     def invitation_valid!
-      raise InvitationExpired unless invitation.is_valid?
+      raise InvitationExpired unless invitation.token == token && invitation.is_valid?
     end
 
     def user_valid!
@@ -78,12 +107,14 @@ class CreateInvitedUserService
     end
 
     def find_or_create_user!
-      if (@user = User.find_by(email: invitation.recipient_email))
+      if (@user = User.lock("FOR NO KEY UPDATE NOWAIT").find_by(email: invitation.recipient_email))
+        yield @user if block_given?
         @user.update!(current_workspace_id: invitation.company.id)
         activate_employment_status unless invitation.client
         sync_invitable_metadata!
       else
         create_invited_user!
+        yield @user if block_given?
         create_reset_password_token
         @new_user = true
       end
@@ -106,7 +137,7 @@ class CreateInvitedUserService
       )
       @user.skip_password_validation = true
       @user.save!
-      sync_invitable_metadata!
+      sync_invitable_metadata!(pending_password: true)
     end
 
     def add_role_to_invited_user
@@ -131,9 +162,9 @@ class CreateInvitedUserService
       @reset_password_token = user.create_reset_password_token
     end
 
-    def sync_invitable_metadata!
+    def sync_invitable_metadata!(pending_password: false)
       user.update_columns(
-        invitation_token: invitation.token,
+        invitation_token: pending_password ? invitation.token : nil,
         invitation_created_at: invitation.created_at,
         invitation_sent_at: invitation.created_at,
         invitation_accepted_at: invitation.accepted_at || Time.current,

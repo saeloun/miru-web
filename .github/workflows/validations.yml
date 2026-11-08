@@ -230,10 +230,12 @@ jobs:
       - name: Check passkey option parsing
         run: node scripts/ci/passkeys_test.mjs
 
-      - name: Run responsive, expense, and authentication system specs
+      - name: Run browser system specs
         env:
           FERRUM_BROWSER_PATH: ${{ steps.setup-chrome.outputs.chrome-path }}
-        run: bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb spec/system/auth/two_factor_spec.rb
+        run: >-
+          bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb
+          spec/system/auth/two_factor_spec.rb spec/system/invoices spec/system/time_tracking/add_entry_spec.rb
 
   security-audit:
     name: Security audit

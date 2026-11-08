@@ -1,0 +1,25 @@
+{
+  "connection": true,
+  "files": 2,
+  "pages": 3,
+  "field_types": [
+    "signature",
+    "initials",
+    "date",
+    "name",
+    "email",
+    "text",
+    "number",
+    "checkbox",
+    "dropdown"
+  ],
+  "field_count": 10,
+  "original_bytes_verified": true,
+  "states": [
+    "DRAFT",
+    "PENDING",
+    "CANCELLED"
+  ],
+  "local_mail_received_by_both_signers": true,
+  "invalid_token_rejected": true
+}

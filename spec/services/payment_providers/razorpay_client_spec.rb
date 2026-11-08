@@ -18,36 +18,41 @@ RSpec.describe PaymentProviders::RazorpayClient do
   end
   let(:client) { described_class.new(provider:) }
 
+  around { |example| VCR.turned_off { example.run } }
+
   describe "#create_payment_link" do
     it "creates payment links through the SDK request layer with JSON payloads" do
       payload = { amount: 1000, currency: "INR" }
-      request = instance_double(Razorpay::Request)
-      response = instance_double(HTTParty::Response, parsed_response: { "id" => "plink_test_123" })
-
-      expect(Razorpay::Request).to receive(:new).with("payment_links").and_return(request)
-      expect(request).to receive(:request)
-        .with(:post, "/v1/payment_links", payload.to_json)
-        .and_return(response)
+      request = stub_request(:post, "https://api.razorpay.com/v1/payment_links").with(body: payload.to_json,
+        headers: { "Content-Type" => "application/json" }, basic_auth: ["rzp_test_123", "secret"])
+        .to_return(status: 200, body: { id: "plink_test_123" }.to_json, headers: { "Content-Type" => "application/json" })
 
       expect(client.create_payment_link(payload)).to eq("id" => "plink_test_123")
+      expect(request).to have_been_requested.once
     end
   end
 
   describe "#fetch_payment_link" do
-    it "uses the official Razorpay Payment Link SDK resource" do
-      response = instance_double(Razorpay::Entity, attributes: { "id" => "plink_test_123", "status" => "paid" })
-
-      expect(Razorpay::PaymentLink).to receive(:fetch).with("plink_test_123").and_return(response)
+    it "fetches a Payment Link through the official SDK request layer" do
+      stub_request(:get, "https://api.razorpay.com/v1/payment_links/plink_test_123")
+        .to_return(status: 200, body: { id: "plink_test_123", status: "paid" }.to_json, headers: { "Content-Type" => "application/json" })
 
       expect(client.fetch_payment_link("plink_test_123")).to eq("id" => "plink_test_123", "status" => "paid")
+    end
+
+    it "treats a non-JSON gateway response as an unconfirmed outcome" do
+      VCR.turned_off do
+        stub_request(:get, "https://api.razorpay.com/v1/payment_links/plink_test_123")
+          .to_return(status: 502, body: "<html>gateway unavailable</html>", headers: { "Content-Type" => "text/html" })
+        expect { client.fetch_payment_link("plink_test_123") }.to raise_error(described_class::Error, /could not be confirmed/)
+      end
     end
   end
 
   describe "#notify_payment_link" do
     it "uses the official Razorpay Payment Link notify endpoint" do
-      response = instance_double(Razorpay::Entity, attributes: { "success" => true })
-
-      expect(Razorpay::PaymentLink).to receive(:notify_by).with("plink_test_123", "sms").and_return(response)
+      stub_request(:post, "https://api.razorpay.com/v1/payment_links/plink_test_123/notify_by/sms")
+        .to_return(status: 200, body: { success: true }.to_json, headers: { "Content-Type" => "application/json" })
 
       expect(client.notify_payment_link("plink_test_123", "sms")).to eq("success" => true)
     end

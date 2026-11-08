@@ -88,9 +88,16 @@ class Api::V1::TaxDeclarationsController < Api::V1::ApplicationController
     authorize record
     file = record.evidence.find(params[:evidence_id])
     response.headers["X-Content-Type-Options"] = "nosniff"
-    data = file.download
-    record.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
-    send_data data, filename: file.filename.to_s, type: file.blob.content_type, disposition: "attachment"
+    blob = file.blob
+    data = blob.download
+    with_download_workspace do
+      current = find_record
+      authorize current, :download?, policy_class: TaxDeclarationPolicy
+      raise ActiveStorage::FileNotFoundError unless current.evidence_attachments.exists?(id: file.id, blob_id: blob.id)
+
+      current.audits.create!(action: "download", user: current_user, associated: current_company, audited_changes: {})
+      send_data data, filename: blob.filename.to_s, type: blob.content_type, disposition: "attachment"
+    end
   rescue ActiveStorage::FileNotFoundError
     render json: { errors: "Document is unavailable. Please contact your workspace administrator." }, status: 404
   end

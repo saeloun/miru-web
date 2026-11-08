@@ -70,6 +70,31 @@ module Authenticable
       @current_cli_session
     end
 
+    def with_download_workspace
+      authorized = current_user.with_lock do
+        next false unless refresh_cli_workspace
+        raise Pundit::NotAuthorizedError unless current_user.current_workspace_id == current_company.id
+
+        yield
+        true
+      end
+      raise Pundit::NotAuthorizedError unless authorized
+    end
+
+    def refresh_cli_workspace
+      return true unless current_cli_session
+
+      # Let the caller commit token revocation before denying the download.
+      token = request.headers["Authorization"].to_s.delete_prefix("Bearer ")
+      session = CliSession.authenticate(token)
+      return false unless session && session.user_id == current_user.id && session.company_id == current_company.id
+
+      @current_cli_session = session
+      current_user.current_workspace = session.company
+      current_user.clear_attribute_changes([:current_workspace_id])
+      true
+    end
+
     def token_authenticated_request?
       @token_authenticated_request == true
     end

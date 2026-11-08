@@ -111,10 +111,13 @@ RSpec.describe "Tax declarations", type: :request do
     expect(response).to have_http_status(200)
     expect(request.filtered_parameters.dig("review", "reason")).to eq("[FILTERED]")
     expect(record.reload).to have_attributes(status: "approved", approved_amount: BigDecimal("10000.25"), reviewed_by: admin)
+    get "/api/v1/tax_declarations/#{record.id}/evidence/#{record.evidence.first.id}"
+    expect(response).to have_http_status(200)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
     sign_in employee
     get "/api/v1/tax_declarations/#{record.id}/evidence/#{record.evidence.first.id}"
     expect(response).to have_http_status(200)
-    expect(response.body).to eq(record.evidence.first.download)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
     expect(record.audits.where(action: "download", associated: company, user: employee)).to exist
   end
@@ -153,6 +156,113 @@ RSpec.describe "Tax declarations", type: :request do
     create_claim
     expect(response).to have_http_status(409)
     expect(TaxDeclaration.count).to eq(0)
+  end
+
+  %w[workspace role membership].each do |change|
+    it "withholds tax evidence after #{change} changes during storage download" do
+      record = claim
+      file_id = record.evidence.first.id
+      admin.add_role(:employee, company)
+      other = create(:company) if change == "workspace"
+      sign_in admin
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+        bytes = original.call(*arguments)
+        case change
+        when "workspace" then admin.update!(current_workspace: other)
+        when "role" then admin.remove_role(:admin, company)
+        when "membership" then admin_employment.update_column(:resigned_at, Date.yesterday)
+        end
+        bytes
+      end
+
+      get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}"
+      expect(response).to have_http_status(:forbidden)
+      expect(response.body).not_to include("%PDF")
+      expect(record.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  %w[replaced removed].each do |change|
+    it "withholds tax-evidence bytes when the attachment is #{change} during storage download" do
+      record = claim
+      file_id = record.evidence.first.id
+      replacement = File.open(Rails.root.join("spec/support/fixtures/pdf-file.pdf")) do |io|
+        ActiveStorage::Blob.create_and_upload!(io:, filename: "replacement.pdf", content_type: "application/pdf")
+      end if change == "replaced"
+      allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+        bytes = original.call(*arguments)
+        attachment = record.evidence_attachments.find(file_id)
+        change == "replaced" ? attachment.update!(blob: replacement) : attachment.destroy!
+        bytes
+      end
+
+      get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}"
+      expect(response).to have_http_status(:not_found)
+      expect(response.body).not_to include("%PDF")
+      expect(record.audits.where(action: "download")).to be_empty
+    end
+  end
+
+  it "withholds tax-evidence bytes after a CLI session is revoked during storage download" do
+    record = claim
+    file_id = record.evidence.first.id
+    sign_out employee
+    session, token = CliSession.issue_for(user: employee, company:)
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap { session.revoke! }
+    end
+
+    get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(record.audits.where(action: "download")).to be_empty
+  end
+
+  it "downloads tax evidence through an active CLI session in the current workspace" do
+    record = claim
+    file_id = record.evidence.first.id
+    sign_out employee
+    _session, token = CliSession.issue_for(user: employee, company:)
+
+    get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:ok)
+    expect(response.body).to eq(File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
+    expect(record.audits.where(action: "download", associated: company, user: employee)).to exist
+  end
+
+  it "withholds a coworker's tax evidence after a CLI administrator becomes an employee during storage download" do
+    record = claim
+    file_id = record.evidence.first.id
+    admin.add_role(:employee, company)
+    sign_out employee
+    _session, token = CliSession.issue_for(user: admin, company:)
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap { admin.remove_role(:admin, company) }
+    end
+
+    get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(record.audits.where(action: "download")).to be_empty
+  end
+
+  it "retains the persisted-workspace tax policy after a CLI reader switches workspaces during storage download" do
+    record = claim
+    file_id = record.evidence.first.id
+    other = create(:company)
+    create(:employment, company: other, user: employee, resigned_at: nil)
+    employee.add_role(:employee, other)
+    sign_out employee
+    _session, token = CliSession.issue_for(user: employee, company:)
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:download).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap { employee.update!(current_workspace: other) }
+    end
+
+    get "/api/v1/tax_declarations/#{record.id}/evidence/#{file_id}", headers: { "Authorization" => "Bearer #{token}" }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("%PDF")
+    expect(record.audits.where(action: "download")).to be_empty
+    expect(employee.reload.current_workspace_id).to eq(other.id)
   end
 
   it "rejects invalid decimal precision, syntax, nonpositive and excessive amounts, years and categories" do

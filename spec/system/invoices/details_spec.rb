@@ -53,6 +53,7 @@ RSpec.describe "Invoice detail view", type: :system, js: true do
   end
 
   it "shows a compact client analytics summary on invoice details" do
+    company.update!(plan_tier: "paid")
     paid_invoice = create(:invoice,
       company:,
       client:,

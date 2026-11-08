@@ -29,7 +29,7 @@ const InvoiceDetails = ({
   return (
     <>
       <CompanyInfo company={company} logo={logo} />
-      <div className="flex h-36 justify-between border-b-2 border-border px-10 py-5">
+      <div className="flex justify-between gap-4 border-b-2 border-border px-10 py-5 [&>div]:min-w-0 [&>div]:break-words">
         <ClientInfo client={client} />
         <InvoiceInfo
           company={company}

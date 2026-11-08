@@ -29,9 +29,7 @@ module Payroll
         end
         raise Conflict, "Revision changed; reload before editing" unless head&.digest == expected_digest
 
-        number = (head&.number || 0) + 1
-        @run.payroll_revisions.create!(created_by: actor, payroll_payload: payload, idempotency_key:,
-          digest: PayrollRevision.chain_digest(snapshot.digest, expected_digest, number), parent_digest: expected_digest, number:)
+        create_revision!(actor, payload, idempotency_key, snapshot, expected_digest, (head&.number || 0) + 1)
       end
     end
 
@@ -41,7 +39,9 @@ module Payroll
         head = @run.current_revision
         raise Conflict, "Revision changed; reload before approving" unless head && head.digest == expected_digest
 
-        head.payroll_approvals.create!(actor:, stage:)
+        approval = head.payroll_approvals.create!(actor:, stage:)
+        ClaimReference.reserve!(@run, head) if stage == "final"
+        approval
       end
     end
 
@@ -58,5 +58,16 @@ module Payroll
         final && @run.eligible_actor?(final.actor, "final") ? "approved" : "accounts_approved"
       end
     end
+
+    private
+
+      def create_revision!(actor, payload, idempotency_key, snapshot, expected_digest, number)
+        guard = MercuryRevisionGuard.new(@run)
+        guard.check!(payload)
+        revision = @run.payroll_revisions.create!(created_by: actor, payroll_payload: payload, idempotency_key:,
+          digest: PayrollRevision.chain_digest(snapshot.digest, expected_digest, number), parent_digest: expected_digest, number:)
+        guard.after_revision!(actor)
+        revision
+      end
   end
 end

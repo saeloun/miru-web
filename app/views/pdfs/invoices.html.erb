@@ -435,10 +435,20 @@
             <span class="totals-row-value"><%= invoice_tax %></span>
           </div>
         <% end %>
+        <% if invoice.amount_paid.to_d.positive? %>
+          <div class="totals-row">
+            <span class="totals-row-label"><%= t("pdfs.invoices.total") %></span>
+            <span class="totals-row-value"><%= total %></span>
+          </div>
+          <div class="totals-row">
+            <span class="totals-row-label"><%= t("pdfs.invoices.amount_paid") %></span>
+            <span class="totals-row-value"><%= invoice_amount_paid %></span>
+          </div>
+        <% end %>
         <hr class="totals-divider">
         <div class="totals-grand-row">
           <span class="totals-grand-label"><%= t("pdfs.invoices.total_due") %></span>
-          <span class="totals-grand-value"><%= total %></span>
+          <span class="totals-grand-value"><%= invoice_amount_due %></span>
         </div>
       </div>
     </div>

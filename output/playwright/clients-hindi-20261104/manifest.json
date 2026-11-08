@@ -1,0 +1,27 @@
+{
+  "kind": "native-brave-rspec-evidence",
+  "client_browser_examples": 9,
+  "client_browser_failures": 0,
+  "focused_after_capture_stabilization": {
+    "examples": 1,
+    "failures": 0
+  },
+  "sources": {
+    "app/javascript/src/i18n/locales/hi.ts": "b6afec4bb3c82cb53154890307d777dfeff987b7c25f00725b86a723808a865a",
+    "spec/system/clients/index_spec.rb": "40bc863d5495e39de0ca93297449deb00f67487e22d245dbb76e48137d6ada56"
+  },
+  "screenshots": [
+    {
+      "file": "clients-hindi-filtered-1440.png",
+      "sha256": "a424995cd91d9d653bfee8391d8421888551c73bd6087dcff4698940a1164d31",
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "file": "clients-hindi-filtered-375.png",
+      "sha256": "6477ad4186ce9aed11fa10ab5e2dd08b2140ff91dbbc90d67a0c385728658f7e",
+      "width": 375,
+      "height": 1068
+    }
+  ]
+}

@@ -15,6 +15,7 @@ module PaymentProviders
 
     def details
       return {} unless provider&.upi_configured?
+      return {} if invoice && !invoice.payment_options_available?
 
       {
         enabled: provider.enabled?,

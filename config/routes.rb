@@ -7,6 +7,21 @@ class ActionDispatch::Routing::Mapper
 end
 
 Rails.application.routes.draw do
+  get "/hiring-offer", to: "hiring_offer_portal#show", as: :hiring_offer
+  post "/hiring-offer/open", to: "hiring_offer_portal#open"
+  post "/hiring-offer/reply", to: "hiring_offer_portal#reply"
+  get "/hiring-assignment", to: "hiring_assignment_portal#show", as: :hiring_assignment
+  post "/hiring-assignment/open", to: "hiring_assignment_portal#open"
+  post "/hiring-assignment/submit", to: "hiring_assignment_portal#submit"
+  post "/hiring-assignment/files", to: "hiring_assignment_portal#upload"
+  post "/hiring-assignment/files/remove", to: "hiring_assignment_portal#remove_file"
+  post "/hiring-assignment/files/download", to: "hiring_assignment_portal#download"
+  get "/hiring-form", to: "hiring_portal#show", as: :hiring_form
+  post "/hiring-form/open", to: "hiring_portal#open"
+  post "/hiring-form/submit", to: "hiring_portal#submit"
+  post "/hiring-form/resume", to: "hiring_portal#resume"
+  post "/hiring-form/resume/download", to: "hiring_portal#resume_download"
+  post "/hiring/inbound/:routing_key", to: "hiring/inbound_emails#create"
   get "/native/auth/google/:request_id", to: "native_google_auth/browser#show",
     as: :native_google_authorization
   # Health check endpoint
@@ -93,10 +108,19 @@ Rails.application.routes.draw do
   end
 
   namespace :invitations do
-    resources :accepts, only: [:index], controller: "accept"
+    resources :accepts, only: [:index, :create], controller: "accept"
   end
 
   get "users/invitation/accept", to: "invitations/accept#show"
+  get "payments/razorpay/connection", to: "razorpay_connections#show"
+  post "payments/razorpay/connection", to: "razorpay_connections#create"
+  patch "payments/razorpay/connection", to: "razorpay_connections#update"
+  delete "payments/razorpay/connection", to: "razorpay_connections#destroy"
+  post "payments/razorpay/connection/recovery", to: "razorpay_connections#recovery"
+  post "payments/razorpay/connection/recovery/evidence", to: "razorpay_connections#recovery_evidence"
+  post "payments/razorpay/connection/payment_review", to: "razorpay_connections#resolve_payment_review"
+  post "payments/razorpay/connection/link_recovery", to: "razorpay_connections#recover_link_creation"
+  get "payments/razorpay/callback", to: "razorpay_connections#callback"
   get "payments/settings/stripe/connect/refresh", to: "payment_settings#refresh_stripe_connect"
   get "payments/settings/*path", to: "payment_settings#index", via: :all
   get "payments/settings", to: "payment_settings#index"
@@ -106,6 +130,7 @@ Rails.application.routes.draw do
     post "stripe/checkout/fulfillment", to: "stripe#fulfill_stripe_checkout"
     post "razorpay/payment_links", to: "razorpay#payment_links"
     post "razorpay/payouts", to: "razorpay#payouts"
+    post "razorpay/oauth", to: "razorpay#oauth"
     post "paypal/events", to: "paypal#events"
   end
 

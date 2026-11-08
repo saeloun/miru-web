@@ -12,6 +12,7 @@ RSpec.describe "Signature completion and private archives" do
   let(:client) { instance_double(Signatures::DocumensoClient, origin:) }
   let(:signed_pdf) { File.binread(Rails.root.join("spec/fixtures/files/signature-sealed-synthetic.pdf")) }
   let(:evidence_pdf) { File.binread(Rails.root.join("docs/qa/generic-document-signing-2462/qa-addendum.pdf")) }
+  let(:sources) { [Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf")] }
 
   around do |example|
     travel_to(Time.utc(2026, 10, 25)) { example.run }
@@ -24,7 +25,7 @@ RSpec.describe "Signature completion and private archives" do
     allow(ENV).to receive(:[]).with("DOCUMENSO_SEAL_SHA256").and_return("eae7b329c848bdcbf3cc96829203a3dfddf922dc36b3afc4f03a14ff65b32ad7")
     allow(Signatures::DocumensoClient).to receive(:new).and_return(client)
     connection = SignatureConnection.create!(company:, created_by: admin, provider_origin: origin, api_key: "synthetic_key")
-    @record = approved_signature_request(company:, actor: admin)
+    @record = approved_signature_request(company:, actor: admin, sources:)
     @revision = @record.current_revision
     @revision.update!(signature_connection: connection, provider_envelope_id: "envelope_completion",
       operation_id: SecureRandom.uuid, status: "awaiting_signatures", provider_status: "PENDING")
@@ -145,6 +146,61 @@ RSpec.describe "Signature completion and private archives" do
     expect { expect(reconcile).to be(false) }.not_to change(ActiveStorage::Blob, :count)
     expect(@revision.reload).to have_attributes(status: "awaiting_signatures", archive_error: "verification_failed", archived_at: nil)
     expect(@revision.signed_artifacts).not_to be_attached
+  end
+
+  context "when a sealed document has fewer pages than the approved source" do
+    let(:sources) { [Rails.root.join("docs/qa/agreement-editor-2462/agreement-long.pdf")] }
+
+    it "rejects the completed package without publishing any archive" do
+      stub_provider
+
+      expect { expect(reconcile).to be(false) }.not_to change(ActiveStorage::Blob, :count)
+
+      expect(@revision.reload).to have_attributes(status: "awaiting_signatures", archive_error: "verification_failed", archived_at: nil)
+      expect(@revision.signed_artifacts).not_to be_attached
+      expect(@record.audits.where(action: "signed_archive_created")).to be_empty
+    end
+  end
+
+  context "when a later document has fewer pages than approved" do
+    let(:sources) do
+      [Rails.root.join("docs/qa/generic-document-signing-2462/qa-main.pdf"),
+       Rails.root.join("docs/qa/agreement-editor-2462/agreement-long.pdf")]
+    end
+
+    it "checks each approved document separately and removes earlier staged files" do
+      stub_provider
+      original = @revision.original_bytes(@revision.documents.second.fetch("key")).first
+      allow(client).to receive(:original).with("item_1").and_return(original)
+      allow(client).to receive(:signed).with("item_1").and_return(signed_pdf)
+      staged_keys = []
+      allow(ActiveStorage::Blob).to receive(:build_after_unfurling).and_wrap_original do |build, **attributes|
+        build.call(**attributes).tap { |blob| staged_keys << blob.key }
+      end
+
+      expect { expect(reconcile).to be(false) }.not_to change(ActiveStorage::Blob, :count)
+
+      expect(client).to have_received(:signed).with("item_0").once
+      expect(client).to have_received(:signed).with("item_1").once
+      expect(client).not_to have_received(:certificate)
+      expect(staged_keys.size).to eq(1)
+      expect(ActiveStorage::Blob.service.exist?(staged_keys.first)).to be(false)
+      expect(@revision.reload).to have_attributes(archive_error: "verification_failed", archived_at: nil)
+      expect(@revision.signed_artifacts).not_to be_attached
+    end
+  end
+
+  context "when the provider adds pages to the signed document" do
+    let(:sources) { [Rails.root.join("docs/qa/generic-document-signing-2462/qa-addendum.pdf")] }
+
+    it "allows additional pages while retaining seal and separate evidence verification" do
+      stub_provider
+
+      expect(reconcile).to be(true)
+
+      expect(@revision.reload).to have_attributes(status: "signed", archive_error: nil)
+      expect(@revision.artifact_manifest.pluck("kind")).to contain_exactly("signed", "certificate", "audit_log")
+    end
   end
 
   it "removes incomplete staged blobs and permits a safe retry after an evidence download fails" do

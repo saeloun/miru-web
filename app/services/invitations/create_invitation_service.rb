@@ -16,7 +16,7 @@ module Invitations
       set_company
       set_sender
       invitation.save!
-      sync_devise_invitable_metadata!
+      current_user.increment!(:invitations_count)
       invitation
     end
 
@@ -28,21 +28,6 @@ module Invitations
 
     def set_sender
       @invitation.sender = current_user
-    end
-
-    def sync_devise_invitable_metadata!
-      current_user.increment!(:invitations_count)
-
-      recipient = User.find_by(email: invitation.recipient_email)
-      return unless recipient
-
-      recipient.update_columns(
-        invitation_token: invitation.token,
-        invitation_created_at: invitation.created_at,
-        invitation_sent_at: invitation.created_at,
-        invited_by_type: current_user.class.name,
-        invited_by_id: current_user.id
-      )
     end
   end
 end

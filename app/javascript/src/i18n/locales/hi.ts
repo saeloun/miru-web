@@ -279,6 +279,8 @@ const locale = {
     clientAddedSuccessfully: "क्लाइंट सफलतापूर्वक जोड़ा गया",
     clientUpdatedSuccessfully: "क्लाइंट सफलतापूर्वक अपडेट किया गया",
     noClientsYet: "लगता है अभी तक कोई क्लाइंट नहीं जोड़ा गया है।",
+    viewingMatchingClients:
+      "लोड किए गए %{total} क्लाइंट में से %{filtered} मेल खाते क्लाइंट दिखाए जा रहे हैं।",
     deleting: "हटा रहा है...",
     addYourFirstClient: "अपना पहला क्लाइंट जोड़ें",
     addNewClientDescription: "नया क्लाइंट जोड़ने के लिए नीचे विवरण भरें।",

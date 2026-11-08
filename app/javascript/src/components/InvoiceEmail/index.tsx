@@ -5,6 +5,7 @@ import Loader from "common/Loader";
 import MobileView from "components/ClientInvoices/Details/MobileView";
 import ConnectPaymentGateway from "components/Invoices/popups/ConnectPaymentGateway";
 import StripeDisabledInvoice from "components/Invoices/popups/StripeDisabledInvoice";
+import PaymentHoldNotice from "components/Invoices/common/PaymentHoldNotice";
 import { useUserContext } from "context/UserContext";
 import { InstagramSVG, TwitterSVG, MiruLogoWithTextSVG } from "miruIcons";
 import { useParams, useNavigate } from "react-router-dom";
@@ -79,6 +80,7 @@ const InvoiceEmail = () => {
           stripeUrl={url}
           upiPayment={upi_payment}
         />
+        {invoice.payment_on_hold && <PaymentHoldNotice />}
         <div className="m-0 mt-5 mb-10 w-full bg-muted p-0">
           <InvoiceDetails
             client={client}

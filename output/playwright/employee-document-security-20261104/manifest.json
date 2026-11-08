@@ -1,0 +1,44 @@
+{
+  "kind": "native-rspec-and-brave-evidence",
+  "backend_examples": 54,
+  "backend_failures": 0,
+  "browser_examples": 10,
+  "browser_failures": 0,
+  "sources": {
+    "app/controllers/api/v1/employee_records_controller.rb": "32e48372e267a087032c0361ab78c5e96f53c80609c46305aeda0a7c873bf906",
+    "spec/requests/api/v1/employee_records_spec.rb": "c93742a03513069e271d449a23ae6d88a4f77b111c71d32bcd643b900c9a39fb",
+    "spec/system/responsive/employee_records_spec.rb": "cc910b4e24bac548c72ea4b8a5d6fc26a5e37bf9ffed406a34163af05ce8d97e"
+  },
+  "screenshots": [
+    {
+      "file": "employee-records-admin-mobile.png",
+      "sha256": "26afff69f650478325a922a79cb32ebff8bf8f99774129d773f7f0be3148bdca",
+      "width": 375,
+      "height": 7907
+    },
+    {
+      "file": "employee-records-staff.png",
+      "sha256": "4dc7f307e6174f219121016324fa848356ca90faf5faa1c648cab1b3e1f43165",
+      "width": 1440,
+      "height": 2220
+    },
+    {
+      "file": "employee-report-editor-desktop.png",
+      "sha256": "1808d386415d5d72c49e816626afa34fd47f3d108515a5419cf66ea758f6e412",
+      "width": 1440,
+      "height": 4789
+    },
+    {
+      "file": "employee-report-editor-mobile.png",
+      "sha256": "af975223fcf7def0ee6754f67a6b5db41d8b200084e01f10372231d965255ab0",
+      "width": 375,
+      "height": 7773
+    },
+    {
+      "file": "employee-report-saved-mobile.png",
+      "sha256": "ccc1b7dfba61a63fdfb281996fef94e5a58d8e9d81bdfe0c5da9ec3cd7a8cc66",
+      "width": 375,
+      "height": 7733
+    }
+  ]
+}
