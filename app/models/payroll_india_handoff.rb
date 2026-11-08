@@ -27,7 +27,7 @@ class PayrollIndiaHandoff < ApplicationRecord
     return "settlement_blocked" if settlement_blocked?
     return "partially_credited" if credited_minor.positive?
 
-    state = payroll_india_deliveries.order(attempt_number: :desc).pick(:state)
+    state = payroll_india_deliveries.max_by(&:attempt_number)&.state
     state == "sent" ? "awaiting_payment" : state
   end
 

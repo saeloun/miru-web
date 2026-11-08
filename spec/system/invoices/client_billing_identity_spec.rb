@@ -13,10 +13,10 @@ RSpec.describe "Client billing identity", type: :system, js: true do
   end
   let(:invoice) { create(:invoice_with_invoice_line_items, company:, client:, invoice_number: "QA-AGREEMENT-001") }
 
-  before do
+  before do |example|
     create(:employment, company:, user:)
     user.add_role :admin, company
-    sign_in user
+    sign_in user unless example.metadata[:guest]
     @console_errors = []
     page.driver.browser.on("Runtime.consoleAPICalled") do |event|
       @console_errors << event if event["type"] == "error"
@@ -92,9 +92,8 @@ RSpec.describe "Client billing identity", type: :system, js: true do
     expect(@invoice_mail[:recipients].map(&:downcase)).to eq([client.email])
   end
 
-  it "shows the legal name on a shared invoice without exposing private contacts" do
+  it "shows the legal name on a shared invoice without exposing private contacts", :guest do
     invoice.update!(status: :sent)
-    sign_out user
     page.current_window.resize_to(1440, 1000)
     visit "/invoices/#{invoice.external_view_key}/view"
 

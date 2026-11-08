@@ -47,6 +47,17 @@ The delivery spec's two `uses real local SMTP` cases and `executes durable Solid
 
 Preserve the configured Active Record deterministic key used by the versioned bank-reference HMAC across session-key rotation and deploys. Never replace it without an audited reference-index migration. Immutable financial rows deliberately reject ordinary ciphertext updates: before retiring any previous encryption key, perform controlled privileged re-encryption with plaintext-equivalence verification and restore the history triggers. Standard `record.encrypt` alone is not the maintenance procedure. Rails documents primary-key rotation and its separate deterministic-encryption limit in the [Active Record Encryption guide](https://guides.rubyonrails.org/active_record_encryption.html#rotating-keys).
 
+## CodeRabbit and hosted browser follow-up
+
+CodeRabbit reviewed 42 source/documentation files at `e4d832d7342a606eaf17fad34909a914d3a96980`. The company-wide credit-reference wording is corrected throughout the design. History now batch-loads attempts/credits under the same run lock while preserving order and masked output; two real voided/active-handoff query-budget cases failed before the change and pass after it. The credit history trigger uses the same plural name in migration, schema and dumper; the historical migration test proves the actual migrated name. These address the inline finding, performance note and trigger-name observation. The generic docstring-coverage heuristic names no missing contract; public interfaces are documented in the design/plan, and private implementation comments follow repository style rather than restating method bodies.
+
+Hosted backend checkpoint at that head: **6,173 examples, zero failures, 54 pending**; the separate 23-example CLI step overlaps that coverage. [Job](https://github.com/saeloun/miru-web/actions/runs/42447763944/job/128630222418). Hosted browser checkpoint: 367 examples, two failures, both existing test setup/synchronization paths. [Job and failure artifacts](https://github.com/saeloun/miru-web/actions/runs/42447763944/job/128630222565).
+
+- Shared invoice: a controlled held workspace request followed by the test's unnecessary logout reproduced the real workspace/session 401 and strict console failure before visiting the public invoice. That example now starts as a guest; authenticated examples retain login and their console listeners. Both five-example file runs pass, and a separate request trace contains only public invoice routes.
+- Interview booking: controlled assignment-form arrival between Cuprite hit-test and click moved the mobile target from y450 to y1122, sent no interview request, and reproduced the exact missing-booking failure. The helper now waits for the existing enabled screening/assignment controls, matching the established decision-message helper. Normal and two delayed/randomized runs total 24 passing examples. No timeout was raised or assertion/console check removed; product and shared authentication code were unchanged.
+
+Combined final verification after these corrections: **62 domain/API/mail/history/migration examples and 19 real Brave browser examples, zero failures**. The broader hosted suite must be green at the final pushed head before merge. The seven product screenshots remain the verified `e4d832d7` UI checkpoint; subsequent changes preserve the displayed workflow.
+
 ## Screenshots
 
 - [Owner report confirmation](screenshots/owner-ready-desktop.png)

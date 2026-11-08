@@ -143,6 +143,8 @@ RSpec.describe "Mercury payroll migration rollback" do
   end
 
   it "supports an empty rollback and reapplication at the migration's historical version" do
+    triggers = ActiveRecord::Base.connection.select_values("SELECT tgname FROM pg_trigger WHERE tgrelid = 'payroll_india_credits'::regclass AND NOT tgisinternal")
+    expect(triggers).to eq(["payroll_india_credits_immutable"])
     # schema.rb can deparse equivalent CHECK casts differently from the original migration.
     CreatePayrollMercuryPayments.new.down
     CreatePayrollMercuryPayments.new.up

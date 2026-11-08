@@ -58,7 +58,7 @@ class CreatePayrollIndiaHandoffs < ActiveRecord::Migration[8.0]
         $$;
         CREATE TRIGGER payroll_india_handoff_immutable BEFORE UPDATE OR DELETE ON payroll_india_handoffs
         FOR EACH ROW EXECUTE FUNCTION protect_payroll_india_handoff();
-        CREATE TRIGGER payroll_india_credit_immutable BEFORE UPDATE OR DELETE ON payroll_india_credits
+        CREATE TRIGGER payroll_india_credits_immutable BEFORE UPDATE OR DELETE ON payroll_india_credits
         FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
         CREATE FUNCTION protect_payroll_india_delivery() RETURNS trigger LANGUAGE plpgsql AS $$
         BEGIN

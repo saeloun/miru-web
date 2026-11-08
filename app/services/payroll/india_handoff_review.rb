@@ -22,7 +22,8 @@ module Payroll
 
       def consultants
         lines = @head&.payroll_payload&.fetch("lines", []) || []
-        history = PayrollIndiaHandoff.where(payroll_run_id: @run.id).order(:id).group_by(&:employment_id)
+        history = PayrollIndiaHandoff.where(payroll_run_id: @run.id).includes(:payroll_india_deliveries, :payroll_india_credits)
+          .order(:id).group_by(&:employment_id)
         ids = (lines.pluck("employment_id") + history.keys).uniq
         @run.company.employments.where(id: ids).includes(:user).filter_map do |employment|
           employment_id = employment.id
@@ -51,7 +52,7 @@ module Payroll
       end
 
       def handoff_detail(handoff)
-        attempts = handoff.payroll_india_deliveries.order(:attempt_number).to_a
+        attempts = handoff.payroll_india_deliveries.sort_by(&:attempt_number)
         latest = attempts.last
         active = handoff.released_at.nil?
         known_unsent = attempts.none? { |attempt| %w[sending sent uncertain].include?(attempt.state) }
@@ -61,7 +62,7 @@ module Payroll
           settlement_blocked: handoff.settlement_blocked?,
           report: report_detail(handoff.report),
           attempts: attempts.map { |attempt| delivery_detail(attempt) },
-          credits: handoff.payroll_india_credits.order(:id).map do |credit|
+          credits: handoff.payroll_india_credits.sort_by(&:id).map do |credit|
             { id: credit.id.to_s, amount_minor: credit.amount_minor.to_s, credited_on: credit.credited_on.iso8601,
               recorded_at: credit.created_at.iso8601 }
           end,
