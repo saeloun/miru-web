@@ -28,12 +28,14 @@ date use the company timezone. The report shows configured consultants active in
 that period, expected schedule hours, recorded hours across review states,
 fractional recorded days (`hours / 8`) and the fee estimate. Applicable holiday
 dates count once. **Review [name]** shows approved, pending, rejected and
-approval-not-required work separately. Recorded time off is unclassified;
-approved paid leave and opening/closing PTO require a future approval/balance
-workflow.
+approval-not-required work separately. Recorded time off alone is unclassified;
+owner-approved PTO decisions supply approved paid leave and opening/closing
+balances. See [PTO policy adoption and decisions](../../payroll-pto-ledger.md).
 
-Enter only explicitly confirmed unpaid hours and their decision/reason, select
-eligible reimbursement claims, then choose **Recalculate preview**. The scenario
+For consultants with an approved PTO policy, approved leave decisions supply the
+unpaid quantity; it cannot be overridden in the preview. Without a policy, enter
+only explicitly confirmed unpaid hours and their decision/reason for the preview.
+Select eligible reimbursement claims, then choose **Recalculate preview**. The scenario
 uses `monthly fee × (expected hours − confirmed unpaid hours) / expected hours`.
 Missing work alone does not reduce the fee; historical negative PTO is never
 deducted automatically. Changed inputs hide the old totals until recalculation.
@@ -97,10 +99,12 @@ and a different owner. This creates a run for review and moves no money.
 
 The accounts reviewer opens the run and chooses who to include. Consultants with
 unresolved data show **Not ready for payment** and don't hold up anyone else. For
-each consultant, the reviewer can enter confirmed unpaid hours with a reason,
-select reimbursements, and add other earnings, deductions or withholding, then
-acknowledges any listed warnings. Missing time never reduces the fee unless
-unpaid hours are entered. Reimbursements are never prorated.
+each consultant, an owner/admin must first configure a reconciled PTO policy and
+explicitly classify missing scheduled hours. The accounts reviewer prepares from
+those approved quantities, selects reimbursements, adds other earnings,
+deductions or withholding, and acknowledges any listed warnings. Acknowledgment
+cannot replace the owner's leave decision or change its unpaid quantity. Missing
+time alone never reduces the fee. Reimbursements are never prorated.
 
 The accounts reviewer approves the revision, then the owner gives final approval.
 Final approval reserves the selected claims, so they can't be edited, reviewed,
