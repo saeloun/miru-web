@@ -32,16 +32,9 @@ class Payroll::ConsultantReview
     working_days = work[:hours] / 8 if work[:hours]
     leave_hours = leave_summary(@sources.leave_durations(@employment.user_id, service_dates), warnings)
     pto = Payroll::PtoFacts.new(@employment, month: @month, sources: @sources).call if include_pto
-    unpaid = pto&.fetch("policy_id", nil) ? pto.fetch("unpaid_hours").to_d : confirmed_unpaid_hours
-    if pto&.fetch("policy_id", nil) && @inputs[:confirmed_unpaid_hours].present? && @inputs[:confirmed_unpaid_hours].to_d != unpaid
-      raise InvalidInput, "Unpaid hours come from approved PTO decisions; refresh instead of overriding the ledger"
-    end
+    unpaid = approved_unpaid_hours(pto)
     warnings.concat(pto.fetch("blockers")) if pto
-    covered = work[:covered]
-    if pto&.fetch("policy_id", nil) && covered
-      covered += pto.fetch("paid_hours").to_d + pto.fetch("deferred_hours").to_d
-      covered += pto.fetch("waived_hours").to_d
-    end
+    covered = approved_covered_hours(work[:covered], pto)
     expected, fee = calculate_fee(terms, covered, unpaid, warnings)
     {
       employment_id: @employment.id, consultant_name: @employment.user.full_name,
@@ -62,6 +55,23 @@ class Payroll::ConsultantReview
   end
 
   private
+
+    def approved_unpaid_hours(pto)
+      return confirmed_unpaid_hours unless pto&.fetch("policy_id", nil)
+
+      unpaid = pto.fetch("unpaid_hours").to_d
+      if @inputs[:confirmed_unpaid_hours].present? && @inputs[:confirmed_unpaid_hours].to_d != unpaid
+        raise InvalidInput, "Unpaid hours come from approved PTO decisions; refresh instead of overriding the ledger"
+      end
+      unpaid
+    end
+
+    def approved_covered_hours(covered, pto)
+      return covered unless pto&.fetch("policy_id", nil) && covered
+
+      covered += pto.fetch("paid_hours").to_d + pto.fetch("deferred_hours").to_d
+      covered + pto.fetch("waived_hours").to_d
+    end
 
     def leave_summary(minutes, warnings)
       if minutes.any?(&:negative?)

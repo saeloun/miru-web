@@ -235,22 +235,26 @@ module Payroll
           [@run.company_id.to_s, employment.user_id.to_s, @run.period.strftime("%Y-%m"), @run.currency]
         return false unless calculation.dig("input", "engagement_type") == line["pay_type"]
         source = line["source_snapshot"]
-        if line["pay_type"] == "consultant" && source["pto"]
-          pto = source.fetch("pto")
-          return false unless pto["policy_id"] && pto["blockers"] == []
-          expected = pto.fetch("expected_hours").to_d
-          return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_hours").to_d &&
-            calculation.dig("input", "basis_quantity").to_d == expected
-          recoveries = line.fetch("deductions").select { |entry| entry["reason_code"] == "approved_pto_recovery" }
-          return false unless recoveries.sum { |entry| entry["amount_minor"] } == pto.fetch("historical_deduction_minor") &&
-            recoveries.pluck("source_reference").sort == pto.fetch("historical_decision_ids").map { |id| "pto:#{id}" }.sort
-        end
+        return false unless pto_binding_matches?(calculation, line, source)
         source_field = calculation.dig("input", "compensation", "basis") == "hourly" ? "hours_source" : "quantity_source"
         return false unless calculation.dig("input", source_field) == source["digest"]
         return false unless calculation.dig("policy", "version") == @payload.dig("policies", "pay", "version")
 
         source["pay_policy_version"] == @payload.dig("policies", "pay", "version") &&
           source["attendance_policy_version"] == @payload.dig("policies", "proration", "version")
+      end
+
+      def pto_binding_matches?(calculation, line, source)
+        return true unless line["pay_type"] == "consultant" && source["pto"]
+
+        pto = source.fetch("pto")
+        return false unless pto["policy_id"] && pto["blockers"] == []
+        expected = pto.fetch("expected_hours").to_d
+        return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_hours").to_d &&
+          calculation.dig("input", "basis_quantity").to_d == expected
+        recoveries = line.fetch("deductions").select { |entry| entry["reason_code"] == "approved_pto_recovery" }
+        recoveries.sum { |entry| entry["amount_minor"] } == pto.fetch("historical_deduction_minor") &&
+          recoveries.pluck("source_reference").sort == pto.fetch("historical_decision_ids").map { |id| "pto:#{id}" }.sort
       end
 
       def expected_minor_amounts(calculation, multiplier)

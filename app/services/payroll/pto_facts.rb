@@ -15,57 +15,7 @@ module Payroll
       policy = policy_at(@month)
       return unavailable unless policy
 
-      review = attendance
-      heads = entry_heads(as_of: @month.end_of_month)
-      current = heads.find { |entry| entry.case_key == "month:#{@month.iso8601}" }
-      opening = policy.opening_minutes + heads.select { |entry| entry.period < @month }.sum(0.to_d, &:balance_delta_minutes)
-      accrued = heads.select { |entry| entry.period == @month && entry.kind == "accrual" }.sum(0.to_d, &:minutes)
-      closing = opening + heads.select { |entry| entry.period == @month }.sum(0.to_d, &:balance_delta_minutes)
-      gap = [review[:expected_hours].to_d - review[:approved_work_hours].to_d - review[:not_required_work_hours].to_d, 0.to_d].max * 60
-      fresh = current && current.source_digest == attendance_digest && current.minutes == gap && current.consultant_pto_policy_id == policy.id
-      totals = fresh ? current.approved_allocations.to_h { |part| [part.fetch("kind"), part.fetch("minutes").to_d] } : {}
-      unresolved = fresh ? totals.fetch("correction", 0.to_d) : gap
-      blockers = []
-      blockers << "pto_decision_required" if unresolved.positive?
-      blockers << "pto_decision_source_changed" if current && !fresh
-      historical_sources = heads.filter_map { |entry| entries.find { |origin| origin.id == entry.origin_entry_id } if entry.period == @month && entry.kind == "review_unpaid" }.uniq(&:id).map do |origin|
-        reference = origin.attendance_reference
-        origin_month = reference && Date.iso8601(reference.fetch("period"))
-        current_digest = reference && self.class.new(@employment, month: origin_month, sources: @sources.for_month(origin_month)).attendance_digest
-        current_head = entry_heads.find { |entry| entry.case_key == origin.case_key }&.id
-        if current_head != origin.id || reference && reference["digest"] != current_digest
-          blockers << "pto_historical_source_changed"
-        end
-        { "entry_id" => origin.id, "current_head_id" => current_head, "approved_source" => reference, "current_digest" => current_digest }
-      end
-      first_policy = policies.first
-      due_month = first_policy.opening_on.beginning_of_month
-      while due_month <= @month
-        applicable = policy_at(due_month)
-        if applicable.monthly_accrual_minutes.positive? && applicable.accrual_eligible?(due_month, through: [@month.end_of_month, @company.resolved_time_zone.today].min) &&
-            !heads.any? { |entry| entry.case_key == "accrual:#{due_month.iso8601}" }
-          blockers << "pto_accrual_pending"
-          break
-        end
-        due_month = due_month.next_month
-      end
-      blockers.uniq!
-      data = {
-        "version" => VERSION, "policy_id" => policy.id, "month" => @month.strftime("%Y-%m"),
-        "attendance_digest" => attendance_digest, "decision_id" => current&.id,
-        "decision" => fresh ? current.kind : nil, "expected_hours" => review[:expected_hours],
-        "monthly_fee" => review[:monthly_fee], "compensation_id" => review[:compensation_id],
-        "opening_hours" => hours(opening), "accrued_hours" => hours(accrued), "closing_hours" => hours(closing),
-        "paid_hours" => hours(totals.fetch("paid", 0.to_d) + totals.fetch("advance", 0.to_d)),
-        "advance_hours" => hours(fresh ? current.debt_minutes : 0),
-        "unpaid_hours" => hours(totals.fetch("unpaid", 0.to_d)),
-        "deferred_hours" => hours(totals.fetch("defer", 0.to_d)), "waived_hours" => hours(totals.fetch("waive", 0.to_d)),
-        "unresolved_hours" => hours(unresolved), "gap_hours" => hours(gap), "allocations" => fresh ? current.approved_allocations : [],
-        "historical_deduction_minor" => heads.select { |entry| entry.period == @month && entry.kind == "review_unpaid" }.sum(&:cash_amount_minor),
-        "historical_decision_ids" => heads.filter_map { |entry| entry.id if entry.period == @month && entry.kind == "review_unpaid" },
-        "historical_sources" => historical_sources,
-        "blockers" => blockers, "entry_ids" => heads.map(&:id)
-      }
+      data = period_facts(policy)
       data["digest"] = digest([data, policy.attributes.except("created_at", "updated_at")])
       data
     end
@@ -81,6 +31,89 @@ module Payroll
     end
 
     private
+
+      def period_facts(policy)
+        review = attendance
+        heads = entry_heads(as_of: @month.end_of_month)
+        current = heads.find { |entry| entry.case_key == "month:#{@month.iso8601}" }
+        gap = [review[:expected_hours].to_d - review[:approved_work_hours].to_d - review[:not_required_work_hours].to_d, 0.to_d].max * 60
+        fresh = current && current.source_digest == attendance_digest && current.minutes == gap && current.consultant_pto_policy_id == policy.id
+        totals = allocation_totals(current, fresh)
+        unresolved = fresh ? totals.fetch("correction", 0.to_d) : gap
+        blockers = decision_blockers(current, fresh, unresolved)
+        historical = historical_sources(heads, blockers)
+        blockers << "pto_accrual_pending" if pending_accrual?(heads)
+        blockers.uniq!
+        {
+          "version" => VERSION, "policy_id" => policy.id, "month" => @month.strftime("%Y-%m"),
+          "attendance_digest" => attendance_digest, "decision_id" => current&.id,
+          "decision" => fresh ? current.kind : nil, "expected_hours" => review[:expected_hours],
+          "monthly_fee" => review[:monthly_fee], "compensation_id" => review[:compensation_id]
+        }.merge(balance_facts(policy, heads), treatment_facts(current, fresh, totals, unresolved, gap), history_facts(heads, historical, blockers))
+      end
+
+      def allocation_totals(current, fresh)
+        return {} unless fresh
+
+        current.approved_allocations.to_h { |part| [part.fetch("kind"), part.fetch("minutes").to_d] }
+      end
+
+      def decision_blockers(current, fresh, unresolved)
+        blockers = []
+        blockers << "pto_decision_required" if unresolved.positive?
+        blockers << "pto_decision_source_changed" if current && !fresh
+        blockers
+      end
+
+      def balance_facts(policy, heads)
+        monthly = heads.select { |entry| entry.period == @month }
+        opening = policy.opening_minutes + heads.select { |entry| entry.period < @month }.sum(0.to_d, &:balance_delta_minutes)
+        accrued = monthly.select { |entry| entry.kind == "accrual" }.sum(0.to_d, &:minutes)
+        closing = opening + monthly.sum(0.to_d, &:balance_delta_minutes)
+        { "opening_hours" => hours(opening), "accrued_hours" => hours(accrued), "closing_hours" => hours(closing) }
+      end
+
+      def treatment_facts(current, fresh, totals, unresolved, gap)
+        zero = 0.to_d
+        {
+          "paid_hours" => hours(totals.fetch("paid", zero) + totals.fetch("advance", zero)),
+          "advance_hours" => hours(fresh ? current.debt_minutes : 0), "unpaid_hours" => hours(totals.fetch("unpaid", zero)),
+          "deferred_hours" => hours(totals.fetch("defer", zero)), "waived_hours" => hours(totals.fetch("waive", zero)),
+          "unresolved_hours" => hours(unresolved), "gap_hours" => hours(gap), "allocations" => fresh ? current.approved_allocations : []
+        }
+      end
+
+      def history_facts(heads, historical, blockers)
+        unpaid = heads.select { |entry| entry.period == @month && entry.kind == "review_unpaid" }
+        { "historical_deduction_minor" => unpaid.sum(&:cash_amount_minor), "historical_decision_ids" => unpaid.map(&:id),
+          "historical_sources" => historical, "blockers" => blockers, "entry_ids" => heads.map(&:id) }
+      end
+
+      def historical_sources(heads, blockers)
+        heads.filter_map { |entry| entries.find { |origin| origin.id == entry.origin_entry_id } if entry.period == @month && entry.kind == "review_unpaid" }.uniq(&:id).map do |origin|
+          reference = origin.attendance_reference
+          origin_month = reference && Date.iso8601(reference.fetch("period"))
+          current_digest = reference && self.class.new(@employment, month: origin_month, sources: @sources.for_month(origin_month)).attendance_digest
+          current_head = entry_heads.find { |entry| entry.case_key == origin.case_key }&.id
+          if current_head != origin.id || reference && reference["digest"] != current_digest
+            blockers << "pto_historical_source_changed"
+          end
+          { "entry_id" => origin.id, "current_head_id" => current_head, "approved_source" => reference, "current_digest" => current_digest }
+        end
+      end
+
+      def pending_accrual?(heads)
+        due_month = policies.first.opening_on.beginning_of_month
+        while due_month <= @month
+          applicable = policy_at(due_month)
+          if applicable.monthly_accrual_minutes.positive? && applicable.accrual_eligible?(due_month, through: [@month.end_of_month, @company.resolved_time_zone.today].min) &&
+              !heads.any? { |entry| entry.case_key == "accrual:#{due_month.iso8601}" }
+            return true
+          end
+          due_month = due_month.next_month
+        end
+        false
+      end
 
       def attendance
         @attendance ||= ConsultantReview.new(employment: @employment, month: @month, cutoff: @month.end_of_month, sources: @sources)

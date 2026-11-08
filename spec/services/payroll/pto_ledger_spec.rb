@@ -222,6 +222,10 @@ RSpec.describe Payroll::PtoLedger do
     expect(Payroll::PtoFacts.new(employment, month: target).call).to include("closing_hours" => "0.0", "historical_deduction_minor" => 2_750_000)
     expect(facts).to include("closing_hours" => "-60.0")
     expect { expect(ledger.review_obligation!(**command).id).to eq(recovered.id) }.not_to change(PayrollPtoEntry, :count)
+    expect do
+      expect { ledger.review_obligation!(**command.merge(unknown_option: "not-permitted")) }.to raise_error(ArgumentError, /Unknown key/)
+      expect { ledger.review_obligation!(**command.except(:expected_digest)) }.to raise_error(ArgumentError, /expected_digest/)
+    end.not_to change(PayrollPtoEntry, :count)
     pending = Payroll::PtoReport.new(company, as_of: Date.new(2026, 11, 30)).call.fetch(:cases).find { |row| row[:employment_id] == employment.id }
     expect(pending.fetch(:cash_cases)).to include(a_hash_including(entry_id: recovered.id, amount_minor: "2750000", state: "unreserved"))
     expect { ledger.accrue!(through: Date.new(2026, 10, 1)) }.not_to change(PayrollPtoAllocation, :count)

@@ -15,19 +15,7 @@ module Payroll
         employment.with_lock do
           ids = pto.fetch("historical_decision_ids")
           ids += [pto.fetch("decision_id")] if pto["unpaid_hours"].to_d.positive?
-          ids.each do |id|
-            entry = PayrollPtoEntry.heads.find_by!(id:, employment:, company: run.company, kind: %w[unpaid allocation review_unpaid])
-            previous = PayrollPtoRecovery.heads.find_by(payroll_pto_entry: entry)
-            if previous && previous.kind != "released"
-              next if %w[reserved settled].include?(previous.kind) && previous.payroll_run_id == run.id &&
-                IndiaHandoff.line_digest(line) == IndiaHandoff.line_digest(recovery_line(previous))
-              raise Workflow::Conflict, "This absence has already been reserved or recovered"
-            end
-            base = line.fetch("calculation_snapshot").fetch("input").fetch("compensation").fetch("amount").to_d * 100
-            amount = entry.kind == "review_unpaid" ? entry.cash_amount_minor : base.to_i - line.fetch("amounts").fetch("base_minor")
-            PayrollPtoRecovery.create!(company: run.company, employment:, payroll_pto_entry: entry, payroll_run: run,
-              payroll_revision: revision, previous_recovery: previous, kind: "reserved", amount_minor: amount)
-          end
+          ids.each { |id| reserve_entry!(run, revision, line, employment, id) }
         end
       end
     rescue ActiveRecord::RecordNotUnique, ActiveRecord::RecordNotFound
@@ -88,14 +76,7 @@ module Payroll
           unless confirmed_credit?(run, head)
             raise Workflow::Conflict, "Full confirmed credit on the reserved revision is required; a confirmed reversal remains under bank review"
           end
-          settled = append(head, "settled", actor:, reason:)
-          groups.each do |group|
-            next unless group.fully_credited_at.nil? && group_confirms_credit?(group, head, recovery_line(head))
-
-            group.update!(fully_credited_at: Time.current)
-            group.payroll_payment_instructions.order(:id).first&.payroll_payment_events&.create!(kind: "pto_credit_review_approved", actor:, data: {})
-          end
-          settled
+          settle_review!(groups, head, actor, reason)
         end
       end
     end
@@ -155,5 +136,32 @@ module Payroll
         approved && IndiaHandoff.line_digest(approved) == IndiaHandoff.line_digest(line)
       end
     end
+
+    def reserve_entry!(run, revision, line, employment, id)
+      entry = PayrollPtoEntry.heads.find_by!(id:, employment:, company: run.company, kind: %w[unpaid allocation review_unpaid])
+      previous = PayrollPtoRecovery.heads.find_by(payroll_pto_entry: entry)
+      if previous && previous.kind != "released"
+        return if %w[reserved settled].include?(previous.kind) && previous.payroll_run_id == run.id &&
+          IndiaHandoff.line_digest(line) == IndiaHandoff.line_digest(recovery_line(previous))
+        raise Workflow::Conflict, "This absence has already been reserved or recovered"
+      end
+      base = line.fetch("calculation_snapshot").fetch("input").fetch("compensation").fetch("amount").to_d * 100
+      amount = entry.kind == "review_unpaid" ? entry.cash_amount_minor : base.to_i - line.fetch("amounts").fetch("base_minor")
+      PayrollPtoRecovery.create!(company: run.company, employment:, payroll_pto_entry: entry, payroll_run: run,
+        payroll_revision: revision, previous_recovery: previous, kind: "reserved", amount_minor: amount)
+    end
+    private_class_method :reserve_entry!
+
+    def settle_review!(groups, head, actor, reason)
+      settled = append(head, "settled", actor:, reason:)
+      groups.each do |group|
+        next unless group.fully_credited_at.nil? && group_confirms_credit?(group, head, recovery_line(head))
+
+        group.update!(fully_credited_at: Time.current)
+        group.payroll_payment_instructions.order(:id).first&.payroll_payment_events&.create!(kind: "pto_credit_review_approved", actor:, data: {})
+      end
+      settled
+    end
+    private_class_method :settle_review!
   end
 end

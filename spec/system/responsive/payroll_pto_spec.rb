@@ -116,8 +116,11 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
           final_reviewer = create(:user, current_workspace: company)
           create(:employment, company:, user: final_reviewer, joined_at: "2020-01-01", resigned_at: nil)
           final_reviewer.add_role(:owner, company)
-          EmployeeRecord.create!(employment:, private_details: { "bank_account_name" => "Synthetic Consultant",
-            "bank_name" => "Synthetic Bank", "bank_account_number" => "123456789012", "bank_ifsc" => "SYNT0000001" })
+          bank_details = { "bank_account_name" => "Synthetic Consultant", "bank_name" => "Synthetic Bank",
+                           "bank_account_number" => "123456789012", "bank_ifsc" => "SYNT0000001" }
+          record = create(:employee_record, employment:, private_details: bank_details).reload
+          expect(record.private_details).to eq(bank_details)
+          expect(record.read_attribute_before_type_cast(:private_details)).not_to include("Synthetic Consultant", "123456789012")
           run = PayrollRun.create!(company:, period: "2026-09-01", currency: "INR", accounts_reviewer: admin, final_reviewer:)
           revision = Payroll::ConsultantRevision.new(run, actor: admin).create!(
             consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: "2026-09-30",

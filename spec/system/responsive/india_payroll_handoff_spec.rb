@@ -21,6 +21,8 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: "Synthetic India Pvt Ltd",
       change_reason: "India accounts handoff")
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
     @revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(consultants: [{ employment_id: employment.id,
       confirmed_unpaid_hours: "0", expense_ids: [claim.id], acknowledged: true }], cutoff: "2026-11-30",
       expected_digest: nil, idempotency_key: "synthetic-india-browser")

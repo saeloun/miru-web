@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Payroll::IndiaHandoffReview do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   around { |example| travel_to(Time.utc(2026, 12, 5, 12)) { example.run } }
 
@@ -11,6 +11,7 @@ RSpec.describe Payroll::IndiaHandoffReview do
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: legal_name,
       change_reason: "Synthetic India funding")
+    record_synthetic_pto_treatment
     revision = approve_revision
     @service = Payroll::IndiaHandoff.new(run)
     @handoff = @service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,

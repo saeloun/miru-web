@@ -9,16 +9,25 @@ module Payroll
     def call
       Entitlement.require!(@company.id)
       ids = ConsultantPtoPolicy.where(company: @company, effective_on: ..@as_of).distinct.pluck(:employment_id)
-      cases = @company.employments.where(id: ids).includes(:user).order(:id).map do |employment|
+      cases = @company.employments.where(id: ids).includes(:user).order(:id).map { |employment| employment_case(employment) }
+      { as_of: @as_of.iso8601, cases: }
+    end
+
+    def cash_cases(employment)
+      Entitlement.require!(@company.id)
+      raise ActiveRecord::RecordNotFound unless employment.company_id == @company.id
+
+      PayrollPtoEntry.effective_heads(@as_of).where(employment:, kind: %w[unpaid allocation review_unpaid]).order(:period, :id)
+        .filter_map { |entry| cash_case(entry, employment) }
+    end
+
+    private
+
+      def employment_case(employment)
         facts = PtoFacts.new(employment, month: @as_of.beginning_of_month).call
         policy = ConsultantPtoPolicy.find(facts.fetch("policy_id"))
-        year_start = Date.new(@as_of.year, policy.leave_year_month, policy.leave_year_day)
-        year_start = year_start.prev_year if year_start > @as_of
-        deferred = PtoObligations.new(employment, as_of: @as_of).call.map do |row|
-          entry = row.fetch(:origin)
-          { id: entry.id, period: entry.period.iso8601, kind: row[:review]&.kind || row[:component],
-            hours: (row.fetch(:remaining_minutes) / 60).to_s("F"), accrued_recovery_hours: (row.fetch(:accrued_recovery_minutes) / 60).to_s("F") }
-        end
+        year_start = leave_year_start(policy)
+        deferred = deferred_cases(employment)
         negative = [-facts.fetch("closing_hours").to_d, 0.to_d].max
         cash = cash_cases(employment)
         overdue = deferred.any? { |entry| Date.iso8601(entry.fetch(:period)) < year_start } ||
@@ -32,24 +41,26 @@ module Payroll
           exit_review: employment.resigned_at.present? && employment.resigned_at <= @as_of,
           leave_year_start: year_start.iso8601, carry_rule: policy.carry_rule }
       end
-      { as_of: @as_of.iso8601, cases: }
-    end
 
-    def cash_cases(employment)
-      Entitlement.require!(@company.id)
-      raise ActiveRecord::RecordNotFound unless employment.company_id == @company.id
+      def leave_year_start(policy)
+        start = Date.new(@as_of.year, policy.leave_year_month, policy.leave_year_day)
+        start > @as_of ? start.prev_year : start
+      end
 
-      PayrollPtoEntry.effective_heads(@as_of).where(employment:, kind: %w[unpaid allocation review_unpaid]).order(:period, :id).filter_map do |entry|
-        next if entry.kind == "allocation" && entry.approved_allocations.none? { |part| part["kind"] == "unpaid" }
-        recovery = PayrollPtoRecovery.heads.find_by(payroll_pto_entry: entry)
-        next if recovery&.kind == "settled"
-
-        amount = if entry.kind == "review_unpaid"
-          entry.cash_amount_minor
-        else
-          review = ConsultantReview.new(employment:, month: entry.period, cutoff: @as_of).process(include_expenses: false)
-          review[:monthly_fee] && review[:fee_estimate] ? ((review[:monthly_fee].to_d - review[:fee_estimate].to_d) * 100).to_i : nil
+      def deferred_cases(employment)
+        PtoObligations.new(employment, as_of: @as_of).call.map do |row|
+          entry = row.fetch(:origin)
+          { id: entry.id, period: entry.period.iso8601, kind: row[:review]&.kind || row[:component],
+            hours: (row.fetch(:remaining_minutes) / 60).to_s("F"), accrued_recovery_hours: (row.fetch(:accrued_recovery_minutes) / 60).to_s("F") }
         end
+      end
+
+      def cash_case(entry, employment)
+        return if entry.kind == "allocation" && entry.approved_allocations.none? { |part| part["kind"] == "unpaid" }
+        recovery = PayrollPtoRecovery.heads.find_by(payroll_pto_entry: entry)
+        return if recovery&.kind == "settled"
+
+        amount = cash_amount(entry, employment)
         quantity = entry.kind == "allocation" ? entry.approved_allocations.find { |part| part["kind"] == "unpaid" }.fetch("minutes").to_d : entry.minutes
         accrued = entry.origin_entry_id ? PayrollPtoAllocation.where(origin_entry_id: entry.origin_entry_id).sum(:minutes) : 0.to_d
         { entry_id: entry.id, origin_entry_id: entry.origin_entry_id, origin_component: entry.origin_component,
@@ -58,6 +69,12 @@ module Payroll
           state: recovery&.kind || "unreserved", payroll_run_id: recovery&.payroll_run_id,
           payroll_revision_id: recovery&.payroll_revision_id }
       end
-    end
+
+      def cash_amount(entry, employment)
+        return entry.cash_amount_minor if entry.kind == "review_unpaid"
+
+        review = ConsultantReview.new(employment:, month: entry.period, cutoff: @as_of).process(include_expenses: false)
+        review[:monthly_fee] && review[:fee_estimate] ? ((review[:monthly_fee].to_d - review[:fee_estimate].to_d) * 100).to_i : nil
+      end
   end
 end
