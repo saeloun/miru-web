@@ -249,6 +249,6 @@ class PaymentsProvider < ApplicationRecord
     end
 
     def key_secret_encryption_key
-      Rails.application.key_generator.generate_key("payments_provider_key_secret", 32)
+      Rails.application.key_generator(ENV["PROVIDER_CREDENTIALS_ENCRYPTION_SECRET"].presence || Rails.application.secret_key_base).generate_key("payments_provider_key_secret", 32)
     end
 end

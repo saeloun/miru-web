@@ -29,6 +29,58 @@ require "rails_helper"
 RSpec.describe PaymentsProvider, type: :model do
   subject { build(:payments_provider) }
 
+  describe "provider credential encryption key" do
+    let(:source_key) { "synthetic-original-provider-key-" + ("s" * 64) }
+    let(:rotated_key) { "synthetic-session-key-" + ("r" * 64) }
+    let(:secrets) do
+      %w[key_secret webhook_secret client_secret razorpay_oauth_credentials].index_with { |name| "synthetic-#{name}" }
+    end
+    let(:legacy_encryptor) do
+      key = Rails.application.key_generator(source_key).generate_key("payments_provider_key_secret", 32)
+      ActiveSupport::MessageEncryptor.new(key)
+    end
+    let(:provider) do
+      settings = secrets.to_h { |name, value| ["#{name}_ciphertext", legacy_encryptor.encrypt_and_sign(value)] }
+      described_class.new(settings:)
+    end
+
+    before do
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(nil)
+      allow(Rails.application).to receive(:secret_key_base).and_return(source_key)
+    end
+
+    it "keeps legacy ciphertext readable without an explicit provider key" do
+      secrets.each { |name, value| expect(provider.public_send(name)).to eq(value) }
+    end
+
+    it "reads legacy ciphertext after only the session key changes when the original provider key is pinned" do
+      ciphertext = provider.settings.deep_dup
+      allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(source_key)
+      allow(Rails.application).to receive(:secret_key_base).and_return(rotated_key)
+
+      secrets.each { |name, value| expect(provider.public_send(name)).to eq(value) }
+      expect(provider.settings).to eq(ciphertext)
+      secrets.each do |name, value|
+        provider.public_send("#{name}=", value)
+        expect(legacy_encryptor.decrypt_and_verify(provider.settings.fetch("#{name}_ciphertext"))).to eq(value)
+      end
+    end
+
+    it "fails closed after a session key change without a pinned provider key" do
+      provider
+      allow(Rails.application).to receive(:secret_key_base).and_return(rotated_key)
+
+      secrets.each_key { |name| expect(provider.public_send(name)).to be_nil }
+    end
+
+    it "fails closed with an incorrect explicit provider key" do
+      allow(ENV).to receive(:[]).with("PROVIDER_CREDENTIALS_ENCRYPTION_SECRET").and_return(rotated_key)
+
+      secrets.each_key { |name| expect(provider.public_send(name)).to be_nil }
+    end
+  end
+
   describe "Validations" do
     describe "uniqueness" do
       it { is_expected.to validate_uniqueness_of(:name).scoped_to(:company_id) }

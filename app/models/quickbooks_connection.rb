@@ -114,7 +114,7 @@ class QuickbooksConnection < ApplicationRecord
     end
 
     def token_encryption_key
-      Rails.application.key_generator.generate_key("quickbooks_connection_tokens", 32)
+      Rails.application.key_generator(ENV["PROVIDER_CREDENTIALS_ENCRYPTION_SECRET"].presence || Rails.application.secret_key_base).generate_key("quickbooks_connection_tokens", 32)
     end
 
     def refresh_token_expired?
