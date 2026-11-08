@@ -29,7 +29,7 @@ that period, expected schedule hours, recorded hours across review states,
 fractional recorded days (`hours / 8`) and the fee estimate. Applicable holiday
 dates count once. **Review [name]** shows approved, pending, rejected and
 approval-not-required work separately. Recorded time off alone is unclassified;
-owner-approved PTO decisions supply approved paid leave and opening/closing
+PTO decisions approved by an active owner or admin supply paid leave and opening/closing
 balances. See [PTO policy adoption and decisions](../../payroll-pto-ledger.md).
 
 For consultants with an approved PTO policy, approved leave decisions supply the

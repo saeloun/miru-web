@@ -102,6 +102,55 @@ RSpec.describe Payroll::PtoLedger do
     expect(PayrollCalculation::Calculator.verify_snapshot?(calculation)).to be(true)
   end
 
+  %w[unpaid paid advance].each do |treatment|
+    it "preserves fractional raw-minute #{treatment} gaps through storage, freshness and approval" do
+      policy(opening: treatment == "advance" ? "0" : "40", accrual: "16")
+      work_entry.update!(duration: 9_001.002)
+      expect(facts.fetch("gap_minutes")).to eq("598.998")
+      decision = decide(treatment).reload
+      expect(decision.minutes).to eq(BigDecimal("598.998"))
+      expect(decision.balance_delta_minutes).to eq(treatment == "unpaid" ? 0 : BigDecimal("-598.998"))
+      expect(decision.debt_minutes).to eq(treatment == "advance" ? BigDecimal("598.998") : 0)
+      expect(facts).to include("decision_id" => decision.id, "decision" => treatment, "blockers" => [])
+      revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
+        consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601,
+        expected_digest: nil, idempotency_key: SecureRandom.uuid)
+      workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
+      workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
+      expect(workflow.status).to eq("approved")
+      expect(revision.payroll_payload.dig("lines", 0, "amounts", "net_minor")).to eq(treatment == "unpaid" ? 9_376_044 : 10_000_000)
+      if treatment == "advance"
+        2.times { ledger.accrue!(through: Date.new(2026, 10, 1)) }
+        allocation = PayrollPtoAllocation.find_by!(origin_entry: decision)
+        expect(allocation.reload.minutes).to eq(BigDecimal("598.998"))
+        expect(allocation.accrual_entry.reload).to have_attributes(minutes: 960, balance_delta_minutes: 960)
+        expect(PayrollPtoAllocation.where(origin_entry: decision).count).to eq(1)
+        expect(Payroll::PtoFacts.new(employment, month: Date.new(2026, 10, 1)).call.fetch("closing_minutes")).to eq("361.002")
+      end
+    end
+  end
+
+  it "rejects nonfinite persisted quantities through SQL even without model callbacks" do
+    policy(opening: "0", accrual: "16")
+    entry = decide("advance")
+    ledger.accrue!(through: Date.new(2026, 10, 1))
+    allocation = PayrollPtoAllocation.find_by!(origin_entry: entry)
+    %w[NaN Infinity -Infinity].each do |invalid|
+      %w[minutes balance_delta_minutes debt_minutes].each do |column|
+        expect do
+          ApplicationRecord.transaction(requires_new: true) do
+            PayrollPtoEntry.insert_all!([entry.attributes.except("id").merge(column => BigDecimal(invalid))])
+          end
+        end.to raise_error(ActiveRecord::StatementInvalid, /PTO quantities must be finite/)
+      end
+      expect do
+        ApplicationRecord.transaction(requires_new: true) do
+          PayrollPtoAllocation.insert_all!([allocation.attributes.except("id").merge("minutes" => BigDecimal(invalid))])
+        end
+      end.to raise_error(ActiveRecord::StatementInvalid, /PTO quantities must be finite/)
+    end
+  end
+
   it "rounds the exact 580-minute unpaid proration half up in the estimate and approved calculation" do
     policy
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: run.period,

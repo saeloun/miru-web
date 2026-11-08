@@ -83,7 +83,7 @@ class ProtectPayrollPtoHistory < ActiveRecord::Migration[8.1]
               SELECT count(*) INTO component_count FROM jsonb_object_keys(part);
               IF component_count <> 2 OR NOT (part ? 'kind') OR NOT (part ? 'minutes') OR jsonb_typeof(part->'kind') <> 'string' OR
                 part->>'kind' NOT IN ('paid','advance','unpaid','defer','waive','correction') OR
-                jsonb_typeof(part->'minutes') <> 'string' OR (part->>'minutes') !~ '^[0-9]+([.][0-9]{1,2})?$' THEN
+                jsonb_typeof(part->'minutes') <> 'string' OR (part->>'minutes') !~ '^[0-9]+([.][0-9]+)?$' THEN
                 RAISE EXCEPTION 'Invalid typed PTO allocation';
               END IF;
               part_minutes := (part->>'minutes')::numeric;
@@ -191,6 +191,7 @@ class ProtectPayrollPtoHistory < ActiveRecord::Migration[8.1]
         DECLARE available numeric; debt numeric; allocated numeric; resolved numeric;
         BEGIN
           PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+          IF NEW.minutes::text IN ('NaN','Infinity','-Infinity') THEN RAISE EXCEPTION 'PTO quantities must be finite'; END IF;
           SELECT minutes INTO available FROM payroll_pto_entries WHERE id = NEW.accrual_entry_id AND kind = 'accrual';
           SELECT debt_minutes INTO debt FROM payroll_pto_entries WHERE id = NEW.origin_entry_id AND debt_minutes > 0;
           IF EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = NEW.origin_entry_id) THEN

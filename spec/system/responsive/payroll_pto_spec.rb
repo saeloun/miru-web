@@ -171,6 +171,41 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
     end
   end
 
+  it "reloads an approved fractional-minute unpaid decision and previews the exact fee" do
+    project = create(:project, client: create(:client, company:), billable: false)
+    create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 9_001.002, review_status: :approved)
+    sign_in admin
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      click_button "PTO and decisions #{consultant.full_name}"
+      within("[role='dialog']") do
+        configure_opening("40")
+        select "Deduct confirmed unpaid this month", from: "Current leave treatment"
+        fill_in "Leave decision reason", with: "Synthetic exact fractional-minute treatment"
+        click_button "Approve leave decision"
+        expect(page).to have_text("Synthetic exact fractional-minute treatment")
+      end
+      visit "/consultant-payroll"
+      click_button "PTO and decisions #{consultant.full_name}"
+      within("[role='dialog']") do
+        expect_pto_fact("Confirmed unpaid hours", "9.9833")
+        expect_pto_fact("Unresolved hours", "0.0")
+        expect(page).not_to have_text("Attendance changed after the leave decision. Refresh and approve its treatment again.")
+        expect(page).not_to have_css("[role='alert']")
+        click_button "Close"
+      end
+      click_button "Review #{consultant.full_name}"
+      within("[role='dialog']") do
+        expect(page).to have_field("payroll-unpaid", with: "9.9833", readonly: true)
+        click_button "Recalculate preview"
+        expect(page).to have_button("Recalculate preview", disabled: false)
+        expect(page).not_to have_css("[role='alert']")
+        expect(page).to have_text("93,760.44")
+        page.save_screenshot("/tmp/miru-pto-fractional-unpaid-preview-20261109.png")
+      end
+    end
+  end
+
   it "keeps negative history at the configured year boundary and resolves exit review only through an explicit owner decision" do
     project = create(:project, client: create(:client, company:))
     create(:timesheet_entry, project:, user: consultant, work_date: "2026-09-03", duration: 9_600, review_status: :approved)

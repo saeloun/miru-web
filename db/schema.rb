@@ -1711,7 +1711,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
     t.bigint "employment_id", null: false
     t.bigint "accrual_entry_id", null: false
     t.bigint "origin_entry_id", null: false
-    t.decimal "minutes", precision: 14, scale: 2, null: false
+    t.decimal "minutes", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["accrual_entry_id", "origin_entry_id"], name: "idx_on_accrual_entry_id_origin_entry_id_48b2e8fe40", unique: true
@@ -1732,9 +1732,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
     t.date "period", null: false
     t.string "case_key", null: false
     t.string "kind", null: false
-    t.decimal "minutes", precision: 14, scale: 2, null: false
-    t.decimal "balance_delta_minutes", precision: 14, scale: 2, null: false
-    t.decimal "debt_minutes", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "minutes", null: false
+    t.decimal "balance_delta_minutes", null: false
+    t.decimal "debt_minutes", default: "0.0", null: false
     t.bigint "cash_amount_minor", default: 0, null: false
     t.jsonb "rate_basis", default: {}, null: false
     t.string "source_digest", null: false
@@ -3005,7 +3005,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
           SELECT count(*) INTO component_count FROM jsonb_object_keys(part);
           IF component_count <> 2 OR NOT (part ? 'kind') OR NOT (part ? 'minutes') OR jsonb_typeof(part->'kind') <> 'string' OR
             part->>'kind' NOT IN ('paid','advance','unpaid','defer','waive','correction') OR
-            jsonb_typeof(part->'minutes') <> 'string' OR (part->>'minutes') !~ '^[0-9]+([.][0-9]{1,2})?$' THEN
+            jsonb_typeof(part->'minutes') <> 'string' OR (part->>'minutes') !~ '^[0-9]+([.][0-9]+)?$' THEN
             RAISE EXCEPTION 'Invalid typed PTO allocation';
           END IF;
           part_minutes := (part->>'minutes')::numeric;
@@ -3123,6 +3123,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
     DECLARE available numeric; debt numeric; allocated numeric; resolved numeric;
     BEGIN
       PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+      IF NEW.minutes::text IN ('NaN','Infinity','-Infinity') THEN RAISE EXCEPTION 'PTO quantities must be finite'; END IF;
       SELECT minutes INTO available FROM payroll_pto_entries WHERE id = NEW.accrual_entry_id AND kind = 'accrual';
       SELECT debt_minutes INTO debt FROM payroll_pto_entries WHERE id = NEW.origin_entry_id AND debt_minutes > 0;
       IF EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = NEW.origin_entry_id) THEN

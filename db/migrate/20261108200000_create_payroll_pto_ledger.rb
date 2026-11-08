@@ -43,9 +43,9 @@ class CreatePayrollPtoLedger < ActiveRecord::Migration[8.1]
       t.date :period, null: false
       t.string :case_key, null: false
       t.string :kind, null: false
-      t.decimal :minutes, precision: 14, scale: 2, null: false
-      t.decimal :balance_delta_minutes, precision: 14, scale: 2, null: false
-      t.decimal :debt_minutes, precision: 14, scale: 2, null: false, default: 0
+      t.decimal :minutes, null: false
+      t.decimal :balance_delta_minutes, null: false
+      t.decimal :debt_minutes, null: false, default: 0
       t.bigint :cash_amount_minor, null: false, default: 0
       t.jsonb :rate_basis, null: false, default: {}
       t.string :source_digest, null: false
@@ -71,7 +71,7 @@ class CreatePayrollPtoLedger < ActiveRecord::Migration[8.1]
       t.references :employment, null: false
       t.references :accrual_entry, null: false
       t.references :origin_entry, null: false
-      t.decimal :minutes, precision: 14, scale: 2, null: false
+      t.decimal :minutes, null: false
       t.timestamps
     end
     add_index :payroll_pto_allocations, [:accrual_entry_id, :origin_entry_id], unique: true

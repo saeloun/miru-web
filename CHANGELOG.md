@@ -10,7 +10,8 @@
 
 ### Changed
 
-- **Prepare payroll from approved leave decisions.** Each consultant requires an owner-approved policy before a new payroll revision. Changes to attendance, policy or decisions require fresh review; accepted bank reports retain their approved values.
+- **Prepare payroll from approved leave decisions.** Each consultant requires a policy approved by an active owner or admin before a new payroll revision. Changes to attendance, policy or decisions require fresh review; accepted bank reports retain their approved values.
+- **Back up before deployment.** Take a verified backup and follow the [deployment guide](docs/payroll-pto-ledger.md). After financial adoption, older application versions cannot safely write to the new ledger; the final migration prevents destructive rollback. Use a reviewed forward correction or restore a compatible database and application together.
 
 ### Fixed
 
