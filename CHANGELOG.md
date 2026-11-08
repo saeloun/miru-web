@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.8 - 2026-11-08
+
+### Fixed
+
+- Payment-provider credentials and QuickBooks tokens can keep their encryption key when session signing keys change. Before rotation, securely pin `PROVIDER_CREDENTIALS_ENCRYPTION_SECRET` to the existing signing key as described in `.env.example`. This does not rotate or re-encrypt stored credentials.
+
 ## 3.0.7 - 2026-11-08
 
 ### Added
