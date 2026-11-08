@@ -123,6 +123,8 @@ RSpec.describe "Decision communication journeys", type: :system, js: true do
   it "suggests rejection review for a pending application without copying feedback or making a decision" do
     application.update!(stage: "rejection_pending")
     visit "/hiring/applications/#{application.id}"
+    expect(page).to have_button("Reload screening", disabled: false)
+    expect(page).to have_button("Reload saved state", disabled: false)
     click_button "Review decisions"
     expect(page).to have_select("Decision outcome", selected: "Reject")
     expect(page).to have_field("Internal decision reason", with: "")
