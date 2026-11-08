@@ -144,8 +144,7 @@ module Payroll
       end
 
       def calculate(employment, review, source, adjustments)
-        expected = review[:expected_hours].to_d
-        unpaid = review[:confirmed_unpaid_hours].to_d
+        expected, unpaid = calculation_quantities(review)
         input = {
           "company_id" => @company.id.to_s, "person_id" => employment.user_id.to_s, "period" => @first.strftime("%Y-%m"),
           "engagement_type" => "consultant", "source_currency" => "INR", "settlement_currency" => "INR",
@@ -153,18 +152,26 @@ module Payroll
           "paid_quantity" => (expected - unpaid).to_s("F"), "basis_quantity" => expected.to_s("F"), "quantity_source" => source["digest"],
           "adjustments" => adjustments
         }
-        PayrollCalculation::Calculator.new(policy: calculation_policy, input:).call.deep_dup
+        PayrollCalculation::Calculator.new(policy: calculation_policy(minutes: review.dig(:pto, "policy_id").present?), input:).call.deep_dup
+      end
+
+      def calculation_quantities(review)
+        expected = review[:expected_hours].to_d
+        return [expected, review[:confirmed_unpaid_hours].to_d] unless review.dig(:pto, "policy_id")
+
+        [expected * 60, review.fetch(:pto).fetch("unpaid_minutes").to_d]
       end
 
       def calculation_base(calculation)
         calculation.fetch("lines").find { |line| line["kind"] == "base" }.fetch("amount").to_d
       end
 
-      def calculation_policy
+      def calculation_policy(minutes: false)
         profile = { "mode" => "half_away_from_zero", "digits" => 2 }
         { "version" => policy_version("pay"), "effective_from" => @first.iso8601, "effective_to" => @last.iso8601, "reviewed" => true,
           "formula_mapping_confirmed" => true, "attendance_policy_confirmed" => true, "deduction_policy_confirmed" => true,
-          "paid_quantity_name" => "expected hours less confirmed unpaid hours", "basis_quantity_name" => "expected hours",
+          "paid_quantity_name" => minutes ? "scheduled minutes less confirmed unpaid minutes" : "expected hours less confirmed unpaid hours",
+          "basis_quantity_name" => minutes ? "scheduled minutes" : "expected hours",
           "rounding" => PayrollCalculation::Calculator::ROUNDING_STAGES.index_with { profile } }
       end
 

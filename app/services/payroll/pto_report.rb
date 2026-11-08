@@ -28,14 +28,15 @@ module Payroll
         policy = ConsultantPtoPolicy.find(facts.fetch("policy_id"))
         year_start = leave_year_start(policy)
         deferred = deferred_cases(employment)
-        negative = [-facts.fetch("closing_hours").to_d, 0.to_d].max
+        negative_minutes = [-facts.fetch("closing_minutes").to_d, 0.to_d].max
+        unresolved_minutes = facts.fetch("unresolved_minutes").to_d
         cash = cash_cases(employment)
         overdue = deferred.any? { |entry| Date.iso8601(entry.fetch(:period)) < year_start } ||
           cash.any? { |entry| Date.iso8601(entry.fetch(:period)) < year_start }
         { employment_id: employment.id, consultant_name: employment.user.full_name, as_of: @as_of.iso8601,
-          historical_negative_hours: negative.to_s("F"), deferred_cases: deferred, cash_cases: cash, facts:,
-          threshold_review: negative * 60 >= policy.negative_threshold_minutes && negative.positive? ||
-            facts.fetch("unresolved_hours").to_d * 60 >= policy.exception_threshold_minutes && facts.fetch("unresolved_hours").to_d.positive?,
+          historical_negative_hours: (negative_minutes / 60).to_s("F"), deferred_cases: deferred, cash_cases: cash, facts:,
+          threshold_review: negative_minutes >= policy.negative_threshold_minutes && negative_minutes.positive? ||
+            unresolved_minutes >= policy.exception_threshold_minutes && unresolved_minutes.positive?,
           year_end_review: @as_of >= year_start.next_year - 1 || overdue,
           year_end_review_on: (@as_of >= year_start.next_year - 1 ? year_start.next_year - 1 : year_start - 1).iso8601,
           exit_review: employment.resigned_at.present? && employment.resigned_at <= @as_of,

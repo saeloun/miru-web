@@ -99,8 +99,11 @@ RSpec.shared_context "approved mercury consultant payroll" do
     }
     if pay_type == "consultant" && source.dig("pto", "policy_id")
       pto = source.fetch("pto")
-      input["paid_quantity"] = (pto.fetch("expected_hours").to_d - pto.fetch("unpaid_hours").to_d).to_s("F")
-      input["basis_quantity"] = pto.fetch("expected_hours")
+      expected_minutes = pto.fetch("expected_hours").to_d * 60
+      input["paid_quantity"] = (expected_minutes - pto.fetch("unpaid_minutes").to_d).to_s("F")
+      input["basis_quantity"] = expected_minutes.to_s("F")
+      policy["paid_quantity_name"] = "scheduled minutes less confirmed unpaid minutes"
+      policy["basis_quantity_name"] = "scheduled minutes"
     end
     {
       "schema_version" => 1, "company_id" => company.id, "period" => "2026-11-01", "currency" => "INR",

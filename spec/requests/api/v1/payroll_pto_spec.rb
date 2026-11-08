@@ -62,4 +62,90 @@ RSpec.describe "Approved payroll PTO", type: :request do
     expect(response).to have_http_status(404)
     expect(ConsultantPtoPolicy.count).to eq(0)
   end
+
+  context "historical component selection" do
+    let(:ledger) { Payroll::PtoLedger.new(employment, actor: owner) }
+    let(:month) { Date.new(2026, 12, 1) }
+
+    before do
+      sign_in owner
+      ledger.configure!(**configuration)
+    end
+
+    it "restores the exact available minutes when replacing a paid decision" do
+      expected = Payroll::PtoFacts.new(employment, month: run.period).call.fetch("expected_hours").to_d * 60
+      work_entry.update!(review_status: :approved, duration: expected - 2398)
+      facts = Payroll::PtoFacts.new(employment, month: run.period).call
+      first = ledger.decide!(period: run.period, kind: "paid", reason: "Synthetic absence leaving two minutes",
+        expected_digest: facts.fetch("digest"), idempotency_key: "initial-paid-minutes")
+      expect(Payroll::PtoFacts.new(employment, month: run.period).call.fetch("closing_minutes").to_d).to eq(2)
+
+      work_entry.update!(duration: expected - 2400)
+      facts = Payroll::PtoFacts.new(employment, month: run.period).call
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: {
+        period: run.period.iso8601, kind: "paid", reason: "Synthetic corrected forty-hour absence",
+        expected_digest: facts.fetch("digest"), idempotency_key: "corrected-paid-minutes"
+      } }
+      expect(response).to have_http_status(201)
+      expect(PayrollPtoEntry.where(employment:).count).to eq(2)
+      expect(PayrollPtoEntry.last).to have_attributes(previous_entry_id: first.id, minutes: 2400, debt_minutes: 0,
+        balance_delta_minutes: -2400, cash_amount_minor: 0)
+      expect(Payroll::PtoFacts.new(employment, month: run.period).call.fetch("closing_minutes").to_d).to eq(0)
+    end
+
+    it "requires the original split component even after another component was consumed" do
+      facts = Payroll::PtoFacts.new(employment, month: run.period).call
+      half = (facts.fetch("gap_hours").to_d / 2).to_s("F")
+      origin = ledger.allocate!(period: run.period, allocations: [{ kind: "defer", hours: half }, { kind: "correction", hours: half }],
+        reason: "Synthetic split absence", expected_digest: facts.fetch("digest"), idempotency_key: "split-origin")
+      consumed = historical_decision(origin, origin_component: "defer", idempotency_key: "consume-defer")
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: consumed }
+      expect(response).to have_http_status(201)
+      expect(PayrollPtoEntry.last.origin_component).to eq("defer")
+
+      omitted = historical_decision(origin, idempotency_key: "ambiguous-component")
+      expect do
+        post "#{path}/decisions", params: { company_id: company.id, pto_decision: omitted }
+      end.not_to change(PayrollPtoEntry, :count)
+      expect(response).to have_http_status(422)
+
+      explicit = omitted.merge(origin_component: "correction", idempotency_key: "consume-correction")
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: explicit }
+      expect(response).to have_http_status(201)
+      entry = PayrollPtoEntry.last
+      expect(entry.origin_component).to eq("correction")
+      expect do
+        post "#{path}/decisions", params: { company_id: company.id, pto_decision: explicit }
+      end.not_to change(PayrollPtoEntry, :count)
+      expect(response).to have_http_status(201)
+      expect(response.parsed_body.dig("entry", "id")).to eq(entry.id)
+    end
+
+    it "retains single-component legacy retries but requires a component after consumption" do
+      facts = Payroll::PtoFacts.new(employment, month: run.period).call
+      origin = ledger.decide!(period: run.period, kind: "defer", reason: "Synthetic single absence",
+        expected_digest: facts.fetch("digest"), idempotency_key: "single-origin")
+      command = historical_decision(origin, idempotency_key: "legacy-single")
+      post "#{path}/decisions", params: { company_id: company.id, pto_decision: command }
+      expect(response).to have_http_status(201)
+      entry = PayrollPtoEntry.last
+      expect(entry.origin_component).to eq("defer")
+      expect do
+        post "#{path}/decisions", params: { company_id: company.id, pto_decision: command }
+      end.not_to change(PayrollPtoEntry, :count)
+      expect(response).to have_http_status(201)
+      expect(response.parsed_body.dig("entry", "id")).to eq(entry.id)
+
+      expect do
+        post "#{path}/decisions", params: { company_id: company.id,
+          pto_decision: historical_decision(origin, idempotency_key: "resolved-without-component") }
+      end.not_to change(PayrollPtoEntry, :count)
+      expect(response).to have_http_status(422)
+    end
+
+    def historical_decision(origin, **options)
+      { origin_entry_id: origin.id.to_s, period: month.iso8601, kind: "waive", reason: "Synthetic explicit historical review",
+        expected_digest: Payroll::PtoFacts.new(employment, month:).call.fetch("digest") }.merge(options)
+    end
+  end
 end

@@ -35,7 +35,7 @@ class Payroll::ConsultantReview
     unpaid = approved_unpaid_hours(pto)
     warnings.concat(pto.fetch("blockers")) if pto
     covered = approved_covered_hours(work[:covered], pto)
-    expected, fee = calculate_fee(terms, covered, unpaid, warnings)
+    expected, fee = calculate_fee(terms, covered, unpaid, warnings, pto:)
     {
       employment_id: @employment.id, consultant_name: @employment.user.full_name,
       month: @month.strftime("%Y-%m"), cutoff: @cutoff.iso8601, compensation_id: terms&.id,
@@ -52,6 +52,16 @@ class Payroll::ConsultantReview
       confirmed_unpaid_hours: money(unpaid), unpaid_reason: @inputs[:unpaid_reason], fee_estimate: money(fee),
       withholding: nil, warnings:, payment_ready: false, claims_reserved: false
     }.merge(include_expenses ? reimbursement_summary(fee, warnings) : {})
+  end
+
+  def uncovered_work_minutes
+    warnings = []
+    terms = @sources.terms(@employment.id)
+    expected = expected_hours(terms, warnings) if terms
+    return 0.to_d if expected.nil?
+
+    minutes = work_minutes(warnings) || {}
+    [expected * 60 - minutes.fetch("approved", 0.to_d) - minutes.fetch("not_required", 0.to_d), 0.to_d].max
   end
 
   private
@@ -85,20 +95,26 @@ class Payroll::ConsultantReview
 
     def work_summary(warnings)
       zero = 0.to_d
-      entries = @sources.work(@employment.user_id, service_dates)
-      if entries.any? { |_status, minutes| !minutes.finite? || minutes.negative? }
-        warnings << "invalid_work_duration"
-        return {}
-      end
-      hours = entries.group_by(&:first).transform_values do |rows|
-        rows.sum(zero) { |_status, minutes| minutes.to_s.to_d } / 60
-      end
+      hours = work_minutes(warnings)&.transform_values { |minutes| minutes / 60 }
+      return {} unless hours
+
       approved = hours.fetch("approved", zero)
       not_required = hours.fetch("not_required", zero)
       unresolved = hours.except("approved", "not_required").values.sum(zero)
       warnings << "work_requires_review" if unresolved.positive? || not_required.positive?
       { hours: hours.values.sum(zero), approved:, not_required:, unresolved:, covered: approved + not_required,
         pending: hours.fetch("pending_review", zero), rejected: hours.fetch("rejected", zero) }
+    end
+
+    def work_minutes(warnings)
+      entries = @sources.work(@employment.user_id, service_dates)
+      if entries.any? { |_status, minutes| !minutes.finite? || minutes.negative? }
+        warnings << "invalid_work_duration"
+        return nil
+      end
+      entries.group_by(&:first).transform_values do |rows|
+        rows.sum(0.to_d) { |_status, minutes| minutes.to_s.to_d }
+      end
     end
 
     def confirmed_unpaid_hours
@@ -114,7 +130,7 @@ class Payroll::ConsultantReview
       unpaid
     end
 
-    def calculate_fee(terms, covered, unpaid, warnings)
+    def calculate_fee(terms, covered, unpaid, warnings, pto:)
       unless terms
         warnings << "missing_terms"
         raise InvalidInput, "Configure terms before entering unpaid hours" if unpaid.positive?
@@ -124,12 +140,19 @@ class Payroll::ConsultantReview
       expected = expected_hours(terms, warnings)
       return [nil, nil] if expected.nil?
 
-      raise InvalidInput, "Unpaid hours cannot exceed expected hours" if unpaid > expected
+      basis, deducted = fee_quantities(expected, unpaid, pto)
+      raise InvalidInput, "Unpaid hours cannot exceed expected hours" if deducted > basis
 
       warnings.concat(fee_warnings(expected, covered, unpaid))
       blocking = %w[missing_service_dates partial_service terms_changed_during_month zero_expected_hours]
-      fee = (terms.monthly_fee * (expected - unpaid) / expected).round(2) if (warnings & blocking).empty?
+      fee = (terms.monthly_fee * (basis - deducted) / basis).round(2) if (warnings & blocking).empty?
       [expected, fee]
+    end
+
+    def fee_quantities(expected, unpaid, pto)
+      return [expected, unpaid] unless pto&.fetch("policy_id", nil)
+
+      [expected * 60, pto.fetch("unpaid_minutes").to_d]
     end
 
     def fee_warnings(expected, covered, unpaid)

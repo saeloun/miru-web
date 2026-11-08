@@ -154,12 +154,12 @@ module Payroll
 
         previous = entries.heads.find_by(case_key: "month:#{month.iso8601}")
         protect_recovery!(previous)
-        quantity = facts.fetch("gap_hours").to_d * 60
+        quantity = facts.fetch("gap_minutes").to_d
         parts = approved_parts(allocations, canonical_parts, quantity, kind, previous)
         totals = parts.to_h { |part| [part.fetch("kind"), part.fetch("minutes").to_d] }
         zero = 0.to_d
         paid, advance = totals.fetch("paid", zero), totals.fetch("advance", zero)
-        available = facts.fetch("closing_hours").to_d * 60 - (previous&.balance_delta_minutes || 0)
+        available = facts.fetch("closing_minutes").to_d - (previous&.balance_delta_minutes || 0)
         validate_balance!(paid, advance, available, policy)
         protect_later_debits!(previous, month, -paid - advance)
         { consultant_pto_policy: policy, previous_entry: previous, period: month, case_key: "month:#{month.iso8601}", kind:, minutes: quantity,
@@ -195,7 +195,7 @@ module Payroll
         origin = entries.find(origin_entry_id)
         validate_review_period!(origin, month)
         obligations = PtoObligations.new(@employment, as_of: month.end_of_month).call
-        component = origin_component.presence || obligations.find { |row| row[:origin].id == origin.id }&.fetch(:component)
+        component = origin_component.presence || inferred_component!(origin, obligations)
         previous = entries.heads.find_by(case_key: "review:#{origin.id}:#{component}")
         protect_recovery!(previous)
         protect_historical_replacement!(previous, month, kind)
@@ -205,6 +205,16 @@ module Payroll
 
         verify_origin_attendance!(origin, kind)
         { origin:, previous:, obligation:, component: }
+      end
+
+      def inferred_component!(origin, obligations)
+        components = origin.approved_allocations.pluck("kind") & %w[defer correction]
+        components << (origin.kind == "opening" ? "opening" : "advance") if origin.debt_minutes.positive?
+        if components.one? && obligations.any? { |row| row[:origin].id == origin.id && row[:component] == components.first }
+          return components.first
+        end
+
+        raise ConsultantReview::InvalidInput, "Choose the explicit original PTO component for this historical review"
       end
 
       def validate_review_period!(origin, month)
@@ -239,7 +249,7 @@ module Payroll
           raise ConsultantReview::InvalidInput, "This case is already an advance; defer review rather than borrowing twice"
         end
         policy = policies.find(facts.fetch("policy_id"))
-        available = facts.fetch("closing_hours").to_d * 60 - (previous&.balance_delta_minutes || 0)
+        available = facts.fetch("closing_minutes").to_d - (previous&.balance_delta_minutes || 0)
         if kind == "advance" && available - quantity < -policy.advance_limit_minutes
           raise ConsultantReview::InvalidInput, "Advance exceeds the configured limit"
         end

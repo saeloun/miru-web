@@ -28,6 +28,11 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
   end
   after { expect(console_errors).to eq([]) }
 
+  def expect_pto_fact(label, expected)
+    selector = ".//section[@aria-label='Approved PTO facts']//dt[normalize-space(.)='#{label}']/following-sibling::dd[1]"
+    expect(page.document).to have_xpath(selector, text: expected, exact_text: true)
+  end
+
   def configure_opening(hours)
     click_button "Configure approved PTO policy"
     { "PTO effective date" => "2026-09-01", "Opening as of" => "2026-09-01", "Reconciled opening hours" => hours,
@@ -69,7 +74,7 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
           within("[aria-label='Approved PTO facts']") do
             { "Opening PTO hours" => "#{opening}.0", "Closing PTO hours" => closing,
               "Approved paid leave hours" => paid, "Confirmed unpaid hours" => unpaid }.each do |label, expected|
-              expect(find("dt", text: label, exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text(expected, exact: true)
+              expect_pto_fact(label, expected)
             end
             expect(page).to have_text("An owner or admin must record an explicit leave treatment before payroll approval.") if name == "unexplained"
           end
@@ -81,8 +86,8 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
               click_button "Approve leave decision"
               expect(page).to have_text("Synthetic #{treatment}")
               within("[aria-label='Approved PTO facts']") do
-                expect(find("dt", text: "Confirmed unpaid hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
-                expect(find("dt", text: "Closing PTO hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
+                expect_pto_fact("Confirmed unpaid hours", "0.0")
+                expect_pto_fact("Closing PTO hours", "0.0")
               end
             end
             select "Approve an explicit split", from: "Current leave treatment"
@@ -92,8 +97,8 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
             click_button "Approve leave decision"
             expect(page).to have_text("Synthetic split unpaid and full-pay defer")
             within("[aria-label='Approved PTO facts']") do
-              expect(find("dt", text: "Confirmed unpaid hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("23.0", exact: true)
-              expect(find("dt", text: "Deferred hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("37.0", exact: true)
+              expect_pto_fact("Confirmed unpaid hours", "23.0")
+              expect_pto_fact("Deferred hours", "37.0")
             end
           end
           page.current_window.resize_to(375, 812)
@@ -107,8 +112,8 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
             click_button "Clear obsolete leave decision"
             expect(page).to have_text("Synthetic approved work correction fills the original gap")
             within("[aria-label='Approved PTO facts']") do
-              expect(find("dt", text: "Closing PTO hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
-              expect(find("dt", text: "Approved paid leave hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
+              expect_pto_fact("Closing PTO hours", "0.0")
+              expect_pto_fact("Approved paid leave hours", "0.0")
             end
           end
         end
@@ -139,7 +144,7 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
             expect(page).to have_text("Email queued", wait: 15)
             within("[aria-label='Approved PTO facts']") do
               { "Opening PTO hours" => "40.0", "Approved paid leave hours" => "10.0", "Closing PTO hours" => "30.0" }.each do |label, expected|
-                expect(find("dt", text: label, exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text(expected, exact: true)
+                expect_pto_fact(label, expected)
               end
             end
             expect(page).to have_text("INR 100,000.00")
@@ -196,8 +201,8 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
         end
         expect(page).to have_text("Synthetic owner exit waiver after full review")
         within("[aria-label='Approved PTO facts']") do
-          expect(find("dt", text: "Closing PTO hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
-          expect(find("dt", text: "Confirmed unpaid hours", exact_text: true).find(:xpath, "following-sibling::dd[1]")).to have_text("0.0", exact: true)
+          expect_pto_fact("Closing PTO hours", "0.0")
+          expect_pto_fact("Confirmed unpaid hours", "0.0")
         end
         page.save_screenshot("/tmp/miru-pto-yearend-exit-reviewed-20261108.png")
       end

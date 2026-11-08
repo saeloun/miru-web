@@ -36,7 +36,7 @@ module Payroll
         review = attendance
         heads = entry_heads(as_of: @month.end_of_month)
         current = heads.find { |entry| entry.case_key == "month:#{@month.iso8601}" }
-        gap = [review[:expected_hours].to_d - review[:approved_work_hours].to_d - review[:not_required_work_hours].to_d, 0.to_d].max * 60
+        gap = attendance_review.uncovered_work_minutes
         fresh = current && current.source_digest == attendance_digest && current.minutes == gap && current.consultant_pto_policy_id == policy.id
         totals = allocation_totals(current, fresh)
         unresolved = fresh ? totals.fetch("correction", 0.to_d) : gap
@@ -70,7 +70,8 @@ module Payroll
         opening = policy.opening_minutes + heads.select { |entry| entry.period < @month }.sum(0.to_d, &:balance_delta_minutes)
         accrued = monthly.select { |entry| entry.kind == "accrual" }.sum(0.to_d, &:minutes)
         closing = opening + monthly.sum(0.to_d, &:balance_delta_minutes)
-        { "opening_hours" => hours(opening), "accrued_hours" => hours(accrued), "closing_hours" => hours(closing) }
+        { "opening_hours" => hours(opening), "accrued_hours" => hours(accrued), "closing_hours" => hours(closing),
+          "closing_minutes" => closing.to_s("F") }
       end
 
       def treatment_facts(current, fresh, totals, unresolved, gap)
@@ -79,7 +80,9 @@ module Payroll
           "paid_hours" => hours(totals.fetch("paid", zero) + totals.fetch("advance", zero)),
           "advance_hours" => hours(fresh ? current.debt_minutes : 0), "unpaid_hours" => hours(totals.fetch("unpaid", zero)),
           "deferred_hours" => hours(totals.fetch("defer", zero)), "waived_hours" => hours(totals.fetch("waive", zero)),
-          "unresolved_hours" => hours(unresolved), "gap_hours" => hours(gap), "allocations" => fresh ? current.approved_allocations : []
+          "unresolved_hours" => hours(unresolved), "gap_hours" => hours(gap), "allocations" => fresh ? current.approved_allocations : [],
+          "gap_minutes" => gap.to_s("F"), "unresolved_minutes" => unresolved.to_s("F"),
+          "unpaid_minutes" => totals.fetch("unpaid", zero).to_s("F")
         }
       end
 
@@ -116,8 +119,11 @@ module Payroll
       end
 
       def attendance
-        @attendance ||= ConsultantReview.new(employment: @employment, month: @month, cutoff: @month.end_of_month, sources: @sources)
-          .process(include_expenses: false, include_pto: false)
+        @attendance ||= attendance_review.process(include_expenses: false, include_pto: false)
+      end
+
+      def attendance_review
+        @attendance_review ||= ConsultantReview.new(employment: @employment, month: @month, cutoff: @month.end_of_month, sources: @sources)
       end
 
       def policies

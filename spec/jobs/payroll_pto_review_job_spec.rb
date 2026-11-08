@@ -42,6 +42,23 @@ RSpec.describe PayrollPtoReviewJob, type: :job do
     expect { PayrollPtoNoticeJob.perform_now(notice.id) }.to change { ActionMailer::Base.deliveries.size }.by(1)
   end
 
+  it "requires review exactly when an explicitly approved fractional advance reaches the negative threshold" do
+    configure(opening: "-7.99")
+    record_synthetic_pto_treatment
+    as_of = Date.new(2026, 11, 30)
+    report = Payroll::PtoReport.new(company, as_of:).call.fetch(:cases).sole
+    expect(report.fetch(:facts)).to include("closing_minutes" => "-479.4", "unresolved_minutes" => "0.0")
+    expect(report.fetch(:threshold_review)).to be(false)
+
+    facts = Payroll::PtoFacts.new(employment, month: as_of).call
+    Payroll::PtoLedger.new(employment, actor: owner).allocate!(period: as_of.beginning_of_month,
+      allocations: [{ kind: "advance", hours: "0.01" }, { kind: "defer", hours: (facts.fetch("gap_hours").to_d - "0.01".to_d).to_s("F") }],
+      reason: "Synthetic explicitly reviewed threshold advance", expected_digest: facts.fetch("digest"), idempotency_key: "threshold-advance")
+    report = Payroll::PtoReport.new(company, as_of:).call.fetch(:cases).sole
+    expect(report.fetch(:facts)).to include("closing_minutes" => "-480.0", "unresolved_minutes" => "0.0")
+    expect(report.fetch(:threshold_review)).to be(true)
+  end
+
   it "keeps exit review with active administrators and does not send correction mail to a departed payee" do
     configure(opening: "0")
     facts = Payroll::PtoFacts.new(employment, month: Date.new(2026, 11, 1)).call

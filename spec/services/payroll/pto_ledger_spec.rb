@@ -78,6 +78,55 @@ RSpec.describe Payroll::PtoLedger do
     expect(review).to include(confirmed_unpaid_hours: "60.0", fee_estimate: "62500.0", closing_pto_hours: "40.0")
   end
 
+  it "keeps a 599-minute decision fresh and approvable without reconstructing rounded display hours" do
+    policy
+    work_entry.update!(duration: 9_001)
+    expect(facts).to include("gap_minutes" => "599.0", "unresolved_minutes" => "599.0", "closing_minutes" => "2400.0")
+    expect(facts.fetch("gap_hours").to_d).to eq(599.to_d / 60)
+    decision = decide("unpaid")
+    expect(decision.reload.minutes).to eq(599)
+    expect(facts).to include("decision_id" => decision.id, "decision" => "unpaid", "blockers" => [])
+    expect(review).to include(approved_work_hours: "150.0167", fee_estimate: "93760.42", closing_pto_hours: "40.0")
+    revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
+      consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601,
+      expected_digest: nil, idempotency_key: SecureRandom.uuid)
+    workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
+    workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
+    expect(workflow.status).to eq("approved")
+    line = revision.payroll_payload.fetch("lines").sole
+    expect(line.dig("source_snapshot", "pto", "allocations")).to eq([{ "kind" => "unpaid", "minutes" => "599.0" }])
+    expect(line.fetch("amounts")).to include("base_minor" => 9_376_042, "net_minor" => 9_376_042)
+    calculation = line.fetch("calculation_snapshot")
+    expect(calculation.fetch("input")).to include("paid_quantity" => "9001.0", "basis_quantity" => "9600.0")
+    expect(calculation.dig("input", "quantity_source")).to eq(line.dig("source_snapshot", "digest"))
+    expect(PayrollCalculation::Calculator.verify_snapshot?(calculation)).to be(true)
+  end
+
+  it "rounds the exact 580-minute unpaid proration half up in the estimate and approved calculation" do
+    policy
+    ConsultantCompensation.create!(employment:, created_by: owner, effective_on: run.period,
+      monthly_fee: "96002.40", hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us",
+      legal_entity_name: legal_name, change_reason: "Synthetic exact half-paisa fee")
+    work_entry.update!(duration: 9_020)
+    expect(decide("unpaid").reload.minutes).to eq(580)
+    revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
+      consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601,
+      expected_digest: nil, idempotency_key: SecureRandom.uuid)
+    workflow.approve!(actor: accounts, stage: "accounts", expected_digest: revision.digest)
+    workflow.approve!(actor: owner, stage: "final", expected_digest: revision.digest)
+    line = revision.payroll_payload.fetch("lines").sole
+    aggregate_failures do
+      expect(review.fetch(:fee_estimate)).to eq("90202.26")
+      expect(line.fetch("amounts")).to include("base_minor" => 9_020_226, "net_minor" => 9_020_226)
+      expect(line.dig("calculation_snapshot", "net")).to eq("90202.26")
+      expect(line.dig("calculation_snapshot", "input")).to include("paid_quantity" => "9020.0", "basis_quantity" => "9600.0")
+      expect(line.dig("calculation_snapshot", "policy")).to include(
+        "paid_quantity_name" => "scheduled minutes less confirmed unpaid minutes", "basis_quantity_name" => "scheduled minutes")
+      expect(PayrollCalculation::Calculator.verify_snapshot?(line.fetch("calculation_snapshot"))).to be(true)
+      expect(workflow.status).to eq("approved")
+    end
+  end
+
   it "allows sixty advance hours and recovers through configured future accrual exactly once" do
     policy(opening: "0", accrual: "16")
     work_entry.update!(duration: 6_000)

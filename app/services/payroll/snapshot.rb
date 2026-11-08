@@ -249,8 +249,8 @@ module Payroll
 
         pto = source.fetch("pto")
         return false unless pto["policy_id"] && pto["blockers"] == []
-        expected = pto.fetch("expected_hours").to_d
-        return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_hours").to_d &&
+        expected = pto.fetch("expected_hours").to_d * 60
+        return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_minutes").to_d &&
           calculation.dig("input", "basis_quantity").to_d == expected
         recoveries = line.fetch("deductions").select { |entry| entry["reason_code"] == "approved_pto_recovery" }
         recoveries.sum { |entry| entry["amount_minor"] } == pto.fetch("historical_deduction_minor") &&

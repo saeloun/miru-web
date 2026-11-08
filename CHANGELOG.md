@@ -1,5 +1,23 @@
 # Changelog
 
+## 3.1.0 - 2026-11-09
+
+### Added
+
+- **Approve consultant leave before payroll.** Configure a reconciled opening, earned leave and borrowing limits, then record explicit paid, unpaid, advance, deferred, waived or correction decisions for missing hours.
+- **Review leave at year end and exit.** Keep outstanding advances, deferred cases and cash recoveries visible, with private review notices and recorded decisions.
+- **Read approved leave in India payroll reports.** Retain paid leave and opening, accrued, advance, deferred and closing balances in the approved report and accounts email.
+
+### Changed
+
+- **Prepare payroll from approved leave decisions.** Each consultant requires an owner-approved policy before a new payroll revision. Changes to attendance, policy or decisions require fresh review; accepted bank reports retain their approved values.
+
+### Fixed
+
+- **Recover leave adjustments once.** Preserve reservations through partial or uncertain payments, settle against confirmed credit and reopen review after a return, including carried split payments.
+- **Keep minute-based pay exact.** Calculate leave quantities and pay from exact minutes so display rounding cannot change a deduction, available balance or payment amount.
+- **Preserve historical leave balances.** Prevent backdated decisions and policy changes from spending an already consumed balance or moving an earlier balance into a later month.
+
 ## 3.0.8 - 2026-11-08
 
 ### Fixed
