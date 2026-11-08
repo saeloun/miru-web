@@ -70,7 +70,8 @@ module Payroll
       end
 
       def bank_activity?(employment)
-        PayrollPaymentGroup.where(payroll_run_id: @run.id, employment_id: employment.id).any? { |group| group.in_flight_legs.exists? }
+        PayrollIndiaHandoff.active.exists?(payroll_run_id: @run.id, employment_id: employment.id) ||
+          PayrollPaymentGroup.where(payroll_run_id: @run.id, employment_id: employment.id).any? { |group| group.in_flight_legs.exists? }
       end
 
       def review_for(employment, cutoff, inputs)

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:16px;background:#f4f5f7;color:#202632;font:14px/1.5 Arial,sans-serif;overflow-wrap:anywhere">
+  <main style="max-width:640px;margin:auto;padding:20px;background:white;border-radius:8px">
+    <h1 style="font-size:22px;margin-top:0">Confidential India payroll report</h1>
+    <table style="width:100%;border-collapse:collapse;text-align:left">
+      <caption style="text-align:left;font-weight:bold;margin-bottom:8px">Approved payroll summary</caption>
+      <% @summary.each do |label, value| %>
+        <tr><th scope="row" style="width:52%;padding:8px;border-bottom:1px solid #ddd;vertical-align:top"><%= label %></th><td style="padding:8px;border-bottom:1px solid #ddd;vertical-align:top"><%= value %></td></tr>
+      <% end %>
+    </table>
+    <% @sections.each do |section| %>
+      <h2 style="font-size:17px;margin:24px 0 8px"><%= section[:title] %></h2>
+      <% if section[:rows].empty? %>
+        <p>None recorded.</p>
+      <% else %>
+        <table style="width:100%;table-layout:fixed;border-collapse:collapse;text-align:left">
+          <thead><tr><% section[:headings].each do |heading| %><th scope="col" style="padding:6px;border-bottom:2px solid #ddd;vertical-align:top"><%= heading %></th><% end %></tr></thead>
+          <tbody><% section[:rows].each do |row| %><tr><% row.each do |value| %><td style="padding:6px;border-bottom:1px solid #ddd;vertical-align:top"><%= value %></td><% end %></tr><% end %></tbody>
+        </table>
+      <% end %>
+    <% end %>
+    <h2 style="font-size:17px;margin:24px 0 8px">Bank details</h2>
+    <table style="width:100%;border-collapse:collapse;text-align:left">
+      <% @bank.each do |label, value| %>
+        <tr><th scope="row" style="width:52%;padding:8px;border-bottom:1px solid #ddd;vertical-align:top"><%= label %></th><td style="padding:8px;border-bottom:1px solid #ddd;vertical-align:top"><%= value %></td></tr>
+      <% end %>
+    </table>
+    <p style="margin-top:24px;color:#525965">This confidential report contains full bank details for manual payment. Email delivery does not confirm transfer or credit.</p>
+  </main>
+</body>
+</html>

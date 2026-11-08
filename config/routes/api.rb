@@ -443,6 +443,14 @@ namespace :api, defaults: { format: "json" } do
           post :resolve_shortfall
         end
       end
+      resources :india_handoffs, only: [:index, :create], controller: "payroll_india_handoffs" do
+        member do
+          post :retry_delivery
+          post :void
+          post :reconcile_delivery
+          post :record_credit
+        end
+      end
       resources :split_arrangements, only: [:create], controller: "payroll_split_arrangements" do
         member do
           post :verify

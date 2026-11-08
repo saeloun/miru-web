@@ -1,0 +1,24 @@
+CONFIDENTIAL INDIA PAYROLL REPORT
+
+<% @summary.each do |label, value| -%>
+<%= label %>: <%= value %>
+<% end -%>
+<% @sections.each do |section| -%>
+
+<%= section[:title].upcase %>
+<% if section[:rows].empty? -%>
+None recorded.
+<% else -%>
+<%= section[:headings].join(" | ") %>
+<% section[:rows].each do |row| -%>
+<%= row.join(" | ") %>
+<% end -%>
+<% end -%>
+<% end -%>
+
+BANK DETAILS
+<% @bank.each do |label, value| -%>
+<%= label %>: <%= value %>
+<% end -%>
+
+This confidential report contains full bank details for manual payment. Email delivery does not confirm transfer or credit.

@@ -2,6 +2,12 @@
 
 Primary source: [Sonam Goyal's Miru issue #2458](https://github.com/saeloun/miru-web/issues/2458), read on 19 October 2026, including its appended section 4. User direction: continue the payroll work and recalibrate requirements around this issue.
 
+## 8 November implementation update
+
+The India accounts handoff now has an encrypted approved report, explicitly confirmed recipient/bank, durable attempts with ambiguous-delivery holds, assigned-accounts actual INR credit, protected reimbursement reservations and once-only settlement. Full report/source digests, company-wide normalized bank-reference deduplication, session-key rotation, concurrent revision/credit/compensation changes and schema-reloaded history protection have local executable coverage. See [verification and screenshots](../../qa/india-payroll-2458/verification-20261108.md). This advances sections 6/8/12; the historical ledger below is not a current absence-of-code inventory.
+
+Approved paid-leave classification is still unavailable in existing sources and is explicitly reported that way. The complete email contract, PTO ledger, consultant invoice/tax consent, remittance documentation and live bank/provider acceptance remain unfinished. No production or live bank acceptance is claimed.
+
 ## Product priority
 
 The first complete payroll workflow is **Saeloun consultant payment preparation → review → approval → bank submission/handoff → credit reconciliation → consultant invoice**. This supersedes the earlier employer-employee-payroll-first delivery order. Private salary slips and tax declarations remain usable foundations; they do not satisfy consultant payroll, determine consultant tax eligibility or authorize a transfer. Broad employee tax preparation, native PF/ESI/TDS engines and company GST remain separate later workstreams.

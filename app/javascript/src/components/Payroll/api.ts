@@ -276,6 +276,68 @@ export interface MercuryPayments {
   consultants: MercuryConsultant[];
 }
 
+export interface IndiaReport {
+  consultant_name: string;
+  period: string;
+  legal_entity: string;
+  recorded_hours: string;
+  working_days: string;
+  monthly_fee: string;
+  confirmed_unpaid_hours: string;
+  leave_entries: Record<string, unknown>[];
+  reimbursements: Record<string, unknown>[];
+  amounts: Record<string, string>;
+  extras: Adjustment[];
+  deductions: Adjustment[];
+  bank: { holder: string; name: string; account_mask: string; ifsc: string };
+}
+
+export interface IndiaHandoff {
+  id: string;
+  status: string;
+  accounts_email: string;
+  created_at: string;
+  credited_at: string | null;
+  entitlement_minor: string;
+  credited_minor: string;
+  settlement_blocked: boolean;
+  report: IndiaReport;
+  attempts: {
+    attempt_number: number;
+    state: string;
+    error_code: string | null;
+    created_at: string;
+    sent_at: string | null;
+    reviewed_at: string | null;
+  }[];
+  credits: {
+    id: string;
+    amount_minor: string;
+    credited_on: string;
+    recorded_at: string;
+  }[];
+  actions: {
+    retry: boolean;
+    void: boolean;
+    reconcile: boolean;
+    record_credit: boolean;
+  };
+}
+
+export interface IndiaHandoffs {
+  revision_digest: string | null;
+  run_status: string;
+  permissions: { manage: boolean; record_credit: boolean };
+  consultants: {
+    employment_id: string;
+    payee_name: string;
+    entitlement_minor: string | null;
+    blockers: string[];
+    preview: IndiaReport | null;
+    handoffs: IndiaHandoff[];
+  }[];
+}
+
 type RequestSignal = InstanceType<typeof window.AbortController>["signal"];
 
 type Payload = Record<string, unknown>;
@@ -332,6 +394,32 @@ export const payrollApi = {
       `/payroll_runs/${encodeURIComponent(id)}/mercury_payments`,
       companyId,
       signal
+    ),
+  indiaHandoffs: (id: string, companyId: string, signal: RequestSignal) =>
+    get(
+      `/payroll_runs/${encodeURIComponent(id)}/india_handoffs`,
+      companyId,
+      signal
+    ),
+  createIndiaHandoff: (id: string, companyId: string, payload: Payload) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/india_handoffs`,
+      companyId,
+      payload
+    ),
+  indiaHandoffAction: (
+    id: string,
+    handoffId: string,
+    action: "retry_delivery" | "void" | "reconcile_delivery" | "record_credit",
+    companyId: string,
+    payload: Payload = {}
+  ) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(
+        id
+      )}/india_handoffs/${encodeURIComponent(handoffId)}/${action}`,
+      companyId,
+      { india_handoff: payload }
     ),
   prepareMercury: (id: string, companyId: string, payload: Payload) =>
     post(

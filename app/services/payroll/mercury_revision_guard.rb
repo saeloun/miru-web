@@ -7,6 +7,12 @@ module Payroll
     end
 
     def check!(payload)
+      india_handoffs.find_each do |handoff|
+        line = payload["lines"].find { |entry| entry["employment_id"] == handoff.employment_id }
+        next if line && IndiaHandoff.line_digest(line) == handoff.line_digest
+
+        raise Workflow::Conflict, "An India payroll handoff exists, so its approved report and claims must stay unchanged in this revision"
+      end
       in_flight_groups.each do |group|
         line = payload["lines"].find { |entry| entry["employment_id"] == group.employment_id }
         next if line && PayrollPaymentGroup.line_digest(line) == group.line_digest
@@ -33,6 +39,10 @@ module Payroll
         groups.select { |group| group.in_flight_legs.exists? }
       end
 
+      def india_handoffs
+        PayrollIndiaHandoff.active.where(payroll_run_id: @run.id)
+      end
+
       def void_prepared_legs(actor)
         PayrollPaymentInstruction.open_slot.where(payroll_run_id: @run.id, submission_state: "prepared").find_each do |leg|
           leg.update!(submission_state: "voided", released_at: Time.current)
@@ -41,7 +51,7 @@ module Payroll
       end
 
       def release_reservations
-        protected_employment_ids = in_flight_groups.map(&:employment_id)
+        protected_employment_ids = in_flight_groups.map(&:employment_id) + india_handoffs.pluck(:employment_id)
         PayrollExpenseReservation.unsettled.where(payroll_run_id: @run.id).where.not(employment_id: protected_employment_ids)
           .find_each { |reservation| reservation.update!(released_at: Time.current) }
       end

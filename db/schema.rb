@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -985,7 +985,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
     t.bigint "employment_id"
     t.index ["access_token"], name: "index_hiring_offers_on_access_token", unique: true
     t.index ["company_id", "hiring_application_id", "id"], name: "index_hiring_offers_for_history"
-    t.index ["company_id", "hiring_application_id"], name: "index_hiring_offers_one_active", unique: true, where: "((state)::text = ANY ((ARRAY['preparing'::character varying, 'sent'::character varying, 'accepted'::character varying])::text[]))"
+    t.index ["company_id", "hiring_application_id"], name: "index_hiring_offers_one_active", unique: true, where: "((state)::text = ANY (ARRAY[('preparing'::character varying)::text, ('sent'::character varying)::text, ('accepted'::character varying)::text]))"
     t.index ["company_id", "id"], name: "index_hiring_offers_on_company_id_and_id", unique: true
     t.index ["company_id", "request_key"], name: "index_hiring_offers_on_company_id_and_request_key", unique: true
     t.index ["created_by_id"], name: "index_hiring_offers_on_created_by_id"
@@ -1444,6 +1444,68 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
     t.index ["payroll_revision_id"], name: "index_payroll_expense_reservations_on_payroll_revision_id"
     t.index ["payroll_run_id"], name: "index_payroll_expense_reservations_on_payroll_run_id"
     t.check_constraint "amount_minor > 0", name: "payroll_expense_reservation_amount"
+  end
+
+  create_table "payroll_india_credits", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_india_handoff_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "amount_minor", null: false
+    t.date "credited_on", null: false
+    t.text "reference", null: false
+    t.string "reference_digest", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_payroll_india_credits_on_actor_id"
+    t.index ["company_id", "reference_digest"], name: "payroll_india_credit_reference", unique: true
+    t.index ["company_id"], name: "index_payroll_india_credits_on_company_id"
+    t.index ["payroll_india_handoff_id"], name: "index_payroll_india_credits_on_payroll_india_handoff_id"
+    t.check_constraint "amount_minor > 0", name: "payroll_india_credit_positive"
+  end
+
+  create_table "payroll_india_deliveries", force: :cascade do |t|
+    t.bigint "payroll_india_handoff_id", null: false
+    t.integer "attempt_number", null: false
+    t.string "state", default: "queued", null: false
+    t.datetime "started_at"
+    t.datetime "sent_at"
+    t.string "error_code"
+    t.text "review_evidence"
+    t.bigint "reviewed_by_id"
+    t.datetime "reviewed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payroll_india_handoff_id", "attempt_number"], name: "payroll_india_delivery_attempt", unique: true
+    t.index ["payroll_india_handoff_id"], name: "index_payroll_india_deliveries_on_payroll_india_handoff_id"
+    t.index ["reviewed_by_id"], name: "index_payroll_india_deliveries_on_reviewed_by_id"
+    t.check_constraint "attempt_number > 0", name: "payroll_india_attempt_positive"
+    t.check_constraint "state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'failed'::character varying, 'uncertain'::character varying]::text[])", name: "payroll_india_delivery_state"
+  end
+
+  create_table "payroll_india_handoffs", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "consultant_compensation_id", null: false
+    t.bigint "created_by_id", null: false
+    t.text "report", null: false
+    t.string "line_digest", null: false
+    t.string "bank_digest", null: false
+    t.bigint "entitlement_minor", null: false
+    t.bigint "credited_minor", default: 0, null: false
+    t.datetime "released_at"
+    t.datetime "fully_credited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_india_handoffs_on_company_id"
+    t.index ["consultant_compensation_id"], name: "index_payroll_india_handoffs_on_consultant_compensation_id"
+    t.index ["created_by_id"], name: "index_payroll_india_handoffs_on_created_by_id"
+    t.index ["employment_id"], name: "index_payroll_india_handoffs_on_employment_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_india_handoffs_on_payroll_revision_id"
+    t.index ["payroll_run_id", "employment_id"], name: "payroll_india_one_active_handoff", unique: true, where: "(released_at IS NULL)"
+    t.index ["payroll_run_id"], name: "index_payroll_india_handoffs_on_payroll_run_id"
+    t.check_constraint "entitlement_minor > 0 AND credited_minor >= 0", name: "payroll_india_handoff_amounts"
   end
 
   create_table "payroll_mercury_connections", force: :cascade do |t|
@@ -2591,6 +2653,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
   add_foreign_key "payroll_expense_reservations", "expenses"
   add_foreign_key "payroll_expense_reservations", "payroll_revisions"
   add_foreign_key "payroll_expense_reservations", "payroll_runs"
+  add_foreign_key "payroll_india_credits", "companies"
+  add_foreign_key "payroll_india_credits", "payroll_india_handoffs"
+  add_foreign_key "payroll_india_credits", "users", column: "actor_id"
+  add_foreign_key "payroll_india_deliveries", "payroll_india_handoffs"
+  add_foreign_key "payroll_india_deliveries", "users", column: "reviewed_by_id"
+  add_foreign_key "payroll_india_handoffs", "companies"
+  add_foreign_key "payroll_india_handoffs", "consultant_compensations"
+  add_foreign_key "payroll_india_handoffs", "employments"
+  add_foreign_key "payroll_india_handoffs", "payroll_revisions"
+  add_foreign_key "payroll_india_handoffs", "payroll_runs"
+  add_foreign_key "payroll_india_handoffs", "users", column: "created_by_id"
   add_foreign_key "payroll_mercury_connections", "companies"
   add_foreign_key "payroll_mercury_connections", "users", column: "configured_by_id"
   add_foreign_key "payroll_mercury_connections", "users", column: "verified_by_id"
@@ -2725,5 +2798,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_040100) do
   execute <<~SQL
     CREATE TRIGGER payroll_payment_events_immutable BEFORE UPDATE OR DELETE ON payroll_payment_events
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_india_credits_immutable BEFORE UPDATE OR DELETE ON payroll_india_credits
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$
+    BEGIN
+      IF TG_OP = 'DELETE' OR
+        (to_jsonb(OLD) - ARRAY['credited_minor','released_at','fully_credited_at','updated_at']) IS DISTINCT FROM
+        (to_jsonb(NEW) - ARRAY['credited_minor','released_at','fully_credited_at','updated_at']) THEN
+        RAISE EXCEPTION 'Payroll India handoff snapshot is immutable';
+      END IF;
+      RETURN NEW;
+    END;
+    $$;
+    CREATE TRIGGER payroll_india_handoff_immutable BEFORE UPDATE OR DELETE ON payroll_india_handoffs
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_india_handoff();
+    CREATE OR REPLACE FUNCTION protect_payroll_india_delivery() RETURNS trigger LANGUAGE plpgsql AS $$
+    BEGIN
+      IF TG_OP = 'DELETE' OR NEW.payroll_india_handoff_id IS DISTINCT FROM OLD.payroll_india_handoff_id OR
+        NEW.attempt_number IS DISTINCT FROM OLD.attempt_number OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+        RAISE EXCEPTION 'Payroll India delivery identity is immutable';
+      END IF;
+      RETURN NEW;
+    END;
+    $$;
+    CREATE TRIGGER payroll_india_delivery_immutable BEFORE UPDATE OR DELETE ON payroll_india_deliveries
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_india_delivery();
   SQL
 end

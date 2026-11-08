@@ -28,11 +28,16 @@ class ConsultantCompensation < ApplicationRecord
     def no_bank_activity_for_month
       return unless effective_on && employment_id
 
+      # Serialize new terms with handoff creation under the same payroll run locks.
+      PayrollRun.where(company_id: employment.company_id).where("period >= ?", effective_on.beginning_of_month)
+        .order(:id).lock.load
+      india_activity = PayrollIndiaHandoff.active.joins(:payroll_run).where(employment_id:)
+        .where("payroll_runs.period >= ?", effective_on.beginning_of_month).exists?
       groups = PayrollPaymentGroup.joins(:payroll_run).where(employment_id:)
         .where("payroll_runs.period >= ?", effective_on.beginning_of_month)
-      return unless groups.any? { |group| group.in_flight_legs.exists? }
+      return unless india_activity || groups.any? { |group| group.in_flight_legs.exists? }
 
-      errors.add(:effective_on, "falls in a month with bank activity; start the new terms in a later month")
+      errors.add(:effective_on, "falls in a month with bank activity or an India handoff; start the new terms in a later month")
     end
 
     def valid_terms

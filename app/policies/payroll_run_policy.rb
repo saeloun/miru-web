@@ -22,6 +22,7 @@ class PayrollRunPolicy < ApplicationPolicy
   alias_method :approvals?, :show?
   alias_method :mercury_payments?, :show?
   alias_method :split_arrangements?, :show?
+  alias_method :india_handoffs?, :show?
 
   def create?
     index? && roles.where(name: %w[owner admin]).exists?
@@ -37,6 +38,14 @@ class PayrollRunPolicy < ApplicationPolicy
 
   def manage_mercury_connection?
     index? && roles.where(name: "owner").exists?
+  end
+
+  def manage_india_handoffs?
+    show? && roles.where(name: "owner").exists?
+  end
+
+  def record_india_credit?
+    show? && record.accounts_reviewer_id == user.id
   end
 
   def roles

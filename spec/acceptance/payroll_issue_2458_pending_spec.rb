@@ -54,8 +54,7 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     # Immutable amounts/reapproval and next-run cutoff carryover: consultant_revision_spec.rb.
     # No-funds release, uncertain-outcome retention and split siblings: consultant_revision_spec.rb and mercury_split_spec.rb.
     # Mercury settlement after reapproval, split credit gating, receipt retention and retries: the same two service specs.
-    it "protects reimbursement reservations until outstanding India accounts-handoff payments are resolved"
-    it "settles an India accounts-handoff reimbursement once with its receipt, original currency, approved amount and payment allocation"
+    # India handoff protection, exact settlement/receipt bytes and real races: india_handoff_spec.rb.
   end
 
   context "7. Mercury USD wires and bank credit" do
@@ -65,9 +64,9 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
 
   context "8. India accounts handoff" do
     it "emails only the approved report to the configured accounts recipient with consultant, month, hours, days, paid leave, fee, adjustments, claim items, total and required bank fields"
-    it "marks a successful handoff Sent to Accounts Awaiting Payment and never credited merely because mail was sent"
-    it "records transfer date, transaction reference and credit confirmation from authorized accounts staff"
-    it "retries failed mail without duplicating transfers or delivering a superseded approved report"
+    # Awaiting payment, accounts-only actual credit and safe retries: india_handoff_spec.rb,
+    # india_delivery_spec.rb, payroll_india_handoffs_spec.rb and india_payroll_handoff_spec.rb.
+    # The composite email contract above remains pending for approved-paid-leave classification.
   end
 
   context "9. Consultant and spouse allocations" do
