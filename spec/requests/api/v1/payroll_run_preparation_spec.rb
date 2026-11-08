@@ -92,7 +92,9 @@ RSpec.describe "Payroll run preparation API", type: :request do
     expect(response).to have_http_status(201)
     revision = created_run.current_revision
     line = revision.payroll_payload.fetch("lines").sole
-    expect(line.fetch("calculation_snapshot").fetch("input")).to include("paid_quantity" => "100.0", "basis_quantity" => "160.0")
+    expect(line.fetch("calculation_snapshot").fetch("input")).to include("paid_quantity" => "6000.0", "basis_quantity" => "9600.0")
+    expect(line.fetch("calculation_snapshot").fetch("policy")).to include(
+      "paid_quantity_name" => "scheduled minutes less confirmed unpaid minutes", "basis_quantity_name" => "scheduled minutes")
     expect(line.fetch("amounts")).to include("base_minor" => 6_250_000, "net_minor" => 6_250_000)
 
     post "/api/v1/payroll_runs/#{id}/approvals", params: { company_id: company.id, stage: "accounts", expected_digest: revision.digest }, as: :json
