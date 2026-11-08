@@ -105,6 +105,20 @@ RSpec.describe Payroll::IndiaDelivery do
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
+  it "logs only safe correlation metadata when the report cannot be constructed" do
+    id = attempt.id
+    output = StringIO.new
+    allow(Rails).to receive(:logger).and_return(ActiveSupport::Logger.new(output))
+    allow(PayrollIndiaMailer).to receive(:report).and_raise(ArgumentError, "PRIVATE accounts@example.test 123456789012")
+    PayrollIndiaDeliveryJob.perform_now(id)
+    expect(attempt.reload).to have_attributes(state: "failed", error_code: "report_unavailable")
+    event = JSON.parse(output.string.lines.find { |line| line.include?("payroll_india_report_unavailable") })
+    expect(event).to eq("event" => "payroll_india_report_unavailable", "run_id" => run.id, "handoff_id" => handoff.id,
+      "delivery_id" => id, "error_class" => "ArgumentError")
+    expect(output.string).not_to include("PRIVATE", "accounts@example.test", "123456789012")
+    expect(ActionMailer::Base.deliveries).to be_empty
+  end
+
   it "marks stale sending uncertain without retrying or accepting a late result" do
     attempt.update!(state: "sending", started_at: 20.minutes.ago)
     2.times { PayrollIndiaDeliveryJob.perform_now(attempt.id) }

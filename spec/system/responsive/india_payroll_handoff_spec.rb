@@ -85,6 +85,7 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         find("summary", text: "Delivery and credit history").click
         expect(page).to have_text("Credit INR 1,000.00")
         expect(page).to have_text("Credit INR 62,000.25")
+        expect(find("summary", text: "Delivery and credit history").evaluate_script("this.getBoundingClientRect().height")).to be >= 40
         screenshot("accounts-credited-mobile")
       end
       expect(handoff.reload.credited_minor).to eq(6_300_025)
@@ -92,6 +93,50 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
       expect(claim.paid_at).to be_present
       expect(PayrollExpenseReservation.where(payroll_run: run, expense: claim).sole.settled_at).to be_present
       expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    end
+  end
+
+  it "explains which Indian bank details to fix and disables sending an incomplete report" do
+    employment.employee_record.update!(private_details: bank_details.except("bank_name"))
+    sign_in owner
+    with_forgery_protection do
+      visit "/payroll/#{run.id}"
+      within("[aria-label='India accounts payments']") do
+        expect(page).to have_text("Complete the account holder, bank name, account number and IFSC in Employee records, then refresh.", wait: 15)
+        fill_in "Accounts recipient email", with: mailbox
+        check "I verified the beneficiary and recipient mailbox."
+        expect(page).to have_button("Send approved report to accounts", disabled: true)
+        expect(page).to have_no_text("SWIFT")
+      end
+    end
+  end
+
+  it "lets accounts resolve an unknown email before the owner retries just the unsent attempt" do
+    handoff = Payroll::IndiaHandoff.new(run).create!(actor: owner, employment_id: employment.id,
+      expected_digest: @revision.digest, accounts_email: mailbox, bank_confirmed: true)
+    handoff.payroll_india_deliveries.sole.update!(state: "uncertain", started_at: 20.minutes.ago)
+    sign_in accounts
+    with_forgery_protection do
+      visit "/payroll/#{run.id}"
+      within("[aria-label='India accounts payments']") do
+        expect(page).to have_text("Delivery uncertain — review required", wait: 15)
+        expect(page).to have_no_button("Retry unsent email")
+        select "Confirmed not delivered", from: "Verified delivery outcome"
+        fill_in "Provider or mailbox evidence reference", with: "Synthetic provider review 123"
+        check "I confirmed the previous delivery worker has stopped."
+        click_button "Record delivery review"
+        expect(page).to have_text("Email not sent")
+      end
+      sign_out accounts
+      sign_in owner
+      visit "/payroll/#{run.id}"
+      within("[aria-label='India accounts payments']") do
+        click_button "Retry unsent email"
+        expect(page).to have_text("Email queued")
+      end
+      expect(handoff.payroll_india_deliveries.order(:attempt_number).pluck(:state)).to eq(%w[failed queued])
+      expect(handoff.reload.credited_minor).to eq(0)
+      expect(claim.reload.paid_at).to be_nil
     end
   end
 

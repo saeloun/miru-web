@@ -2,6 +2,7 @@
 
 require "rails_helper"
 require Rails.root.join("db/migrate/20261103090000_create_payroll_mercury_payments")
+require Rails.root.join("db/migrate/20261108120000_create_payroll_india_handoffs")
 
 RSpec.describe "Mercury payroll migration rollback" do
   TABLES = %w[payroll_payment_events payroll_payment_instructions payroll_payment_groups payroll_mercury_recipient_links
@@ -11,9 +12,12 @@ RSpec.describe "Mercury payroll migration rollback" do
   before(:context) do
     @original_version = ActiveRecord::Base.connection_pool.migration_context.current_version
     ActiveRecord::Base.connection_pool.migration_context.migrate(VERSION)
+    # Current payroll guards require India records even while Mercury DDL is tested historically.
+    CreatePayrollIndiaHandoffs.new.up
   end
 
   after(:context) do
+    CreatePayrollIndiaHandoffs.new.down if ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
     ActiveRecord::Base.connection_pool.migration_context.migrate(@original_version)
   end
 

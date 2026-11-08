@@ -23,6 +23,55 @@ const statusLabel = (state: string) =>
       "Credit recorded — reimbursement settlement needs review",
   }[state] || state.replace(/_/g, " "));
 
+const issueLabel = (code: string) =>
+  ({
+    payroll_reference_key_missing:
+      "An administrator must configure the stable payroll reference key before any report is sent.",
+    run_not_approved:
+      "Both assigned reviewers must approve the current revision before sending.",
+    line_not_in_revision:
+      "Include this consultant in a new payroll revision and obtain both approvals.",
+    not_consultant_line:
+      "India accounts handoff supports consultant payments. Review this person's engagement type.",
+    unsupported_currency: "Prepare the India consultant payment in INR.",
+    invalid_net_amount:
+      "Review the calculation: the approved INR payable must be positive.",
+    terms_missing:
+      "Add effective consultant terms on Consultant payroll, then prepare and approve the revision.",
+    funding_not_india:
+      "This consultant uses Mercury funding. Review their funding terms before using an India account.",
+    terms_changed_during_month:
+      "Resolve the consultant's mid-month terms change and prepare a reviewed revision.",
+    consultant_inactive:
+      "Ask an administrator to review this consultant's employment access.",
+    bank_profile_incomplete:
+      "Complete the account holder, bank name, account number and IFSC in Employee records, then refresh.",
+    mercury_activity_exists:
+      "A Mercury payment instruction exists. Resolve it before preparing an India payment.",
+    split_not_supported:
+      "An active or pending spouse split exists. Withdraw it before using the India account; splits use Mercury.",
+    creator_no_longer_authorized:
+      "The owner who queued this report no longer has active access in this workspace.",
+    bank_details_changed:
+      "Bank details changed after confirmation. Void this unsent handoff, verify the new details and send a fresh report.",
+    terms_changed:
+      "Compensation terms changed. Review the terms and prepare a fresh approved report.",
+    approved_line_changed:
+      "The approved report changed. Reload payroll and review the current revision.",
+    report_unavailable:
+      "The report could not be prepared. Ask an administrator to check this handoff's delivery logs before retrying.",
+    delivery_disabled:
+      "Email delivery is disabled on this server. Ask an administrator to enable it before retrying.",
+    transport_rejected:
+      "The mail provider rejected this recipient. Check the accounts mailbox before retrying.",
+    transport_unknown:
+      "The mail provider did not confirm delivery. Check the mailbox and provider before resolving this attempt.",
+    interrupted:
+      "The delivery worker stopped without a known result. Confirm the outcome before resending.",
+    delivery_confirmed_absent:
+      "Accounts confirmed the previous email was not delivered.",
+  }[code] || `Review required: ${code.replace(/_/g, " ")}`);
+
 const Report = ({ report }: { report: IndiaReport }) => (
   <div className="space-y-3 text-sm">
     <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -141,7 +190,7 @@ const Handoff = ({
         {excess > 0n && ` · Overpaid: ${exactAmount(excess.toString(), "INR")}`}
       </p>
       <details>
-        <summary className="cursor-pointer text-sm font-medium">
+        <summary className="min-h-10 cursor-pointer py-2.5 text-sm font-medium">
           Delivery and credit history
         </summary>
         <ul className="mt-2 space-y-2 text-sm">
@@ -149,8 +198,7 @@ const Handoff = ({
             <li key={attempt.attempt_number}>
               Attempt {attempt.attempt_number}: {statusLabel(attempt.state)} ·{" "}
               {new Date(attempt.created_at).toLocaleString()}
-              {attempt.error_code &&
-                ` · ${attempt.error_code.replace(/_/g, " ")}`}
+              {attempt.error_code && ` · ${issueLabel(attempt.error_code)}`}
               {attempt.reviewed_at && " · reviewed by accounts"}
             </li>
           ))}
@@ -330,7 +378,7 @@ const QueueForm = ({
           {consultant.blockers.length > 0 && (
             <ul className="list-disc pl-5 text-sm">
               {consultant.blockers.map(code => (
-                <li key={code}>{code.replace(/_/g, " ")}</li>
+                <li key={code}>{issueLabel(code)}</li>
               ))}
             </ul>
           )}
@@ -435,7 +483,7 @@ const IndiaHandoffsPanel = ({
           !controller.signal.aborted &&
           generation.current === currentGeneration
         ) {
-          setError(errorMessage(reason));
+          setError(errorMessage(reason, issueLabel));
         }
       });
 
@@ -470,7 +518,7 @@ const IndiaHandoffsPanel = ({
 
       return true;
     } catch (reason) {
-      setError(errorMessage(reason));
+      setError(errorMessage(reason, issueLabel));
       setRefresh(value => value + 1);
 
       return false;

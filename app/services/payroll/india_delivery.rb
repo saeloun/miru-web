@@ -45,7 +45,9 @@ module Payroll
         begin
           mail = PayrollIndiaMailer.report(@delivery.id)
           message = mail.message
-        rescue StandardError
+        rescue StandardError => error
+          Rails.logger.warn({ event: "payroll_india_report_unavailable", run_id: @run.id,
+            handoff_id: @handoff.id, delivery_id: @delivery.id, error_class: error.class.name }.to_json)
           record_outcome(state: "failed", error_code: "report_unavailable")
           return
         end

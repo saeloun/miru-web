@@ -155,6 +155,8 @@ module Payroll
 
       def readiness(employment, line)
         codes = line_blockers(line)
+        config = ActiveRecord::Encryption.config
+        codes << "payroll_reference_key_missing" unless config.has_deterministic_key? && config.deterministic_key.is_a?(String)
         codes << "run_not_approved" unless Workflow.new(@run).status == "approved"
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
         terms = sources.terms(employment.id)
@@ -213,13 +215,15 @@ module Payroll
 
       def reference_digest(value)
         # Session-key rotation must not make a recorded bank transfer look new.
-        key = ActiveSupport::KeyGenerator.new(ActiveRecord::Encryption.config.deterministic_key)
-          .generate_key("payroll_india_credit_reference", 32)
-        OpenSSL::HMAC.hexdigest("SHA256", key, value)
+        key = ActiveRecord::Encryption.config.deterministic_key
+        unless key.is_a?(String) && key.present?
+          raise ActiveRecord::Encryption::Errors::Configuration, "A stable payroll reference key is required"
+        end
+        OpenSSL::HMAC.hexdigest("SHA256", key, "payroll_india_credit_reference:v1:#{value}")
       end
 
       def credit_values(amount, credited_on, reference)
-        normalized = reference.is_a?(String) ? reference.gsub(/[[:space:]]/, "").upcase : ""
+        normalized = reference.is_a?(String) ? reference.unicode_normalize(:nfkc).gsub(/[[:space:]]/, "").upcase : ""
         blocked!("credit_reference_invalid") unless normalized.length.between?(1, 200) && !normalized.match?(/[\x00-\x1f\x7f]/)
         { amount_minor: credit_minor(amount), credited_on: credit_date(credited_on), reference: normalized,
           reference_digest: reference_digest(normalized) }

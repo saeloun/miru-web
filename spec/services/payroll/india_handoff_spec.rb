@@ -238,6 +238,30 @@ RSpec.describe Payroll::IndiaHandoff do
     expect(handoff.reload.credited_minor).to eq(100_000)
   end
 
+  it "does not depend on Rails key-generator defaults or Unicode formatting for credit identity" do
+    handoff = delivered(queue_handoff)
+    credit(handoff, reference: "UTR123")
+    allow(ActiveSupport::KeyGenerator).to receive(:hash_digest_class).and_return(OpenSSL::Digest::SHA512)
+    credit(handoff, reference: "ＵＴＲ１２３")
+    expect(handoff.payroll_india_credits.count).to eq(1)
+    expect(handoff.reload.credited_minor).to eq(100_000)
+  end
+
+  it "rejects credit when its stable reference key is unavailable" do
+    handoff = delivered(queue_handoff)
+    allow(ActiveRecord::Encryption.config).to receive(:deterministic_key).and_return(nil)
+    expect { credit(handoff) }.to raise_error(ActiveRecord::Encryption::Errors::Configuration)
+    expect(handoff.payroll_india_credits.count).to eq(0)
+  end
+
+  it "blocks the handoff before accounts can pay when the stable reference key is missing" do
+    revision = approve_revision
+    allow(ActiveRecord::Encryption.config).to receive(:has_deterministic_key?).and_return(nil)
+    expect(service.preview(employment_id: employment.id).fetch(:blockers)).to include("payroll_reference_key_missing")
+    expect { queue_handoff(revision) }.to raise_error(Payroll::MercuryPayment::Blocked)
+    expect(PayrollIndiaHandoff.count).to eq(0)
+  end
+
   it "serializes retroactive compensation creation with a new handoff", :india_concurrency do
     revision = approve_revision
     terms = employment.consultant_compensations.order(:id).last.attributes.except("id", "created_at", "updated_at")

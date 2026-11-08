@@ -15,10 +15,13 @@
       <% if section[:rows].empty? %>
         <p>None recorded.</p>
       <% else %>
-        <table style="width:100%;table-layout:fixed;border-collapse:collapse;text-align:left">
-          <thead><tr><% section[:headings].each do |heading| %><th scope="col" style="padding:6px;border-bottom:2px solid #ddd;vertical-align:top"><%= heading %></th><% end %></tr></thead>
-          <tbody><% section[:rows].each do |row| %><tr><% row.each do |value| %><td style="padding:6px;border-bottom:1px solid #ddd;vertical-align:top"><%= value %></td><% end %></tr><% end %></tbody>
-        </table>
+        <% section[:rows].each do |row| %>
+          <table style="width:100%;border-collapse:collapse;text-align:left;margin-bottom:12px;border:1px solid #ddd">
+            <% section[:headings].zip(row).each do |heading, value| %>
+              <tr><th scope="row" style="width:35%;padding:8px;vertical-align:top"><%= heading %></th><td style="padding:8px;vertical-align:top"><%= value %></td></tr>
+            <% end %>
+          </table>
+        <% end %>
       <% end %>
     <% end %>
     <h2 style="font-size:17px;margin:24px 0 8px">Bank details</h2>

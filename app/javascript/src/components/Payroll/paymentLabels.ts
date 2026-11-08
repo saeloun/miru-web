@@ -175,10 +175,10 @@ export const label = (code: string): string =>
         .replace(/^provider_returned_/, "Mercury returned ")
         .replace(/_/g, " ");
 
-export const errorMessage = (failure: any): string => {
+export const errorMessage = (failure: any, formatCode = label): string => {
   const data = failure?.response?.data;
   if (Array.isArray(data?.codes)) {
-    return data.codes.map((code: string) => label(code)).join(". ");
+    return data.codes.map((code: string) => formatCode(code)).join(". ");
   }
 
   if (typeof data?.errors === "string") return data.errors;
