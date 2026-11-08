@@ -156,6 +156,19 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         check "I verified the beneficiary and recipient mailbox."
       end
 
+      click_button "Refresh India handoffs"
+      within("[aria-label='India accounts payments']") do
+        expect(page).to have_field("Accounts recipient email", with: "")
+        expect(page).to have_unchecked_field("I verified the beneficiary and recipient mailbox.")
+        expect(page).to have_button("Send approved report to accounts", disabled: true)
+        fill_in "Accounts recipient email", with: mailbox
+        check "I verified the beneficiary and recipient mailbox."
+      end
+      expect_payroll_fact("Current revision", "#{@revision.number} · #{@revision.digest.first(12)}")
+      expect(run.reload.current_revision.digest).to eq(@revision.digest)
+      expect(PayrollIndiaHandoff.count).to eq(0)
+      expect(PayrollIndiaDelivery.count).to eq(0)
+
       fresh_revision = approve_revision(parent: @revision.digest)
       expect(fresh_revision.digest).not_to eq(@revision.digest)
       click_button "Refresh India handoffs"
