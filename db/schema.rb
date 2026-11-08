@@ -2811,6 +2811,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
         (to_jsonb(NEW) - ARRAY['credited_minor','released_at','fully_credited_at','updated_at']) THEN
         RAISE EXCEPTION 'Payroll India handoff snapshot is immutable';
       END IF;
+      IF NEW.credited_minor < OLD.credited_minor OR
+        (OLD.released_at IS NOT NULL AND NEW.released_at IS DISTINCT FROM OLD.released_at) OR
+        (OLD.fully_credited_at IS NOT NULL AND NEW.fully_credited_at IS DISTINCT FROM OLD.fully_credited_at) THEN
+        RAISE EXCEPTION 'Payroll India handoff credit and final timestamps cannot go backwards';
+      END IF;
       RETURN NEW;
     END;
     $$;

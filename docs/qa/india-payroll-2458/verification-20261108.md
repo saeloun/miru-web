@@ -58,6 +58,12 @@ Hosted backend checkpoint at that head: **6,173 examples, zero failures, 54 pend
 
 Combined final verification after these corrections: **62 domain/API/mail/history/migration examples and 19 real Brave browser examples, zero failures**. The broader hosted suite must be green at the final pushed head before merge. The seven product screenshots remain the verified `e4d832d7` UI checkpoint; subsequent changes preserve the displayed workflow.
 
+At the next hosted checkpoint, `b319e9275`, **6,175 backend examples passed with 54 pending**; its browser job was still running when the additional database guard below was prepared. [Backend job](https://github.com/saeloun/miru-web/actions/runs/42450811934/job/128639434824). These checkpoints overlap and must not be summed.
+
+CodeRabbit's next review identified a valid SQL safeguard: mutable handoff totals could decrease and final release/credit timestamps could be cleared or changed. The migration, schema and dumper now reject those changes. Two new examples first failed before the fix; all **29 domain examples pass after actual migration down/up and again after schema dump/load**. Five unsafe SQL updates are rejected while additional actual credit remains valid. Independent verification on fresh schema-loaded databases passes **64 backend examples and six real Brave India/Mercury examples**, with no failures. Reek and focused Ruby lint pass. The final pushed head still needs its own hosted CI.
+
+The same review suggested shared locks for concurrent polling. Native engineering checked the full call graph and retained the existing exclusive protocol: both `Workflow#status` and preview readiness take nested exclusive run locks. Changing only the outer lock would introduce a lock-upgrade deadlock risk; a coordinated change would alter the status contract used by other payroll workflows. No contention or incorrect result was demonstrated, so this unmeasured optimization does not justify expanding this financial change. The proven history query issue is already fixed by batch loading. The generic docstring heuristic still identifies no missing public contract.
+
 ## Screenshots
 
 - [Owner report confirmation](screenshots/owner-ready-desktop.png)

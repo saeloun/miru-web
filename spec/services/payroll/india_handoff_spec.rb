@@ -245,6 +245,31 @@ RSpec.describe Payroll::IndiaHandoff do
     expect(handoff.payroll_india_credits.sole.amount_minor).to eq(100_000)
   end
 
+  it "prevents direct SQL from reducing actual credit or changing its final credit timestamp" do
+    handoff = delivered(queue_handoff)
+    credit(handoff, amount: "62500.00")
+    stamp = handoff.reload.fully_credited_at
+    [{ credited_minor: 0 }, { fully_credited_at: nil }, { fully_credited_at: stamp + 1.second }].each do |attributes|
+      expect do
+        PayrollIndiaHandoff.transaction(requires_new: true) { PayrollIndiaHandoff.where(id: handoff.id).update_all(attributes) }
+      end.to raise_error(ActiveRecord::StatementInvalid, /cannot go backwards/)
+    end
+    credit(handoff, amount: "1.00", reference: "Synthetic additional actual credit")
+    expect(handoff.reload).to have_attributes(credited_minor: 6_250_100, fully_credited_at: stamp)
+  end
+
+  it "prevents direct SQL from reopening or redating a voided handoff" do
+    handoff = queue_handoff
+    service.void!(actor: owner, handoff_id: handoff.id)
+    stamp = handoff.reload.released_at
+    [nil, stamp + 1.second].each do |value|
+      expect do
+        PayrollIndiaHandoff.transaction(requires_new: true) { PayrollIndiaHandoff.where(id: handoff.id).update_all(released_at: value) }
+      end.to raise_error(ActiveRecord::StatementInvalid, /cannot go backwards/)
+    end
+    expect(handoff.reload.released_at).to eq(stamp)
+  end
+
   it "normalizes credit references and rejects cross-handoff replay" do
     first = delivered(queue_handoff)
     credit(first, reference: " abc 123 ")
