@@ -56,6 +56,7 @@ module EmployeeOccasions
       def deliver(employment, admin, kind)
         employment.with_lock do
           next unless enabled? && active_employments.exists?(id: employment.id) && admins.exists?(id: admin.id)
+          next unless events(employment).include?(kind)
 
           identity = { employment:, admin:, kind:, event_on: @event_on }
           next if EmployeeOccasionDelivery.exists?(identity)
