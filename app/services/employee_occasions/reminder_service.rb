@@ -53,9 +53,11 @@ module EmployeeOccasions
         Date.new(@event_on.year, date.month, day)
       end
 
+      # Profile dates may change after selection, so confirm the event before sending or logging it.
       def deliver(employment, admin, kind)
         employment.with_lock do
           next unless enabled? && active_employments.exists?(id: employment.id) && admins.exists?(id: admin.id)
+          next unless events(employment).include?(kind)
 
           identity = { employment:, admin:, kind:, event_on: @event_on }
           next if EmployeeOccasionDelivery.exists?(identity)

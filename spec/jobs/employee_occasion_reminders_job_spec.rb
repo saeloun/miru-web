@@ -76,6 +76,40 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
     expect(EmployeeOccasionDelivery.where(event_on: "2028-02-29").count).to eq(2)
   end
 
+  { "birthday" => "corrected date of birth", "work_anniversary" => "removed joining date" }.each do |kind, correction|
+    it "rechecks a #{correction} changed after event selection before sending" do
+      opt_in
+      if kind == "birthday"
+        employment.update_column(:joined_at, Date.new(2020, 6, 1))
+      else
+        employee.update_column(:date_of_birth, nil)
+      end
+      corrected = false
+      allow_any_instance_of(Employment).to receive(:with_lock).and_wrap_original do |original, *arguments, &block|
+        if original.receiver.id == employment.id && !corrected
+          corrected = true
+          if kind == "birthday"
+            employee.update_column(:date_of_birth, Date.new(1990, 1, 4))
+          else
+            employment.update_column(:joined_at, nil)
+          end
+        end
+        original.call(*arguments, &block)
+      end
+
+      expect { described_class.perform_now }.not_to raise_error
+      expect(corrected).to be(true)
+      expect(ActionMailer::Base.deliveries).to be_empty
+      expect(EmployeeOccasionDelivery.count).to eq(0)
+
+      employment.update_column(:joined_at, Date.new(2020, 1, 4)) if kind == "work_anniversary"
+      travel_to Time.utc(2026, 12, 29, 7)
+      2.times { described_class.perform_now }
+      expect(ActionMailer::Base.deliveries.map(&:to)).to eq([[admin.email]])
+      expect(EmployeeOccasionDelivery.pluck(:kind, :event_on)).to eq([[kind, Date.new(2027, 1, 4)]])
+    end
+  end
+
   it "excludes discarded/former employees, inactive admins, clients and incomplete anniversaries" do
     opt_in
     employment.update_column(:resigned_at, Date.new(2026, 12, 26))

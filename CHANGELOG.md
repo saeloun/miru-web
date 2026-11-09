@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.2.1] - 2026-11-09
+
+### Fixed
+
+- Birthday and work-anniversary reminders recheck corrected profile dates before sending, preventing stale messages and missing-date failures.
+- Signing cancellations finish after provider confirmation without duplicate completion records. Document-list and download failures show the appropriate retry guidance.
+
+### Added
+
+- An isolated AMD64 build check and downloadable image archive for the self-hosted signing provider, without publishing or deploying it.
+
 ## 3.0.8 - 2026-11-08
 
 ### Fixed
