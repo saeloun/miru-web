@@ -101,6 +101,54 @@ RSpec.describe "Signed document archives", type: :system, js: true do
     expect(@console_errors).to be_empty
   end
 
+  it "explains a temporary archive-list failure and loads the same private records on retry" do
+    archive(employment:)
+    fail_once = true
+    allow_any_instance_of(Api::V1::SignatureArchivesController).to receive(:index).and_wrap_original do |original|
+      original.call
+      if fail_once
+        fail_once = false
+        original.receiver.response.status = 503
+        original.receiver.response.body = "{}"
+      end
+    end
+    open_page(employee, "/signed-documents")
+    page.current_window.resize_to(1440, 1000)
+    expect(page.evaluate_script("window.innerWidth")).to eq(1440)
+    expect(page).to have_css("[role='alert']", text: "Signed documents could not be loaded. Try again.", exact_text: true)
+    expect(page).not_to have_css("article[data-signature-archive]")
+    capture_archive("signed-documents-load-error-1440.png")
+    click_button "Try again", exact: true
+    expect(page).to have_css("article[data-signature-archive]", count: 1)
+    expect(page).not_to have_css("[role='alert']")
+    expect(@console_errors).to be_empty
+  end
+
+  it "explains a failed private-file download and permits the same verified file to be retried on mobile" do
+    signed = archive(employment:)
+    entry = signed.artifact_manifest.find { |item| item.fetch("kind") == "signed" }
+    fail_once = true
+    allow_any_instance_of(Api::V1::SignatureArchivesController).to receive(:download).and_wrap_original do |original|
+      original.call
+      if fail_once
+        fail_once = false
+        original.receiver.response.status = 503
+        original.receiver.response.body = "{}"
+      end
+    end
+    open_page(employee, "/signed-documents")
+    page.current_window.resize_to(375, 1000)
+    expect(page.evaluate_script("window.innerWidth")).to eq(375)
+    click_button entry.fetch("filename"), exact: true
+    expect(page).to have_css("[role='alert']", text: "The signed file could not be downloaded. Try again.", exact_text: true)
+    expect(page).to have_css("article[data-signature-archive]", count: 1)
+    expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    capture_archive("signed-document-download-error-375.png")
+    download_artifact(entry)
+    expect(page).not_to have_css("[role='alert']")
+    expect(@console_errors).to be_empty
+  end
+
   it "lists a client's signed documents on their profile without showing other parties' archives" do
     page.current_window.resize_to(1440, 1000)
     client = create(:client, company:)
