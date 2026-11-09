@@ -37,9 +37,11 @@ module Payroll
         raise Workflow::Conflict, "Revision changed; reload before preparing" unless head&.digest == expected_digest
 
         employment = Employment.where(company_id: @company_id).find(employment_id)
-        readiness = MercuryReadiness.new(@run, head)
-        raise_if_blocked(readiness.line_blockers(employment))
-        create_missing_legs!(actor, head, employment, readiness, quote)
+        employment.with_lock do
+          readiness = MercuryReadiness.new(@run, head)
+          raise_if_blocked(readiness.line_blockers(employment))
+          create_missing_legs!(actor, head, employment, readiness, quote)
+        end
       end
     rescue ActiveRecord::RecordNotUnique
       raise Workflow::Conflict, "This payment was prepared already; reload", cause: nil
@@ -219,12 +221,12 @@ module Payroll
       def local_blockers(instruction)
         return ["instruction_tampered"] unless instruction.intact?
 
-        head = @run.current_revision
+        head, employment = @run.current_revision, instruction.employment
         readiness = MercuryReadiness.new(@run, head)
-        employment = instruction.employment
-        codes = Workflow.new(@run).status == "approved" ? [] : ["run_not_approved"]
+        codes = readiness.source_blockers(employment) + (Workflow.new(@run).status == "approved" ? [] : ["run_not_approved"])
         codes << "revision_changed" unless head&.id == instruction.payroll_revision_id && head.digest == instruction.revision_digest
         codes << "consultant_inactive" if employment.discarded?
+        codes << "billing_identity_review_required" unless BillingIdentity.new(employment).valid_binding?(readiness.line(employment)&.dig("preparation", "billing_identity"))
         codes << "terms_changed" unless readiness.terms(employment)&.id == instruction.consultant_compensation_id
         codes << "split_changed" unless readiness.active_arrangement(employment)&.id == instruction.payroll_payment_group.split_arrangement_id
         codes << "connection_changed" unless connection_current?(instruction, readiness.connection)

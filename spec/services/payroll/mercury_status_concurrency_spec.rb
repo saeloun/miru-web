@@ -9,7 +9,7 @@ RSpec.describe "Overlapping Mercury status refreshes" do
     expect(ActiveRecord::Base.connection.open_transactions).to eq(0)
   end
 
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   around do |example|
     freeze_time { example.run }

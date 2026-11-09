@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.3.0] - 2026-11-09
+
+### Added
+
+- **Approve consultant leave before payroll.** Configure a reconciled opening, earned leave and borrowing limits, then record explicit paid, unpaid, advance, deferred, waived or correction decisions for missing hours.
+- **Review leave at year end and exit.** Keep outstanding advances, deferred cases and cash recoveries visible, with private review notices and recorded decisions.
+- **Read approved leave in India payroll reports.** Retain paid leave and opening, accrued, advance, deferred and closing balances in the approved report and accounts email.
+- **Review fees for partial service months.** Record an explicit service-period base fee for joining, leaving or changed terms before leave decisions and payroll approval; fees are never automatically prorated.
+- **Record consultant invoice permission.** Consultants can grant or withdraw authorization and read its history, including after exit. Saving permission does not issue an invoice.
+- **Confirm changes to bank accounts.** Re-enter the account number when saving primary consultant bank details. Assigned payroll reviewers receive a generic change notice without bank values.
+- **Review private billing and tax facts.** Consultants submit declared legal name, address, PAN/GST applicability and private evidence for a separate accounts review before new payments. This does not establish government verification or select tax rates.
+
+### Changed
+
+- **Prepare payroll from approved leave decisions.** Each consultant requires a policy approved by an active owner or admin before a new payroll revision. Changes to attendance, policy or decisions require fresh review; accepted bank reports retain their approved values.
+- **Keep existing transfers intact.** Later payroll revisions retain the original approved source, amounts and claims for transfers already started. New transfers and remaining split legs still need current review and source checks. Changed facts can hold an unsent leg; reconcile bank status without bypassing the hold.
+- **Back up before deployment.** Take a verified backup and follow the [deployment guide](docs/payroll-pto-ledger.md). After financial adoption, older application versions cannot safely write to the new ledger; the final migration prevents destructive rollback. Use a reviewed forward correction or restore a compatible database and application together.
+
+### Fixed
+
+- **Recover leave adjustments once.** Preserve reservations through partial or uncertain payments, settle against confirmed credit and reopen review after a return, including carried split payments.
+- **Keep minute-based pay exact.** Calculate leave quantities and pay from exact minutes so display rounding cannot change a deduction, available balance or payment amount.
+- **Preserve historical leave balances.** Prevent backdated decisions and policy changes from spending an already consumed balance or moving an earlier balance into a later month.
+- **Reconcile replacement payments safely.** Require a fresh payroll revision when a carried leave reservation loses its original payment, and finish return review only after every affected recovery is resolved.
+- **Limit assigned payroll review to eligible consultants.** Keep initial preparation available while rejecting unconfigured or out-of-period subjects before reading their leave facts.
+- **Keep opening leave identities consistent.** Validate opening dates independently of the database session's date display format.
+- **Keep billing navigation stable.** Profile sections loading in the background no longer move the billing-identity link during a click.
+
 ## [3.2.1] - 2026-11-09
 
 ### Fixed

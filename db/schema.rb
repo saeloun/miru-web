@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -391,6 +391,55 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
     t.index ["employment_id"], name: "index_compensation_versions_on_employment_id"
   end
 
+  create_table "consultant_billing_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "submission_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_review_id"
+    t.string "decision", null: false
+    t.text "reason", null: false
+    t.boolean "manual_tax_reviewed", null: false
+    t.boolean "missing_pan_acknowledged", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_billing_reviews_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "consultant_billing_reviews_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_billing_reviews_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "consultant_billing_reviews_command_identity", unique: true
+    t.index ["employment_id"], name: "index_consultant_billing_reviews_on_employment_id"
+    t.index ["previous_review_id"], name: "index_consultant_billing_reviews_on_previous_review_id", unique: true
+    t.index ["submission_id"], name: "billing_review_one_root", unique: true, where: "(previous_review_id IS NULL)"
+    t.index ["submission_id"], name: "index_consultant_billing_reviews_on_submission_id"
+    t.check_constraint "id > 0 AND (decision::text = ANY (ARRAY['approved'::character varying, 'needs_information'::character varying, 'rejected'::character varying]::text[])) AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128 AND (decision::text <> 'approved'::text OR manual_tax_reviewed)", name: "billing_review_values"
+  end
+
+  create_table "consultant_billing_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_submission_id"
+    t.bigint "pan_blob_id"
+    t.bigint "gst_blob_id"
+    t.text "facts", null: false
+    t.text "evidence_manifest", null: false
+    t.string "source_digest", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_billing_submissions_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "consultant_billing_submissions_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_billing_submissions_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "consultant_billing_submissions_command_identity", unique: true
+    t.index ["employment_id"], name: "billing_submission_one_root", unique: true, where: "(previous_submission_id IS NULL)"
+    t.index ["employment_id"], name: "index_consultant_billing_submissions_on_employment_id"
+    t.index ["gst_blob_id"], name: "index_consultant_billing_submissions_on_gst_blob_id"
+    t.index ["pan_blob_id"], name: "index_consultant_billing_submissions_on_pan_blob_id"
+    t.index ["previous_submission_id"], name: "index_consultant_billing_submissions_on_previous_submission_id", unique: true
+    t.check_constraint "id > 0 AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "billing_submission_values"
+  end
+
   create_table "consultant_compensations", force: :cascade do |t|
     t.text "change_reason", null: false
     t.datetime "created_at", null: false
@@ -407,6 +456,79 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
     t.index ["employment_id", "effective_on", "id"], name: "index_consultant_terms_effective_version"
     t.index ["employment_id"], name: "index_consultant_compensations_on_employment_id"
     t.check_constraint "monthly_fee > 0::numeric AND hours_per_day > 0::numeric AND hours_per_day <= 24::numeric", name: "consultant_compensations_positive_terms"
+  end
+
+  create_table "consultant_invoice_authorizations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "actor_id", null: false
+    t.string "action", null: false
+    t.string "statement_version", null: false
+    t.text "statement_text", null: false
+    t.string "statement_digest", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.bigint "previous_event_id"
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_invoice_authorizations_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "invoice_authorization_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_invoice_authorizations_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "invoice_authorization_command_identity", unique: true
+    t.index ["employment_id"], name: "index_consultant_invoice_authorizations_on_employment_id"
+    t.index ["employment_id"], name: "invoice_authorization_one_root", unique: true, where: "(previous_event_id IS NULL)"
+    t.index ["previous_event_id"], name: "index_consultant_invoice_authorizations_on_previous_event_id", unique: true
+    t.check_constraint "id > 0 AND (action::text = ANY (ARRAY['grant'::character varying, 'withdraw'::character varying]::text[])) AND length(statement_version::text) >= 1 AND length(statement_version::text) <= 128 AND length(statement_text) >= 1 AND length(statement_text) <= 4000 AND statement_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "invoice_authorization_event_values"
+  end
+
+  create_table "consultant_pto_policies", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "created_by_id", null: false
+    t.date "effective_on", null: false
+    t.date "opening_on", null: false
+    t.decimal "opening_minutes", precision: 14, scale: 2, null: false
+    t.decimal "monthly_accrual_minutes", precision: 14, scale: 2, null: false
+    t.integer "accrual_day", null: false
+    t.integer "leave_year_month", null: false
+    t.integer "leave_year_day", null: false
+    t.string "carry_rule", null: false
+    t.string "rate_basis", null: false
+    t.decimal "advance_limit_minutes", precision: 14, scale: 2, null: false
+    t.decimal "exception_threshold_minutes", precision: 14, scale: 2, null: false
+    t.decimal "negative_threshold_minutes", precision: 14, scale: 2, null: false
+    t.text "reason", null: false
+    t.string "evidence", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id", "employment_id", "id"], name: "pto_policy_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_pto_policies_on_company_id"
+    t.index ["created_by_id"], name: "index_consultant_pto_policies_on_created_by_id"
+    t.index ["employment_id", "idempotency_key"], name: "idx_on_employment_id_idempotency_key_affdb89c54", unique: true
+    t.index ["employment_id"], name: "index_consultant_pto_policies_on_employment_id"
+    t.check_constraint "monthly_accrual_minutes >= 0::numeric AND advance_limit_minutes >= 0::numeric AND exception_threshold_minutes >= 0::numeric AND negative_threshold_minutes >= 0::numeric AND accrual_day >= 1 AND accrual_day <= 28 AND leave_year_month >= 1 AND leave_year_month <= 12 AND leave_year_day >= 1 AND leave_year_day <= 28 AND carry_rule::text = 'review'::text AND rate_basis::text = 'origin_period_fee'::text AND opening_on <= effective_on", name: "pto_policy_configured_values"
+  end
+
+  create_table "consultant_service_fee_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.date "period", null: false
+    t.bigint "amount_minor", null: false
+    t.text "reason", null: false
+    t.string "source_digest", null: false
+    t.jsonb "context", null: false
+    t.bigint "actor_id", null: false
+    t.string "idempotency_key", null: false
+    t.bigint "previous_review_id"
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_service_fee_reviews_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "service_fee_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_service_fee_reviews_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "service_fee_command_identity", unique: true
+    t.index ["employment_id", "period"], name: "service_fee_one_root", unique: true, where: "(previous_review_id IS NULL)"
+    t.index ["employment_id"], name: "index_consultant_service_fee_reviews_on_employment_id"
+    t.index ["previous_review_id"], name: "index_consultant_service_fee_reviews_on_previous_review_id", unique: true
+    t.check_constraint "amount_minor > 0 AND amount_minor < '100000000000000'::bigint AND EXTRACT(day FROM period) = 1::numeric AND period >= '1900-01-01'::date AND period <= '2099-12-01'::date AND length(btrim(reason)) >= 1 AND length(btrim(reason)) <= 1000 AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND jsonb_typeof(context) = 'object'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "service_fee_review_values"
   end
 
   create_table "currency_pairs", force: :cascade do |t|
@@ -1426,6 +1548,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
     t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying::text, 'final'::character varying::text])", name: "payroll_approval_stage"
   end
 
+  create_table "payroll_bank_change_notices", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "recipient_id", null: false
+    t.uuid "event_id", null: false
+    t.string "state", default: "queued", null: false
+    t.datetime "attempted_at"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_bank_change_notices_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_bank_change_notices_on_employment_id"
+    t.index ["event_id", "recipient_id"], name: "bank_change_notice_delivery_identity", unique: true
+    t.index ["recipient_id"], name: "index_payroll_bank_change_notices_on_recipient_id"
+    t.index ["state", "id"], name: "index_payroll_bank_change_notices_on_state_and_id"
+    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "bank_change_notice_states"
+  end
+
   create_table "payroll_expense_reservations", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "expense_id", null: false
@@ -1675,6 +1815,99 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
     t.check_constraint "submission_state::text = ANY (ARRAY['prepared'::character varying, 'submitting'::character varying, 'accepted'::character varying, 'uncertain'::character varying, 'rejected'::character varying, 'voided'::character varying]::text[])", name: "payroll_payment_submission_state"
     t.check_constraint "transaction_link_state::text = ANY (ARRAY['none'::character varying, 'linked'::character varying, 'reconciliation_required'::character varying]::text[])", name: "payroll_payment_link_state"
     t.check_constraint "transaction_status IS NULL OR (transaction_status::text = ANY (ARRAY['pending'::character varying, 'sent'::character varying, 'cancelled'::character varying, 'failed'::character varying, 'reversed'::character varying, 'blocked'::character varying]::text[]))", name: "payroll_payment_transaction_status"
+  end
+
+  create_table "payroll_pto_allocations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "accrual_entry_id", null: false
+    t.bigint "origin_entry_id", null: false
+    t.decimal "minutes", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["accrual_entry_id", "origin_entry_id"], name: "idx_on_accrual_entry_id_origin_entry_id_48b2e8fe40", unique: true
+    t.index ["accrual_entry_id"], name: "index_payroll_pto_allocations_on_accrual_entry_id"
+    t.index ["company_id"], name: "index_payroll_pto_allocations_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_pto_allocations_on_employment_id"
+    t.index ["origin_entry_id"], name: "index_payroll_pto_allocations_on_origin_entry_id"
+    t.check_constraint "minutes > 0::numeric", name: "pto_allocation_positive"
+  end
+
+  create_table "payroll_pto_entries", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "consultant_pto_policy_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_entry_id"
+    t.bigint "origin_entry_id"
+    t.date "period", null: false
+    t.string "case_key", null: false
+    t.string "kind", null: false
+    t.decimal "minutes", null: false
+    t.decimal "balance_delta_minutes", null: false
+    t.decimal "debt_minutes", default: "0.0", null: false
+    t.bigint "cash_amount_minor", default: 0, null: false
+    t.jsonb "rate_basis", default: {}, null: false
+    t.string "source_digest", null: false
+    t.text "reason", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "allocations", default: [], null: false
+    t.string "origin_component"
+    t.index ["actor_id"], name: "index_payroll_pto_entries_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "pto_entry_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_payroll_pto_entries_on_company_id"
+    t.index ["consultant_pto_policy_id"], name: "index_payroll_pto_entries_on_consultant_pto_policy_id"
+    t.index ["employment_id", "case_key"], name: "pto_entry_one_root", unique: true, where: "(previous_entry_id IS NULL)"
+    t.index ["employment_id", "idempotency_key"], name: "index_payroll_pto_entries_on_employment_id_and_idempotency_key", unique: true
+    t.index ["employment_id"], name: "index_payroll_pto_entries_on_employment_id"
+    t.index ["origin_entry_id", "origin_component"], name: "pto_obligation_one_review_root", unique: true, where: "((origin_entry_id IS NOT NULL) AND (previous_entry_id IS NULL))"
+    t.index ["origin_entry_id"], name: "index_payroll_pto_entries_on_origin_entry_id"
+    t.index ["previous_entry_id"], name: "index_payroll_pto_entries_on_previous_entry_id", unique: true
+    t.check_constraint "minutes >= 0::numeric AND debt_minutes >= 0::numeric AND debt_minutes <= minutes AND cash_amount_minor >= 0 AND ((kind::text = ANY (ARRAY['paid'::character varying, 'advance'::character varying, 'review_advance'::character varying]::text[])) AND balance_delta_minutes = (- minutes) OR kind::text = 'allocation'::text AND balance_delta_minutes >= (- minutes) AND balance_delta_minutes <= 0::numeric OR kind::text = 'accrual'::text AND balance_delta_minutes = minutes OR (kind::text = ANY (ARRAY['unpaid'::character varying, 'defer'::character varying, 'waive'::character varying, 'correction'::character varying, 'opening'::character varying, 'review_defer'::character varying, 'review_correction'::character varying]::text[])) AND balance_delta_minutes = 0::numeric OR (kind::text = ANY (ARRAY['review_unpaid'::character varying, 'review_waive'::character varying]::text[])) AND balance_delta_minutes >= 0::numeric AND balance_delta_minutes <= minutes) AND (kind::text = 'review_unpaid'::text OR cash_amount_minor = 0) AND (kind::text ~~ 'review_%'::text AND origin_entry_id IS NOT NULL AND (origin_component::text = ANY (ARRAY['opening'::character varying, 'advance'::character varying, 'defer'::character varying, 'correction'::character varying]::text[])) OR kind::text !~~ 'review_%'::text AND origin_entry_id IS NULL)", name: "pto_entry_accounting_sign"
+  end
+
+  create_table "payroll_pto_notifications", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "recipient_id", null: false
+    t.string "kind", null: false
+    t.string "source_digest", null: false
+    t.string "state", default: "queued", null: false
+    t.datetime "attempted_at"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_pto_notifications_on_company_id"
+    t.index ["employment_id", "recipient_id", "kind", "source_digest"], name: "pto_notification_delivery_identity", unique: true
+    t.index ["employment_id"], name: "index_payroll_pto_notifications_on_employment_id"
+    t.index ["recipient_id"], name: "index_payroll_pto_notifications_on_recipient_id"
+    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) AND (kind::text = ANY (ARRAY['threshold'::character varying, 'correction'::character varying, 'year_end'::character varying, 'exit'::character varying]::text[]))", name: "pto_notification_states"
+  end
+
+  create_table "payroll_pto_recoveries", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "payroll_pto_entry_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "previous_recovery_id"
+    t.string "kind", null: false
+    t.bigint "amount_minor", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "actor_id"
+    t.text "reason"
+    t.index ["company_id", "employment_id", "id"], name: "pto_recovery_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_payroll_pto_recoveries_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_pto_recoveries_on_employment_id"
+    t.index ["payroll_pto_entry_id"], name: "index_payroll_pto_recoveries_on_payroll_pto_entry_id"
+    t.index ["payroll_pto_entry_id"], name: "pto_recovery_one_root", unique: true, where: "(previous_recovery_id IS NULL)"
+    t.index ["payroll_revision_id"], name: "index_payroll_pto_recoveries_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_pto_recoveries_on_payroll_run_id"
+    t.index ["previous_recovery_id"], name: "index_payroll_pto_recoveries_on_previous_recovery_id", unique: true
+    t.check_constraint "amount_minor >= 0 AND (kind::text = ANY (ARRAY['reserved'::character varying, 'released'::character varying, 'settled'::character varying, 'returned_review'::character varying]::text[]))", name: "pto_recovery_event_values"
   end
 
   create_table "payroll_revisions", force: :cascade do |t|
@@ -2511,8 +2744,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   add_foreign_key "compensation_report_runs", "companies"
   add_foreign_key "compensation_report_runs", "users", column: "created_by_id"
   add_foreign_key "compensation_versions", "employments"
+  add_foreign_key "consultant_billing_reviews", "companies"
+  add_foreign_key "consultant_billing_reviews", "consultant_billing_reviews", column: ["company_id", "employment_id", "previous_review_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_review_previous_tenant"
+  add_foreign_key "consultant_billing_reviews", "consultant_billing_submissions", column: ["company_id", "employment_id", "submission_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_review_submission_tenant"
+  add_foreign_key "consultant_billing_reviews", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_billing_reviews", "users", column: "actor_id"
+  add_foreign_key "consultant_billing_submissions", "active_storage_blobs", column: "gst_blob_id"
+  add_foreign_key "consultant_billing_submissions", "active_storage_blobs", column: "pan_blob_id"
+  add_foreign_key "consultant_billing_submissions", "companies"
+  add_foreign_key "consultant_billing_submissions", "consultant_billing_submissions", column: ["company_id", "employment_id", "previous_submission_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_submission_previous_tenant"
+  add_foreign_key "consultant_billing_submissions", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_billing_submissions", "users", column: "actor_id"
   add_foreign_key "consultant_compensations", "employments"
   add_foreign_key "consultant_compensations", "users", column: "created_by_id"
+  add_foreign_key "consultant_invoice_authorizations", "companies"
+  add_foreign_key "consultant_invoice_authorizations", "consultant_invoice_authorizations", column: ["company_id", "employment_id", "previous_event_id"], primary_key: ["company_id", "employment_id", "id"], name: "invoice_authorization_previous_tenant"
+  add_foreign_key "consultant_invoice_authorizations", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_invoice_authorizations", "users", column: "actor_id"
+  add_foreign_key "consultant_pto_policies", "companies"
+  add_foreign_key "consultant_pto_policies", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_pto_policies", "users", column: "created_by_id"
+  add_foreign_key "consultant_service_fee_reviews", "companies"
+  add_foreign_key "consultant_service_fee_reviews", "consultant_service_fee_reviews", column: ["company_id", "employment_id", "previous_review_id"], primary_key: ["company_id", "employment_id", "id"], name: "service_fee_previous_tenant"
+  add_foreign_key "consultant_service_fee_reviews", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_service_fee_reviews", "users", column: "actor_id"
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
@@ -2648,6 +2903,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "payroll_approvals", "payroll_revisions"
   add_foreign_key "payroll_approvals", "users", column: "actor_id"
+  add_foreign_key "payroll_bank_change_notices", "companies"
+  add_foreign_key "payroll_bank_change_notices", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_bank_change_notices", "users", column: "recipient_id"
   add_foreign_key "payroll_expense_reservations", "companies"
   add_foreign_key "payroll_expense_reservations", "employments"
   add_foreign_key "payroll_expense_reservations", "expenses"
@@ -2689,6 +2947,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   add_foreign_key "payroll_payment_instructions", "users", column: "prepared_by_id"
   add_foreign_key "payroll_payment_instructions", "users", column: "rate_entered_by_id"
   add_foreign_key "payroll_payment_instructions", "users", column: "submitted_by_id"
+  add_foreign_key "payroll_pto_allocations", "companies"
+  add_foreign_key "payroll_pto_allocations", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_pto_allocations", "payroll_pto_entries", column: ["company_id", "employment_id", "accrual_entry_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_allocations", "payroll_pto_entries", column: ["company_id", "employment_id", "origin_entry_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_entries", "companies"
+  add_foreign_key "payroll_pto_entries", "consultant_pto_policies", column: ["company_id", "employment_id", "consultant_pto_policy_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_entries", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_pto_entries", "payroll_pto_entries", column: ["company_id", "employment_id", "origin_entry_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_entries", "payroll_pto_entries", column: ["company_id", "employment_id", "previous_entry_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_entries", "users", column: "actor_id"
+  add_foreign_key "payroll_pto_notifications", "companies"
+  add_foreign_key "payroll_pto_notifications", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_pto_notifications", "users", column: "recipient_id"
+  add_foreign_key "payroll_pto_recoveries", "companies"
+  add_foreign_key "payroll_pto_recoveries", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_pto_recoveries", "payroll_pto_entries", column: ["company_id", "employment_id", "payroll_pto_entry_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_recoveries", "payroll_pto_recoveries", column: ["company_id", "employment_id", "previous_recovery_id"], primary_key: ["company_id", "employment_id", "id"]
+  add_foreign_key "payroll_pto_recoveries", "payroll_revisions"
+  add_foreign_key "payroll_pto_recoveries", "payroll_runs"
+  add_foreign_key "payroll_pto_recoveries", "users", column: "actor_id"
   add_foreign_key "payroll_revisions", "payroll_runs"
   add_foreign_key "payroll_revisions", "users", column: "created_by_id"
   add_foreign_key "payroll_runs", "companies"
@@ -2773,6 +3051,255 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   add_foreign_key "wise_accounts", "companies"
   add_foreign_key "wise_accounts", "users"
   execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.protect_payroll_pto_history()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    BEGIN
+      RAISE EXCEPTION 'Payroll PTO history is immutable';
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_payroll_pto_policy()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE first_policy consultant_pto_policies;
+    BEGIN
+      PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+      SELECT * INTO first_policy FROM consultant_pto_policies WHERE employment_id = NEW.employment_id ORDER BY id LIMIT 1;
+      IF first_policy.id IS NOT NULL AND (NEW.opening_on <> first_policy.opening_on OR NEW.opening_minutes <> first_policy.opening_minutes) THEN
+        RAISE EXCEPTION 'Reconciled PTO opening cannot be reset';
+      END IF;
+      IF EXISTS (SELECT 1 FROM payroll_pto_entries WHERE employment_id = NEW.employment_id AND kind = 'accrual' AND period >= NEW.effective_on) THEN
+        RAISE EXCEPTION 'Earned PTO accrual policy cannot be replaced retroactively';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_payroll_pto_entry()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE origin payroll_pto_entries; approved_policy consultant_pto_policies; part jsonb; total numeric := 0; paid numeric := 0; advance numeric := 0;
+      original numeric; allocated numeric; resolved numeric; available numeric; part_minutes numeric; component_count integer;
+    BEGIN
+      PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+      IF NEW.minutes::text IN ('NaN','Infinity','-Infinity') OR NEW.debt_minutes::text IN ('NaN','Infinity','-Infinity') OR
+        NEW.balance_delta_minutes::text IN ('NaN','Infinity','-Infinity') THEN RAISE EXCEPTION 'PTO quantities must be finite'; END IF;
+      IF NEW.kind = 'accrual' THEN
+        SELECT * INTO approved_policy FROM consultant_pto_policies WHERE employment_id = NEW.employment_id AND effective_on <= NEW.period
+          ORDER BY effective_on DESC, id DESC LIMIT 1;
+        IF approved_policy.id IS NULL OR NEW.consultant_pto_policy_id <> approved_policy.id OR NEW.minutes <> approved_policy.monthly_accrual_minutes OR
+          NEW.period + approved_policy.accrual_day - 1 <= approved_policy.opening_on OR NOT EXISTS
+            (SELECT 1 FROM employments e WHERE e.id = NEW.employment_id AND e.joined_at IS NOT NULL
+              AND NEW.period + approved_policy.accrual_day - 1 >= e.joined_at
+              AND (e.resigned_at IS NULL OR NEW.period + approved_policy.accrual_day - 1 <= e.resigned_at)) THEN
+          RAISE EXCEPTION 'PTO accrual must use its latest applicable earned policy';
+        END IF;
+      END IF;
+      IF NEW.previous_entry_id IS NOT NULL AND NOT EXISTS
+        (SELECT 1 FROM payroll_pto_entries p WHERE p.id = NEW.previous_entry_id AND p.case_key = NEW.case_key
+          AND p.employment_id = NEW.employment_id AND p.period <= NEW.period
+          AND p.origin_entry_id IS NOT DISTINCT FROM NEW.origin_entry_id AND p.origin_component IS NOT DISTINCT FROM NEW.origin_component) THEN
+        RAISE EXCEPTION 'PTO decision must extend its own case history';
+      END IF;
+      IF NEW.previous_entry_id IS NOT NULL AND EXISTS (SELECT 1 FROM payroll_pto_entries previous
+        WHERE previous.id = NEW.previous_entry_id AND previous.balance_delta_minutes <> 0 AND previous.period <> NEW.period) THEN
+        RAISE EXCEPTION 'A historical PTO balance decision must retain its original period';
+      END IF;
+      IF NEW.previous_entry_id IS NOT NULL AND
+        (EXISTS (SELECT 1 FROM payroll_pto_allocations WHERE origin_entry_id = NEW.previous_entry_id) OR
+          EXISTS (SELECT 1 FROM payroll_pto_recoveries recovery WHERE recovery.payroll_pto_entry_id = NEW.previous_entry_id
+            AND recovery.kind <> 'released' AND NOT EXISTS
+              (SELECT 1 FROM payroll_pto_recoveries child WHERE child.previous_recovery_id = recovery.id)) OR
+          EXISTS (SELECT 1 FROM payroll_pto_entries e WHERE e.origin_entry_id = NEW.previous_entry_id
+            AND e.kind IN ('review_unpaid','review_waive','review_advance') AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = e.id))) THEN
+        RAISE EXCEPTION 'PTO recovery uses this source; review its remaining obligation first';
+      END IF;
+      IF NEW.previous_entry_id IS NOT NULL AND EXISTS (SELECT 1 FROM payroll_pto_entries previous
+        WHERE previous.id = NEW.previous_entry_id AND NEW.balance_delta_minutes < previous.balance_delta_minutes
+          AND previous.kind IN ('review_unpaid','review_waive') AND EXISTS
+            (SELECT 1 FROM payroll_pto_entries earned WHERE earned.employment_id = NEW.employment_id AND earned.kind = 'accrual'
+              AND earned.period >= previous.period AND earned.id > previous.id)) THEN
+        RAISE EXCEPTION 'Earned PTO accrual prevents reopening this historical balance';
+      END IF;
+      SELECT COALESCE((SELECT balance_delta_minutes FROM payroll_pto_entries WHERE id = NEW.previous_entry_id),0) INTO original;
+      IF NEW.balance_delta_minutes < original AND EXISTS (SELECT 1 FROM payroll_pto_entries later
+        WHERE later.employment_id = NEW.employment_id AND later.period > NEW.period AND later.balance_delta_minutes < 0
+          AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = later.id)) THEN
+        RAISE EXCEPTION 'A later approved PTO decision consumes this balance';
+      END IF;
+      IF NEW.kind IN ('paid','advance','unpaid','defer','waive','correction','allocation') THEN
+        FOR part IN SELECT value FROM jsonb_array_elements(CASE WHEN NEW.kind = 'correction' AND NEW.minutes = 0 AND NEW.previous_entry_id IS NOT NULL AND NEW.allocations = '[]'::jsonb THEN '[]'::jsonb
+          WHEN NEW.allocations = '[]'::jsonb AND NEW.kind <> 'allocation'
+          THEN jsonb_build_array(jsonb_build_object('kind',NEW.kind,'minutes',NEW.minutes::text)) ELSE NEW.allocations END) LOOP
+          SELECT count(*) INTO component_count FROM jsonb_object_keys(part);
+          IF component_count <> 2 OR NOT (part ? 'kind') OR NOT (part ? 'minutes') OR jsonb_typeof(part->'kind') <> 'string' OR
+            part->>'kind' NOT IN ('paid','advance','unpaid','defer','waive','correction') OR
+            jsonb_typeof(part->'minutes') <> 'string' OR (part->>'minutes') !~ '^[0-9]+([.][0-9]+)?$' THEN
+            RAISE EXCEPTION 'Invalid typed PTO allocation';
+          END IF;
+          part_minutes := (part->>'minutes')::numeric;
+          IF part_minutes <= 0 THEN RAISE EXCEPTION 'PTO allocations must be positive'; END IF;
+          total := total + part_minutes;
+          IF part->>'kind' = 'paid' THEN paid := paid + part_minutes; END IF;
+          IF part->>'kind' = 'advance' THEN advance := advance + part_minutes; END IF;
+        END LOOP;
+        IF total <> NEW.minutes OR NEW.balance_delta_minutes <> -paid - advance OR
+          (SELECT count(*) <> count(DISTINCT value->>'kind') FROM jsonb_array_elements(NEW.allocations)) THEN
+          RAISE EXCEPTION 'PTO allocations must match the complete approved quantity';
+        END IF;
+        SELECT p.opening_minutes INTO available FROM consultant_pto_policies p WHERE p.id = NEW.consultant_pto_policy_id;
+        SELECT available + COALESCE(SUM(e.balance_delta_minutes),0) INTO available FROM payroll_pto_entries e
+          WHERE e.employment_id = NEW.employment_id AND e.period < NEW.period + INTERVAL '1 month'
+            AND e.id IS DISTINCT FROM NEW.previous_entry_id
+            AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = e.id AND child.period < NEW.period + INTERVAL '1 month');
+        IF paid > GREATEST(available,0) OR NEW.debt_minutes <> LEAST(advance,GREATEST(advance-GREATEST(available-paid,0),0)) THEN
+          RAISE EXCEPTION 'PTO paid balance or incremental advance is invalid';
+        END IF;
+      END IF;
+      IF NEW.kind = 'opening' AND NOT EXISTS (SELECT 1 FROM consultant_pto_policies p WHERE p.id = NEW.consultant_pto_policy_id
+        AND p.opening_minutes < 0 AND NEW.minutes = -p.opening_minutes AND NEW.debt_minutes = NEW.minutes
+        AND NEW.period = p.opening_on AND NEW.case_key = 'opening:' || to_char(p.opening_on, 'YYYY-MM-DD')) THEN
+        RAISE EXCEPTION 'PTO opening must reference its single reconciled source';
+      END IF;
+      IF NEW.origin_entry_id IS NOT NULL THEN
+        SELECT * INTO origin FROM payroll_pto_entries WHERE id = NEW.origin_entry_id;
+        IF EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = origin.id) THEN
+          RAISE EXCEPTION 'PTO recovery origin is no longer current';
+        END IF;
+        IF NEW.origin_component IN ('opening','advance') THEN
+          original := origin.debt_minutes;
+          SELECT COALESCE(SUM(minutes),0) INTO allocated FROM payroll_pto_allocations WHERE origin_entry_id = origin.id;
+        ELSE
+          SELECT COALESCE(SUM((value->>'minutes')::numeric),0) INTO original FROM jsonb_array_elements(origin.allocations)
+            WHERE value->>'kind' = NEW.origin_component;
+          IF origin.allocations = '[]'::jsonb AND origin.kind = NEW.origin_component THEN original := origin.minutes; END IF;
+          allocated := 0;
+        END IF;
+        SELECT COALESCE(SUM(e.minutes),0) INTO resolved FROM payroll_pto_entries e WHERE e.origin_entry_id = origin.id
+          AND e.origin_component = NEW.origin_component AND e.kind IN ('review_unpaid','review_waive','review_advance')
+          AND e.id IS DISTINCT FROM NEW.previous_entry_id AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = e.id);
+        IF NEW.minutes > original - allocated - resolved OR original <= 0 THEN
+          RAISE EXCEPTION 'PTO obligation exceeds its remaining unrecovered quantity';
+        END IF;
+        IF NEW.kind = 'review_unpaid' THEN
+          IF jsonb_typeof(NEW.rate_basis->'amount') IS DISTINCT FROM 'string' OR jsonb_typeof(NEW.rate_basis->'hours') IS DISTINCT FROM 'string' OR
+            (NEW.rate_basis->>'amount') !~ '^[0-9]+([.][0-9]{1,2})?$' OR (NEW.rate_basis->>'hours') !~ '^[0-9]+([.][0-9]{1,2})?$' OR
+            COALESCE(length(btrim(NEW.rate_basis->>'reference')),0) NOT BETWEEN 1 AND 200 THEN
+            RAISE EXCEPTION 'PTO recovery requires its explicit approved historical rate';
+          END IF;
+          IF (NEW.rate_basis->>'amount')::numeric <= 0 OR (NEW.rate_basis->>'hours')::numeric <= 0 OR
+            NEW.cash_amount_minor <> ROUND((NEW.rate_basis->>'amount')::numeric * NEW.minutes / ((NEW.rate_basis->>'hours')::numeric * 60) * 100,0) THEN
+            RAISE EXCEPTION 'PTO recovery amount must match its approved exact historical basis';
+          END IF;
+          IF origin.rate_basis ? 'origin_amount' AND
+            ((NEW.rate_basis->>'amount')::numeric <> (origin.rate_basis->>'origin_amount')::numeric OR
+              (NEW.rate_basis->>'hours')::numeric <> (origin.rate_basis->>'origin_hours')::numeric) THEN
+            RAISE EXCEPTION 'PTO recovery must use its immutable origin basis';
+          END IF;
+        END IF;
+        IF NEW.kind = 'review_advance' THEN
+          SELECT p.opening_minutes INTO available FROM consultant_pto_policies p WHERE p.id = NEW.consultant_pto_policy_id;
+          SELECT available + COALESCE(SUM(e.balance_delta_minutes),0) INTO available FROM payroll_pto_entries e
+            WHERE e.employment_id = NEW.employment_id AND e.period < NEW.period + INTERVAL '1 month'
+              AND e.id IS DISTINCT FROM NEW.previous_entry_id
+              AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = e.id AND child.period < NEW.period + INTERVAL '1 month');
+          IF NEW.debt_minutes <> LEAST(NEW.minutes,GREATEST(NEW.minutes-GREATEST(available,0),0)) THEN
+            RAISE EXCEPTION 'Historical PTO advance must record only incremental borrowing';
+          END IF;
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_payroll_pto_recovery()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE previous payroll_pto_recoveries;
+    BEGIN
+      PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+      IF NOT EXISTS (SELECT 1 FROM payroll_runs r JOIN payroll_revisions v ON v.payroll_run_id = r.id
+        WHERE r.id = NEW.payroll_run_id AND r.company_id = NEW.company_id AND v.id = NEW.payroll_revision_id) THEN
+        RAISE EXCEPTION 'PTO recovery run and revision must belong to its workspace';
+      END IF;
+      IF NOT EXISTS (SELECT 1 FROM payroll_pto_entries e WHERE e.id = NEW.payroll_pto_entry_id AND (e.kind IN ('unpaid','review_unpaid')
+        OR (e.kind = 'allocation' AND EXISTS (SELECT 1 FROM jsonb_array_elements(e.allocations) p WHERE p->>'kind' = 'unpaid')))) THEN
+        RAISE EXCEPTION 'PTO recovery requires an approved unpaid decision';
+      END IF;
+      IF NEW.previous_recovery_id IS NULL THEN
+        IF NEW.kind <> 'reserved' THEN RAISE EXCEPTION 'Invalid PTO recovery transition'; END IF;
+      ELSE
+        SELECT * INTO previous FROM payroll_pto_recoveries WHERE id = NEW.previous_recovery_id;
+        IF previous.payroll_pto_entry_id <> NEW.payroll_pto_entry_id OR previous.amount_minor <> NEW.amount_minor OR NOT
+          ((previous.kind = 'reserved' AND NEW.kind IN ('released','settled') AND previous.payroll_run_id = NEW.payroll_run_id AND previous.payroll_revision_id = NEW.payroll_revision_id)
+            OR (previous.kind = 'released' AND NEW.kind = 'reserved')
+            OR (previous.kind = 'settled' AND NEW.kind = 'returned_review' AND previous.payroll_run_id = NEW.payroll_run_id)
+            OR (previous.kind = 'returned_review' AND NEW.kind = 'settled' AND previous.payroll_run_id = NEW.payroll_run_id
+              AND previous.payroll_revision_id = NEW.payroll_revision_id AND NEW.actor_id IS NOT NULL AND length(btrim(NEW.reason)) > 0
+              AND EXISTS (SELECT 1 FROM payroll_runs r WHERE r.id = NEW.payroll_run_id AND r.final_reviewer_id = NEW.actor_id))) THEN
+          RAISE EXCEPTION 'Invalid PTO recovery transition';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_payroll_pto_allocation()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE available numeric; debt numeric; allocated numeric; resolved numeric;
+    BEGIN
+      PERFORM id FROM employments WHERE id = NEW.employment_id FOR UPDATE;
+      IF NEW.minutes::text IN ('NaN','Infinity','-Infinity') THEN RAISE EXCEPTION 'PTO quantities must be finite'; END IF;
+      SELECT minutes INTO available FROM payroll_pto_entries WHERE id = NEW.accrual_entry_id AND kind = 'accrual';
+      SELECT debt_minutes INTO debt FROM payroll_pto_entries WHERE id = NEW.origin_entry_id AND debt_minutes > 0;
+      IF EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = NEW.origin_entry_id) THEN
+        RAISE EXCEPTION 'PTO accrual recovery origin is no longer current';
+      END IF;
+      SELECT COALESCE(SUM(minutes), 0) INTO allocated FROM payroll_pto_allocations WHERE accrual_entry_id = NEW.accrual_entry_id;
+      IF available IS NULL OR debt IS NULL OR allocated + NEW.minutes > available THEN
+        RAISE EXCEPTION 'PTO accrual allocation exceeds its approved source';
+      END IF;
+      SELECT COALESCE(SUM(minutes), 0) INTO allocated FROM payroll_pto_allocations WHERE origin_entry_id = NEW.origin_entry_id;
+      SELECT COALESCE(SUM(e.minutes), 0) INTO resolved FROM payroll_pto_entries e
+        WHERE e.origin_entry_id = NEW.origin_entry_id AND e.kind IN ('review_unpaid','review_waive','review_advance')
+          AND e.origin_component IN ('opening','advance')
+          AND NOT EXISTS (SELECT 1 FROM payroll_pto_entries child WHERE child.previous_entry_id = e.id);
+      IF allocated + resolved + NEW.minutes > debt THEN RAISE EXCEPTION 'PTO obligation was already recovered'; END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_pto_policies_immutable BEFORE DELETE OR UPDATE ON public.consultant_pto_policies FOR EACH ROW EXECUTE FUNCTION protect_payroll_pto_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_allocation_valid BEFORE INSERT ON public.payroll_pto_allocations FOR EACH ROW EXECUTE FUNCTION validate_payroll_pto_allocation();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_allocations_immutable BEFORE DELETE OR UPDATE ON public.payroll_pto_allocations FOR EACH ROW EXECUTE FUNCTION protect_payroll_pto_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_entries_immutable BEFORE DELETE OR UPDATE ON public.payroll_pto_entries FOR EACH ROW EXECUTE FUNCTION protect_payroll_pto_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_entry_valid BEFORE INSERT ON public.payroll_pto_entries FOR EACH ROW EXECUTE FUNCTION validate_payroll_pto_entry();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_policy_valid BEFORE INSERT ON public.consultant_pto_policies FOR EACH ROW EXECUTE FUNCTION validate_payroll_pto_policy();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_recoveries_immutable BEFORE DELETE OR UPDATE ON public.payroll_pto_recoveries FOR EACH ROW EXECUTE FUNCTION protect_payroll_pto_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER payroll_pto_recovery_valid BEFORE INSERT ON public.payroll_pto_recoveries FOR EACH ROW EXECUTE FUNCTION validate_payroll_pto_recovery();
+  SQL
+  execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_review_history() RETURNS trigger LANGUAGE plpgsql AS $$
     BEGIN
       RAISE EXCEPTION 'Payroll review history is immutable';
@@ -2802,6 +3329,169 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_120000) do
   execute <<~SQL
     CREATE TRIGGER payroll_india_credits_immutable BEFORE UPDATE OR DELETE ON payroll_india_credits
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_service_fee_reviews_immutable BEFORE UPDATE OR DELETE ON consultant_service_fee_reviews
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_invoice_authorizations_immutable BEFORE UPDATE OR DELETE ON consultant_invoice_authorizations
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_submissions_immutable BEFORE UPDATE OR DELETE ON consultant_billing_submissions
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_reviews_immutable BEFORE UPDATE OR DELETE ON consultant_billing_reviews
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_service_fee_review()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE previous public.consultant_service_fee_reviews;
+    BEGIN
+      PERFORM id FROM public.payroll_runs WHERE company_id=NEW.company_id AND period>=NEW.period ORDER BY id FOR UPDATE;
+      PERFORM id FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF NEW.previous_review_id IS NOT NULL THEN
+        SELECT * INTO previous FROM public.consultant_service_fee_reviews WHERE id=NEW.previous_review_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR previous.period<>NEW.period OR
+           EXISTS(SELECT 1 FROM public.consultant_service_fee_reviews WHERE previous_review_id=previous.id) THEN
+          RAISE EXCEPTION 'Service fee predecessor changed';
+        END IF;
+      END IF;
+      IF EXISTS(SELECT 1 FROM public.payroll_india_handoffs h JOIN public.payroll_runs r ON r.id=h.payroll_run_id
+        WHERE r.company_id=NEW.company_id AND r.period>=NEW.period AND h.employment_id=NEW.employment_id AND h.released_at IS NULL) OR
+        EXISTS(SELECT 1 FROM public.payroll_payment_instructions i JOIN public.payroll_payment_groups g ON g.id=i.payroll_payment_group_id
+          JOIN public.payroll_runs r ON r.id=g.payroll_run_id WHERE r.company_id=NEW.company_id AND r.period>=NEW.period AND g.employment_id=NEW.employment_id
+          AND i.released_at IS NULL AND i.submission_state <> 'prepared') THEN
+        RAISE EXCEPTION 'Service fee has protected bank activity';
+      END IF;
+      IF EXISTS(SELECT 1 FROM public.payroll_pto_entries e WHERE e.company_id=NEW.company_id AND e.employment_id=NEW.employment_id
+        AND e.period=NEW.period AND e.case_key='month:'||to_char(NEW.period,'YYYY-MM-DD') AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_entries child WHERE child.previous_entry_id=e.id)
+        AND (EXISTS(SELECT 1 FROM public.payroll_pto_allocations a WHERE a.origin_entry_id=e.id) OR
+          EXISTS(SELECT 1 FROM public.payroll_pto_entries r WHERE r.origin_entry_id=e.id AND r.kind IN ('review_unpaid','review_waive','review_advance')
+            AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_entries child WHERE child.previous_entry_id=r.id)) OR
+          EXISTS(SELECT 1 FROM public.payroll_pto_recoveries r WHERE r.payroll_pto_entry_id=e.id AND r.kind<>'released'
+            AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_recoveries child WHERE child.previous_recovery_id=r.id)))) THEN
+        RAISE EXCEPTION 'Service fee has protected PTO history';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_service_fee_review_valid BEFORE INSERT ON consultant_service_fee_reviews
+    FOR EACH ROW EXECUTE FUNCTION validate_consultant_service_fee_review();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_invoice_authorization()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; previous public.consultant_invoice_authorizations;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR subject.user_id<>NEW.actor_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) THEN
+        RAISE EXCEPTION 'Invoice authorization requires its own kept consultant';
+      END IF;
+      IF NEW.previous_event_id IS NULL THEN
+        IF NEW.action<>'grant' OR EXISTS(SELECT 1 FROM public.consultant_invoice_authorizations WHERE employment_id=NEW.employment_id) THEN
+          RAISE EXCEPTION 'Invoice authorization predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_invoice_authorizations WHERE id=NEW.previous_event_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR
+          previous.actor_id<>NEW.actor_id OR NEW.id<=previous.id OR
+          EXISTS(SELECT 1 FROM public.consultant_invoice_authorizations WHERE previous_event_id=previous.id) THEN
+          RAISE EXCEPTION 'Invoice authorization predecessor changed';
+        END IF;
+        IF NEW.action='withdraw' AND (previous.action<>'grant' OR
+          (NEW.statement_version,NEW.statement_text,NEW.statement_digest) IS DISTINCT FROM
+          (previous.statement_version,previous.statement_text,previous.statement_digest)) THEN
+          RAISE EXCEPTION 'Withdrawal must retain the granted statement';
+        END IF;
+        IF NEW.action='grant' AND previous.action='grant' AND
+          (NEW.statement_version,NEW.statement_text,NEW.statement_digest) IS NOT DISTINCT FROM
+          (previous.statement_version,previous.statement_text,previous.statement_digest) THEN
+          RAISE EXCEPTION 'Invoice authorization is already granted';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_invoice_authorization_valid BEFORE INSERT ON consultant_invoice_authorizations
+    FOR EACH ROW EXECUTE FUNCTION validate_consultant_invoice_authorization();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_billing_submission()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; previous public.consultant_billing_submissions;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR subject.user_id<>NEW.actor_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) OR
+        NOT EXISTS(SELECT 1 FROM public.consultant_compensations WHERE employment_id=subject.id) THEN
+        RAISE EXCEPTION 'Billing identity requires its own kept consultant';
+      END IF;
+      IF NEW.previous_submission_id IS NULL THEN
+        IF EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE employment_id=subject.id) THEN
+          RAISE EXCEPTION 'Billing submission predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_billing_submissions WHERE id=NEW.previous_submission_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR previous.actor_id<>NEW.actor_id OR
+          NEW.id<=previous.id OR EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE previous_submission_id=previous.id) THEN
+          RAISE EXCEPTION 'Billing submission predecessor changed';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_submission_valid BEFORE INSERT ON consultant_billing_submissions
+    FOR EACH ROW EXECUTE FUNCTION public.validate_consultant_billing_submission();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_billing_review()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; submission public.consultant_billing_submissions; previous public.consultant_billing_reviews;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      SELECT * INTO submission FROM public.consultant_billing_submissions WHERE id=NEW.submission_id AND company_id=NEW.company_id AND employment_id=NEW.employment_id;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR submission.id IS NULL OR subject.user_id=NEW.actor_id OR submission.actor_id<>subject.user_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=subject.user_id AND discarded_at IS NULL) OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) OR
+        NOT EXISTS(SELECT 1 FROM public.employments WHERE company_id=NEW.company_id AND user_id=NEW.actor_id AND discarded_at IS NULL) OR
+        NOT EXISTS(SELECT 1 FROM public.roles r JOIN public.users_roles ur ON ur.role_id=r.id WHERE ur.user_id=NEW.actor_id AND r.resource_type='Company' AND r.resource_id=NEW.company_id AND
+          (r.name IN ('owner','admin') OR r.name='book_keeper' AND EXISTS(SELECT 1 FROM public.payroll_runs WHERE company_id=NEW.company_id AND accounts_reviewer_id=NEW.actor_id))) OR
+        EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE previous_submission_id=submission.id) THEN
+        RAISE EXCEPTION 'Billing review requires its current tenant and nonself reviewer';
+      END IF;
+      IF NEW.previous_review_id IS NULL THEN
+        IF EXISTS(SELECT 1 FROM public.consultant_billing_reviews WHERE submission_id=submission.id) THEN
+          RAISE EXCEPTION 'Billing review predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_billing_reviews WHERE id=NEW.previous_review_id;
+        IF previous.id IS NULL OR previous.submission_id<>submission.id OR NEW.id<=previous.id OR
+          EXISTS(SELECT 1 FROM public.consultant_billing_reviews WHERE previous_review_id=previous.id) THEN
+          RAISE EXCEPTION 'Billing review predecessor changed';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_review_valid BEFORE INSERT ON consultant_billing_reviews
+    FOR EACH ROW EXECUTE FUNCTION public.validate_consultant_billing_review();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$

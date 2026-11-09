@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Returned Mercury payroll transfers", type: :system, js: true do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let(:service) { Payroll::MercuryReconciliation.new(run) }
   let(:console_errors) { [] }

@@ -57,7 +57,7 @@ RSpec.describe "Employee records", type: :request do
       emergency_contact_name: "Synthetic contact", salary_amount: "123.45", salary_currency: "INR",
       salary_frequency: "monthly", salary_effective_on: "2026-10-01",
       family_members: [{ name: "Synthetic family", date_of_birth: "2000-01-01", gender: "other", relationship: "sibling" }] }
-    update_record(details)
+    update_record(details, bank_account_number_confirmation: details.fetch(:bank_account_number))
     expect(response).to have_http_status(:ok)
     record = EmployeeRecord.find_by!(employment:)
     expect(record.reload.private_details).to include(details.deep_stringify_keys)
@@ -67,6 +67,77 @@ RSpec.describe "Employee records", type: :request do
     update_record({ bank_account_number: nil })
     expect(response).to have_http_status(:ok)
     expect(record.reload.private_details).to include("bank_account_number" => nil, "salary_amount" => "123.45")
+  end
+
+  context "bank account confirmation" do
+    it "requires independent confirmation for an initial account entry" do
+      expect do
+        update_record({ bank_account_number: "000123456789" })
+        expect(response).to have_http_status(422)
+      end.not_to change(EmployeeRecord, :count)
+      expect(response.parsed_body.fetch("errors")).to include("Confirm bank account number")
+      expect(response.body).not_to include("000123456789")
+    end
+
+    it "rejects mismatched and malformed confirmation without changing encrypted data or audit history" do
+      record = EmployeeRecord.create!(employment:, private_details: { bank_account_number: "000111222333", bank_name: "Original bank" })
+      ciphertext = EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE id = #{record.id}")
+      audits = record.audits.count
+      ["000123456788", 123456789, ["000123456789"], { value: "000123456789" }].each do |confirmation|
+        update_record({ bank_account_number: "000123456789", bank_name: "Changed bank" }, bank_account_number_confirmation: confirmation)
+        expect(response).to have_http_status(422)
+        expect(response.body).not_to include("000123456789", "000123456788")
+        expect(EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE id = #{record.id}")).to eq(ciphertext)
+        expect(record.audits.count).to eq(audits)
+      end
+    end
+
+    it "preserves exact leading zeros without persisting or returning confirmation" do
+      update_record({ bank_account_number: "000123456789" }, bank_account_number_confirmation: "000123456789")
+      expect(response).to have_http_status(:ok)
+      expect(EmployeeRecord.find_by!(employment:).private_details).to eq("bank_account_number" => "000123456789")
+      expect(response.parsed_body.dig("employee_record", "private_details", "bank_account_number")).to eq("000123456789")
+      expect(response.body).not_to include("bank_account_number_confirmation")
+      filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+      expect(filter.filter("employee_record" => { "bank_account_number_confirmation" => "000123456789" }))
+        .to eq("employee_record" => "[FILTERED]")
+    end
+
+    it "retains account format validation when both entries match" do
+      update_record({ bank_account_number: "123bad" }, bank_account_number_confirmation: "123bad")
+      expect(response).to have_http_status(422)
+      expect(response.parsed_body.fetch("errors")).to include("bank_account_number")
+      expect(response.body).not_to include("123bad")
+      expect(EmployeeRecord.count).to eq(0)
+    end
+
+    it "keeps unchanged, contact-only and clearing edits compatible" do
+      record = EmployeeRecord.create!(employment:, private_details: { bank_account_number: "000111222333" })
+      update_record({ bank_account_number: "000111222333", emergency_contact_name: "Updated contact" })
+      expect(response).to have_http_status(:ok)
+      update_record({ emergency_contact_phone: "+91 1234567890" })
+      expect(response).to have_http_status(:ok)
+      update_record({ bank_account_number: nil })
+      expect(response).to have_http_status(:ok)
+      expect(record.reload.private_details.fetch("bank_account_number")).to be_nil
+      update_record({ bank_account_number: "000111222333" }, bank_account_number_confirmation: "000111222333")
+      expect(response).to have_http_status(:ok)
+      update_record({ bank_account_number: "" })
+      expect(response).to have_http_status(:ok)
+      expect(record.reload.private_details.fetch("bank_account_number")).to eq("")
+    end
+
+    it "enforces the same boundary for a self-service token client" do
+      sign_out admin
+      headers = { "X-Auth-Email" => employee.email, "X-Auth-Token" => employee.token }
+      attributes = { company_id: company.id, user_id: employee.id, private_details: { bank_account_number: "000123456789" } }
+      patch "/api/v1/employee_records", params: { employee_record: attributes }, headers:, as: :json
+      expect(response).to have_http_status(422)
+      expect(EmployeeRecord.count).to eq(0)
+      patch "/api/v1/employee_records", params: { employee_record: attributes.merge(bank_account_number_confirmation: "000123456789") }, headers:, as: :json
+      expect(response).to have_http_status(:ok)
+      expect(EmployeeRecord.find_by!(employment:).private_details.fetch("bank_account_number")).to eq("000123456789")
+    end
   end
 
   it "allows active Admin prehire preparation without allowing a future employee to access records early" do

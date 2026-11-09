@@ -2,7 +2,7 @@
 
 module PayrollSources
   class MonthlyFacts
-    VERSION = "miru-monthly-facts-v1"
+    VERSION = "miru-monthly-facts-v2"
     REVIEW_ROLES = %w[owner admin book_keeper].freeze
 
     def initialize(company:, employment:, actor:, month:, policy_versions: {})
@@ -97,6 +97,7 @@ module PayrollSources
           "attendance_policy_version" => @attendance_policy_version,
           "work_entries" => work,
           "timeoff_entries" => timeoff,
+          "pto" => Payroll::PtoFacts.new(@employment, month: @month).call,
           "review_exceptions" => @exceptions
         }
       end

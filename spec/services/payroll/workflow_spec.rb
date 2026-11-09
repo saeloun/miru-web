@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Payroll::Workflow do
+  include_context "explicit synthetic PTO policy"
+
   let(:company) { create(:company, base_currency: "INR") }
   let(:accounts) { create(:user) }
   let(:owner) { create(:user) }
@@ -43,6 +45,7 @@ RSpec.describe Payroll::Workflow do
     create(:employment, company:, user: owner, resigned_at: nil)
     accounts.add_role(:book_keeper, company)
     owner.add_role(:owner, company)
+    configure_synthetic_pto_policy
     payload["lines"][0].values_at("extras", "reimbursements", "deductions").flatten.each do |entry|
       entry.merge!("origin_period" => "2026-11-01", "source_reference" => "synthetic.adjustment", "reason_code" => "reviewed")
     end
@@ -188,9 +191,18 @@ RSpec.describe Payroll::Workflow do
   end
 
   it "supports consultant snapshots without interpreting pay or tax rules" do
+    ConsultantCompensation.create!(employment:, created_by: owner, effective_on: "2026-11-01", monthly_fee: 100,
+      hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: "Synthetic entity", change_reason: "Synthetic terms")
+    binding = review_synthetic_billing_identity(employment:, reviewer: owner)
     payload["lines"][0]["pay_type"] = "consultant"
+    payload["lines"][0]["preparation"] = { "cutoff" => "2026-11-30", "confirmed_unpaid_hours" => "0", "unpaid_reason" => nil,
+      "terms_id" => employment.consultant_compensations.last.id.to_s, "billing_identity" => binding }
+    source = PayrollSources::MonthlyFacts.new(company:, employment:, actor: accounts, month: "2026-11",
+      policy_versions: { pay: "synthetic.pay.v1", attendance: "synthetic.proration.v1" }).call
+    payload["lines"][0]["source_snapshot"] = source.deep_dup
+    payload["lines"][0]["source_resolutions"].each { |resolution| resolution["source_digest"] = source["digest"] }
     snapshot = payload["lines"][0]["calculation_snapshot"]
-    input = snapshot["input"].merge("engagement_type" => "consultant")
+    input = snapshot["input"].merge("engagement_type" => "consultant", "quantity_source" => source["digest"])
     payload["lines"][0]["calculation_snapshot"] = PayrollCalculation::Calculator.new(policy: snapshot["policy"], input:).call.deep_dup
     expect(revise.payroll_payload["lines"][0]["pay_type"]).to eq("consultant")
   end

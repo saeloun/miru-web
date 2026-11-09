@@ -287,11 +287,13 @@ RSpec.describe "Invoice listing", type: :system, js: true do
 
         expect(page).to have_css("#react-root", wait: 10)
         expect(page).to have_content("Loaded 100 of 105", wait: 10)
+        expect(page).to have_css("[data-testid^='invoice-row-']", count: 100, wait: 10)
 
-        page.execute_script("window.scrollTo(0, document.body.scrollHeight)")
+        page.scroll_to(find("span", text: "Loaded 100 of 105", exact_text: true), align: :center)
 
         expect(page).to have_content("Loaded 105 of 105", wait: 10)
         expect(page).to have_content("All invoices loaded", wait: 10)
+        expect(page).to have_css("[data-testid^='invoice-row-']", count: 105, wait: 10)
       end
     end
   end

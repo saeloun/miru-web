@@ -15,6 +15,12 @@ RSpec.describe "Confidential India payroll mail" do
         "bank_account_number" => "123456789012", "bank_ifsc" => "SYNT0000001" } }
   end
 
+  let(:pto) do
+    { "policy_id" => 7, "paid_hours" => "10.0 <script>PTO_PRIVATE_SENTINEL</script>",
+      "opening_hours" => "40.0", "accrued_hours" => "16.0", "advance_hours" => "4.0",
+      "deferred_hours" => "6.0", "closing_hours" => "30.0" }
+  end
+
   before do
     handoff = double("handoff", id: 11, report:)
     attempt = double("attempt", id: 21, attempt_number: 1, payroll_india_handoff: handoff)
@@ -33,7 +39,35 @@ RSpec.describe "Confidential India payroll mail" do
     File.write(ENV["INDIA_MAIL_PREVIEW_PATH"], mail.html_part.body.decoded) if ENV["INDIA_MAIL_PREVIEW_PATH"]
   end
 
+  it "renders all six frozen PTO fields and escapes hostile PTO text in HTML" do
+    report["pto"] = pto
+    mail = PayrollIndiaMailer.report(21).message
+    fields = { "Approved paid leave" => pto.fetch("paid_hours"), "Opening PTO hours" => "40.0",
+               "Accrued PTO hours" => "16.0", "Advance PTO hours" => "4.0", "Deferred hours" => "6.0", "Closing PTO hours" => "30.0" }
+    fields.each { |name, value| expect(mail.text_part.body.decoded).to include("#{name}: #{value}") }
+    html = mail.html_part.body.decoded
+    rows = Nokogiri::HTML(html).css("table").first.css("tr").to_h { |row| [row.at_css("th").text, row.at_css("td").text] }
+    expect(rows).to include(fields)
+    expect(html).to include("&lt;script&gt;PTO_PRIVATE_SENTINEL&lt;/script&gt;")
+    expect(html).not_to include("<script>", "Not classified in source records")
+  end
+
+  it "separates the frozen period basis from contractual pay and escapes its reason" do
+    report["monthly_fee"] = "100000"
+    report["period_base_fee"] = "50000"
+    report["service_fee_review"] = { "reason" => "Agreed <period basis>",
+      "context" => { "service_from" => "2026-11-01", "service_to" => "2026-11-13" } }
+    report["line"]["amounts"] = { "net_minor" => 4_500_000, "reimbursements_minor" => 0 }
+    mail = PayrollIndiaMailer.report(21).message
+    expect(mail.text_part.body.decoded).to include("Monthly consultancy fee: INR 100,000.00",
+      "Reviewed service-period base before unpaid time: INR 50,000.00", "Service-period dates: 2026-11-01 to 2026-11-13",
+      "Service-period fee reason: Agreed <period basis>", "Total INR payable: INR 45,000.00")
+    expect(mail.html_part.body.decoded).to include("Agreed &lt;period basis&gt;")
+    expect(mail.html_part.body.decoded).not_to include("Agreed <period basis>")
+  end
+
   it "keeps private content and transport exception text out of mail notifications and logs" do
+    report["pto"] = pto
     notifications = []
     output = StringIO.new
     subscriber = ActiveSupport::Notifications.subscribe(/action_mailer/) { |event| notifications << event.payload }
@@ -44,7 +78,8 @@ RSpec.describe "Confidential India payroll mail" do
     delivery.message.perform_deliveries = true
     allow(delivery.message.delivery_method).to receive(:deliver!).and_raise(StandardError, "PRIVATE accounts@example.test 123456789012")
     expect { delivery.deliver_now }.to raise_error(StandardError)
-    expect(notifications.to_json + output.string).not_to include("accounts@example.test", "123456789012", "Synthetic Holder", "PRIVATE")
+    expect(notifications).not_to be_empty
+    expect(notifications.to_json + output.string).not_to include("accounts@example.test", "123456789012", "Synthetic Holder", "PRIVATE", "PTO_PRIVATE_SENTINEL")
   ensure
     ActiveSupport::Notifications.unsubscribe(subscriber) if subscriber
     ActionMailer::Base.logger = original_logger
@@ -53,7 +88,8 @@ RSpec.describe "Confidential India payroll mail" do
   it "filters the entire private action payload and delivery evidence from request logs" do
     filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
     filtered = filter.filter("india_handoff" => { "reference" => "PRIVATE transfer", "amount" => "62500" },
-      "accounts_email" => "accounts@example.test", "evidence_reference" => "PRIVATE reconciliation")
+      "accounts_email" => "accounts@example.test", "evidence_reference" => "PRIVATE reconciliation",
+      "service_fee_review" => { "amount" => "50000", "reason" => "PRIVATE fee agreement" })
     expect(filtered.values).to all(eq("[FILTERED]"))
   end
 end

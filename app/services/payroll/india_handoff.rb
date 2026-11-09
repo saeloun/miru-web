@@ -7,6 +7,11 @@ module Payroll
     def self.line_digest(line)
       normalized = line.deep_dup
       normalized["source_snapshot"]&.delete("captured_at")
+      preparation = normalized["preparation"]
+      if preparation.is_a?(Hash) && preparation.key?("billing_identity")
+        preparation.delete("billing_identity")
+        normalized.delete("preparation") if preparation.empty?
+      end
       Digest::SHA256.hexdigest(JSON.generate(canonical(normalized)))
     end
 
@@ -29,7 +34,7 @@ module Payroll
       employment = Employment.where(company_id: @run.company_id).find(employment_id)
       head = @run.current_revision
       line = head&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id }
-      codes, terms = readiness(employment, line)
+      codes, terms = readiness(employment, line, head)
       { report: codes.empty? ? IndiaReport.new(@run, employment:, line:, terms:).call : nil, blockers: codes }
     end
 
@@ -40,17 +45,21 @@ module Payroll
         conflict!("Revision changed; reload before sending") unless @run.current_revision&.digest == expected_digest
         blocked!("bank_confirmation_required") unless bank_confirmed == true
         blocked!("accounts_email_invalid") unless valid_mailbox?(accounts_email)
-        report = queue_report!(employment_id, accounts_email, expected_bank_digest)
-        existing = handoffs.active.find_by(employment_id:)
-        if existing
-          conflict!("An active handoff already exists with a different report") unless existing.report == report
-          return existing
+        employment = Employment.where(company_id: @run.company_id).find(record_id(employment_id, "employment_id_invalid"))
+        employment.with_lock do
+          existing = handoffs.active.find_by(employment_id:)
+          if existing && existing.payroll_revision.digest == expected_digest && existing.bank_digest == expected_bank_digest &&
+              existing.report["accounts_email"] == accounts_email.strip
+            return existing
+          end
+          report = queue_report!(employment_id, accounts_email, expected_bank_digest)
+          conflict!("An active handoff already exists with a different report") if existing
+          handoffs.create!(company_id: @run.company_id, payroll_revision: @run.current_revision,
+            employment_id:, created_by: actor, consultant_compensation_id: report["terms_id"], report:,
+            line_digest: report["line_digest"], bank_digest: report["bank_digest"], entitlement_minor: report["entitlement_minor"]).tap do |handoff|
+            handoff.payroll_india_deliveries.create!(attempt_number: 1)
+          end
         end
-        handoff = handoffs.create!(company_id: @run.company_id, payroll_revision: @run.current_revision,
-          employment_id:, created_by: actor, consultant_compensation_id: report["terms_id"], report:,
-          line_digest: report["line_digest"], bank_digest: report["bank_digest"], entitlement_minor: report["entitlement_minor"])
-        handoff.payroll_india_deliveries.create!(attempt_number: 1)
-        handoff
       end
     rescue ActiveRecord::RecordNotUnique
       conflict!("An active handoff already exists")
@@ -153,21 +162,36 @@ module Payroll
         raise Workflow::NotAuthorized, "An active #{stage == 'final' ? 'owner' : 'assigned accounts reviewer'} in this workspace is required" unless authorized?(actor, stage)
       end
 
-      def readiness(employment, line)
+      def readiness(employment, line, head)
         codes = line_blockers(line)
         config = ActiveRecord::Encryption.config
         codes << "payroll_reference_key_missing" unless config.has_deterministic_key? && config.deterministic_key.is_a?(String)
         codes << "run_not_approved" unless Workflow.new(@run).status == "approved"
+        codes.concat(Snapshot.new(@run, head.payroll_payload, actor_id: head.created_by_id).outbound_line_issues(line)) if head
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
-        terms = sources.terms(employment.id)
-        codes << "terms_missing" unless terms
-        codes << "funding_not_india" if terms && terms.payment_source != "india"
-        codes << "terms_changed_during_month" if sources.terms_changed?(employment.id)
+        terms, term_codes = service_terms(employment, line, sources)
+        codes.concat(term_codes)
         codes << "consultant_inactive" if employment.discarded? || !User.kept.exists?(id: employment.user_id)
+        codes << "billing_identity_review_required" unless BillingIdentity.new(employment).valid_binding?(line&.dig("preparation", "billing_identity"))
         codes << "bank_profile_incomplete" unless IndiaReport.bank_complete?(IndiaReport.bank_details(employment))
         codes << "mercury_activity_exists" if PayrollPaymentInstruction.where(payroll_run_id: @run.id, employment_id: employment.id).exists?
         codes << "split_not_supported" if PayrollSplitArrangement.current_for(employment)
         [codes, terms]
+      end
+
+      def service_terms(employment, line, sources)
+        codes = []
+        period = ServicePeriod.new(employment, month: @run.period, sources:)
+        binding = line&.dig("preparation", "service_fee_review")
+        terms = binding ? period.terms : sources.terms(employment.id)
+        codes << "terms_missing" unless terms
+        codes << "funding_not_india" if terms && terms.payment_source != "india"
+        if period.required? || binding
+          codes << "service_fee_review_changed" unless period.valid_binding?(binding)
+        elsif sources.terms_changed?(employment.id)
+          codes << "terms_changed_during_month"
+        end
+        [terms, codes]
       end
 
       def line_blockers(line)
@@ -247,6 +271,7 @@ module Payroll
           next if reservation.settled_at
           settle_reservation!(handoff, reservation, entry)
         end
+        PtoRecovery.settle!(@run, handoff.employment_id)
         handoff.update!(fully_credited_at: Time.current)
       end
 

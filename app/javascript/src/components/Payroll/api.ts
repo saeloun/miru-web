@@ -1,4 +1,5 @@
 import http from "apis/api";
+import type { PtoFacts } from "./PtoPanel";
 
 export interface Approval {
   stage: string;
@@ -47,8 +48,17 @@ export interface ReviewLine {
     review_exceptions: { code: string }[];
     company_calendar: Facts;
     employment: Facts;
+    pto?: PtoFacts;
   } | null;
   source_resolutions: { code: string; decision: string; reason_code: string }[];
+  preparation?: {
+    service_fee_review?: {
+      id: string;
+      amount_minor: string;
+      reason: string;
+      context: ServicePeriodFee["context"];
+    };
+  };
   calculation: {
     input: Facts;
     policy: Facts;
@@ -122,7 +132,32 @@ export interface PreparationClaim {
   receipt_count: number;
 }
 
+export interface ServicePeriodFee {
+  period: string;
+  required: boolean;
+  digest: string;
+  blockers: string[];
+  context: {
+    service_from: string;
+    service_to: string;
+    scheduled_minutes: string;
+    payment_source: string | null;
+    legal_entity_name: string | null;
+    terms: { id: number; effective_on: string; monthly_fee: string }[];
+  };
+  current_review: {
+    id: string;
+    amount: string;
+    reason: string;
+    source_digest: string;
+    current: boolean;
+    previous_review_id: string | null;
+  } | null;
+  recorded_review?: ServicePeriodFee["current_review"];
+}
+
 export interface PreparationConsultant {
+  user_id?: number;
   employment_id: number;
   consultant_name: string;
   monthly_fee: string | null;
@@ -137,6 +172,8 @@ export interface PreparationConsultant {
   not_ready_reasons: string[];
   ready: boolean;
   locked: boolean;
+  retained?: boolean;
+  pto?: PtoFacts;
   current: {
     included: boolean;
     confirmed_unpaid_hours?: string | null;
@@ -277,6 +314,7 @@ export interface MercuryPayments {
 }
 
 export interface IndiaReport {
+  pto?: PtoFacts;
   bank_version: string;
   consultant_name: string;
   period: string;
@@ -378,6 +416,26 @@ export const payrollApi = {
       companyId,
       signal
     ),
+  serviceFee: (
+    employmentId: number,
+    companyId: string,
+    period: string,
+    signal: RequestSignal
+  ) =>
+    http.get(`/payroll_service_fees/${employmentId}`, {
+      params: { company_id: companyId, period },
+      headers: { "Cache-Control": "no-store" },
+      signal,
+      skipErrorToast: true,
+    }),
+  reviewServiceFee: (
+    employmentId: number,
+    companyId: string,
+    attributes: Record<string, string>
+  ) =>
+    post(`/payroll_service_fees/${employmentId}`, companyId, {
+      service_fee_review: attributes,
+    }),
   revise: (id: string, companyId: string, payload: Payload) =>
     post(
       `/payroll_runs/${encodeURIComponent(id)}/revisions`,

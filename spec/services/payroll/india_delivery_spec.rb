@@ -15,6 +15,8 @@ RSpec.describe Payroll::IndiaDelivery do
   before do
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: "Synthetic India", change_reason: "India funding")
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
     ActionMailer::Base.deliveries.clear
     allow(PayrollIndiaMailer).to receive(:report).and_wrap_original do |original, *args|
       original.call(*args).tap do |delivery|

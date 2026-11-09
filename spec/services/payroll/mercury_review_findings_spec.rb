@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Mercury payroll review findings" do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let(:payment) { Payroll::MercuryPayment.new(run) }
   let(:service) { Payroll::MercuryReconciliation.new(run) }
@@ -704,6 +704,7 @@ RSpec.describe "Mercury payroll review findings" do
     it "treats a same-date schedule correction as a change even with the same fee" do
       builder = Payroll::ConsultantRevision.new(run, actor: accounts)
       employment.update!(joined_at: Date.new(2020, 1, 1))
+      record_synthetic_pto_treatment
       travel_to(Time.utc(2026, 12, 5, 12)) do
         revision = builder.create!(consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601, expected_digest: nil, idempotency_key: "t1")
         expect(revision.approval_issues).to eq([])
