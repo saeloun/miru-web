@@ -2,6 +2,7 @@
 
 class EmployeeRecord < ApplicationRecord
   SALARY_KEYS = %w[salary_amount salary_currency salary_frequency salary_effective_on].freeze
+  BANK_KEYS = %w[bank_account_name bank_name bank_branch bank_account_number bank_ifsc bank_swift].freeze
   TEXT_KEYS = %w[emergency_contact_name emergency_contact_phone bank_account_name bank_name bank_branch
     bank_account_number bank_ifsc bank_swift].freeze
   DETAIL_KEYS = (TEXT_KEYS + SALARY_KEYS + ["family_members"]).freeze
@@ -14,6 +15,7 @@ class EmployeeRecord < ApplicationRecord
   encrypts :private_details
   audited associated_with: :company, only: [:employment_id]
   after_save :record_salary_version, if: :saved_change_to_private_details?
+  after_save :record_bank_change_notice, if: :saved_change_to_private_details?
 
   validates :employment_id, uniqueness: true
   validate :valid_private_details
@@ -33,6 +35,13 @@ class EmployeeRecord < ApplicationRecord
   end
 
   private
+
+    def record_bank_change_notice
+      previous = private_details_before_last_save || {}
+      return if BANK_KEYS.map { |key| previous[key].presence } == BANK_KEYS.map { |key| private_details[key].presence }
+
+      PayrollBankChangeNotice.capture!(employment)
+    end
 
     def record_salary_version
       previous = private_details_before_last_save || {}

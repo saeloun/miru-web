@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_130000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1499,6 +1499,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_130000) do
     t.check_constraint "stage::text = ANY (ARRAY['accounts'::character varying::text, 'final'::character varying::text])", name: "payroll_approval_stage"
   end
 
+  create_table "payroll_bank_change_notices", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "recipient_id", null: false
+    t.uuid "event_id", null: false
+    t.string "state", default: "queued", null: false
+    t.datetime "attempted_at"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_bank_change_notices_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_bank_change_notices_on_employment_id"
+    t.index ["event_id", "recipient_id"], name: "bank_change_notice_delivery_identity", unique: true
+    t.index ["recipient_id"], name: "index_payroll_bank_change_notices_on_recipient_id"
+    t.index ["state", "id"], name: "index_payroll_bank_change_notices_on_state_and_id"
+    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "bank_change_notice_states"
+  end
+
   create_table "payroll_expense_reservations", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "expense_id", null: false
@@ -2825,6 +2843,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_130000) do
   add_foreign_key "payments_providers", "companies"
   add_foreign_key "payroll_approvals", "payroll_revisions"
   add_foreign_key "payroll_approvals", "users", column: "actor_id"
+  add_foreign_key "payroll_bank_change_notices", "companies"
+  add_foreign_key "payroll_bank_change_notices", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_bank_change_notices", "users", column: "recipient_id"
   add_foreign_key "payroll_expense_reservations", "companies"
   add_foreign_key "payroll_expense_reservations", "employments"
   add_foreign_key "payroll_expense_reservations", "expenses"

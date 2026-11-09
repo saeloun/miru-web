@@ -138,6 +138,14 @@ the same amounts and claims.
 
 ## Pay through Mercury
 
+When a configured consultant's bank details change, Miru queues a private review
+notice for active workspace owners and assigned payroll accounts reviewers. The
+email contains a sign-in link, without bank details or remuneration. Review and
+verify the current beneficiary before preparing a new payment; an email never
+verifies the account. Submitted transfers retain their original destination.
+Unchanged saves and contact-only edits do not create another notice. Delivery
+with an uncertain transport outcome is held for review rather than resent.
+
 Payments go from your own Mercury account in USD, one request per transfer. The
 amount owed stays in INR. The receiving bank does the conversion, so the final
 INR credit is an estimate until accounts confirms it.

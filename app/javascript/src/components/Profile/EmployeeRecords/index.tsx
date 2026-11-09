@@ -42,6 +42,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
   const [record, setRecord] = useState(null);
   const [details, setDetails] = useState<any>({});
   const [bankConfirmation, setBankConfirmation] = useState("");
+  const [bankConfirmationBlurred, setBankConfirmationBlurred] = useState(false);
   const [ledger, setLedger] = useState(null);
   const [payment, setPayment] = useState(paymentDefaults);
   const [editing, setEditing] = useState(false);
@@ -97,7 +98,10 @@ const Records = ({ companyId, companyName, userId, self }) => {
   }, []);
 
   const change = (key, value) => {
-    if (key === "bank_account_number") setBankConfirmation("");
+    if (key === "bank_account_number") {
+      setBankConfirmation("");
+      setBankConfirmationBlurred(false);
+    }
     setDetails(previous => ({ ...previous, [key]: value }));
   };
 
@@ -105,6 +109,8 @@ const Records = ({ companyId, companyName, userId, self }) => {
     !!details.bank_account_number &&
     details.bank_account_number !== record?.private_details.bank_account_number;
   const bankMatches = details.bank_account_number === bankConfirmation;
+  const showBankMismatch =
+    bankConfirmationBlurred && !!bankConfirmation && !bankMatches;
   const family = details.family_members || [];
   const changeFamily = (index, key, value) =>
     change(
@@ -149,6 +155,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
       await loadRecord();
       if (!signal.aborted) {
         setBankConfirmation("");
+        setBankConfirmationBlurred(false);
         setEditing(false);
         setNotice(text("saved"));
       }
@@ -283,6 +290,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
                   variant="outline"
                   onClick={() => {
                     setBankConfirmation("");
+                    setBankConfirmationBlurred(false);
                     setEditing(true);
                     setError("");
                     setNotice("");
@@ -317,6 +325,10 @@ const Records = ({ companyId, companyName, userId, self }) => {
                   {bankNeedsConfirmation && (
                     <div className="min-w-0 space-y-2">
                       <Field
+                        aria-describedby={`bank-confirmation-help${
+                          showBankMismatch ? " bank-confirmation-error" : ""
+                        }`}
+                        aria-invalid={showBankMismatch || undefined}
                         autoComplete="off"
                         inputMode="numeric"
                         label="Confirm bank account number"
@@ -326,13 +338,24 @@ const Records = ({ companyId, companyName, userId, self }) => {
                         required
                         type="password"
                         value={bankConfirmation}
-                        onChange={setBankConfirmation}
+                        onBlur={() => setBankConfirmationBlurred(true)}
+                        onChange={value => {
+                          setBankConfirmation(value);
+                          setBankConfirmationBlurred(false);
+                        }}
                       />
-                      <p className="text-sm text-muted-foreground">
+                      <p
+                        className="text-sm text-muted-foreground"
+                        id="bank-confirmation-help"
+                      >
                         Enter the account number again to confirm.
                       </p>
-                      {bankConfirmation && !bankMatches && (
-                        <p className="text-sm text-destructive" role="alert">
+                      {showBankMismatch && (
+                        <p
+                          className="text-sm text-destructive"
+                          id="bank-confirmation-error"
+                          role="alert"
+                        >
                           Bank account numbers must match.
                         </p>
                       )}
@@ -459,6 +482,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
                     onClick={() => {
                       setDetails(record.private_details);
                       setBankConfirmation("");
+                      setBankConfirmationBlurred(false);
                       setEditing(false);
                       setError("");
                     }}

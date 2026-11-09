@@ -14,7 +14,10 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     it "requires bank country, account currency and the applicable IFSC, SWIFT and provider beneficiary fields"
     it "encrypts bank and tax identifiers and exposes only masked values outside authorized payment preparation"
     it "notifies a consultant about missing details while allowing other complete consultants to progress"
-    it "notifies accounts after a bank change and requires fresh beneficiary verification"
+    # Private committed bank-change notices: payroll_bank_change_notice_spec.rb,
+    # employee_bank_change_notices_spec.rb and responsive/employee_bank_change_notices_spec.rb.
+    # Changed-bank readiness and frozen submitted destinations: mercury_payment_spec.rb / india_handoff_spec.rb.
+    it "requires fresh beneficiary verification for every changed bank-detail version before new approval"
     it "invalidates unsubmitted approvals after bank changes without changing an in-flight destination"
   end
 

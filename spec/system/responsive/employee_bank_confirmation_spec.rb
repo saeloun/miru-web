@@ -66,9 +66,16 @@ RSpec.describe "Employee bank account confirmation", type: :system, js: true do
       expect(page).to have_button("Save employee records", disabled: true)
       expect(employment.reload.employee_record).to be_nil
       fill_in "Confirm bank account number", with: "1234567890"
+      expect(page).to have_no_css("[role='alert']", text: "Bank account numbers must match.")
+      expect(find_field("Confirm bank account number")["aria-describedby"]).to eq("bank-confirmation-help")
+      find_field("Confirm bank account number").send_keys(:tab)
       expect(page).to have_css("[role='alert']", text: "Bank account numbers must match.")
+      expect(find_field("Confirm bank account number")["aria-describedby"]).to eq("bank-confirmation-help bank-confirmation-error")
+      expect(find_field("Confirm bank account number")["aria-invalid"]).to eq("true")
       expect(page).to have_button("Save employee records", disabled: true)
+      capture("bank-confirmation-mismatch-#{width}.png", width)
       fill_in "Confirm bank account number", with: "001234567890"
+      expect(page).to have_no_css("[role='alert']", text: "Bank account numbers must match.")
       expect(page).to have_button("Save employee records", disabled: false)
       capture("bank-confirmation-#{width}.png", width)
       press "Save employee records"
