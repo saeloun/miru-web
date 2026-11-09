@@ -7,6 +7,7 @@ module Payroll
     def reserve!(run, revision)
       revision.payroll_payload.fetch("lines").sort_by { |line| line["employment_id"] }.each do |line|
         next unless line["pay_type"] == "consultant"
+        next if MercuryRevisionGuard.new(run).protected_line?(line)
 
         pto = line.dig("source_snapshot", "pto")
         next unless pto
@@ -133,7 +134,7 @@ module Payroll
       # A carried split must retain an original leg and the exact approved source on every replacement leg.
       legs.any? { |leg| leg.payroll_revision_id == recovery.payroll_revision_id } && legs.all? do |leg|
         approved = leg.payroll_revision.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == recovery.employment_id }
-        approved && IndiaHandoff.line_digest(approved) == IndiaHandoff.line_digest(line)
+        approved && MercuryRevisionGuard.same_line?(approved, line)
       end
     end
 

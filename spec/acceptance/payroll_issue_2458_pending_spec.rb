@@ -6,7 +6,9 @@ require "spec_helper"
 # Implemented preview/calculation/revision coverage is mapped in the issue acceptance ledger.
 RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   context "1. Consultant identity and beneficiaries" do
-    it "requires consultant legal name, billing address and applicable tax details before payment readiness"
+    # Declared legal/address/PAN/GST facts, private evidence and exact-version manual review:
+    # billing_identity_spec.rb, billing_identity_payment_binding_spec.rb and responsive/consultant_billing_identity_spec.rb.
+    # These are declared facts and explicit human review, not government verification or automatic tax treatment.
     # Self-only versioned consent/withdrawal, immutable SQL and retries: invoice_authorization_spec.rb,
     # consultant_invoice_authorizations_spec.rb and responsive/consultant_invoice_authorization_spec.rb.
     # Primary double-entry/API/privacy/native: employee_records_spec.rb and responsive/employee_bank_confirmation_spec.rb.

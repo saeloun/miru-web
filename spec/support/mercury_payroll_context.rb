@@ -41,6 +41,7 @@ RSpec.shared_context "approved mercury consultant payroll" do
   let(:accounts) { create(:user) }
   let(:owner) { create(:user) }
   let(:worker) { create(:user) }
+  let(:billing_identity_ready) { true }
   let!(:employment) { create(:employment, company:, user: worker, resigned_at: nil) }
   let!(:work_entry) do
     project = create(:project, client: create(:client, company:))
@@ -76,6 +77,7 @@ RSpec.shared_context "approved mercury consultant payroll" do
     EmployeeRecord.create!(employment:, private_details: bank_details)
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: legal_name, change_reason: "Synthetic terms")
+    review_synthetic_billing_identity(employment:, reviewer: owner) if billing_identity_ready
   end
 
   def synthetic_payload(amount_minor: net_minor, pay_type: "consultant", reimbursements: [])
@@ -119,6 +121,11 @@ RSpec.shared_context "approved mercury consultant payroll" do
         "amounts" => { "base_minor" => amount_minor, "extras_minor" => 0, "reimbursements_minor" => reimbursement_minor,
                       "deductions_minor" => 0, "net_minor" => amount_minor + reimbursement_minor },
         "extras" => [], "deductions" => [],
+        "preparation" => { "cutoff" => run.period.end_of_month.iso8601, "confirmed_unpaid_hours" => source.dig("pto", "unpaid_hours") || "0",
+          "unpaid_reason" => nil, "terms_id" => employment.consultant_compensations.order(effective_on: :desc, id: :desc).first.id.to_s }.tap do |preparation|
+          binding = Payroll::BillingIdentity.new(employment).binding
+          preparation["billing_identity"] = binding if binding
+        end,
         "reimbursements" => reimbursements.map do |minor|
           { "code" => "synthetic_expense", "amount_minor" => minor, "currency" => "INR", "origin_period" => "2026-11-01",
             "source_reference" => "synthetic.adjustment", "reason_code" => "reviewed" }

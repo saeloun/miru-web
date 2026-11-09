@@ -376,7 +376,8 @@ RSpec.describe Payroll::ConsultantRevision do
 
         approve(replacement)
         expect(PayrollExpenseReservation.active.where(expense: claim).sole.id).to eq(reservation.id)
-        expect(reservation.reload).to have_attributes(released_at: nil, payroll_revision_id: replacement.id, amount_minor: 500_000)
+        # Retained bank activity keeps claim attribution on its original instruction revision.
+        expect(reservation.reload).to have_attributes(released_at: nil, payroll_revision_id: claim_revision.id, amount_minor: 500_000)
         expect(claim_instruction.reload).to have_attributes(submission_state: "uncertain", released_at: nil, payroll_revision_id: claim_revision.id)
 
         service = Payroll::MercuryReconciliation.new(run)
@@ -391,7 +392,7 @@ RSpec.describe Payroll::ConsultantRevision do
         group = claim_instruction.payroll_payment_group
         expect(group.reload).to have_attributes(entitlement_minor: 6_750_000, payroll_revision_id: claim_revision.id)
         expect(claim.reload).to have_attributes(status: "paid", amount: 5_000, currency: "INR", user_id: worker.id)
-        expect(reservation.reload).to have_attributes(payroll_revision_id: replacement.id, amount_minor: 500_000, released_at: nil)
+        expect(reservation.reload).to have_attributes(payroll_revision_id: claim_revision.id, amount_minor: 500_000, released_at: nil)
         expect(reservation.settled_at).to be_present
         expect(claim.paid_at).to be_present
         expect(group.fully_credited_at).to be_present

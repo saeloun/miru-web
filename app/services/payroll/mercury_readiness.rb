@@ -48,7 +48,13 @@ module Payroll
       entry = line(employment)
       return ["line_not_in_revision"] unless entry
 
-      run_blockers + line_payment_blockers(entry) + terms_blockers(employment) + split_blockers(employment) + recipient_blockers(employment)
+      run_blockers + source_blockers(employment) + line_payment_blockers(entry) + terms_blockers(employment) + split_blockers(employment) + recipient_blockers(employment)
+    end
+
+    def source_blockers(employment)
+      return ["line_not_in_revision"] unless @revision
+
+      Snapshot.new(@run, @revision.payroll_payload, actor_id: @revision.created_by_id).outbound_line_issues(line(employment))
     end
 
     private
@@ -83,6 +89,7 @@ module Payroll
           codes << "terms_changed_during_month"
         end
         codes << "consultant_inactive" if employment.discarded?
+        codes << "billing_identity_review_required" unless BillingIdentity.new(employment).valid_binding?(line(employment)&.dig("preparation", "billing_identity"))
         codes
       end
 

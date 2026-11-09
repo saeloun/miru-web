@@ -29,6 +29,7 @@ module Payroll
         end
         raise Conflict, "Revision changed; reload before editing" unless head&.digest == expected_digest
 
+        lock_employments(payload)
         create_revision!(actor, payload, idempotency_key, snapshot, expected_digest, (head&.number || 0) + 1)
       end
     end
@@ -39,6 +40,7 @@ module Payroll
         head = @run.current_revision
         raise Conflict, "Revision changed; reload before approving" unless head && head.digest == expected_digest
 
+        lock_employments(head.payroll_payload)
         approval = head.payroll_approvals.create!(actor:, stage:)
         if stage == "final"
           ClaimReference.reserve!(@run, head)
@@ -63,6 +65,14 @@ module Payroll
     end
 
     private
+
+      def lock_employments(payload)
+        lines = payload.is_a?(Hash) && payload["lines"]
+        return unless lines.is_a?(Array)
+
+        ids = lines.filter_map { |line| line["employment_id"] if line.is_a?(Hash) && line["employment_id"].is_a?(Integer) }
+        Employment.where(company_id: @run.company_id, id: ids).order(:id).lock.load
+      end
 
       def create_revision!(actor, payload, idempotency_key, snapshot, expected_digest, number)
         guard = MercuryRevisionGuard.new(@run)

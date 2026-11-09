@@ -43,6 +43,8 @@ module Payroll
 
     def reserve!(run, revision)
       revision.payroll_payload.fetch("lines").each do |line|
+        next if MercuryRevisionGuard.new(run).protected_line?(line)
+
         line.fetch("reimbursements", []).each { |entry| reserve_entry!(run, revision, line, entry) }
       end
     rescue ActiveRecord::RecordNotUnique

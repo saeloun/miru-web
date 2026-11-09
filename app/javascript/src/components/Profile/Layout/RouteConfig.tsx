@@ -53,7 +53,8 @@ const RouteConfig = () => {
           <Route index element={<UserDetailsView />} />
           {SETTINGS.filter(
             ({ category, path }) =>
-              category === "personal" && path !== "invoice-authorization"
+              category === "personal" &&
+              !["invoice-authorization", "billing-identity"].includes(path)
           ).map(({ path, authorisedRoles, Component }) => (
             <Route
               key={path}

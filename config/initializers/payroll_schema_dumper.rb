@@ -9,7 +9,7 @@ module PayrollSchemaDumper
 
       dump_pto_guards(stream)
 
-      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations].select { |table| @connection.table_exists?(table) }
+      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations consultant_billing_submissions consultant_billing_reviews].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
       stream.puts <<~RUBY.indent(2)
@@ -31,6 +31,7 @@ module PayrollSchemaDumper
       end
       dump_service_fee_guard(stream)
       dump_invoice_authorization_guard(stream)
+      dump_billing_identity_guards(stream)
       return unless @connection.table_exists?("payroll_india_handoffs")
 
       stream.puts <<~RUBY.indent(2)
@@ -121,6 +122,24 @@ module PayrollSchemaDumper
           FOR EACH ROW EXECUTE FUNCTION validate_consultant_invoice_authorization();
         SQL
       RUBY
+    end
+
+    def dump_billing_identity_guards(stream)
+      return unless @connection.table_exists?("consultant_billing_submissions")
+
+      %w[submission review].each do |kind|
+        name = "validate_consultant_billing_#{kind}"
+        sql = @connection.select_value("SELECT pg_get_functiondef(oid) FROM pg_proc WHERE pronamespace='public'::regnamespace AND proname=#{@connection.quote(name)} AND pronargs=0 AND prorettype='trigger'::regtype")
+        raise "Billing identity database guard is missing" unless sql
+
+        stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+        stream.puts <<~RUBY.indent(2)
+          execute <<~SQL
+            CREATE TRIGGER consultant_billing_#{kind}_valid BEFORE INSERT ON consultant_billing_#{kind}s
+            FOR EACH ROW EXECUTE FUNCTION public.#{name}();
+          SQL
+        RUBY
+      end
     end
 end
 

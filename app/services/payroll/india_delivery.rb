@@ -30,7 +30,7 @@ module Payroll
     private
 
       def locked(&block)
-        @run.with_lock { @handoff.with_lock { @delivery.with_lock(&block) } }
+        @run.with_lock { @handoff.employment.with_lock { @handoff.with_lock { @delivery.with_lock(&block) } } }
       end
 
       def permitted_to_send?

@@ -41,6 +41,9 @@ const InterviewFeedback = lazy(
 const SignedDocuments = lazy(() => import("components/SignedDocuments"));
 const IndiaTaxEstimates = lazy(() => import("components/IndiaTaxEstimates"));
 const ConsultantPayroll = lazy(() => import("components/ConsultantPayroll"));
+const BillingIdentity = lazy(
+  () => import("components/Profile/BillingIdentity")
+);
 const PayrollReview = lazy(() => import("components/Payroll/Review"));
 const EmployeeRecords = lazy(
   () => import("components/Profile/EmployeeRecords")
@@ -314,6 +317,11 @@ export const ROUTES = [
       { path: "applications/:applicationId", Component: Hiring },
     ],
     authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/settings/billing-identity",
+    subRoutes: [{ path: "", Component: BillingIdentity }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
   },
   {
     path: "/settings/invoice-authorization",

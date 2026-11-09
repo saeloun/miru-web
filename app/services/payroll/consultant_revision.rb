@@ -23,14 +23,22 @@ module Payroll
     def preparation(cutoff:)
       Entitlement.require!(@company.id)
       cutoff_date = cutoff_date(cutoff)
-      employments.map { |employment| consultant_summary(employment, cutoff_date) }
+      retained_ids = MercuryRevisionGuard.new(@run).retained_lines.pluck("employment_id")
+      employments.map { |employment| consultant_summary(employment, cutoff_date, retained: retained_ids.include?(employment.id)) }
     end
 
     def create!(consultants:, cutoff:, expected_digest:, idempotency_key:)
       Entitlement.require!(@company.id)
       cutoff_date = cutoff_date(cutoff)
-      lines = Array(consultants).map { |input| build_line(input, cutoff_date) }
+      retained = MercuryRevisionGuard.new(@run).retained_lines
+      lines = Array(consultants).map do |input|
+        previous = retained.find { |line| line["employment_id"].to_s == input[:employment_id].to_s }
+        previous ? carry_line(previous, input) : build_line(input, cutoff_date)
+      end
       raise MercuryPayment::Blocked.new("no_consultants_selected") if lines.empty?
+      retained.each do |line|
+        lines << carry_line(line, {}) unless lines.any? { |entry| entry["employment_id"] == line["employment_id"] }
+      end
 
       Workflow.new(@run).revise!(actor: @actor, payload: payload(lines), idempotency_key:, expected_digest:)
     end
@@ -48,26 +56,72 @@ module Payroll
           .order(:id).limit(MAX_CONSULTANTS)
       end
 
-      def consultant_summary(employment, cutoff)
+      def consultant_summary(employment, cutoff, retained:)
         review = review_for(employment, cutoff, {})
         source = capture(employment)
         unresolvable = unresolvable_codes(source, review)
+        billing = BillingIdentity.new(employment).binding
         not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"]) + Array(review.dig(:pto, "blockers"))
+        not_ready << "billing_identity_review_required" unless billing
         review.merge(user_id: employment.user_id, source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
           required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
-          current: current_selection(employment), locked: bank_activity?(employment))
+          billing_identity: billing, current: current_selection(employment), locked: bank_activity?(employment),
+          retained:)
       end
 
       def current_selection(employment)
         line = @run.current_revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id }
         return { included: false } unless line
 
+        selection_for(line)
+      end
+
+      def selection_for(line)
         preparation = line["preparation"] || {}
         adjustments = (line["extras"] + line["deductions"]).to_h { |entry| [entry["code"], (BigDecimal(entry["amount_minor"]) / 100).to_s("F")] }
         { included: true, confirmed_unpaid_hours: preparation["confirmed_unpaid_hours"], unpaid_reason: preparation["unpaid_reason"],
           expense_ids: line["reimbursements"].filter_map { |entry| ClaimReference.expense_id(entry["source_reference"]) },
           other_earning: adjustments["other_earning"], other_deduction: adjustments["other_deduction"], withholding: adjustments["withholding"] }.tap do |selection|
           selection[:service_fee_review] = preparation["service_fee_review"] if preparation["service_fee_review"]
+        end
+      end
+
+      def carry_line(line, input)
+        unless retained_selection?(input, selection_for(line))
+          raise Workflow::Conflict, "A bank transfer exists, so its amounts and claims must stay unchanged in this revision"
+        end
+
+        retained = line.deep_dup
+        employment = @company.employments.find(line["employment_id"])
+        if (billing = BillingIdentity.new(employment).binding)
+          retained["preparation"] ||= {}
+          retained["preparation"]["billing_identity"] = billing
+        end
+        retained
+      end
+
+      def retained_selection?(input, selection)
+        input.except(:employment_id, :acknowledged).all? do |key, value|
+          previous = selection[key]
+          case key
+          when :expense_ids
+            value.is_a?(Array) && value.all? { |id| id.is_a?(Integer) || id.is_a?(String) && id.match?(/\A[1-9]\d*\z/) } &&
+              value.map(&:to_s).sort == selection.fetch(:expense_ids).map(&:to_s).sort
+          when :confirmed_unpaid_hours
+            (value.nil? || value.is_a?(String) && (value.empty? || value.match?(AMOUNT_FORMAT))) && value.to_s.to_d == previous.to_s.to_d
+          when :other_earning, :other_deduction, :withholding
+            if value.nil? || value == ""
+              previous.blank?
+            else
+              value.is_a?(String) && value.match?(AMOUNT_FORMAT) && value.to_d.positive? && value.to_d == previous.to_s.to_d
+            end
+          when :unpaid_reason
+            (value.nil? || value.is_a?(String)) && value.to_s == previous.to_s
+          when :service_fee_review
+            value == previous
+          else
+            false
+          end
         end
       end
 
@@ -115,6 +169,7 @@ module Payroll
         codes << "fee_unavailable" unless review[:fee_estimate]
         codes << "acknowledgement_required" if acknowledgement_codes(source, review).any? && input[:acknowledged] != true
         codes << "consultant_inactive" if employment.user.discarded?
+        codes << "billing_identity_review_required" unless BillingIdentity.new(employment).binding
         codes
       end
 
@@ -191,7 +246,8 @@ module Payroll
                          "deductions_minor" => deductions.sum { |entry| entry["amount_minor"] }, "net_minor" => minor(calculation.fetch("net").to_d) },
           "extras" => extras, "reimbursements" => reimbursements, "deductions" => deductions,
           "preparation" => { "cutoff" => cutoff.iso8601, "confirmed_unpaid_hours" => review[:confirmed_unpaid_hours],
-                             "unpaid_reason" => review[:unpaid_reason].presence, "terms_id" => review[:compensation_id].to_s }.tap do |preparation|
+                             "unpaid_reason" => review[:unpaid_reason].presence, "terms_id" => review[:compensation_id].to_s,
+                             "billing_identity" => BillingIdentity.new(employment).binding }.tap do |preparation|
             preparation["service_fee_review"] = review[:service_fee_review] if review[:service_fee_review]
           end
         }

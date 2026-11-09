@@ -33,7 +33,7 @@ module Payroll
 
     def approval_issues
       return ["invalid_snapshot"] unless valid_structure?
-      return ["invalid_snapshot", *stale_terms_issues].uniq unless current_sources?
+      return ["invalid_snapshot", *stale_terms_issues, *billing_identity_issues].uniq unless current_sources?
 
       issues = @payload["exceptions"].dup
       POLICIES.each do |kind|
@@ -43,9 +43,17 @@ module Payroll
         end
       end
       @payload["lines"].each do |line|
+        next if MercuryRevisionGuard.new(@run).protected_line?(line)
+
         issues.concat(line_approval_issues(line))
       end
       issues
+    end
+
+    def outbound_line_issues(line)
+      return ["line_not_in_revision"] unless line.is_a?(Hash)
+
+      line_approval_issues(line)
     end
 
     private
@@ -66,7 +74,20 @@ module Payroll
       end
 
       def current_sources?
-        @payload["lines"].all? { |line| valid_source_snapshot?(line) }
+        @payload["lines"].all? { |line| MercuryRevisionGuard.new(@run).protected_line?(line) || valid_source_snapshot?(line) } && billing_identity_issues.empty?
+      end
+
+      def billing_identity_issues
+        @payload["lines"].filter_map do |line|
+          next unless line["pay_type"] == "consultant"
+
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          next if employment && BillingIdentity.new(employment).valid_binding?(line.dig("preparation", "billing_identity"))
+          # Retained bank lines keep their approved financial history; outbound paths require current review.
+          next if MercuryRevisionGuard.new(@run).protected_line?(line)
+
+          "billing_identity_review_required"
+        end.uniq
       end
 
       def stale_terms_issues
@@ -163,9 +184,17 @@ module Payroll
 
       def valid_preparation?(preparation)
         return true if preparation.nil?
+        return false unless preparation.is_a?(Hash)
 
-        basic = preparation.is_a?(Hash) && preparation.except("service_fee_review")
-        return false unless keys?(basic, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && basic.values.all? { |value| value.nil? || value.is_a?(String) }
+        basic = preparation.except("service_fee_review", "billing_identity")
+        billing_only = basic.empty? && preparation.key?("billing_identity") && !preparation.key?("service_fee_review")
+        return false unless billing_only || keys?(basic, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && basic.values.all? { |value| value.nil? || value.is_a?(String) }
+        if preparation.key?("billing_identity")
+          billing = preparation["billing_identity"]
+          return false unless keys?(billing, %w[version submission_id review_id digest]) && billing.values.all? { |value| value.is_a?(String) } &&
+            billing["version"] == "miru-consultant-billing-v1" && billing["digest"].match?(/\A[0-9a-f]{64}\z/) &&
+            %w[submission_id review_id].all? { |key| billing[key].match?(/\A[1-9]\d{0,18}\z/) && billing[key].to_i <= 9_223_372_036_854_775_807 }
+        end
         return true unless preparation.key?("service_fee_review")
 
         reviewed = preparation["service_fee_review"]

@@ -172,6 +172,7 @@ export interface PreparationConsultant {
   not_ready_reasons: string[];
   ready: boolean;
   locked: boolean;
+  retained?: boolean;
   pto?: PtoFacts;
   current: {
     included: boolean;

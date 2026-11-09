@@ -14,6 +14,8 @@ const getActiveClassName = isActive => {
 };
 
 const labelForSetting = path => {
+  if (path === "billing-identity") return "Billing identity";
+
   if (path === "invoice-authorization") return "Invoice authorization";
 
   if (path === "employee-records") return t("employeeRecords.title");

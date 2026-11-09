@@ -135,7 +135,7 @@ Rollout integration: the consultant terms/review feature uses the same trusted, 
 
 | Issue | Required cases and improvements | Delivery 1 status |
 | --- | --- | --- |
-| 1 | Consultant legal/tax facts, invoice consent/version/withdrawal; account number confirmed twice; country/currency/IFSC/SWIFT and provider-specific fields | Pending |
+| 1 | Consultant legal/tax facts, invoice consent/version/withdrawal; account number confirmed twice; country/currency/IFSC/SWIFT and provider-specific fields | Declared legal/address/PAN/GST facts, private evidence and distinct exact-version manual review are implemented with current-identity binding at new preparation, approval and outgoing payment boundaries. Existing bank activity retains frozen history; it cannot authorize a new transfer. See [billing identity verification](../../qa/consultant-billing-identity-20261109/README.md). Invoice consent and double-entry bank confirmation have separate executable coverage. Government validation, complete beneficiary country/currency fields and provider acceptance remain open. |
 | 1 | Missing-data notification blocks only affected person/leg; encrypted/masked details, restricted access; verified bank changes notify accounts and invalidate unsubmitted approvals | Pending |
 | 2 | Append fee corrections/history, source separate from contracting entity, weekday/daily-hour schedule; reject malformed money/dates/duplicate weekdays | Preview |
 | 2 | Actual funding accounts, PTO policy/year/accrual/thresholds; explicit accounts preparation and admin approval/initiation permissions | Pending; preview restricted to owner/admin |

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -389,6 +389,55 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
     t.datetime "updated_at", null: false
     t.index ["employment_id", "effective_on", "id"], name: "index_compensation_versions_effective"
     t.index ["employment_id"], name: "index_compensation_versions_on_employment_id"
+  end
+
+  create_table "consultant_billing_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "submission_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_review_id"
+    t.string "decision", null: false
+    t.text "reason", null: false
+    t.boolean "manual_tax_reviewed", null: false
+    t.boolean "missing_pan_acknowledged", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_billing_reviews_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "consultant_billing_reviews_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_billing_reviews_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "consultant_billing_reviews_command_identity", unique: true
+    t.index ["employment_id"], name: "index_consultant_billing_reviews_on_employment_id"
+    t.index ["previous_review_id"], name: "index_consultant_billing_reviews_on_previous_review_id", unique: true
+    t.index ["submission_id"], name: "billing_review_one_root", unique: true, where: "(previous_review_id IS NULL)"
+    t.index ["submission_id"], name: "index_consultant_billing_reviews_on_submission_id"
+    t.check_constraint "id > 0 AND (decision::text = ANY (ARRAY['approved'::character varying, 'needs_information'::character varying, 'rejected'::character varying]::text[])) AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128 AND (decision::text <> 'approved'::text OR manual_tax_reviewed)", name: "billing_review_values"
+  end
+
+  create_table "consultant_billing_submissions", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_submission_id"
+    t.bigint "pan_blob_id"
+    t.bigint "gst_blob_id"
+    t.text "facts", null: false
+    t.text "evidence_manifest", null: false
+    t.string "source_digest", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_billing_submissions_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "consultant_billing_submissions_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_billing_submissions_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "consultant_billing_submissions_command_identity", unique: true
+    t.index ["employment_id"], name: "billing_submission_one_root", unique: true, where: "(previous_submission_id IS NULL)"
+    t.index ["employment_id"], name: "index_consultant_billing_submissions_on_employment_id"
+    t.index ["gst_blob_id"], name: "index_consultant_billing_submissions_on_gst_blob_id"
+    t.index ["pan_blob_id"], name: "index_consultant_billing_submissions_on_pan_blob_id"
+    t.index ["previous_submission_id"], name: "index_consultant_billing_submissions_on_previous_submission_id", unique: true
+    t.check_constraint "id > 0 AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "billing_submission_values"
   end
 
   create_table "consultant_compensations", force: :cascade do |t|
@@ -2695,6 +2744,17 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
   add_foreign_key "compensation_report_runs", "companies"
   add_foreign_key "compensation_report_runs", "users", column: "created_by_id"
   add_foreign_key "compensation_versions", "employments"
+  add_foreign_key "consultant_billing_reviews", "companies"
+  add_foreign_key "consultant_billing_reviews", "consultant_billing_reviews", column: ["company_id", "employment_id", "previous_review_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_review_previous_tenant"
+  add_foreign_key "consultant_billing_reviews", "consultant_billing_submissions", column: ["company_id", "employment_id", "submission_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_review_submission_tenant"
+  add_foreign_key "consultant_billing_reviews", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_billing_reviews", "users", column: "actor_id"
+  add_foreign_key "consultant_billing_submissions", "active_storage_blobs", column: "gst_blob_id"
+  add_foreign_key "consultant_billing_submissions", "active_storage_blobs", column: "pan_blob_id"
+  add_foreign_key "consultant_billing_submissions", "companies"
+  add_foreign_key "consultant_billing_submissions", "consultant_billing_submissions", column: ["company_id", "employment_id", "previous_submission_id"], primary_key: ["company_id", "employment_id", "id"], name: "billing_submission_previous_tenant"
+  add_foreign_key "consultant_billing_submissions", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_billing_submissions", "users", column: "actor_id"
   add_foreign_key "consultant_compensations", "employments"
   add_foreign_key "consultant_compensations", "users", column: "created_by_id"
   add_foreign_key "consultant_invoice_authorizations", "companies"
@@ -3279,6 +3339,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
   SQL
   execute <<~SQL
+    CREATE TRIGGER consultant_billing_submissions_immutable BEFORE UPDATE OR DELETE ON consultant_billing_submissions
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_reviews_immutable BEFORE UPDATE OR DELETE ON consultant_billing_reviews
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
     CREATE OR REPLACE FUNCTION public.validate_consultant_service_fee_review()
      RETURNS trigger
      LANGUAGE plpgsql
@@ -3357,6 +3425,73 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_140000) do
   execute <<~SQL
     CREATE TRIGGER consultant_invoice_authorization_valid BEFORE INSERT ON consultant_invoice_authorizations
     FOR EACH ROW EXECUTE FUNCTION validate_consultant_invoice_authorization();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_billing_submission()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; previous public.consultant_billing_submissions;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR subject.user_id<>NEW.actor_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) OR
+        NOT EXISTS(SELECT 1 FROM public.consultant_compensations WHERE employment_id=subject.id) THEN
+        RAISE EXCEPTION 'Billing identity requires its own kept consultant';
+      END IF;
+      IF NEW.previous_submission_id IS NULL THEN
+        IF EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE employment_id=subject.id) THEN
+          RAISE EXCEPTION 'Billing submission predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_billing_submissions WHERE id=NEW.previous_submission_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR previous.actor_id<>NEW.actor_id OR
+          NEW.id<=previous.id OR EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE previous_submission_id=previous.id) THEN
+          RAISE EXCEPTION 'Billing submission predecessor changed';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_submission_valid BEFORE INSERT ON consultant_billing_submissions
+    FOR EACH ROW EXECUTE FUNCTION public.validate_consultant_billing_submission();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_billing_review()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; submission public.consultant_billing_submissions; previous public.consultant_billing_reviews;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      SELECT * INTO submission FROM public.consultant_billing_submissions WHERE id=NEW.submission_id AND company_id=NEW.company_id AND employment_id=NEW.employment_id;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR submission.id IS NULL OR subject.user_id=NEW.actor_id OR submission.actor_id<>subject.user_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=subject.user_id AND discarded_at IS NULL) OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) OR
+        NOT EXISTS(SELECT 1 FROM public.employments WHERE company_id=NEW.company_id AND user_id=NEW.actor_id AND discarded_at IS NULL) OR
+        NOT EXISTS(SELECT 1 FROM public.roles r JOIN public.users_roles ur ON ur.role_id=r.id WHERE ur.user_id=NEW.actor_id AND r.resource_type='Company' AND r.resource_id=NEW.company_id AND
+          (r.name IN ('owner','admin') OR r.name='book_keeper' AND EXISTS(SELECT 1 FROM public.payroll_runs WHERE company_id=NEW.company_id AND accounts_reviewer_id=NEW.actor_id))) OR
+        EXISTS(SELECT 1 FROM public.consultant_billing_submissions WHERE previous_submission_id=submission.id) THEN
+        RAISE EXCEPTION 'Billing review requires its current tenant and nonself reviewer';
+      END IF;
+      IF NEW.previous_review_id IS NULL THEN
+        IF EXISTS(SELECT 1 FROM public.consultant_billing_reviews WHERE submission_id=submission.id) THEN
+          RAISE EXCEPTION 'Billing review predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_billing_reviews WHERE id=NEW.previous_review_id;
+        IF previous.id IS NULL OR previous.submission_id<>submission.id OR NEW.id<=previous.id OR
+          EXISTS(SELECT 1 FROM public.consultant_billing_reviews WHERE previous_review_id=previous.id) THEN
+          RAISE EXCEPTION 'Billing review predecessor changed';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_billing_review_valid BEFORE INSERT ON consultant_billing_reviews
+    FOR EACH ROW EXECUTE FUNCTION public.validate_consultant_billing_review();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$

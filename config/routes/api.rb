@@ -70,6 +70,10 @@ namespace :api, defaults: { format: "json" } do
     resources :india_tax_estimates, only: [:index, :create]
     get "consultant_payroll", to: "consultant_payroll#index"
     resource :consultant_invoice_authorization, only: [:show, :create], controller: "consultant_invoice_authorizations"
+    resource :consultant_billing_identity, only: [:show, :create], controller: "consultant_billing_identities" do
+      post :reviews, action: :review
+      get "submissions/:submission_id/evidence/:kind", action: :download
+    end
     get "payroll_service_fees/:id", to: "payroll_service_fees#show"
     post "payroll_service_fees/:id", to: "payroll_service_fees#create"
     get "payroll_pto/report", to: "payroll_pto#report"

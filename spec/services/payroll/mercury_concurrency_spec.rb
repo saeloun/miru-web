@@ -33,6 +33,7 @@ RSpec.describe "Mercury payroll concurrency" do
         "bank_ifsc" => "SYNT0000001", "bank_swift" => "SYNTINBBXXX" })
       ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500, hours_per_day: 8,
         weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: "Synthetic US LLC", change_reason: "Synthetic")
+      review_synthetic_billing_identity(employment:, reviewer: owner)
       run = PayrollRun.create!(company:, period: Date.new(2026, 11, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
     end
 

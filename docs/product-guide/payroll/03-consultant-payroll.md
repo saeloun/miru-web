@@ -265,11 +265,44 @@ needs verified legal/billing/tax facts, full settlement, numbering, document and
 delivery workflows. The later issuer must recheck current permission when it issues
 an invoice and retain the exact consent receipt.
 
+## Billing identity and tax evidence
+
+Configured consultants open **Billing identity** in their profile settings. Enter
+the legal name and billing address, declare PAN and GST status, and upload the
+applicable private PDF or image evidence. If PAN is unavailable, record why; if
+GST treatment needs review, leave it unresolved until accounts can resolve it.
+Miru checks identifier syntax and consistency, not government registration.
+
+An eligible owner, admin or assigned accounts reviewer, other than the consultant,
+reviews the exact submission and records a reason and explicit manual tax review.
+Approving missing PAN also requires a separate acknowledgement. This does not
+select a withholding rate, grant an exemption or authorize invoice issuance.
+New payroll preparation and outgoing payment actions require the current approved
+identity. A correction or revoked review requires a fresh review and payroll revision.
+
+History and private evidence remain available to authorized people. Consultants
+can correct facts for past services after exit while payroll remains enabled.
+Turning payroll off preserves history and revocation of an existing approval;
+it does not permit new submissions or approvals. Lost-response retries retain the
+original command, while a confirmed conflict requires an explicit refresh before resubmission.
+
+An existing transfer remains visible as **Existing transfer retained** when preparing
+another consultant in the same run. Its approved amounts, claims and source stay
+frozen. Retaining it does not create another payment. A new transfer or remaining
+split leg still needs the current reviewed identity.
+
+If supporting work/PTO facts or the accounts reviewer change after a transfer
+starts, Miru can hold a remaining unsent leg even when its amount is unchanged.
+There is currently no reviewed refresh operation for that retained line. Stop
+and ask accounts to reconcile the bank status. Do not bypass the hold, replay a
+send or record a credit without matching bank evidence. Recovery of this case
+requires a separate workflow that preserves the original transfer and claim/PTO history.
+
 ## Not available yet
 
-Consultant invoice issuance and verified billing/tax identity, FIRC or FIRA
-attachments, replacing returned funds, consultant split requests, bank-change
-notifications and Mercury webhooks remain follow-on work.
+Consultant invoice issuance, government verification of tax identity, FIRC or FIRA
+attachments, replacing returned funds, consultant split requests and Mercury
+webhooks remain follow-on work.
 A returned wire stays visible and can't be replaced from Miru. The India accounts
 handoff, consultant bank-detail editing and explicit PTO policy/decision workflows
 are described above and in Employee records; they remain subject to their workspace

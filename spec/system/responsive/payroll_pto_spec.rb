@@ -127,6 +127,7 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
           expect(record.private_details).to eq(bank_details)
           expect(record.read_attribute_before_type_cast(:private_details)).not_to include("Synthetic Consultant", "123456789012")
           run = PayrollRun.create!(company:, period: "2026-09-01", currency: "INR", accounts_reviewer: admin, final_reviewer:)
+          review_synthetic_billing_identity(employment:, reviewer: final_reviewer)
           revision = Payroll::ConsultantRevision.new(run, actor: admin).create!(
             consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: "2026-09-30",
             expected_digest: nil, idempotency_key: "synthetic-paid-browser")
