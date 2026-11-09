@@ -128,12 +128,16 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     expect(page).to have_button("Reload saved state", disabled: false)
   end
 
+  def open_control(control)
+    page.scroll_to(control, align: :center)
+    control.click
+    yield
+  end
+
   def queue_candidate_message
     expect(page).to have_no_text("Loading messages…")
     inbox = find("button[role='combobox']", text: "Choose enabled inbox", exact_text: true)
-    page.scroll_to(inbox, align: :center)
-    inbox.click
-    expect(inbox).to match_selector("[aria-expanded='true']")
+    open_control(inbox) { expect(inbox).to match_selector("[aria-expanded='true']") }
     find("[cmdk-item]", text: "Hiring · #{mailbox.source_email}", exact_text: true).click
     click_button "Preview candidate message"
     expect(page).to have_button("Confirm and queue message", disabled: false)
@@ -199,7 +203,9 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     click_button "Issue assignment link"
     expect(page).to have_text("Assignment link created. No email was sent.")
     record = application.hiring_assignments.sole
-    click_button "Candidate messages for assignment #{record.id}"
+    open_control(find_button("Candidate messages for assignment #{record.id}")) do
+      expect(page).to have_button("Hide assignment #{record.id}")
+    end
     queue_candidate_message
     mail = delivered_mail
     expect(company.hiring_messages.find_by!(kind: "assignment").state).to eq("sent")
@@ -241,7 +247,9 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
   end
 
   def interview_and_decide
-    click_button "View interview rounds"
+    open_control(find_button("View interview rounds")) do
+      expect(page).to have_button("Add interview round", disabled: false)
+    end
     click_button "Add interview round"
     fill_in "Round title", with: "Rails discussion"
     fill_in "Round type", with: "Technical"
@@ -253,8 +261,12 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     find("[cmdk-item]", text: interviewer.full_name).click
     click_button "Save interview round"
     expect(page).to have_text("Interview round saved")
-    click_button "Manage booking for round 1"
-    click_button "Record manual booking"
+    open_control(find_button("Manage booking for round 1")) do
+      expect(page).to have_button("Record manual booking", disabled: false)
+    end
+    open_control(find_button("Record manual booking")) do
+      expect(page).to have_field("Start in candidate's local time")
+    end
     fill_in "Start in candidate's local time", with: "2026-11-03T14:30"
     fill_in "Candidate time zone", with: "Asia/Kolkata"
     fill_in "Meeting URL", with: "https://meet.example.test/synthetic"
@@ -278,7 +290,9 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
       capture("05-interview-feedback")
     end
     admin_application
-    click_button "Review decisions"
+    open_control(find_button("Review decisions")) do
+      expect(page).to have_field("Internal decision reason")
+    end
     fill_in "Internal decision reason", with: "Select based on assessment and interview evidence"
     click_button "Save decision draft"
     expect(page).to have_text("Decision draft saved")
@@ -289,7 +303,7 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
   end
 
   def offer_and_onboard
-    click_button "Review offers"
+    open_control(find_button("Review offers")) { expect(page).to have_select("Offer engagement") }
     select "Consultant", from: "Offer engagement"
     fill_in "Offer title", with: "Software consultant"
     fill_in "Approved compensation amount", with: "125000.50"
@@ -303,7 +317,9 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     click_button "Approve and issue private offer"
     expect(page).to have_text("Private offer issued.")
     offer = application.hiring_offers.sole
-    click_button "Candidate messages for offer #{offer.id}"
+    open_control(find_button("Candidate messages for offer #{offer.id}")) do
+      expect(page).to have_button("Hide offer #{offer.id}")
+    end
     queue_candidate_message
     mail = delivered_mail
     using_session(:candidate) do
@@ -316,8 +332,12 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     end
     expect(offer.reload.state).to eq("accepted")
     admin_application
-    click_button "Review offers"
-    click_button "Review onboarding for offer #{offer.id}"
+    open_control(find_button("Review offers")) do
+      expect(page).to have_button("Review onboarding for offer #{offer.id}")
+    end
+    open_control(find_button("Review onboarding for offer #{offer.id}")) do
+      expect(page).to have_field("Onboarding first name")
+    end
     fill_in "Onboarding first name", with: "Taylor"
     fill_in "Onboarding last name", with: "Candidate"
     check "I confirm this accepted offer and the reviewed profile or invitation"
@@ -344,9 +364,12 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     expect(employment.compensation_versions).to be_empty
     expect(application.reload.stage).to eq("hired")
     admin_application
-    click_button "Review offers"
-    click_button "Review onboarding for offer #{offer.id}"
-    expect(page).to have_text("Onboarding complete")
+    open_control(find_button("Review offers")) do
+      expect(page).to have_button("Review onboarding for offer #{offer.id}")
+    end
+    open_control(find_button("Review onboarding for offer #{offer.id}")) do
+      expect(page).to have_text("Onboarding complete")
+    end
     click_link "Upload agreement documents"
     expect(page).to have_select("Linked profile", selected: "Taylor Candidate — candidate@example.test")
     fill_in "Document title", with: "Synthetic continuous consultant agreement"
