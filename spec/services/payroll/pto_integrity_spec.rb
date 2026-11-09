@@ -123,6 +123,51 @@ RSpec.describe "PTO ledger database and concurrency boundaries" do
     worker_thread&.join(5)
   end
 
+  it "returns the existing historical decision when the same command waits behind its first request", :pto_concurrency do
+    origin = decision
+    target = run.period.next_month
+    later_run = PayrollRun.create!(company:, period: target, currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
+    command = { origin_entry_id: origin.id, origin_component: "advance", period: target, kind: "unpaid",
+      reason: "Synthetic explicit historical cash recovery", rate_amount: origin.rate_basis.fetch("origin_amount"),
+      rate_hours: origin.rate_basis.fetch("origin_hours"), rate_reference: "Synthetic original approved fee basis",
+      expected_digest: Payroll::PtoFacts.new(employment, month: target).call.fetch("digest"), idempotency_key: "overlapping-historical-review" }
+    backend = Queue.new
+    worker_thread = nil
+    recorded = nil
+    later_run.with_lock do
+      worker_thread = Thread.new do
+        ActiveRecord::Base.connection_pool.with_connection do |connection|
+          backend << connection.select_value("SELECT pg_backend_pid()")
+          begin
+            Payroll::PtoLedger.new(Employment.find(employment.id), actor: User.find(owner.id)).review_obligation!(**command)
+          rescue Payroll::Workflow::Conflict => error
+            error
+          end
+        end
+      end
+      Timeout.timeout(5) do
+        pid = backend.pop
+        sleep 0.01 until PayrollRun.connection.select_value("SELECT pg_backend_pid() = ANY(pg_blocking_pids(#{Integer(pid)}))")
+      end
+      recorded = ledger.review_obligation!(**command)
+    end
+    replayed = Timeout.timeout(5) { worker_thread.value }
+    expect(replayed).to be_a(PayrollPtoEntry), "Historical replay returned #{replayed.class}: #{replayed.message if replayed.is_a?(Exception)}"
+    expect(replayed.id).to eq(recorded.id)
+    expect(PayrollPtoEntry.where(employment:, idempotency_key: command.fetch(:idempotency_key)).count).to eq(1)
+    expect(Payroll::PtoFacts.new(employment, month: target).call.fetch("historical_deduction_minor")).to eq(recorded.cash_amount_minor)
+    expect do
+      ledger.review_obligation!(**command.merge(reason: "Synthetic changed command"))
+    end.to raise_error(Payroll::Workflow::Conflict, /different historical decision/)
+    expect do
+      ledger.review_obligation!(**command.merge(idempotency_key: "different-stale-review"))
+    end.to raise_error(Payroll::Workflow::Conflict, /facts changed/)
+    expect(PayrollPtoEntry.where(employment:, kind: "review_unpaid").count).to eq(1)
+  ensure
+    worker_thread&.join(5)
+    worker_thread.kill.join if worker_thread&.alive?
+  end
+
   it "refuses cash recovery of the same hours already allocated from accrual through direct SQL" do
     advance = decision
     ledger.accrue!(through: Date.new(2026, 12, 1))

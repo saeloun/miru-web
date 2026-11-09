@@ -58,10 +58,7 @@ module Payroll
 
     def review_obligation!(origin_entry_id:, period:, kind:, reason:, expected_digest:, idempotency_key:, **options)
       options.assert_valid_keys(:rate_amount, :rate_hours, :rate_reference, :origin_component)
-      month = period.is_a?(Date) ? period : iso_date(period)
-      unless month.day == 1 && %w[unpaid advance defer waive correction].include?(kind)
-        raise ConsultantReview::InvalidInput, "Choose an explicit historical treatment and recovery month"
-      end
+      month = historical_month(period, kind)
       Entitlement.require!(@company.id)
       authorize!
       command_digest = Digest::SHA256.hexdigest(JSON.generate([origin_entry_id.to_s, month.iso8601, kind, reason,
@@ -70,6 +67,8 @@ module Payroll
       return existing if existing
       synchronize(month) do
         facts = PtoFacts.new(@employment, month:).call
+        existing = command_replay(idempotency_key, command_digest, "PTO command was already used for a different historical decision")
+        return existing if existing
         raise Workflow::Conflict, "PTO facts changed; refresh before deciding" unless facts["digest"] == expected_digest
 
         context = obligation_context!(origin_entry_id, month, kind, options[:origin_component])
@@ -100,6 +99,14 @@ module Payroll
     end
 
     private
+
+      def historical_month(period, kind)
+        month = period.is_a?(Date) ? period : iso_date(period)
+        unless month.day == 1 && %w[unpaid advance defer waive correction].include?(kind)
+          raise ConsultantReview::InvalidInput, "Choose an explicit historical treatment and recovery month"
+        end
+        month
+      end
 
       def allocation_command(period, kind, reason, expected_digest, allocations)
         month = period.is_a?(Date) ? period : iso_date(period)

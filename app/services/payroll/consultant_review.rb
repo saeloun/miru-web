@@ -258,6 +258,7 @@ class Payroll::ConsultantReview
 
     def expense_details(expense)
       { id: expense.id, date: expense.date.iso8601, description: expense.description, currency: expense.currency,
-        amount: money(expense.amount), approved_at: expense.approved_at.iso8601, receipt_count: expense.receipts.size }
+        amount: money(expense.amount), approved_at: expense.approved_at.iso8601, receipt_count: expense.receipts.size,
+        source_reference: Payroll::ClaimReference.for(expense) }
     end
 end
