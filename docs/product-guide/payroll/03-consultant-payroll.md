@@ -28,13 +28,17 @@ date use the company timezone. The report shows configured consultants active in
 that period, expected schedule hours, recorded hours across review states,
 fractional recorded days (`hours / 8`) and the fee estimate. Applicable holiday
 dates count once. **Review [name]** shows approved, pending, rejected and
-approval-not-required work separately. Recorded time off is unclassified;
-approved paid leave and opening/closing PTO require a future approval/balance
-workflow.
+approval-not-required work separately. Recorded time off alone is unclassified;
+PTO decisions approved by an active owner or admin supply paid leave and opening/closing
+balances. See [PTO policy adoption and decisions](../../payroll-pto-ledger.md).
 
-Enter only explicitly confirmed unpaid hours and their decision/reason, select
-eligible reimbursement claims, then choose **Recalculate preview**. The scenario
-uses `monthly fee × (expected hours − confirmed unpaid hours) / expected hours`.
+For consultants with an approved PTO policy, approved leave decisions supply the
+unpaid quantity; it cannot be overridden in the preview. Without a policy, enter
+only explicitly confirmed unpaid hours and their decision/reason for the preview.
+Select eligible reimbursement claims, then choose **Recalculate preview**. The scenario
+uses `period base fee × (expected hours − confirmed unpaid hours) / expected hours`.
+For an unchanged full month, the base is the contractual monthly fee. An explicitly
+reviewed service-period fee replaces that base for a joining, exit or changed-terms month.
 Missing work alone does not reduce the fee; historical negative PTO is never
 deducted automatically. Changed inputs hide the old totals until recalculation.
 These decisions are not saved payroll approvals.
@@ -43,6 +47,26 @@ Partial service months, missing service dates, midmonth fee changes and zero
 expected hours require resolution before a fee/total estimate is shown.
 Work/leave warnings remain visible for review. Tax withholding and other
 adjustments are not applied to the estimate.
+
+### Review a service-period fee
+
+Open **Service-period fee review** in accounts preparation, or under **PTO and
+decisions** in Consultant payroll. Check the active dates, scheduled time,
+contractual terms, funding source and legal entity. Enter the agreed **Service-period
+base fee (INR)** and a reason. This amount is before approved unpaid time; Miru
+does not choose a calendar-day or working-day proration policy for you.
+
+Save the basis before resolving leave. For example, an agreed INR 50,000 for 80
+scheduled hours with 8 explicitly unpaid hours yields INR 45,000. Reimbursements,
+withholding and other adjustments remain separate. The contractual monthly fee,
+reviewed period base and final amount are shown separately in the review and India report.
+
+Changing dates, applicable terms or the reviewed amount requires refreshed leave
+decisions and a new payroll revision with both approvals. Unsubmitted reservations
+that depend on this basis are released; unrelated recoveries are retained. A basis
+already used by protected bank activity or consumed historical PTO cannot be rewritten.
+Missing term coverage, inconsistent routing and zero scheduled time remain blocked.
+Saving this review does not transfer money or send an accounts email.
 
 Changing a selected holiday's calendar date can leave its recorded leave date
 unchanged. If either date falls in the service period, conflicting dates make
@@ -97,10 +121,12 @@ and a different owner. This creates a run for review and moves no money.
 
 The accounts reviewer opens the run and chooses who to include. Consultants with
 unresolved data show **Not ready for payment** and don't hold up anyone else. For
-each consultant, the reviewer can enter confirmed unpaid hours with a reason,
-select reimbursements, and add other earnings, deductions or withholding, then
-acknowledges any listed warnings. Missing time never reduces the fee unless
-unpaid hours are entered. Reimbursements are never prorated.
+each consultant, an owner/admin must first configure a reconciled PTO policy and
+explicitly classify missing scheduled hours. The accounts reviewer prepares from
+those approved quantities, selects reimbursements, adds other earnings,
+deductions or withholding, and acknowledges any listed warnings. Acknowledgment
+cannot replace the owner's leave decision or change its unpaid quantity. Missing
+time alone never reduces the fee. Reimbursements are never prorated.
 
 The accounts reviewer approves the revision, then the owner gives final approval.
 Final approval reserves the selected claims, so they can't be edited, reviewed,
@@ -111,6 +137,14 @@ A new revision starts from the current one, and a consultant with a transfer mus
 the same amounts and claims.
 
 ## Pay through Mercury
+
+When a configured consultant's bank details change, Miru queues a private review
+notice for active workspace owners and assigned payroll accounts reviewers. The
+email contains a sign-in link, without bank details or remuneration. Review and
+verify the current beneficiary before preparing a new payment; an email never
+verifies the account. Submitted transfers retain their original destination.
+Unchanged saves and contact-only edits do not create another notice. Delivery
+with an uncertain transport outcome is held for review rather than resent.
 
 Payments go from your own Mercury account in USD, one request per transfer. The
 amount owed stays in INR. The receiving bank does the conversion, so the final
@@ -195,11 +229,83 @@ consultant. Each transfer has its own principal, OUR fee, key and status, so a f
 transfer can be prepared again without resending the one that succeeded. The consultant
 stays the service provider for income and tax purposes.
 
+## Bank account entry
+
+When setting or changing an account number in **Employee records**, enter it again
+in **Confirm bank account number**. The entries must match exactly, including leading
+zeros. Confirmation starts blank, clears when the number changes, and is never saved
+as profile data. Unchanged account numbers and edits to other fields need no repeat
+entry. The same requirement applies to direct API clients.
+
+This entry check does not verify the beneficiary. Continue the recipient verification
+and approval workflow after changing bank details; existing submitted transfers keep
+their frozen destination.
+
+## Invoice authorization
+
+Configured consultants can open **Invoice authorization** in their profile settings
+or Employee records. Read the displayed statement, explicitly confirm it, then
+choose **Grant invoice authorization**. Owners and assigned accounts can inspect the status
+and receipts, but cannot grant or withdraw on someone else's behalf. Accounts
+preparation links to the consultant's authorization page without exposing their
+broader private employee record.
+
+Choose **Withdraw invoice authorization** to withdraw permission for future invoices.
+The dedicated settings page retains this action after service ends while your
+kept account remains signed into the workspace; granting again requires active
+service. Turning the payroll feature off also preserves your existing history and
+withdrawal action while blocking new grants and issuance. Each grant or withdrawal retains the statement, version, actor and date.
+An existing permission can still cover a final invoice for past services after exit;
+withdraw it explicitly if you no longer authorize that future issuance.
+Older receipts remain available through history. Withdrawal preserves previous
+receipts and any existing invoice or payment record.
+
+Saving permission does not generate an invoice. Consultant invoice issuance still
+needs verified legal/billing/tax facts, full settlement, numbering, document and
+delivery workflows. The later issuer must recheck current permission when it issues
+an invoice and retain the exact consent receipt.
+
+## Billing identity and tax evidence
+
+Configured consultants open **Billing identity** in their profile settings. Enter
+the legal name and billing address, declare PAN and GST status, and upload the
+applicable private PDF or image evidence. If PAN is unavailable, record why; if
+GST treatment needs review, leave it unresolved until accounts can resolve it.
+Miru checks identifier syntax and consistency, not government registration.
+
+An eligible owner, admin or assigned accounts reviewer, other than the consultant,
+reviews the exact submission and records a reason and explicit manual tax review.
+Approving missing PAN also requires a separate acknowledgement. This does not
+select a withholding rate, grant an exemption or authorize invoice issuance.
+New payroll preparation and outgoing payment actions require the current approved
+identity. A correction or revoked review requires a fresh review and payroll revision.
+
+History and private evidence remain available to authorized people. Consultants
+can correct facts for past services after exit while payroll remains enabled.
+Turning payroll off preserves history and revocation of an existing approval;
+it does not permit new submissions or approvals. Lost-response retries retain the
+original command, while a confirmed conflict requires an explicit refresh before resubmission.
+
+An existing transfer remains visible as **Existing transfer retained** when preparing
+another consultant in the same run. Its approved amounts, claims and source stay
+frozen. Retaining it does not create another payment. A new transfer or remaining
+split leg still needs the current reviewed identity.
+
+If supporting work/PTO facts or the accounts reviewer change after a transfer
+starts, Miru can hold a remaining unsent leg even when its amount is unchanged.
+There is currently no reviewed refresh operation for that retained line. Stop
+and ask accounts to reconcile the bank status. Do not bypass the hold, replay a
+send or record a credit without matching bank evidence. Recovery of this case
+requires a separate workflow that preserves the original transfer and claim/PTO history.
+
 ## Not available yet
 
-Consultant invoices, FIRC or FIRA attachments, replacing returned funds, the India
-account handoff, consultant self-service for bank details and split requests, bank
-change notifications, Mercury webhooks and the PTO ledger and exception decisions are
-required follow-on work. A returned wire stays visible and can't be replaced from Miru.
+Consultant invoice issuance, government verification of tax identity, FIRC or FIRA
+attachments, replacing returned funds, consultant split requests and Mercury
+webhooks remain follow-on work.
+A returned wire stays visible and can't be replaced from Miru. The India accounts
+handoff, consultant bank-detail editing and explicit PTO policy/decision workflows
+are described above and in Employee records; they remain subject to their workspace
+rollout gates and payment-verification safeguards.
 See the [complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md)
 for acceptance status.

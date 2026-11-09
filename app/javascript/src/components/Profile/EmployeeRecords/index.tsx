@@ -11,6 +11,7 @@ import { downloadAttachment, employeeRecordsApi, errorMessage } from "./api";
 import { Fact, Field, Section, text } from "./Fields";
 import Reports from "./Reports";
 import { ArchiveList } from "../../SignedDocuments";
+import { InvoiceAuthorizationPanel } from "../InvoiceAuthorization";
 
 const bankFields = [
   "bank_account_name",
@@ -36,10 +37,12 @@ const paymentDefaults = {
   note: "",
 };
 
-const Records = ({ companyId, userId, self }) => {
+const Records = ({ companyId, companyName, userId, self }) => {
   const [controller] = useState(() => new window.AbortController());
   const [record, setRecord] = useState(null);
   const [details, setDetails] = useState<any>({});
+  const [bankConfirmation, setBankConfirmation] = useState("");
+  const [bankConfirmationBlurred, setBankConfirmationBlurred] = useState(false);
   const [ledger, setLedger] = useState(null);
   const [payment, setPayment] = useState(paymentDefaults);
   const [editing, setEditing] = useState(false);
@@ -94,8 +97,20 @@ const Records = ({ companyId, userId, self }) => {
     return () => controller.abort();
   }, []);
 
-  const change = (key, value) =>
+  const change = (key, value) => {
+    if (key === "bank_account_number") {
+      setBankConfirmation("");
+      setBankConfirmationBlurred(false);
+    }
     setDetails(previous => ({ ...previous, [key]: value }));
+  };
+
+  const bankNeedsConfirmation =
+    !!details.bank_account_number &&
+    details.bank_account_number !== record?.private_details.bank_account_number;
+  const bankMatches = details.bank_account_number === bankConfirmation;
+  const showBankMismatch =
+    bankConfirmationBlurred && !!bankConfirmation && !bankMatches;
   const family = details.family_members || [];
   const changeFamily = (index, key, value) =>
     change(
@@ -107,6 +122,12 @@ const Records = ({ companyId, userId, self }) => {
 
   const save = event => {
     event.preventDefault();
+    if (bankNeedsConfirmation && !bankMatches) {
+      setError("Bank account numbers must match.");
+
+      return;
+    }
+
     const keys = [
       ...bankFields,
       ...contactFields,
@@ -125,9 +146,16 @@ const Records = ({ companyId, userId, self }) => {
     );
 
     perform(async () => {
-      await employeeRecordsApi.save(identity, changed, signal);
+      await employeeRecordsApi.save(
+        identity,
+        changed,
+        signal,
+        bankNeedsConfirmation ? bankConfirmation : undefined
+      );
       await loadRecord();
       if (!signal.aborted) {
+        setBankConfirmation("");
+        setBankConfirmationBlurred(false);
         setEditing(false);
         setNotice(text("saved"));
       }
@@ -214,6 +242,13 @@ const Records = ({ companyId, userId, self }) => {
               </Link>
             )}
           </Section>
+          {record.can_view_invoice_authorization && (
+            <InvoiceAuthorizationPanel
+              companyId={companyId}
+              companyName={companyName}
+              userId={userId}
+            />
+          )}
           <Section title={text("privateDetails")}>
             {!editing ? (
               <>
@@ -254,6 +289,8 @@ const Records = ({ companyId, userId, self }) => {
                   type="button"
                   variant="outline"
                   onClick={() => {
+                    setBankConfirmation("");
+                    setBankConfirmationBlurred(false);
                     setEditing(true);
                     setError("");
                     setNotice("");
@@ -285,6 +322,45 @@ const Records = ({ companyId, userId, self }) => {
                         : {})}
                     />
                   ))}
+                  {bankNeedsConfirmation && (
+                    <div className="min-w-0 space-y-2">
+                      <Field
+                        aria-describedby={`bank-confirmation-help${
+                          showBankMismatch ? " bank-confirmation-error" : ""
+                        }`}
+                        aria-invalid={showBankMismatch || undefined}
+                        autoComplete="off"
+                        inputMode="numeric"
+                        label="Confirm bank account number"
+                        maxLength={34}
+                        name="bank_account_number_confirmation"
+                        pattern="[0-9]{1,34}"
+                        required
+                        type="password"
+                        value={bankConfirmation}
+                        onBlur={() => setBankConfirmationBlurred(true)}
+                        onChange={value => {
+                          setBankConfirmation(value);
+                          setBankConfirmationBlurred(false);
+                        }}
+                      />
+                      <p
+                        className="text-sm text-muted-foreground"
+                        id="bank-confirmation-help"
+                      >
+                        Enter the account number again to confirm.
+                      </p>
+                      {showBankMismatch && (
+                        <p
+                          className="text-sm text-destructive"
+                          id="bank-confirmation-error"
+                          role="alert"
+                        >
+                          Bank account numbers must match.
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
                 <fieldset className="space-y-3">
                   <legend className="font-medium">{text("family")}</legend>
@@ -393,7 +469,10 @@ const Records = ({ companyId, userId, self }) => {
                   </fieldset>
                 )}
                 <div className="flex flex-wrap gap-2">
-                  <Button disabled={busy} type="submit">
+                  <Button
+                    disabled={busy || (bankNeedsConfirmation && !bankMatches)}
+                    type="submit"
+                  >
                     {text("saveRecords")}
                   </Button>
                   <Button
@@ -402,6 +481,8 @@ const Records = ({ companyId, userId, self }) => {
                     variant="outline"
                     onClick={() => {
                       setDetails(record.private_details);
+                      setBankConfirmation("");
+                      setBankConfirmationBlurred(false);
                       setEditing(false);
                       setError("");
                     }}
@@ -650,6 +731,7 @@ const EmployeeRecords = () => {
   return (
     <Records
       companyId={String(company.id)}
+      companyName={company.name}
       key={`${company.id}:${user.id}:${userId}:${companyRole}:${location.search}`}
       self={String(userId) === String(user.id)}
       userId={String(userId)}

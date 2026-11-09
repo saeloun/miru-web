@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Mercury payroll concurrency" do
+  include_context "explicit synthetic PTO policy"
+
   self.use_transactional_tests = false if respond_to?(:use_transactional_tests=)
 
   def on_thread(&block)
@@ -31,6 +33,7 @@ RSpec.describe "Mercury payroll concurrency" do
         "bank_ifsc" => "SYNT0000001", "bank_swift" => "SYNTINBBXXX" })
       ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500, hours_per_day: 8,
         weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: "Synthetic US LLC", change_reason: "Synthetic")
+      review_synthetic_billing_identity(employment:, reviewer: owner)
       run = PayrollRun.create!(company:, period: Date.new(2026, 11, 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
     end
 
@@ -50,6 +53,8 @@ RSpec.describe "Mercury payroll concurrency" do
 
     leg = on_thread do
       employment.update!(joined_at: Date.new(2020, 1, 1))
+      configure_synthetic_pto_policy(employment:, actor: owner)
+      record_synthetic_pto_treatment(employment:, actor: owner, period: run.period)
       revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
         consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: company.resolved_time_zone.today.iso8601, expected_digest: nil, idempotency_key: "c1"
       )

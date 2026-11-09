@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   payrollApi,
@@ -9,6 +10,8 @@ import {
 } from "./api";
 import { exactAmount } from "./amount";
 import { errorMessage, label } from "./paymentLabels";
+import { PtoPanel, PtoSummary } from "./PtoPanel";
+import ServiceFeePanel from "./ServiceFeePanel";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -146,7 +149,7 @@ const emptySelection: Selection = {
 
 const initialSelection = (row: PreparationConsultant): Selection => ({
   ...emptySelection,
-  included: row.ready && row.current.included,
+  included: !row.retained && row.ready && row.current.included,
   unpaid:
     row.current.confirmed_unpaid_hours &&
     Number(row.current.confirmed_unpaid_hours) > 0
@@ -166,187 +169,269 @@ const ConsultantRow = ({
   selection,
   canPrepare,
   onChange,
+  companyId,
+  month,
+  onSourceChanged,
 }: {
   consultant: PreparationConsultant;
   selection: Selection;
   canPrepare: boolean;
   onChange: (next: Selection) => void;
+  companyId: string;
+  month: string;
+  onSourceChanged: () => void;
 }) => {
   const id = consultant.employment_id;
   const update = (patch: Partial<Selection>) =>
     onChange({ ...selection, ...patch });
+  const [leaveOpen, setLeaveOpen] = useState(false);
 
   return (
-    <div className="space-y-3 rounded-md border border-border p-4">
+    <div
+      className="space-y-3 rounded-md border border-border p-4"
+      data-testid={`preparation-consultant-${id}`}
+    >
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-medium">{consultant.consultant_name}</h3>
         <Badge variant={consultant.ready ? "secondary" : "outline"}>
-          {consultant.ready ? "Can be included" : "Not ready for payment"}
+          {consultant.retained
+            ? "Existing transfer retained"
+            : consultant.ready
+            ? "Can be included"
+            : "Not ready for payment"}
         </Badge>
       </div>
-      <p className="text-sm tabular-nums text-muted-foreground">
-        Expected {consultant.expected_hours ?? "—"} h · Recorded{" "}
-        {consultant.recorded_hours ?? "—"} h · Fee estimate{" "}
-        {exactAmount(consultant.fee_estimate, "INR", false)} ·{" "}
-        {label(consultant.payment_source || "no_funding_source")}
-      </p>
-      {consultant.not_ready_reasons.length > 0 && (
-        <ul className="list-disc pl-5 text-sm">
-          {consultant.not_ready_reasons.map(reason => (
-            <li key={reason}>{label(reason)}</li>
-          ))}
-        </ul>
-      )}
-      {consultant.current.included && !consultant.ready && (
-        <p className="text-sm">
-          This consultant is in the current revision but will be left out of the
-          next one until they&apos;re ready.
+      {!consultant.retained && (
+        <p className="text-sm tabular-nums text-muted-foreground">
+          Expected {consultant.expected_hours ?? "—"} h · Recorded{" "}
+          {consultant.recorded_hours ?? "—"} h · Fee estimate{" "}
+          {exactAmount(consultant.fee_estimate, "INR", false)} ·{" "}
+          {label(consultant.payment_source || "no_funding_source")}
         </p>
       )}
-      {consultant.ready &&
-        (consultant.current.expense_ids || []).some(
-          id => !consultant.eligible_expenses.some(claim => claim.id === id)
-        ) && (
-          <p className="text-sm">
-            A claim in the current revision is no longer eligible and will be
-            left out of the next one.
-          </p>
-        )}
-      {consultant.locked && (
-        <p className="text-sm">
-          A bank transfer exists for this consultant, so their amounts and
-          claims must stay the same in any new revision.
-        </p>
+      {consultant.user_id && (
+        <div className="flex flex-wrap gap-4">
+          <Link
+            aria-label={`Invoice authorization for ${consultant.consultant_name}`}
+            className="inline-flex min-h-11 items-center text-sm text-primary underline"
+            to={`/settings/invoice-authorization?user_id=${consultant.user_id}`}
+          >
+            Invoice authorization
+          </Link>
+          <Link
+            aria-label={`Billing identity for ${consultant.consultant_name}`}
+            className="inline-flex min-h-11 items-center text-sm text-primary underline"
+            to={`/settings/billing-identity?user_id=${consultant.user_id}`}
+          >
+            Billing identity
+          </Link>
+        </div>
       )}
-      {consultant.ready && canPrepare && (
-        <div className="space-y-3">
-          <label className="flex min-h-10 items-center gap-2 text-sm">
-            <input
-              aria-label={`Include ${consultant.consultant_name}`}
-              checked={selection.included}
-              type="checkbox"
-              onChange={event => update({ included: event.target.checked })}
-            />
-            Include in this revision
-          </label>
-          {selection.included && (
-            <>
-              <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
-                <div className="space-y-1">
-                  <Label htmlFor={`unpaid-${id}`}>Confirmed unpaid hours</Label>
-                  <Input
-                    id={`unpaid-${id}`}
-                    inputMode="decimal"
-                    value={selection.unpaid}
-                    onChange={event => update({ unpaid: event.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor={`reason-${id}`}>Unpaid reason</Label>
-                  <Input
-                    id={`reason-${id}`}
-                    value={selection.reason}
-                    onChange={event => update({ reason: event.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor={`earning-${id}`}>Other earning (INR)</Label>
-                  <Input
-                    id={`earning-${id}`}
-                    inputMode="decimal"
-                    value={selection.earning}
-                    onChange={event => update({ earning: event.target.value })}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor={`deduction-${id}`}>
-                    Other deduction (INR)
-                  </Label>
-                  <Input
-                    id={`deduction-${id}`}
-                    inputMode="decimal"
-                    value={selection.deduction}
-                    onChange={event =>
-                      update({ deduction: event.target.value })
-                    }
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor={`withholding-${id}`}>Withholding (INR)</Label>
-                  <Input
-                    id={`withholding-${id}`}
-                    inputMode="decimal"
-                    value={selection.withholding}
-                    onChange={event =>
-                      update({ withholding: event.target.value })
-                    }
-                  />
-                </div>
-              </div>
-              {consultant.eligible_expenses.length > 0 && (
-                <fieldset className="space-y-1">
-                  <legend className="text-sm font-medium">
-                    Reimbursements (never prorated)
-                  </legend>
-                  {consultant.eligible_expenses.map(claim => (
-                    <label
-                      className="flex min-h-10 items-center gap-2 text-sm"
-                      key={claim.id}
-                    >
-                      <input
-                        checked={selection.expenseIds.includes(claim.id)}
-                        type="checkbox"
+      {consultant.retained ? (
+        <p className="text-sm">
+          Amounts and claims from the existing transfer are automatically
+          carried unchanged into the next revision. This does not create a new
+          payment.
+        </p>
+      ) : (
+        <>
+          {consultant.pto && <PtoSummary facts={consultant.pto} />}
+          <ServiceFeePanel
+            key={`${companyId}:${month}:${id}`}
+            companyId={companyId}
+            employmentId={id}
+            month={month}
+            onChanged={onSourceChanged}
+          />
+          <details onToggle={event => setLeaveOpen(event.currentTarget.open)}>
+            <summary className="min-h-10 cursor-pointer text-sm font-medium">
+              Approved leave decisions and history
+            </summary>
+            {leaveOpen && (
+              <PtoPanel
+                companyId={companyId}
+                employmentId={id}
+                month={month}
+                onChanged={onSourceChanged}
+              />
+            )}
+          </details>
+          {consultant.not_ready_reasons.length > 0 && (
+            <ul className="list-disc pl-5 text-sm">
+              {consultant.not_ready_reasons.map(reason => (
+                <li key={reason}>{label(reason)}</li>
+              ))}
+            </ul>
+          )}
+          {consultant.current.included && !consultant.ready && (
+            <p className="text-sm">
+              This consultant is in the current revision but will be left out of
+              the next one until they&apos;re ready.
+            </p>
+          )}
+          {consultant.ready &&
+            (consultant.current.expense_ids || []).some(
+              id => !consultant.eligible_expenses.some(claim => claim.id === id)
+            ) && (
+              <p className="text-sm">
+                A claim in the current revision is no longer eligible and will
+                be left out of the next one.
+              </p>
+            )}
+          {consultant.locked && (
+            <p className="text-sm">
+              A bank transfer exists for this consultant, so their amounts and
+              claims must stay the same in any new revision.
+            </p>
+          )}
+          {consultant.ready && canPrepare && (
+            <div className="space-y-3">
+              <label className="flex min-h-10 items-center gap-2 text-sm">
+                <input
+                  aria-label={`Include ${consultant.consultant_name}`}
+                  checked={selection.included}
+                  type="checkbox"
+                  onChange={event => update({ included: event.target.checked })}
+                />
+                Include in this revision
+              </label>
+              {selection.included && (
+                <>
+                  <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-5">
+                    <div className="space-y-1">
+                      <Label htmlFor={`unpaid-${id}`}>
+                        Confirmed unpaid hours
+                      </Label>
+                      <Input
+                        id={`unpaid-${id}`}
+                        inputMode="decimal"
+                        readOnly={!!consultant.pto?.policy_id}
+                        value={
+                          consultant.pto?.policy_id
+                            ? consultant.pto.unpaid_hours || "0"
+                            : selection.unpaid
+                        }
                         onChange={event =>
-                          update({
-                            expenseIds: event.target.checked
-                              ? [...selection.expenseIds, claim.id]
-                              : selection.expenseIds.filter(
-                                  value => value !== claim.id
-                                ),
-                          })
+                          update({ unpaid: event.target.value })
                         }
                       />
-                      {claim.date} · {claim.description || "Claim"} ·{" "}
-                      {exactAmount(claim.amount, claim.currency, false)} ·{" "}
-                      {claim.receipt_count} receipt(s)
-                    </label>
-                  ))}
-                </fieldset>
-              )}
-              {Object.keys(consultant.excluded_expenses).length > 0 && (
-                <ul className="list-disc pl-5 text-sm text-muted-foreground">
-                  {Object.entries(consultant.excluded_expenses).map(
-                    ([reason, count]) => (
-                      <li key={reason}>
-                        {count} claim(s) excluded: {label(reason)}
-                      </li>
-                    )
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={`reason-${id}`}>Unpaid reason</Label>
+                      <Input
+                        id={`reason-${id}`}
+                        value={selection.reason}
+                        onChange={event =>
+                          update({ reason: event.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={`earning-${id}`}>
+                        Other earning (INR)
+                      </Label>
+                      <Input
+                        id={`earning-${id}`}
+                        inputMode="decimal"
+                        value={selection.earning}
+                        onChange={event =>
+                          update({ earning: event.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={`deduction-${id}`}>
+                        Other deduction (INR)
+                      </Label>
+                      <Input
+                        id={`deduction-${id}`}
+                        inputMode="decimal"
+                        value={selection.deduction}
+                        onChange={event =>
+                          update({ deduction: event.target.value })
+                        }
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor={`withholding-${id}`}>
+                        Withholding (INR)
+                      </Label>
+                      <Input
+                        id={`withholding-${id}`}
+                        inputMode="decimal"
+                        value={selection.withholding}
+                        onChange={event =>
+                          update({ withholding: event.target.value })
+                        }
+                      />
+                    </div>
+                  </div>
+                  {consultant.eligible_expenses.length > 0 && (
+                    <fieldset className="space-y-1">
+                      <legend className="text-sm font-medium">
+                        Reimbursements (never prorated)
+                      </legend>
+                      {consultant.eligible_expenses.map(claim => (
+                        <label
+                          className="flex min-h-10 items-center gap-2 text-sm"
+                          key={claim.id}
+                        >
+                          <input
+                            checked={selection.expenseIds.includes(claim.id)}
+                            type="checkbox"
+                            onChange={event =>
+                              update({
+                                expenseIds: event.target.checked
+                                  ? [...selection.expenseIds, claim.id]
+                                  : selection.expenseIds.filter(
+                                      value => value !== claim.id
+                                    ),
+                              })
+                            }
+                          />
+                          {claim.date} · {claim.description || "Claim"} ·{" "}
+                          {exactAmount(claim.amount, claim.currency, false)} ·{" "}
+                          {claim.receipt_count} receipt(s)
+                        </label>
+                      ))}
+                    </fieldset>
                   )}
-                </ul>
+                  {Object.keys(consultant.excluded_expenses).length > 0 && (
+                    <ul className="list-disc pl-5 text-sm text-muted-foreground">
+                      {Object.entries(consultant.excluded_expenses).map(
+                        ([reason, count]) => (
+                          <li key={reason}>
+                            {count} claim(s) excluded: {label(reason)}
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  )}
+                  {consultant.required_acknowledgements.length > 0 && (
+                    <label className="flex min-h-10 items-start gap-2 text-sm">
+                      <input
+                        checked={selection.acknowledged}
+                        className="mt-1"
+                        type="checkbox"
+                        onChange={event =>
+                          update({ acknowledged: event.target.checked })
+                        }
+                      />
+                      <span>
+                        I reviewed:{" "}
+                        {consultant.required_acknowledgements
+                          .map(code => label(code))
+                          .join("; ")}
+                        . No deduction is made unless unpaid hours are entered
+                        above.
+                      </span>
+                    </label>
+                  )}
+                </>
               )}
-              {consultant.required_acknowledgements.length > 0 && (
-                <label className="flex min-h-10 items-start gap-2 text-sm">
-                  <input
-                    checked={selection.acknowledged}
-                    className="mt-1"
-                    type="checkbox"
-                    onChange={event =>
-                      update({ acknowledged: event.target.checked })
-                    }
-                  />
-                  <span>
-                    I reviewed:{" "}
-                    {consultant.required_acknowledgements
-                      .map(code => label(code))
-                      .join("; ")}
-                    . No deduction is made unless unpaid hours are entered
-                    above.
-                  </span>
-                </label>
-              )}
-            </>
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
@@ -355,10 +440,12 @@ const ConsultantRow = ({
 export const PrepareRevisionPanel = ({
   companyId,
   runId,
+  month,
   onChanged,
 }: {
   companyId: string;
   runId: string;
+  month: string;
   onChanged: () => void;
 }) => {
   const [data, setData] = useState<RunPreparation | null>(null);
@@ -401,13 +488,20 @@ export const PrepareRevisionPanel = ({
         expected_digest: data.current_digest,
         idempotency_key: key,
         consultants: data.consultants
-          .filter(row => row.ready && selections[row.employment_id]?.included)
+          .filter(
+            row =>
+              !row.retained &&
+              row.ready &&
+              selections[row.employment_id]?.included
+          )
           .map(row => {
             const selection = selections[row.employment_id];
 
             return {
               employment_id: row.employment_id,
-              confirmed_unpaid_hours: selection.unpaid,
+              confirmed_unpaid_hours: row.pto?.policy_id
+                ? row.pto.unpaid_hours || "0"
+                : selection.unpaid,
               unpaid_reason: selection.reason,
               expense_ids: selection.expenseIds,
               acknowledged: selection.acknowledged,
@@ -444,6 +538,9 @@ export const PrepareRevisionPanel = ({
         )}
         {data?.consultants.map(row => (
           <ConsultantRow
+            companyId={companyId}
+            month={month}
+            onSourceChanged={onChanged}
             canPrepare={data.can_prepare}
             consultant={row}
             key={row.employment_id}

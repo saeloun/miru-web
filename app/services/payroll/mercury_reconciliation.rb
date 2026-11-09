@@ -418,18 +418,22 @@ module Payroll
 
       def sync_group(instruction, actor)
         group = instruction.payroll_payment_group
-        group.with_lock do
-          if group.fully_credited?
-            settle_group(group, instruction, actor) unless group.fully_credited_at
-          elsif group.fully_credited_at
-            group.update!(fully_credited_at: nil)
-            settled = PayrollExpenseReservation.active.where(payroll_run_id: @run.id, employment_id: group.employment_id).where.not(settled_at: nil).pluck(:expense_id)
-            instruction.payroll_payment_events.create!(kind: "group_credit_reopened", actor:, data: { "settled_expense_ids" => settled })
+        @run.with_lock do
+          group.with_lock do
+            if group.fully_credited?
+              settle_group(group, instruction, actor) unless group.fully_credited_at
+            elsif group.fully_credited_at
+              group.update!(fully_credited_at: nil)
+              PtoRecovery.returned!(@run, group.employment_id)
+              settled = PayrollExpenseReservation.active.where(payroll_run_id: @run.id, employment_id: group.employment_id).where.not(settled_at: nil).pluck(:expense_id)
+              instruction.payroll_payment_events.create!(kind: "group_credit_reopened", actor:, data: { "settled_expense_ids" => settled })
+            end
           end
         end
       end
 
       def settle_group(group, instruction, actor)
+        PtoRecovery.settle!(@run, group.employment_id)
         group.update!(fully_credited_at: Time.current)
         instruction.payroll_payment_events.create!(kind: "group_fully_credited", actor:, data: {})
         PayrollExpenseReservation.unsettled.where(payroll_run_id: @run.id, employment_id: group.employment_id).find_each do |reservation|

@@ -22,7 +22,11 @@ module Payroll
     end
 
     def terms(employment)
-      sources(employment).terms(employment.id)
+      if line(employment)&.dig("preparation", "service_fee_review")
+        ServicePeriod.new(employment, month: @run.period, sources: sources(employment)).terms
+      else
+        sources(employment).terms(employment.id)
+      end
     end
 
     def active_arrangement(employment)
@@ -44,7 +48,13 @@ module Payroll
       entry = line(employment)
       return ["line_not_in_revision"] unless entry
 
-      run_blockers + line_payment_blockers(entry) + terms_blockers(employment) + split_blockers(employment) + recipient_blockers(employment)
+      run_blockers + source_blockers(employment) + line_payment_blockers(entry) + terms_blockers(employment) + split_blockers(employment) + recipient_blockers(employment)
+    end
+
+    def source_blockers(employment)
+      return ["line_not_in_revision"] unless @revision
+
+      Snapshot.new(@run, @revision.payroll_payload, actor_id: @revision.created_by_id).outbound_line_issues(line(employment))
     end
 
     private
@@ -71,8 +81,15 @@ module Payroll
         current = terms(employment)
         codes << "terms_missing" unless current
         codes << "funding_not_mercury" if current && current.payment_source != "mercury_us"
-        codes << "terms_changed_during_month" if sources(employment).terms_changed?(employment.id)
+        period = ServicePeriod.new(employment, month: @run.period, sources: sources(employment))
+        binding = line(employment)&.dig("preparation", "service_fee_review")
+        if period.required? || binding
+          codes << "service_fee_review_changed" unless period.valid_binding?(binding)
+        elsif sources(employment).terms_changed?(employment.id)
+          codes << "terms_changed_during_month"
+        end
         codes << "consultant_inactive" if employment.discarded?
+        codes << "billing_identity_review_required" unless BillingIdentity.new(employment).valid_binding?(line(employment)&.dig("preparation", "billing_identity"))
         codes
       end
 

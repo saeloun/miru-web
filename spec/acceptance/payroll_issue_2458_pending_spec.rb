@@ -6,18 +6,27 @@ require "spec_helper"
 # Implemented preview/calculation/revision coverage is mapped in the issue acceptance ledger.
 RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   context "1. Consultant identity and beneficiaries" do
-    it "requires consultant legal name, billing address and applicable tax details before payment readiness"
-    it "records versioned authorization to invoice for the consultant and honors withdrawal"
-    it "requires matching account-number confirmation and country-specific currency, IFSC, SWIFT and provider fields"
+    # Declared legal/address/PAN/GST facts, private evidence and exact-version manual review:
+    # billing_identity_spec.rb, billing_identity_payment_binding_spec.rb and responsive/consultant_billing_identity_spec.rb.
+    # These are declared facts and explicit human review, not government verification or automatic tax treatment.
+    # Self-only versioned consent/withdrawal, immutable SQL and retries: invoice_authorization_spec.rb,
+    # consultant_invoice_authorizations_spec.rb and responsive/consultant_invoice_authorization_spec.rb.
+    # Primary double-entry/API/privacy/native: employee_records_spec.rb and responsive/employee_bank_confirmation_spec.rb.
+    # Spouse double-entry: split_arrangements_spec.rb.
+    it "requires bank country, account currency and the applicable IFSC, SWIFT and provider beneficiary fields"
     it "encrypts bank and tax identifiers and exposes only masked values outside authorized payment preparation"
     it "notifies a consultant about missing details while allowing other complete consultants to progress"
-    it "notifies accounts after a bank change and requires fresh beneficiary verification"
+    # Private committed bank-change notices: payroll_bank_change_notice_spec.rb,
+    # employee_bank_change_notices_spec.rb and responsive/employee_bank_change_notices_spec.rb.
+    # Changed-bank readiness and frozen submitted destinations: mercury_payment_spec.rb / india_handoff_spec.rb.
+    it "requires fresh beneficiary verification for every changed bank-detail version before new approval"
     it "invalidates unsubmitted approvals after bank changes without changing an in-flight destination"
   end
 
   context "2. Company configuration and assigned permissions" do
     it "binds each funding choice to an actual company-owned account independently of the contracting legal entity"
-    it "configures effective PTO entitlement, accrual, leave year and significant-exception thresholds"
+    # Explicit owner policy, accrual/year/thresholds and missing-policy blocks: pto_ledger_spec.rb,
+    # payroll_pto_spec.rb (requests) and payroll_pto_spec.rb (native browser).
     it "allows assigned accounts staff to prepare without granting payment initiation or blanket coworker pay access"
     it "requires a distinct authorized payroll approver and an explicitly authorized payment initiator"
   end
@@ -29,24 +38,20 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "4. All five 160-hour examples and service policies" do
-    it "pays the full monthly fee for 150 worked plus 10 approved paid PTO and changes opening 40 to closing 30 PTO hours"
+    # All five exact 160-hour cases: pto_ledger_spec.rb and responsive/payroll_pto_spec.rb.
     # Confirmed unpaid example: payroll_run_preparation_spec.rb exercises real facts, both approvals, a single mocked Mercury request and recorded INR credit.
-    it "pays the full monthly fee for 100 worked plus 60 approved advance-PTO hours and records the resulting negative balance"
-    it "requests correction of the unexplained 60 hours after 100 worked without making an unpaid deduction"
-    it "pays a fully worked current month with historical PTO minus 40 and opens a separate historical-balance review"
-    it "applies an explicitly approved joining, exit or midmonth-fee policy without guessing a proration basis"
+    # Joining/exit/midmonth basis, source/SQL/locking and both approvals: service_fee_review_spec.rb
+    # and service_fee_concurrency_spec.rb; actual owner/accounts forms and retry: responsive/payroll_service_fees_spec.rb.
     it "resolves overlapping work and leave in the service timezone without double-crediting paid time"
   end
 
   context "5. PTO exceptions, accrual and recovery" do
-    it "notifies the assigned admin when the configured overdraw threshold is reached"
-    it "deducts only an explicitly approved current-month unpaid amount and records its recovery reference"
-    it "recovers approved advance PTO through future accrual without an automatic cash deduction"
-    it "defers an exception while paying normally and retains it for leave-year-end review"
-    it "waives an exception only with an authorized actor and retained reason"
-    it "returns timesheet or leave facts for correction without silently approving them"
-    it "reports outstanding and deferred balances at leave-year end and consultant exit"
-    it "prevents recovery of hours already deducted even after repeated decisions or a later run"
+    # Executable replacements: pto_ledger_spec.rb (all explicit decisions, immutable origins,
+    # mixed allocations, accrual/cash once-only recovery, frozen reports and exit eligibility);
+    # pto_integrity_spec.rb (raw SQL caps, tenant guards and independent-connection races);
+    # pto_credit_review_spec.rb (revision-bound credit, safe carry and returned-credit review);
+    # payroll_pto_review_job_spec.rb (private threshold/correction/year-end/exit notices);
+    # responsive/payroll_pto_spec.rb (actual forms, year-end/exit review and derived preview).
   end
 
   context "6. Reimbursement settlement" do
@@ -63,10 +68,11 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "8. India accounts handoff" do
-    it "emails only the approved report to the configured accounts recipient with consultant, month, hours, days, paid leave, fee, adjustments, claim items, total and required bank fields"
+    # Frozen approved paid leave/opening/closing and real report mail: pto_ledger_spec.rb;
+    # complete escaped private report and transport/log privacy: payroll_india_mailer_spec.rb;
+    # paid-leave report and desktop/mobile mail rendering: responsive/payroll_pto_spec.rb.
     # Awaiting payment, accounts-only actual credit and safe retries: india_handoff_spec.rb,
     # india_delivery_spec.rb, payroll_india_handoffs_spec.rb and india_payroll_handoff_spec.rb.
-    # The composite email contract above remains pending for approved-paid-leave classification.
   end
 
   context "9. Consultant and spouse allocations" do

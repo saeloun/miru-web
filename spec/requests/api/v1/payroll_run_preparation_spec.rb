@@ -7,7 +7,11 @@ RSpec.describe "Payroll run preparation API", type: :request do
 
   around { |example| travel_to(Time.utc(2026, 12, 5, 12)) { example.run } }
 
-  before { employment.update!(joined_at: Date.new(2020, 1, 1)) }
+  before do
+    employment.update!(joined_at: Date.new(2020, 1, 1))
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment(period: Date.new(2026, 11, 1))
+  end
 
   let(:run) { nil }
 
@@ -82,12 +86,15 @@ RSpec.describe "Payroll run preparation API", type: :request do
     expect(response).to have_http_status(200)
     row = json_response.fetch("consultants").find { |consultant| consultant["employment_id"] == employment.id }
     expect(row).to include("monthly_fee" => "100000.0", "expected_hours" => "160.0", "recorded_hours" => "100.0", "fee_estimate" => "100000.0")
+    record_synthetic_pto_treatment(unpaid_hours: "60", period: Date.new(2026, 11, 1))
     post "/api/v1/payroll_runs/#{id}/revisions", params: { company_id: company.id, cutoff: "2026-12-05", idempotency_key: "sonam-unpaid-example",
       consultants: [{ employment_id: employment.id, confirmed_unpaid_hours: "60", unpaid_reason: "Confirmed unpaid leave", acknowledged: true }] }, as: :json
     expect(response).to have_http_status(201)
     revision = created_run.current_revision
     line = revision.payroll_payload.fetch("lines").sole
-    expect(line.fetch("calculation_snapshot").fetch("input")).to include("paid_quantity" => "100.0", "basis_quantity" => "160.0")
+    expect(line.fetch("calculation_snapshot").fetch("input")).to include("paid_quantity" => "6000.0", "basis_quantity" => "9600.0")
+    expect(line.fetch("calculation_snapshot").fetch("policy")).to include(
+      "paid_quantity_name" => "scheduled minutes less confirmed unpaid minutes", "basis_quantity_name" => "scheduled minutes")
     expect(line.fetch("amounts")).to include("base_minor" => 6_250_000, "net_minor" => 6_250_000)
 
     post "/api/v1/payroll_runs/#{id}/approvals", params: { company_id: company.id, stage: "accounts", expected_digest: revision.digest }, as: :json

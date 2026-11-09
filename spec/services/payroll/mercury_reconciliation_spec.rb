@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Payroll::MercuryReconciliation do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let(:service) { described_class.new(run) }
   let(:write_url) { "#{mercury_base}/account/#{account_id}/request-send-money" }

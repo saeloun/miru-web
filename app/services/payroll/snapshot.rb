@@ -28,22 +28,12 @@ module Payroll
     end
 
     def valid?
-      Entitlement.require!(@run.company_id)
-      return false unless digest
-      return false unless keys?(@payload, %w[schema_version company_id period currency policies exceptions lines])
-      return false unless @payload["schema_version"] == 1 && @payload["company_id"] == @run.company_id
-      return false unless @payload["period"] == @run.period&.iso8601 && @payload["currency"] == @run.currency
-      return false unless @payload["policies"].is_a?(Hash) && (@payload["policies"].keys - POLICIES).empty?
-      return false unless @payload["policies"].values.all? { |policy| valid_policy?(policy) }
-      return false unless @payload["exceptions"].is_a?(Array) && @payload["exceptions"].all? { |code| code?(code) }
-
-      lines = @payload["lines"]
-      return false unless lines.is_a?(Array) && lines.size.between?(1, MAX_LINES)
-      valid_population?(lines)
+      valid_structure? && current_sources?
     end
 
     def approval_issues
-      return ["invalid_snapshot"] unless valid?
+      return ["invalid_snapshot"] unless valid_structure?
+      return ["invalid_snapshot", *stale_terms_issues, *billing_identity_issues].uniq unless current_sources?
 
       issues = @payload["exceptions"].dup
       POLICIES.each do |kind|
@@ -53,12 +43,63 @@ module Payroll
         end
       end
       @payload["lines"].each do |line|
+        next if MercuryRevisionGuard.new(@run).protected_line?(line)
+
         issues.concat(line_approval_issues(line))
       end
       issues
     end
 
+    def outbound_line_issues(line)
+      return ["line_not_in_revision"] unless line.is_a?(Hash)
+
+      line_approval_issues(line)
+    end
+
     private
+
+      def valid_structure?
+        Entitlement.require!(@run.company_id)
+        return false unless digest
+        return false unless keys?(@payload, %w[schema_version company_id period currency policies exceptions lines])
+        return false unless @payload["schema_version"] == 1 && @payload["company_id"] == @run.company_id
+        return false unless @payload["period"] == @run.period&.iso8601 && @payload["currency"] == @run.currency
+        return false unless @payload["policies"].is_a?(Hash) && (@payload["policies"].keys - POLICIES).empty?
+        return false unless @payload["policies"].values.all? { |policy| valid_policy?(policy) }
+        return false unless @payload["exceptions"].is_a?(Array) && @payload["exceptions"].all? { |code| code?(code) }
+
+        lines = @payload["lines"]
+        return false unless lines.is_a?(Array) && lines.size.between?(1, MAX_LINES)
+        valid_population?(lines)
+      end
+
+      def current_sources?
+        @payload["lines"].all? { |line| MercuryRevisionGuard.new(@run).protected_line?(line) || valid_source_snapshot?(line) } && billing_identity_issues.empty?
+      end
+
+      def billing_identity_issues
+        @payload["lines"].filter_map do |line|
+          next unless line["pay_type"] == "consultant"
+
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          next if employment && BillingIdentity.new(employment).valid_binding?(line.dig("preparation", "billing_identity"))
+          # Retained bank lines keep their approved financial history; outbound paths require current review.
+          next if MercuryRevisionGuard.new(@run).protected_line?(line)
+
+          "billing_identity_review_required"
+        end.uniq
+      end
+
+      def stale_terms_issues
+        @payload["lines"].flat_map do |line|
+          calculation = line["calculation_snapshot"]
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          next [] unless calculation && employment && line["source_snapshot"].is_a?(Hash) &&
+            calculation_matches?(calculation, line, employment)
+
+          consultant_terms_issues(line, employment, calculation)
+        end
+      end
 
       def valid_population?(lines)
         return false unless lines.all? { |line| valid_line?(line) }
@@ -137,21 +178,42 @@ module Payroll
         return false unless valid_preparation?(line["preparation"])
         return false unless line["employment_id"].is_a?(Integer) && %w[employee consultant].include?(line["pay_type"])
         return false unless line["currency"] == @run.currency
-        return false unless valid_source_snapshot?(line)
         return false unless line["calculation_snapshot"].nil? || PayrollCalculation::Calculator.verify_snapshot?(line["calculation_snapshot"])
         line["source_resolutions"].is_a?(Array) && line["source_resolutions"].all? { |resolution| valid_resolution?(resolution) }
       end
 
       def valid_preparation?(preparation)
         return true if preparation.nil?
+        return false unless preparation.is_a?(Hash)
 
-        keys?(preparation, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && preparation.values.all? { |value| value.nil? || value.is_a?(String) }
+        basic = preparation.except("service_fee_review", "billing_identity")
+        billing_only = basic.empty? && preparation.key?("billing_identity") && !preparation.key?("service_fee_review")
+        return false unless billing_only || keys?(basic, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && basic.values.all? { |value| value.nil? || value.is_a?(String) }
+        if preparation.key?("billing_identity")
+          billing = preparation["billing_identity"]
+          return false unless keys?(billing, %w[version submission_id review_id digest]) && billing.values.all? { |value| value.is_a?(String) } &&
+            billing["version"] == "miru-consultant-billing-v1" && billing["digest"].match?(/\A[0-9a-f]{64}\z/) &&
+            %w[submission_id review_id].all? { |key| billing[key].match?(/\A[1-9]\d{0,18}\z/) && billing[key].to_i <= 9_223_372_036_854_775_807 }
+        end
+        return true unless preparation.key?("service_fee_review")
+
+        reviewed = preparation["service_fee_review"]
+        keys?(reviewed, %w[id amount_minor reason source_digest context]) && reviewed["context"].is_a?(Hash) &&
+          reviewed.except("context").values.all? { |value| value.is_a?(String) }
       end
 
       def consultant_terms_issues(line, employment, calculation)
         return [] unless line["pay_type"] == "consultant"
 
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
+        period = ServicePeriod.new(employment, month: @run.period, sources:)
+        binding = line.dig("preparation", "service_fee_review")
+        if binding || period.required?
+          amount = calculation.dig("input", "compensation", "amount")
+          valid = period.valid_binding?(binding) && BigDecimal(amount) == period.fee &&
+            line.dig("preparation", "terms_id") == period.terms&.id.to_s
+          return valid ? [] : ["service_fee_review_changed"]
+        end
         terms = sources.terms(employment.id)
         amount = calculation.dig("input", "compensation", "amount")
         frozen_terms = line.dig("preparation", "terms_id")
@@ -187,7 +249,9 @@ module Payroll
 
         issues = calculation["review_ready"] ? [] : ["calculation_requires_review"]
         issues.concat(ClaimReference.issues(@run, line, employment))
+        issues.concat(PtoRecovery.issues(@run, line))
         issues.concat(consultant_terms_issues(line, employment, calculation))
+        issues.concat(Array(source.dig("pto", "blockers"))) if line["pay_type"] == "consultant"
         source.fetch("review_exceptions").each do |exception|
           unless resolved?(exception, line, source, calculation)
             issues << "source_exception:#{exception.fetch('code')}"
@@ -214,12 +278,26 @@ module Payroll
           [@run.company_id.to_s, employment.user_id.to_s, @run.period.strftime("%Y-%m"), @run.currency]
         return false unless calculation.dig("input", "engagement_type") == line["pay_type"]
         source = line["source_snapshot"]
+        return false unless pto_binding_matches?(calculation, line, source)
         source_field = calculation.dig("input", "compensation", "basis") == "hourly" ? "hours_source" : "quantity_source"
         return false unless calculation.dig("input", source_field) == source["digest"]
         return false unless calculation.dig("policy", "version") == @payload.dig("policies", "pay", "version")
 
         source["pay_policy_version"] == @payload.dig("policies", "pay", "version") &&
           source["attendance_policy_version"] == @payload.dig("policies", "proration", "version")
+      end
+
+      def pto_binding_matches?(calculation, line, source)
+        return true unless line["pay_type"] == "consultant" && source["pto"]
+
+        pto = source.fetch("pto")
+        return false unless pto["policy_id"] && pto["blockers"] == []
+        expected = pto.fetch("expected_hours").to_d * 60
+        return false unless calculation.dig("input", "paid_quantity").to_d == expected - pto.fetch("unpaid_minutes").to_d &&
+          calculation.dig("input", "basis_quantity").to_d == expected
+        recoveries = line.fetch("deductions").select { |entry| entry["reason_code"] == "approved_pto_recovery" }
+        recoveries.sum { |entry| entry["amount_minor"] } == pto.fetch("historical_deduction_minor") &&
+          recoveries.pluck("source_reference").sort == pto.fetch("historical_decision_ids").map { |id| "pto:#{id}" }.sort
       end
 
       def expected_minor_amounts(calculation, multiplier)
@@ -258,19 +336,26 @@ module Payroll
       end
 
       def resolved?(exception, line, source, calculation)
+        code = exception["code"]
         decisions = {
           "no_timeoff_entries" => "verified_zero_pto",
           "timeoff_pay_classification_required" => "reviewed_day_mapping",
           "work_review_required" => "reviewed_override"
         }
-        decision = decisions[exception["code"]]
+        decision = decisions[code]
+        if code == "partial_employment_month" && line.dig("preparation", "service_fee_review")
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          period = ServicePeriod.new(employment, month: @run.period) if employment
+          decision = "reviewed_service_period_fee" if period&.valid_binding?(line.dig("preparation", "service_fee_review"))
+        end
+        decision = "reviewed_pto_ledger" if code == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
         return false unless decision
-        if exception["code"] == "timeoff_pay_classification_required"
+        if code == "timeoff_pay_classification_required"
           return false unless calculation.dig("input", "paid_quantity") && calculation.dig("input", "basis_quantity")
         end
 
         line["source_resolutions"].any? do |resolution|
-          resolution["code"] == exception["code"] && resolution["source_id"] == exception["source_id"] &&
+          resolution["code"] == code && resolution["source_id"] == exception["source_id"] &&
             resolution["decision"] == decision && resolution["source_digest"] == source["digest"] &&
             resolution["actor_id"] == @actor_id && @actor_id == @run.accounts_reviewer_id
         end

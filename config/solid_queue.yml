@@ -45,6 +45,12 @@ default: &default
         payroll_india_delivery_recovery:
           class: PayrollIndiaRecoveryJob
           schedule: '*/5 * * * *'
+        payroll_pto_review:
+          class: PayrollPtoReviewJob
+          schedule: '11 * * * *'
+        payroll_bank_change_recovery:
+          class: PayrollBankChangeRecoveryJob
+          schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob
           schedule: '2-59/5 * * * *'
@@ -131,6 +137,12 @@ production:
           schedule: '*/5 * * * *'
         payroll_india_delivery_recovery:
           class: PayrollIndiaRecoveryJob
+          schedule: '*/5 * * * *'
+        payroll_pto_review:
+          class: PayrollPtoReviewJob
+          schedule: '11 * * * *'
+        payroll_bank_change_recovery:
+          class: PayrollBankChangeRecoveryJob
           schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob

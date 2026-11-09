@@ -4,23 +4,44 @@ require "rails_helper"
 require Rails.root.join("db/migrate/20261103090000_create_payroll_mercury_payments")
 require Rails.root.join("db/migrate/20261108120000_create_payroll_india_handoffs")
 
-RSpec.describe "Mercury payroll migration rollback" do
+RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
   TABLES = %w[payroll_payment_events payroll_payment_instructions payroll_payment_groups payroll_mercury_recipient_links
     payroll_mercury_connections payroll_split_arrangements payroll_expense_reservations].freeze
   VERSION = 20_261_103_090_000
+  FIRST_PTO_VERSION = 20_261_108_200_000
+  EMPLOYMENT_TENANT_INDEX_VERSION = 20_261_107_092_900
 
   before(:context) do
-    @original_version = ActiveRecord::Base.connection_pool.migration_context.current_version
-    DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata]
-    ActiveRecord::Base.connection_pool.migration_context.migrate(VERSION)
+    @migration_context = ActiveRecord::Base.connection_pool.migration_context
+    @original_versions = @migration_context.get_all_versions.sort
+    @original_pto_schema = pto_schema_snapshot
+    @rewound_versions = []
+    DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata schema_migrations]
+    # Retain independent current PTO guards and their shared employment tenant index.
+    @original_versions.reverse_each do |version|
+      next unless version > VERSION && version < FIRST_PTO_VERSION
+      next if version == EMPLOYMENT_TENANT_INDEX_VERSION # Five current PTO foreign keys depend on this shared index.
+
+      @migration_context.run(:down, version)
+      @rewound_versions << version
+    end
     # Current payroll guards require India records even while Mercury DDL is tested historically.
-    CreatePayrollIndiaHandoffs.new.up
-    @created_india_tables = true
+    ActiveRecord::Base.connection.transaction do
+      CreatePayrollIndiaHandoffs.new.up
+      @created_india_tables = true
+    end
   end
 
   after(:context) do
-    CreatePayrollIndiaHandoffs.new.down if @created_india_tables && ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
-    ActiveRecord::Base.connection_pool.migration_context.migrate(@original_version)
+    begin
+      CreatePayrollIndiaHandoffs.new.down if @created_india_tables && ActiveRecord::Base.connection.table_exists?(:payroll_india_handoffs)
+    ensure
+      Array(@rewound_versions).sort.each { |version| @migration_context.run(:up, version) }
+    end
+    expect(@migration_context.get_all_versions.sort).to eq(@original_versions)
+    expect(pto_schema_snapshot).to eq(@original_pto_schema)
+    expect([ConsultantPtoPolicy, PayrollPtoEntry, PayrollPtoAllocation, PayrollPtoRecovery, PayrollPtoNotification].map(&:count)).to eq([0] * 5)
+    puts "Historical Mercury fixture restored #{@original_versions.size} versions; PTO #{@original_pto_schema[:functions].size} functions/#{@original_pto_schema[:triggers].size} triggers unchanged"
   end
 
   before do
@@ -30,8 +51,13 @@ RSpec.describe "Mercury payroll migration rollback" do
   end
   include_context "approved mercury consultant payroll"
 
+  def draft_revision
+    @draft_revision ||= workflow.revise!(actor: accounts, payload: synthetic_payload,
+      idempotency_key: SecureRandom.uuid, expected_digest: nil)
+  end
+
   def group
-    @group ||= PayrollPaymentGroup.create!(company:, payroll_run: run, payroll_revision: approve_revision, employment:,
+    @group ||= PayrollPaymentGroup.create!(company:, payroll_run: run, payroll_revision: draft_revision, employment:,
       line_digest: "a" * 64, entitlement_minor: 100, required_legs: 1)
   end
 
@@ -69,8 +95,18 @@ RSpec.describe "Mercury payroll migration rollback" do
         allocated_to: "spouse", remainder_to: "consultant")
     when "payroll_expense_reservations"
       PayrollExpenseReservation.create!(company:, expense: create(:expense, company:, user: worker), payroll_run: run,
-        payroll_revision: approve_revision, employment:, amount_minor: 100)
+        payroll_revision: draft_revision, employment:, amount_minor: 100)
     end
+  end
+
+  def pto_schema_snapshot
+    connection = ActiveRecord::Base.connection
+    {
+      functions: connection.select_rows("SELECT proname, pg_get_functiondef(oid) FROM pg_proc WHERE pronamespace = 'public'::regnamespace AND (proname = 'protect_payroll_pto_history' OR proname LIKE 'validate_payroll_pto_%') ORDER BY proname"),
+      triggers: connection.select_rows("SELECT c.relname, t.tgname, pg_get_triggerdef(t.oid) FROM pg_trigger t JOIN pg_class c ON c.oid = t.tgrelid WHERE NOT t.tgisinternal AND (c.relname = 'consultant_pto_policies' OR c.relname LIKE 'payroll_pto_%') ORDER BY c.relname, t.tgname"),
+      employment_index: connection.select_value("SELECT pg_get_indexdef('index_employments_hiring_tenant_identity'::regclass)"),
+      foreign_keys: connection.select_rows("SELECT conrelid::regclass::text, conname, pg_get_constraintdef(oid), convalidated FROM pg_constraint WHERE contype = 'f' AND (conrelid::regclass::text = 'consultant_pto_policies' OR conrelid::regclass::text LIKE 'payroll_pto_%') ORDER BY 1, 2")
+    }
   end
 
   def snapshot

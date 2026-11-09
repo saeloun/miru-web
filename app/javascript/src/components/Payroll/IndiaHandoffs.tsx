@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { IndiaHandoff, IndiaHandoffs, IndiaReport, payrollApi } from "./api";
 import { exactAmount } from "./amount";
 import { errorMessage } from "./paymentLabels";
+import { PtoSummary } from "./PtoPanel";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -141,6 +142,7 @@ const Report = ({ report }: { report: IndiaReport }) => (
         </div>
       ))}
     </dl>
+    {report.pto && <PtoSummary facts={report.pto} />}
     {report.reimbursements.length > 0 && (
       <div>
         <h5 className="font-medium">Included reimbursements</h5>

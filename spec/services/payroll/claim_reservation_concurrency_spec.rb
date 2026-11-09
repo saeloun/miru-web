@@ -19,6 +19,8 @@ RSpec.describe "Payroll claim reservation concurrency" do
   %w[edited reapproved].each do |change|
     it "rejects an expense #{change} after payroll validation but before reservation" do
       employment.update!(joined_at: Date.new(2020, 1, 1))
+      configure_synthetic_pto_policy
+      record_synthetic_pto_treatment
       claim = create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved)
       revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
         consultants: [{ employment_id: employment.id, expense_ids: [claim.id], acknowledged: true }],

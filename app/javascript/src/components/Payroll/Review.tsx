@@ -17,6 +17,7 @@ import { exactAmount } from "./amount";
 import MercuryPaymentsPanel from "./MercuryPayments";
 import IndiaHandoffsPanel from "./IndiaHandoffs";
 import PreflightSummary from "./PreflightSummary";
+import { PtoSummary } from "./PtoPanel";
 import {
   CreateRunForm,
   PrepareRevisionPanel,
@@ -136,6 +137,26 @@ const Line = ({ line }: { line: ReviewLine }) => {
         </p>
       </CardHeader>
       <CardContent className="space-y-6">
+        {line.preparation?.service_fee_review && (
+          <section className="space-y-2 rounded-md border border-border p-3">
+            <h4 className="font-medium">Reviewed service-period basis</h4>
+            <p className="text-sm tabular-nums">
+              {line.preparation.service_fee_review.context.service_from} to{" "}
+              {line.preparation.service_fee_review.context.service_to} ·{" "}
+              {exactAmount(
+                line.preparation.service_fee_review.amount_minor,
+                "INR"
+              )}{" "}
+              before approved unpaid time
+            </p>
+            <p className="break-words text-sm">
+              {line.preparation.service_fee_review.reason}
+            </p>
+          </section>
+        )}
+        {line.pay_type === "consultant" && line.source?.pto && (
+          <PtoSummary facts={line.source.pto} />
+        )}
         <Facts
           rows={[
             ["Base pay", exactAmount(line.amounts.base_minor, line.currency)],
@@ -617,6 +638,7 @@ const Review = () => {
           <PrepareRevisionPanel
             companyId={companyId}
             runId={run.id}
+            month={run.period.slice(0, 7)}
             onChanged={() => setRefresh(value => value + 1)}
           />
           {run.revision && (

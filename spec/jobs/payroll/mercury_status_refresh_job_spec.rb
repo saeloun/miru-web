@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe Payroll::MercuryStatusRefreshJob do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let!(:leg) { accepted_instruction }
 

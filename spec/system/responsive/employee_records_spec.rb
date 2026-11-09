@@ -68,6 +68,7 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       fill_in "Account holder name", with: "Synthetic Employee"
       fill_in "Bank name", with: "Synthetic Bank"
       fill_in "Bank account number", with: "001234567890"
+      fill_in "Confirm bank account number", with: "001234567890"
       fill_in "IFSC", with: "SBIN0001234"
       fill_in "Emergency contact name", with: "Synthetic Contact"
       fill_in "Emergency contact phone", with: "9999999999"

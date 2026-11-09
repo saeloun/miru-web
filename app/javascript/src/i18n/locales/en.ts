@@ -279,6 +279,7 @@ const en = {
     cutoff: "Expense cutoff",
     consultant: "Consultant",
     monthlyFee: "Monthly fee (INR)",
+    periodBaseFee: "Reviewed service-period base (INR)",
     expected: "Expected hours",
     recorded: "Recorded hours (all review states)",
     days: "Recorded days (hours / 8)",

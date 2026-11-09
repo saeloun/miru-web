@@ -23,6 +23,8 @@ RSpec.describe Payroll::IndiaHandoff do
   before do
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "india", legal_entity_name: legal_name, change_reason: "Synthetic India terms")
+    configure_synthetic_pto_policy
+    record_synthetic_pto_treatment
   end
 
   def queue_handoff(revision = approve_revision)
@@ -221,9 +223,12 @@ RSpec.describe Payroll::IndiaHandoff do
   it "rejects Mercury funding and any pending split arrangement" do
     terms = employment.consultant_compensations.order(:id).last
     ConsultantCompensation.create!(terms.attributes.except("id", "created_at", "updated_at").merge("payment_source" => "mercury_us"))
+    record_synthetic_pto_treatment
     revision = approve_revision
     expect { queue_handoff(revision) }.to raise_error(Payroll::MercuryPayment::Blocked) { |error| expect(error.codes).to include("funding_not_india") }
     ConsultantCompensation.create!(terms.attributes.except("id", "created_at", "updated_at"))
+    record_synthetic_pto_treatment
+    revision = approve_revision(parent: revision.digest)
     PayrollSplitArrangement.create!(company:, employment:, requested_by: owner, details: bank_details.merge("bank_country" => "IN").slice(*PayrollSplitArrangement::DETAIL_KEYS),
       allocation_kind: "percentage", allocation_value: 50, allocated_to: "spouse", remainder_to: "consultant")
     expect { queue_handoff(revision) }.to raise_error(Payroll::MercuryPayment::Blocked) { |error| expect(error.codes).to include("split_not_supported") }

@@ -3,7 +3,7 @@
 require "rails_helper"
 
 RSpec.describe "Mercury payroll API", type: :request do
-  include_context "approved mercury consultant payroll"
+  include_context "reviewed mercury consultant payroll"
 
   let!(:revision) { approve_revision }
   let(:outsider_company) { create(:company) }
