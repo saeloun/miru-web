@@ -56,6 +56,7 @@ module Payroll
       end
     end
 
+    # Overlapping retries can both miss the replay check before either decision commits.
     def review_obligation!(origin_entry_id:, period:, kind:, reason:, expected_digest:, idempotency_key:, **options)
       options.assert_valid_keys(:rate_amount, :rate_hours, :rate_reference, :origin_component)
       month = historical_month(period, kind)
@@ -100,6 +101,7 @@ module Payroll
 
     private
 
+      # Historical debt requires an explicit recovery treatment rather than ordinary paid leave.
       def historical_month(period, kind)
         month = period.is_a?(Date) ? period : iso_date(period)
         unless month.day == 1 && %w[unpaid advance defer waive correction].include?(kind)
