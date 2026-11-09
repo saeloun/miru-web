@@ -2,6 +2,7 @@
 
 require "rails_helper"
 require "tmpdir"
+require "timeout"
 
 RSpec.describe "Consultant billing identity", type: :system, js: true do
   PAN = "ABCDE1234F"
@@ -121,6 +122,41 @@ RSpec.describe "Consultant billing identity", type: :system, js: true do
     area = page.evaluate_script("({x: window.scrollX, y: window.scrollY, width: window.innerWidth, height: window.innerHeight})")
     FileUtils.mkdir_p(ENV.fetch("BILLING_IDENTITY_SHOTS"))
     page.save_screenshot(File.join(ENV.fetch("BILLING_IDENTITY_SHOTS"), "#{name}-#{@width}.png"), area:)
+  end
+
+  it "keeps the billing identity link under the pointer while profile sections finish loading" do
+    profile_waiting = Queue.new
+    release_profile = Queue.new
+    allow_any_instance_of(Api::V1::Users::PreviousEmploymentsController).to receive(:index).and_wrap_original do |original|
+      result = original.call
+      profile_waiting << true
+      Timeout.timeout(Capybara.default_max_wait_time) { release_profile.pop }
+      result
+    end
+
+    sign_in_at_width(consultant, 1440)
+    page.current_window.resize_to(1440, 1400)
+    visit "/settings/profile"
+    link = find_link("Billing identity", href: "/settings/billing-identity")
+    Timeout.timeout(Capybara.default_max_wait_time) { profile_waiting.pop }
+    before = link.evaluate_script("this.getBoundingClientRect().toJSON()")
+    x = before.fetch("x") + before.fetch("width") / 2
+    y = before.fetch("y") + before.fetch("height") / 2
+    expect(y).to be_between(0, 1400)
+    page.driver.browser.mouse.move(x:, y:)
+    release_profile << true
+    within("#account-security") { expect(page).to have_no_css("[role='status']") }
+    after = link.evaluate_script("this.getBoundingClientRect().toJSON()")
+    if ENV["PROFILE_NAV_SHOTS"]
+      FileUtils.mkdir_p(ENV.fetch("PROFILE_NAV_SHOTS"))
+      area = page.evaluate_script("({ x: window.scrollX, y: window.scrollY, width: window.innerWidth, height: window.innerHeight })")
+      page.save_screenshot(File.join(ENV.fetch("PROFILE_NAV_SHOTS"), "profile-link-settled-1440.png"), area:)
+    end
+    page.driver.browser.mouse.down.up
+    expect(page).to have_css("h1", text: "Consultant billing identity", exact_text: true),
+      "The ordinary click targeted the initial link at #{before.inspect}; after profile loading it was at #{after.inspect}"
+  ensure
+    release_profile << true
   end
 
   [1440, 375].each do |width|
