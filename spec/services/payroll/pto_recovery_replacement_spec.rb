@@ -42,9 +42,11 @@ RSpec.describe "PTO recovery replacement and owner review" do
     revision
   end
 
-  def fresh_revision
+  def fresh_revision(expense_ids: nil)
+    selection = { employment_id: employment.id, acknowledged: true }
+    selection[:expense_ids] = expense_ids unless expense_ids.nil?
     revision = Payroll::ConsultantRevision.new(run, actor: accounts).create!(
-      consultants: [{ employment_id: employment.id, acknowledged: true }], cutoff: Date.current.iso8601,
+      consultants: [selection], cutoff: Date.current.iso8601,
       expected_digest: run.current_revision&.digest, idempotency_key: SecureRandom.uuid)
     approve_revision_record(revision)
   end
@@ -55,16 +57,18 @@ RSpec.describe "PTO recovery replacement and owner review" do
   end
 
   def submit(leg)
-    stub_mercury_write(mercury_json(mercury_request("requestId" => SecureRandom.uuid, "amount" => leg.principal_minor / 100.0)))
+    stub_mercury_write(mercury_json(mercury_request("requestId" => SecureRandom.uuid, "recipientId" => leg.mercury_recipient_id,
+      "amount" => leg.principal_minor / 100.0)))
     payment.submit!(actor: owner, instruction_id: leg.id, expected_digest: leg.frozen_digest)
   end
 
   def refresh(leg, status: "approved", transactions: nil)
     leg.reload
-    request = mercury_request("requestId" => leg.provider_request_id, "amount" => leg.principal_minor / 100.0,
+    request = mercury_request("requestId" => leg.provider_request_id, "recipientId" => leg.mercury_recipient_id, "amount" => leg.principal_minor / 100.0,
       "status" => status, "createdAt" => leg.provider_request_created_at.iso8601)
     stub_request(:get, "#{mercury_base}/request-send-money/#{leg.provider_request_id}").to_return(mercury_json(request))
-    transactions ||= [mercury_transaction("requestId" => leg.provider_request_id, "amount" => -leg.principal_minor / 100.0, "status" => "sent")]
+    transactions ||= [mercury_transaction("id" => leg.provider_request_id, "requestId" => leg.provider_request_id,
+      "amount" => -leg.principal_minor / 100.0, "status" => "sent")]
     stub_request(:get, %r{#{Regexp.escape(mercury_base)}/account/#{account_id}/transactions})
       .to_return(mercury_json({ "total" => transactions.size, "transactions" => transactions }))
     reconciliation.refresh!(actor: owner, instruction_id: leg.id)
@@ -112,6 +116,63 @@ RSpec.describe "PTO recovery replacement and owner review" do
     expect(replacement.payroll_payment_group.reload.fully_credited_at).to be_present
     expect(PayrollPtoRecovery.heads.find_by!(payroll_run: run)).to have_attributes(kind: "settled", payroll_revision_id: third.id)
     expect { credit(replacement) }.not_to change(PayrollPtoRecovery, :count)
+  end
+
+  it "rebinds only the stale recovery when a newer spouse leg still protects the split and its claim" do
+    claim = create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: "2026-11-02", status: :approved, approved_at: 1.hour.ago)
+    first_revision = fresh_revision(expense_ids: [claim.id])
+    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN",
+      "bank_account_number" => "222233334444", "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
+    split = Payroll::SplitArrangements.new(run)
+    arrangement = split.request!(actor: accounts, employment_id: employment.id,
+      attributes: { allocation_kind: "percentage", allocation_value: "25", allocated_to: "spouse", remainder_to: "consultant" },
+      details:, account_number_confirmation: details.fetch("bank_account_number"))
+    split.verify!(actor: accounts, arrangement_id: arrangement.id)
+    split.approve!(actor: owner, arrangement_id: arrangement.id)
+    verified_connection
+    linked_recipient
+    spouse_id = "66666666-6666-4666-8666-666666666666"
+    spouse = mercury_recipient("id" => spouse_id, "name" => "Synthetic Spouse",
+      "internationalWireRoutingInfo" => { "iban" => details.fetch("bank_account_number"), "swiftCode" => details.fetch("bank_swift"),
+        "countrySpecific" => { "india" => { "ifscCode" => details.fetch("bank_ifsc") } } })
+    stub_request(:get, "#{mercury_base}/recipient/#{spouse_id}").to_return(mercury_json(spouse))
+    linked_recipient(beneficiary: "spouse", id: spouse_id)
+    original, unsent = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: first_revision.digest, quote:)
+    submit(original)
+    reservation = PayrollPtoRecovery.heads.find_by!(payroll_run: run)
+    claim_reservation = PayrollExpenseReservation.active.find_by!(expense: claim)
+    second = carry_revision
+    expect(PayrollPtoRecovery.heads.find_by!(payroll_run: run).id).to eq(reservation.id)
+    expect(unsent.reload.submission_state).to eq("voided")
+    newer_spouse = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: second.digest, quote:).sole
+    expect(newer_spouse.beneficiary).to eq("spouse")
+    submit(newer_spouse)
+    refresh(original, status: "cancelled", transactions: [])
+    expect(original.reload.released_at).to be_present
+
+    third = fresh_revision
+    rebound = PayrollPtoRecovery.heads.find_by!(payroll_run: run)
+    expect(rebound).to have_attributes(kind: "reserved", payroll_revision_id: third.id)
+    expect(rebound.previous_recovery).to have_attributes(kind: "released", previous_recovery_id: reservation.id)
+    expect(claim_reservation.reload).to have_attributes(payroll_revision_id: first_revision.id, released_at: nil, settled_at: nil)
+    other_run = PayrollRun.create!(company:, period: run.period.next_month, currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
+    expect(Payroll::ClaimReference.issues(other_run, third.payroll_payload.fetch("lines").sole, employment)).to eq(["claim_changed:#{claim.id}"])
+    expect { Payroll::ClaimReference.reserve!(other_run, third) }.to raise_error(Payroll::Workflow::Conflict, /another payroll/)
+    expect(claim_reservation.reload).to have_attributes(payroll_run_id: run.id, payroll_revision_id: first_revision.id, released_at: nil)
+    remaining = payment.prepare!(actor: owner, employment_id: employment.id, expected_digest: third.digest, quote:).sole
+    expect(remaining.beneficiary).to eq("consultant")
+    expect(remaining.entitlement_minor + newer_spouse.entitlement_minor).to eq(first_revision.payroll_payload.dig("lines", 0, "amounts", "net_minor"))
+    submit(remaining)
+    [newer_spouse, remaining].each_with_index do |leg, index|
+      refresh(leg)
+      credit(leg, reference: "SYNTHETIC-SPLIT-#{index}")
+    end
+    expect(remaining.payroll_payment_group.reload.fully_credited_at).to be_present
+    expect(PayrollPtoRecovery.heads.find_by!(payroll_run: run)).to have_attributes(kind: "settled", payroll_revision_id: third.id)
+    expect(claim_reservation.reload.settled_at).to be_present
+    expect(claim.reload).to be_paid
+    expect { credit(remaining, reference: "SYNTHETIC-SPLIT-1") }.not_to change(PayrollPtoRecovery, :count)
+    expect(remaining.payroll_payment_group.payroll_payment_instructions.where(submission_state: "accepted").count).to eq(3)
   end
 
   context "with India funding" do
@@ -170,7 +231,8 @@ RSpec.describe "PTO recovery replacement and owner review" do
       refresh(leg)
       credit(leg)
       expect(PayrollPtoRecovery.heads.where(payroll_run: run, kind: "settled").count).to eq(2)
-      original = mercury_transaction("requestId" => leg.reload.provider_request_id, "amount" => -leg.principal_minor / 100.0, "status" => "sent")
+      original = mercury_transaction("id" => leg.reload.provider_transaction_id, "requestId" => leg.provider_request_id,
+        "amount" => -leg.principal_minor / 100.0, "status" => "sent")
       refresh(leg, transactions: [original, original.merge("id" => "unrelated-adverse", "status" => "reversed")])
       reviews = PayrollPtoRecovery.heads.where(payroll_run: run, kind: "returned_review").order(:id).to_a
       expect(reviews.size).to eq(2)

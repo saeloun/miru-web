@@ -7,7 +7,7 @@ module Payroll
     def reserve!(run, revision)
       revision.payroll_payload.fetch("lines").sort_by { |line| line["employment_id"] }.each do |line|
         next unless line["pay_type"] == "consultant"
-        next if MercuryRevisionGuard.new(run).protected_line?(line)
+        protected_line = MercuryRevisionGuard.new(run).protected_line?(line)
 
         pto = line.dig("source_snapshot", "pto")
         next unless pto
@@ -16,6 +16,7 @@ module Payroll
         employment.with_lock do
           ids = pto.fetch("historical_decision_ids")
           ids += [pto.fetch("decision_id")] if pto["unpaid_hours"].to_d.positive?
+          ids = released_decision_ids(run, employment, ids) if protected_line
           ids.each { |id| reserve_entry!(run, revision, line, employment, id) }
         end
       end
@@ -23,10 +24,17 @@ module Payroll
       raise Workflow::Conflict, "PTO decision changed or was recovered elsewhere; prepare a fresh revision", cause: nil
     end
 
+    def released_decision_ids(run, employment, ids)
+      released_ids = PayrollPtoRecovery.heads.where(payroll_run: run, employment:, kind: "released").pluck(:payroll_pto_entry_id)
+      ids.select { |id| released_ids.include?(id.to_i) }
+    end
+    private_class_method :released_decision_ids
+
     def release!(run, protected_employment_ids:)
-      reservations(run).where.not(employment_id: protected_employment_ids).order(:employment_id, :id).each do |entry|
+      reservations(run).order(:employment_id, :id).each do |entry|
         entry.employment.with_lock do
           next unless PayrollPtoRecovery.heads.exists?(id: entry.id)
+          next if protected_employment_ids.include?(entry.employment_id) && original_bank_activity?(run, entry)
 
           append(entry, "released")
         end
