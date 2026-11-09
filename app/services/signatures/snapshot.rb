@@ -22,7 +22,7 @@ class Signatures::Snapshot
         @revision.provider_status.in?([nil, "DRAFT"]) ? 3.days.from_now : @revision.next_reminder_at
       end
       status = "signed" if @revision.archived_at
-      close_pending_cancellations if %w[COMPLETED REJECTED].include?(provider_status)
+      close_pending_cancellations(provider_status) if %w[COMPLETED REJECTED CANCELLED].include?(provider_status)
       @revision.update!(provider_status:, provider_checked_at: checked_at, recipient_statuses: people, status:,
         next_reminder_at: next_reminder,
         archive_error: provider_status == "COMPLETED" || @revision.archived_at ? @revision.archive_error : nil)
@@ -31,11 +31,16 @@ class Signatures::Snapshot
 
   private
 
-    def close_pending_cancellations
+    def close_pending_cancellations(provider_status)
+      state, error_code, action = if provider_status == "CANCELLED"
+        ["confirmed", nil, "cancel_confirmed"]
+      else
+        ["failed", "request_closed", "cancel_request_closed"]
+      end
       @revision.signature_operations.where(kind: "cancel", state: %w[queued running waiting uncertain]).find_each do |operation|
-        operation.update!(state: "failed", error_code: "request_closed", finished_at: Time.current, run_token: nil)
+        operation.update!(state:, error_code:, finished_at: Time.current, run_token: nil)
         record = @revision.signature_request
-        record.audits.create!(action: "cancel_request_closed", user: operation.requested_by, associated: record.company,
+        record.audits.create!(action:, user: operation.requested_by, associated: record.company,
           audited_changes: { revision_id: @revision.id, operation_key: operation.key })
       end
     end
