@@ -101,10 +101,21 @@ module Payroll
         recovery = PayrollPtoRecovery.heads.find_by(payroll_pto_entry: entry)
         next ["pto_recovery_return_review"] if recovery&.kind == "returned_review"
         next ["pto_recovery_already_claimed"] if recovery && recovery.kind != "released" && recovery.payroll_run_id != run.id
+        if recovery&.kind == "reserved" && recovery.payroll_revision_id != run.current_revision&.id && !original_bank_activity?(run, recovery)
+          next ["pto_reservation_revision_changed"]
+        end
 
         []
       end
     end
+
+    def original_bank_activity?(run, recovery)
+      original = { company_id: run.company_id, payroll_run_id: run.id, employment_id: recovery.employment_id,
+                   payroll_revision_id: recovery.payroll_revision_id }
+      PayrollIndiaHandoff.active.where(original).exists? ||
+        PayrollPaymentInstruction.open_slot.where(original).where.not(submission_state: "prepared").any?(&:intact?)
+    end
+    private_class_method :original_bank_activity?
 
     def append(previous, kind, actor: nil, reason: nil)
       PayrollPtoRecovery.create!(company_id: previous.company_id, employment_id: previous.employment_id,
@@ -155,6 +166,8 @@ module Payroll
 
     def settle_review!(groups, head, actor, reason)
       settled = append(head, "settled", actor:, reason:)
+      return settled if PayrollPtoRecovery.heads.exists?(payroll_run_id: head.payroll_run_id, employment_id: head.employment_id, kind: "returned_review")
+
       groups.each do |group|
         next unless group.fully_credited_at.nil? && group_confirms_credit?(group, head, recovery_line(head))
 
