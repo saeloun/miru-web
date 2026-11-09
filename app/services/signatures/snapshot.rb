@@ -31,6 +31,7 @@ class Signatures::Snapshot
 
   private
 
+    # Reconcile pending cancellations from provider evidence without rewriting finished attempts.
     def close_pending_cancellations(provider_status)
       state, error_code, action = if provider_status == "CANCELLED"
         ["confirmed", nil, "cancel_confirmed"]

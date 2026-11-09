@@ -184,6 +184,7 @@ class Signatures::Delivery
       end
     end
 
+    # Cancel the verified envelope and let its terminal snapshot own the completion audit.
     def cancel_pending
       return unless mutation("cancelling")
 
