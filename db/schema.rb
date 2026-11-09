@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_150000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_160000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -3162,7 +3162,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_150000) do
       END IF;
       IF NEW.kind = 'opening' AND NOT EXISTS (SELECT 1 FROM consultant_pto_policies p WHERE p.id = NEW.consultant_pto_policy_id
         AND p.opening_minutes < 0 AND NEW.minutes = -p.opening_minutes AND NEW.debt_minutes = NEW.minutes
-        AND NEW.period = p.opening_on AND NEW.case_key = 'opening:' || p.opening_on::text) THEN
+        AND NEW.period = p.opening_on AND NEW.case_key = 'opening:' || to_char(p.opening_on, 'YYYY-MM-DD')) THEN
         RAISE EXCEPTION 'PTO opening must reference its single reconciled source';
       END IF;
       IF NEW.origin_entry_id IS NOT NULL THEN

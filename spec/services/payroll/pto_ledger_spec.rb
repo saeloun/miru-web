@@ -441,6 +441,23 @@ RSpec.describe Payroll::PtoLedger do
     expect(review).to include(closing_pto_hours: "0.0", fee_estimate: "100000.0", confirmed_unpaid_hours: "0.0")
   end
 
+  ["ISO, MDY", "SQL, DMY", "German, DMY"].each do |date_style|
+    it "preserves the ISO negative-opening identity with #{date_style} DateStyle" do
+      connection = ApplicationRecord.connection
+      original_style = connection.select_value("SHOW DateStyle")
+      connection.execute("SET LOCAL DateStyle TO #{connection.quote(date_style)}")
+
+      record = policy(opening: "-40")
+
+      opening = PayrollPtoEntry.find_by!(employment:, kind: "opening")
+      expect(opening).to have_attributes(consultant_pto_policy_id: record.id, case_key: "opening:2026-09-01",
+        minutes: 2400, debt_minutes: 2400, balance_delta_minutes: 0)
+      expect(PayrollPtoEntry.where(employment:, kind: "opening").count).to eq(1)
+    ensure
+      connection.execute("SET LOCAL DateStyle TO #{connection.quote(original_style)}") if original_style
+    end
+  end
+
   it "reports only newly borrowed hours as advance when forty paid hours cover part of a sixty-hour gap" do
     policy
     work_entry.update!(duration: 6_000)

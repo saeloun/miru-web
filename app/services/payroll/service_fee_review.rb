@@ -110,8 +110,15 @@ class Payroll::ServiceFeeReview
         @actor.employments.kept.where(company: @company, joined_at: ..@company.resolved_time_zone.today)
           .where("resigned_at IS NULL OR resigned_at >= ?", @company.resolved_time_zone.today).exists?
       roles = active && @actor.roles.where(resource: @company, name: %w[owner admin]).exists?
-      assigned = active && PayrollRun.where(company: @company, period: month, accounts_reviewer: @actor).any? { |run| PayrollRunPolicy.new(@actor, run).revisions? }
+      assigned = active && reviewable_subject?(month) &&
+        PayrollRun.where(company: @company, period: month, accounts_reviewer: @actor).any? { |run| PayrollRunPolicy.new(@actor, run).revisions? }
       raise Payroll::Workflow::NotAuthorized, "An active owner, admin or assigned accounts reviewer is required" unless active && (roles || assigned)
+    end
+
+    def reviewable_subject?(month)
+      @company.employments.kept.joins(:consultant_compensations).where(id: @employment.id)
+        .where("employments.joined_at IS NULL OR employments.joined_at <= ?", month.end_of_month)
+        .where("employments.resigned_at IS NULL OR employments.resigned_at >= ?", month).exists?
     end
 
     def protected_activity?(run)
