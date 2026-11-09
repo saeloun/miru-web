@@ -13,7 +13,7 @@ execute payments, calculate salary, or certify statutory filings.
 | PAN copy | Employee or active company admin can upload and privately download PDF/JPEG/PNG copies. |
 | Family details | Employee/admin maintain name, DOB, gender and relationship for each family member. |
 | Emergency contact | Employee/admin maintain contact name and phone. |
-| Bank details | Employee/admin maintain account holder, bank, branch, account number, IFSC and optional SWIFT. |
+| Bank details | Employee/admin maintain account holder, bank, branch, account number, IFSC and optional SWIFT. Changed nonblank account numbers require an exact second entry. |
 | Current salary | Admin sets amount, currency, frequency and effective date; employee can view it. Increment history is optional and deferred. |
 | Previous payments | Admin records an external payment with paid date, amount, currency and reference; employee sees paginated history explicitly labeled as manually recorded. No provider settlement claim. |
 | Contract | Admin uploads, employee/admin privately download. Retain uploaded versions. |
@@ -24,7 +24,8 @@ execute payments, calculate salary, or certify statutory filings.
 
 ## Security and scope
 
-New functionality uses the existing default-off payroll entitlement. Private
+Employee records follow the active workspace/profile policy independently of the
+payroll rollout gate. Payment tools and invoice-consent grants have their own gates. Private
 records belong to employment, not a global user profile. Only active admins
 and the active employee themselves can access them in the current company.
 Clients, coworkers and former employees cannot. An admin of another company
@@ -42,3 +43,19 @@ UI uses the current profile/team layout and existing controls. Staff see their
 own record; admin controls are absent for staff. All labels and empty/error
 states explain manual payment recording and report source limitations. Test
 desktop and mobile with synthetic data. No real mail or payment during QA.
+
+## Bank account confirmation API
+
+For `PATCH /api/v1/employee_records`, send a matching string in
+`employee_record.bank_account_number_confirmation` when changing or first setting
+`employee_record.private_details.bank_account_number`. Keep leading zeros; JSON
+numbers are not accepted as confirmation. Missing/mismatched/malformed confirmation
+returns422 before encrypted data or audit history changes. The entire nested
+request is filtered; confirmation is never persisted or returned.
+
+Confirmation is unnecessary when the account field is absent, unchanged or cleared.
+Contact/salary-only API updates keep their existing behavior. The shared self/admin
+editor starts confirmation blank and clears it on number changes, successful save
+or cancellation. Failed saves retain the entered draft. Existing programmatic model
+imports and the spouse/split confirmation workflow are unchanged. Double entry does
+not establish bank ownership; recipient verification and payment readiness still apply.

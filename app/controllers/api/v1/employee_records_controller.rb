@@ -20,7 +20,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
   end
 
   def update
-    attributes = mutation_params(:employee_record, %w[company_id user_id private_details])
+    attributes = mutation_params(:employee_record, %w[company_id user_id private_details bank_account_number_confirmation])
     return if performed?
 
     employment = find_employment(attributes[:user_id])
@@ -33,6 +33,13 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     employment.with_lock do
       authorize employment, :update?, policy_class: EmployeeRecordPolicy
       record = employment.employee_record || employment.build_employee_record
+      number = values["bank_account_number"]
+      confirmation = attributes[:bank_account_number_confirmation]
+      invalid_confirmation = !confirmation.nil? && !confirmation.is_a?(String)
+      if invalid_confirmation || number.present? && number != record.private_details["bank_account_number"] && number != confirmation
+        record.errors.add(:base, "Confirm bank account number must exactly match the new account number")
+        raise ActiveRecord::RecordInvalid, record
+      end
       record.private_details = record.private_details.merge(values)
       record.save!
       record.audits.create!(action: "update", user: current_user, associated: current_company, audited_changes: {})

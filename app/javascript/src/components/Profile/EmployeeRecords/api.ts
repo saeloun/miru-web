@@ -15,11 +15,22 @@ export const employeeRecordsApi = {
       ...requestOptions(signal),
       params: { user_id: userId },
     }),
-  save: (identity, privateDetails, signal: Signal) =>
+  save: (
+    identity,
+    privateDetails,
+    signal: Signal,
+    bankAccountNumberConfirmation?: string
+  ) =>
     http.patch(
       "/employee_records",
       {
-        employee_record: { ...identity, private_details: privateDetails },
+        employee_record: {
+          ...identity,
+          private_details: privateDetails,
+          ...(bankAccountNumberConfirmation !== undefined && {
+            bank_account_number_confirmation: bankAccountNumberConfirmation,
+          }),
+        },
       },
       requestOptions(signal)
     ),

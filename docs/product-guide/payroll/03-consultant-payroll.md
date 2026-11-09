@@ -221,6 +221,18 @@ consultant. Each transfer has its own principal, OUR fee, key and status, so a f
 transfer can be prepared again without resending the one that succeeded. The consultant
 stays the service provider for income and tax purposes.
 
+## Bank account entry
+
+When setting or changing an account number in **Employee records**, enter it again
+in **Confirm bank account number**. The entries must match exactly, including leading
+zeros. Confirmation starts blank, clears when the number changes, and is never saved
+as profile data. Unchanged account numbers and edits to other fields need no repeat
+entry. The same requirement applies to direct API clients.
+
+This entry check does not verify the beneficiary. Continue the recipient verification
+and approval workflow after changing bank details; existing submitted transfers keep
+their frozen destination.
+
 ## Invoice authorization
 
 Configured consultants can open **Invoice authorization** in their profile settings
@@ -248,8 +260,8 @@ an invoice and retain the exact consent receipt.
 ## Not available yet
 
 Consultant invoice issuance and verified billing/tax identity, FIRC or FIRA
-attachments, replacing returned funds, consultant split requests, bank-number
-confirmation, bank-change notifications and Mercury webhooks remain follow-on work.
+attachments, replacing returned funds, consultant split requests, bank-change
+notifications and Mercury webhooks remain follow-on work.
 A returned wire stays visible and can't be replaced from Miru. The India accounts
 handoff, consultant bank-detail editing and explicit PTO policy/decision workflows
 are described above and in Employee records; they remain subject to their workspace

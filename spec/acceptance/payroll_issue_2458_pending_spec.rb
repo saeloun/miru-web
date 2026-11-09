@@ -9,7 +9,9 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     it "requires consultant legal name, billing address and applicable tax details before payment readiness"
     # Self-only versioned consent/withdrawal, immutable SQL and retries: invoice_authorization_spec.rb,
     # consultant_invoice_authorizations_spec.rb and responsive/consultant_invoice_authorization_spec.rb.
-    it "requires matching account-number confirmation and country-specific currency, IFSC, SWIFT and provider fields"
+    # Primary double-entry/API/privacy/native: employee_records_spec.rb and responsive/employee_bank_confirmation_spec.rb.
+    # Spouse double-entry: split_arrangements_spec.rb.
+    it "requires bank country, account currency and the applicable IFSC, SWIFT and provider beneficiary fields"
     it "encrypts bank and tax identifiers and exposes only masked values outside authorized payment preparation"
     it "notifies a consultant about missing details while allowing other complete consultants to progress"
     it "notifies accounts after a bank change and requires fresh beneficiary verification"
