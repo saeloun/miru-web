@@ -1,0 +1,187 @@
+name: Documenso AMD64 build verification
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [develop]
+    paths:
+      - .github/workflows/documenso-build.yml
+      - docs/qa/generic-document-signing-2462/documenso-security-hardening.patch
+      - docs/qa/generic-document-signing-2462/documenso-signing-compatibility.patch
+
+permissions:
+  contents: read
+
+concurrency:
+  group: documenso-amd64-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+env:
+  GIT_TERMINAL_PROMPT: '0'
+  UPSTREAM_SHA: 8707e33c124e4b1a68dde92d5e05178c9aabd0be
+  PR_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+  NODE_BASE: node@sha256:13cf9d4c07e847a41b81b0f24461bea41ec8bcd0a5c00e2ab88e2ba1159b54d4
+  IMAGE_REF: documenso-amd64:${{ github.sha }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Checkout patches and workflow
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Checkout pinned upstream
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          repository: documenso/documenso
+          ref: 8707e33c124e4b1a68dde92d5e05178c9aabd0be
+          path: vendor-documenso
+          persist-credentials: false
+
+      - name: Check resources and prepare exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import hashlib, os, pathlib, re, shutil, subprocess
+          def require(value):
+              if not value:
+                  raise RuntimeError("Documenso build input refused")
+          require(re.fullmatch(r"[0-9a-f]{40}", os.environ["GITHUB_SHA"]))
+          require(re.fullmatch(r"[0-9a-f]{40}", os.environ["PR_HEAD_SHA"]))
+          require(subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip() == os.environ["GITHUB_SHA"])
+          require(shutil.disk_usage(os.environ["RUNNER_TEMP"]).free >= 12 * 1024**3)
+          memory = int(next(line.split()[1] for line in pathlib.Path("/proc/meminfo").read_text().splitlines() if line.startswith("MemTotal:")))
+          require(memory >= 12 * 1024**2)
+          source = pathlib.Path("vendor-documenso")
+          require(subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip() == os.environ["UPSTREAM_SHA"])
+          patches = {
+              "documenso-security-hardening.patch": "37c1768a96bc465e18b5af4f885620dc4efbaa43e21a4a0994d616ed452cbae8",
+              "documenso-signing-compatibility.patch": "3c1154411b0e0196e962932253f018700ad71fc3642e0bd4535f302def1cdd6f",
+          }
+          paths = [pathlib.Path("docs/qa/generic-document-signing-2462", name).resolve() for name in patches]
+          for path in paths:
+              require(hashlib.sha256(path.read_bytes()).hexdigest() == patches[path.name])
+          subprocess.run(["git", "-C", str(source), "apply", "--check", *map(str, paths)], check=True)
+          subprocess.run(["git", "-C", str(source), "apply", *map(str, paths)], check=True)
+          dockerfile = source / "docker/Dockerfile"
+          original = dockerfile.read_text()
+          require(original.count("FROM node:24-alpine3.23 AS base") == 1)
+          dockerfile.write_text(original.replace("FROM node:24-alpine3.23 AS base", "FROM " + os.environ["NODE_BASE"] + " AS base"))
+          require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() == "36f4ecad683135162dfbf101035108fcccc3d226978531e9e298169074c2a265")
+          require(hashlib.sha256((source / "LICENSE").read_bytes()).hexdigest() == "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef")
+          subprocess.run(["git", "-C", str(source), "diff", "--check"], check=True)
+          print("Pinned upstream, both patches, AMD64 base and license verified; resource admission passed.")
+          PY
+
+      - name: Set up bounded native Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4
+        with:
+          version: v0.36.0
+          driver-opts: |
+            image=moby/buildkit@sha256:1f8167fcb0eca5b7126353d35299386945cbb8949cc516c592a49f80cfce4fa2
+            memory=12g
+            memory-swap=12g
+            cpu-period=100000
+            cpu-quota=400000
+          buildkitd-config-inline: |
+            [worker.oci]
+              max-parallelism = 2
+
+      - name: Build with existing security guards and TypeScript checks
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
+        with:
+          context: ./vendor-documenso
+          file: ./vendor-documenso/docker/Dockerfile
+          platforms: linux/amd64
+          load: true
+          push: false
+          tags: ${{ env.IMAGE_REF }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/documenso/documenso
+            org.opencontainers.image.revision=8707e33c124e4b1a68dde92d5e05178c9aabd0be
+            io.miru.build-revision=${{ github.sha }}
+
+      - name: Check final runtime without network or application startup
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker image inspect "$IMAGE_REF" --format '{{.Os}}/{{.Architecture}}' | grep -Fx linux/amd64
+          docker run --rm --network none --read-only --cap-drop ALL \
+            --security-opt no-new-privileges --log-driver none --memory 512m --memory-swap 512m \
+            --pids-limit 64 --entrypoint node "$IMAGE_REF" \
+            -e 'if(process.arch!=="x64"||process.platform!=="linux"||process.getuid()!==1001)process.exit(1);console.log(JSON.stringify({node:process.version,architecture:process.arch,uid:process.getuid()}))'
+          docker run --rm --network none --read-only --user 1001:1001 --cap-drop ALL \
+            --security-opt no-new-privileges --log-driver none --memory 512m --memory-swap 512m \
+            --pids-limit 64 --entrypoint node \
+            --mount "type=bind,src=$PWD/vendor-documenso/scripts/security,dst=/app/scripts/security,readonly" \
+            "$IMAGE_REF" /app/scripts/security/zod-size-gate-check.mjs
+
+      - name: Export immutable archive and provenance
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -m 700 "$RUNNER_TEMP/documenso-artifact"
+          docker image save --platform linux/amd64 "$IMAGE_REF" | gzip -n -6 > "$RUNNER_TEMP/documenso-artifact/image.tar.gz"
+          python3 - <<'PY'
+          import hashlib, json, os, pathlib, re, shutil, subprocess, tarfile
+          def require(value):
+              if not value:
+                  raise RuntimeError("Documenso archive refused")
+          output = pathlib.Path(os.environ["RUNNER_TEMP"], "documenso-artifact")
+          archive = output / "image.tar.gz"
+          require(0 < archive.stat().st_size <= 3 * 1024**3)
+          with tarfile.open(archive, "r:gz") as saved:
+              manifest = saved.getmember("manifest.json")
+              require(manifest.isfile() and manifest.size <= 65536)
+              entries = json.load(saved.extractfile(manifest))
+              require(isinstance(entries, list) and len(entries) == 1 and entries[0]["RepoTags"] == [os.environ["IMAGE_REF"]])
+              config_path = pathlib.PurePosixPath(entries[0]["Config"])
+              require(not config_path.is_absolute() and ".." not in config_path.parts)
+              config = saved.getmember(str(config_path))
+              require(config.isfile() and config.size <= 262144)
+              raw = saved.extractfile(config).read()
+              config_sha = hashlib.sha256(raw).hexdigest()
+              encoded_sha = config_path.stem if config_path.suffix == ".json" else config_path.name
+              require(re.fullmatch(r"[0-9a-f]{64}", encoded_sha) and encoded_sha == config_sha)
+              metadata = json.loads(raw)
+              require(metadata["os"] == "linux" and metadata["architecture"] == "amd64")
+              labels = metadata["config"]["Labels"]
+              require(labels["org.opencontainers.image.revision"] == os.environ["UPSTREAM_SHA"] and labels["io.miru.build-revision"] == os.environ["GITHUB_SHA"])
+          with archive.open("rb") as stream:
+              digest = hashlib.file_digest(stream, "sha256").hexdigest()
+          provenance = {
+              "checkout_revision": os.environ["GITHUB_SHA"], "pull_request_head_revision": os.environ["PR_HEAD_SHA"],
+              "upstream_revision": os.environ["UPSTREAM_SHA"],
+              "node_base": os.environ["NODE_BASE"], "platform": "linux/amd64", "image_reference": os.environ["IMAGE_REF"],
+              "docker_image_id": subprocess.check_output(["docker", "image", "inspect", "--format", "{{.Id}}", os.environ["IMAGE_REF"]], text=True).strip(),
+              "archive_config_sha256": config_sha, "archive_sha256": digest,
+              "prepared_dockerfile_sha256": hashlib.sha256(pathlib.Path("vendor-documenso/docker/Dockerfile").read_bytes()).hexdigest(),
+              "license_sha256": hashlib.sha256(pathlib.Path("vendor-documenso/LICENSE").read_bytes()).hexdigest(),
+              "archive_bytes": archive.stat().st_size, "registry_published": False, "application_started": False,
+              "workflow_run_id": os.environ["GITHUB_RUN_ID"], "workflow_run_attempt": os.environ["GITHUB_RUN_ATTEMPT"],
+              "patch_sha256": {name: hashlib.sha256(pathlib.Path("docs/qa/generic-document-signing-2462", name).read_bytes()).hexdigest() for name in ("documenso-security-hardening.patch", "documenso-signing-compatibility.patch")},
+          }
+          (output / "provenance.json").write_text(json.dumps(provenance, indent=2) + "\n")
+          (output / "SHA256SUMS").write_text(digest + "  image.tar.gz\n")
+          shutil.copyfile("vendor-documenso/LICENSE", output / "LICENSE")
+          source_files = output / "source"
+          source_files.mkdir(mode=0o700)
+          for name in provenance["patch_sha256"]:
+              shutil.copyfile(pathlib.Path("docs/qa/generic-document-signing-2462", name), source_files / name)
+          shutil.copyfile("vendor-documenso/docker/Dockerfile", source_files / "Dockerfile")
+          (output / "SOURCE.md").write_text("Upstream: https://github.com/documenso/documenso/tree/" + os.environ["UPSTREAM_SHA"] + "\nPatches (also included in source/): https://github.com/saeloun/miru-web/tree/" + os.environ["PR_HEAD_SHA"] + "/docs/qa/generic-document-signing-2462\nThe prepared Dockerfile is included in source/. See provenance.json for checkout, PR head, source, base and archive hashes.\n")
+          print(json.dumps(provenance, indent=2))
+          PY
+
+      - name: Retain build artifact for one day
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: documenso-amd64-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/documenso-artifact/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
