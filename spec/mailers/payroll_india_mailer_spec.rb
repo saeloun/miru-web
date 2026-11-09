@@ -52,6 +52,20 @@ RSpec.describe "Confidential India payroll mail" do
     expect(html).not_to include("<script>", "Not classified in source records")
   end
 
+  it "separates the frozen period basis from contractual pay and escapes its reason" do
+    report["monthly_fee"] = "100000"
+    report["period_base_fee"] = "50000"
+    report["service_fee_review"] = { "reason" => "Agreed <period basis>",
+      "context" => { "service_from" => "2026-11-01", "service_to" => "2026-11-13" } }
+    report["line"]["amounts"] = { "net_minor" => 4_500_000, "reimbursements_minor" => 0 }
+    mail = PayrollIndiaMailer.report(21).message
+    expect(mail.text_part.body.decoded).to include("Monthly consultancy fee: INR 100,000.00",
+      "Reviewed service-period base before unpaid time: INR 50,000.00", "Service-period dates: 2026-11-01 to 2026-11-13",
+      "Service-period fee reason: Agreed <period basis>", "Total INR payable: INR 45,000.00")
+    expect(mail.html_part.body.decoded).to include("Agreed &lt;period basis&gt;")
+    expect(mail.html_part.body.decoded).not_to include("Agreed <period basis>")
+  end
+
   it "keeps private content and transport exception text out of mail notifications and logs" do
     report["pto"] = pto
     notifications = []
@@ -74,7 +88,8 @@ RSpec.describe "Confidential India payroll mail" do
   it "filters the entire private action payload and delivery evidence from request logs" do
     filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
     filtered = filter.filter("india_handoff" => { "reference" => "PRIVATE transfer", "amount" => "62500" },
-      "accounts_email" => "accounts@example.test", "evidence_reference" => "PRIVATE reconciliation")
+      "accounts_email" => "accounts@example.test", "evidence_reference" => "PRIVATE reconciliation",
+      "service_fee_review" => { "amount" => "50000", "reason" => "PRIVATE fee agreement" })
     expect(filtered.values).to all(eq("[FILTERED]"))
   end
 end

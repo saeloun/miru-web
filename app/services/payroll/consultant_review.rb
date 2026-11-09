@@ -26,7 +26,7 @@ class Payroll::ConsultantReview
 
   def process(include_expenses: true, include_pto: true)
     Payroll::Entitlement.require!(@company.id)
-    terms = @sources.terms(@employment.id)
+    terms = service_period.terms
     warnings = []
     work = work_summary(warnings)
     working_days = work[:hours] / 8 if work[:hours]
@@ -40,7 +40,8 @@ class Payroll::ConsultantReview
       employment_id: @employment.id, consultant_name: @employment.user.full_name,
       month: @month.strftime("%Y-%m"), cutoff: @cutoff.iso8601, compensation_id: terms&.id,
       legal_entity_name: terms&.legal_entity_name, payment_source: terms&.payment_source,
-      monthly_fee: money(terms&.monthly_fee), expected_hours: money(expected), recorded_hours: money(work[:hours]&.round(4)),
+      monthly_fee: money(terms&.monthly_fee), period_base_fee: money(service_period.fee), service_fee_review: service_period.binding,
+      configured_monthly_fee: money(terms&.monthly_fee), expected_hours: money(expected), recorded_hours: money(work[:hours]&.round(4)),
       approved_work_hours: money(work[:approved]&.round(4)), unresolved_work_hours: money(work[:unresolved]&.round(4)),
       not_required_work_hours: money(work[:not_required]&.round(4)),
       pending_work_hours: money(work[:pending]&.round(4)), rejected_work_hours: money(work[:rejected]&.round(4)),
@@ -56,8 +57,8 @@ class Payroll::ConsultantReview
 
   def uncovered_work_minutes
     warnings = []
-    terms = @sources.terms(@employment.id)
-    expected = expected_hours(terms, warnings) if terms
+    terms = service_period.terms
+    expected = expected_hours(warnings) if terms
     return 0.to_d if expected.nil?
 
     minutes = work_minutes(warnings) || {}
@@ -137,15 +138,17 @@ class Payroll::ConsultantReview
 
         return [nil, nil]
       end
-      expected = expected_hours(terms, warnings)
+      expected = expected_hours(warnings)
       return [nil, nil] if expected.nil?
 
       basis, deducted = fee_quantities(expected, unpaid, pto)
       raise InvalidInput, "Unpaid hours cannot exceed expected hours" if deducted > basis
 
       warnings.concat(fee_warnings(expected, covered, unpaid))
+      warnings << "service_fee_review_required" if service_period.required? && !service_period.current_review
       blocking = %w[missing_service_dates partial_service terms_changed_during_month zero_expected_hours]
-      fee = (terms.monthly_fee * (basis - deducted) / basis).round(2) if (warnings & blocking).empty?
+      blocking -= %w[partial_service terms_changed_during_month] if service_period.current_review
+      fee = (service_period.fee * (basis - deducted) / basis).round(2) if service_period.fee && service_period.blockers.empty? && (warnings & blocking).empty?
       [expected, fee]
     end
 
@@ -187,16 +190,15 @@ class Payroll::ConsultantReview
       @service_dates ||= [@month, @employment.joined_at || @month].max..[@finish, @employment.resigned_at || @finish].min
     end
 
-    def expected_hours(terms, warnings)
-      national = @sources.national_holidays(service_dates)
-      dates = @sources.selected_holidays(@employment.user_id, service_dates)
-      if dates.any? { |recorded, configured| recorded != configured }
-        warnings << "holiday_date_requires_review"
-        return nil
-      end
-      holidays = (national + dates.map(&:last)).uniq
-      days = service_dates.count { |date| terms.weekdays.include?(date.cwday) && !holidays.include?(date) }
-      days * terms.hours_per_day
+    def expected_hours(warnings)
+      warnings.concat(service_period.blockers)
+      return nil if service_period.blockers.include?("holiday_date_requires_review")
+
+      service_period.expected_minutes / 60
+    end
+
+    def service_period
+      @service_period ||= Payroll::ServicePeriod.new(@employment, month: @month, sources: @sources)
     end
 
     def expense_candidates

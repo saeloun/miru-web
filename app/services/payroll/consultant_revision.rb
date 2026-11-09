@@ -51,7 +51,7 @@ module Payroll
       def consultant_summary(employment, cutoff)
         review = review_for(employment, cutoff, {})
         source = capture(employment)
-        unresolvable = unresolvable_codes(source)
+        unresolvable = unresolvable_codes(source, review)
         not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"]) + Array(review.dig(:pto, "blockers"))
         review.merge(source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
           required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
@@ -66,7 +66,9 @@ module Payroll
         adjustments = (line["extras"] + line["deductions"]).to_h { |entry| [entry["code"], (BigDecimal(entry["amount_minor"]) / 100).to_s("F")] }
         { included: true, confirmed_unpaid_hours: preparation["confirmed_unpaid_hours"], unpaid_reason: preparation["unpaid_reason"],
           expense_ids: line["reimbursements"].filter_map { |entry| ClaimReference.expense_id(entry["source_reference"]) },
-          other_earning: adjustments["other_earning"], other_deduction: adjustments["other_deduction"], withholding: adjustments["withholding"] }
+          other_earning: adjustments["other_earning"], other_deduction: adjustments["other_deduction"], withholding: adjustments["withholding"] }.tap do |selection|
+          selection[:service_fee_review] = preparation["service_fee_review"] if preparation["service_fee_review"]
+        end
       end
 
       def bank_activity?(employment)
@@ -83,8 +85,10 @@ module Payroll
           policy_versions: { pay: policy_version("pay"), attendance: policy_version("proration") }).call
       end
 
-      def unresolvable_codes(source)
-        source.fetch("review_exceptions").pluck("code").uniq - DECISIONS.keys
+      def unresolvable_codes(source, review = nil)
+        resolved = DECISIONS.keys
+        resolved += ["partial_employment_month"] if review&.fetch(:service_fee_review, nil)
+        source.fetch("review_exceptions").pluck("code").uniq - resolved
       end
 
       def acknowledgement_codes(source, review)
@@ -107,7 +111,7 @@ module Payroll
       end
 
       def line_blockers(employment, review, source, input)
-        codes = unresolvable_codes(source) + Array(review.dig(:pto, "blockers"))
+        codes = unresolvable_codes(source, review) + Array(review.dig(:pto, "blockers"))
         codes << "fee_unavailable" unless review[:fee_estimate]
         codes << "acknowledgement_required" if acknowledgement_codes(source, review).any? && input[:acknowledged] != true
         codes << "consultant_inactive" if employment.user.discarded?
@@ -148,7 +152,7 @@ module Payroll
         input = {
           "company_id" => @company.id.to_s, "person_id" => employment.user_id.to_s, "period" => @first.strftime("%Y-%m"),
           "engagement_type" => "consultant", "source_currency" => "INR", "settlement_currency" => "INR",
-          "compensation" => { "basis" => "monthly", "amount" => review[:monthly_fee], "effective_from" => @first.iso8601, "effective_to" => @last.iso8601 },
+          "compensation" => { "basis" => "monthly", "amount" => review[:period_base_fee], "effective_from" => @first.iso8601, "effective_to" => @last.iso8601 },
           "paid_quantity" => (expected - unpaid).to_s("F"), "basis_quantity" => expected.to_s("F"), "quantity_source" => source["digest"],
           "adjustments" => adjustments
         }
@@ -187,7 +191,9 @@ module Payroll
                          "deductions_minor" => deductions.sum { |entry| entry["amount_minor"] }, "net_minor" => minor(calculation.fetch("net").to_d) },
           "extras" => extras, "reimbursements" => reimbursements, "deductions" => deductions,
           "preparation" => { "cutoff" => cutoff.iso8601, "confirmed_unpaid_hours" => review[:confirmed_unpaid_hours],
-                             "unpaid_reason" => review[:unpaid_reason].presence, "terms_id" => review[:compensation_id].to_s }
+                             "unpaid_reason" => review[:unpaid_reason].presence, "terms_id" => review[:compensation_id].to_s }.tap do |preparation|
+            preparation["service_fee_review"] = review[:service_fee_review] if review[:service_fee_review]
+          end
         }
       end
 
@@ -201,6 +207,7 @@ module Payroll
       def resolutions(source, review)
         exceptions = source.fetch("review_exceptions").filter_map do |exception|
           decision = DECISIONS[exception["code"]]
+          decision = "reviewed_service_period_fee" if exception["code"] == "partial_employment_month" && review[:service_fee_review]
           decision = "reviewed_pto_ledger" if exception["code"] == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
           decision && resolution(exception["code"], decision, source, exception["source_id"])
         end

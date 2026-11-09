@@ -23,6 +23,12 @@ class PayrollIndiaMailer < ActionMailer::Base
       "Final consultancy fee after adjustments and deductions" => inr(amounts.fetch("net_minor") - amounts.fetch("reimbursements_minor", 0)),
       "Total reimbursements" => inr(amounts.fetch("reimbursements_minor", 0)), "Total INR payable" => inr(amounts.fetch("net_minor"))
     }
+    if (reviewed = report["service_fee_review"])
+      context = reviewed.fetch("context")
+      @summary.merge!("Reviewed service-period base before unpaid time" => inr(BigDecimal(report.fetch("period_base_fee")) * 100),
+        "Service-period dates" => "#{context.fetch('service_from')} to #{context.fetch('service_to')}",
+        "Service-period fee reason" => reviewed.fetch("reason"))
+    end
     if report.dig("pto", "policy_id")
       @summary.merge!("Opening PTO hours" => report.dig("pto", "opening_hours"), "Accrued PTO hours" => report.dig("pto", "accrued_hours"),
         "Advance PTO hours" => report.dig("pto", "advance_hours"), "Deferred hours" => report.dig("pto", "deferred_hours"),

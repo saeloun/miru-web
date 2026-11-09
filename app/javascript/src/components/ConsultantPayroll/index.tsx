@@ -10,6 +10,7 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { PtoFacts, PtoPanel, PtoReviewQueue } from "../Payroll/PtoPanel";
+import ServiceFeePanel from "../Payroll/ServiceFeePanel";
 import { label as payrollLabel } from "../Payroll/paymentLabels";
 import {
   Select,
@@ -44,6 +45,8 @@ type ReviewSummary = {
   month: string;
   cutoff: string;
   monthly_fee: string | null;
+  period_base_fee?: string | null;
+  service_fee_review?: { id: string } | null;
   payment_source: string | null;
   legal_entity_name: string | null;
   expected_hours: string | null;
@@ -111,6 +114,7 @@ const PayrollWorkspace = ({
   const [cutoff, setCutoff] = useState("");
   const [page, setPage] = useState(1);
   const [refresh, setRefresh] = useState(0);
+  const [feeRefresh, setFeeRefresh] = useState(0);
   const [archive, setArchive] = useState<Archive | null>(null);
   const [configuration, setConfiguration] = useState<Configuration | null>(
     null
@@ -475,16 +479,30 @@ const PayrollWorkspace = ({
           <DialogHeader>
             <DialogTitle>Approved leave · {pto?.name}</DialogTitle>
             <DialogDescription>
-              {pto?.month} · Policy, explicit decisions and recovery history
+              {pto?.month} · Policy, service-period fee, leave decisions and
+              recovery history
             </DialogDescription>
           </DialogHeader>
           {pto && (
-            <PtoPanel
-              companyId={String(companyId)}
-              employmentId={pto.employment}
-              month={pto.month}
-              onChanged={() => setRefresh(value => value + 1)}
-            />
+            <>
+              <ServiceFeePanel
+                key={`${companyId}:${pto.employment}:${pto.month}`}
+                companyId={String(companyId)}
+                employmentId={pto.employment}
+                month={pto.month}
+                onChanged={() => {
+                  setFeeRefresh(value => value + 1);
+                  setRefresh(value => value + 1);
+                }}
+              />
+              <PtoPanel
+                key={`${pto.employment}:${pto.month}:${feeRefresh}`}
+                companyId={String(companyId)}
+                employmentId={pto.employment}
+                month={pto.month}
+                onChanged={() => setRefresh(value => value + 1)}
+              />
+            </>
           )}
         </DialogContent>
       </Dialog>
@@ -796,6 +814,14 @@ const PayrollWorkspace = ({
               <dl className="grid grid-cols-[minmax(0,1fr)_auto] gap-2 text-sm">
                 {[
                   ["monthlyFee", amount(selected.monthly_fee)],
+                  ...(selected.service_fee_review
+                    ? [
+                        [
+                          "periodBaseFee",
+                          amount(selected.period_base_fee ?? null),
+                        ],
+                      ]
+                    : []),
                   ["expected", selected.expected_hours ?? "—"],
                   ["recorded", selected.recorded_hours],
                   ["days", selected.working_days],
@@ -827,7 +853,14 @@ const PayrollWorkspace = ({
                 <ul className="list-disc space-y-1 rounded-md border p-4 pl-7 text-sm">
                   {selected.warnings.map(warning => (
                     <li key={warning}>
-                      {warning.startsWith("pto_")
+                      {selected.service_fee_review &&
+                      [
+                        "partial_service",
+                        "terms_changed_during_month",
+                      ].includes(warning)
+                        ? "Service dates and terms are covered by the saved period-fee review."
+                        : warning.startsWith("pto_") ||
+                          warning.startsWith("service_")
                         ? payrollLabel(warning)
                         : t(`consultantPayroll.warnings.${warning}`)}
                     </li>

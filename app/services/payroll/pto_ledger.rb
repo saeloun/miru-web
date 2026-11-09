@@ -149,9 +149,7 @@ module Payroll
       end
 
       def allocation_values(facts, month, kind, canonical_parts, command_digest)
-        policy = policies.find_by(id: facts["policy_id"])
-        raise ConsultantReview::InvalidInput, "Configure an approved PTO policy first" unless policy
-
+        policy = allocation_policy(facts)
         previous = entries.heads.find_by(case_key: "month:#{month.iso8601}")
         protect_recovery!(previous)
         quantity = facts.fetch("gap_minutes").to_d
@@ -164,10 +162,22 @@ module Payroll
         protect_later_debits!(previous, month, -paid - advance)
         { consultant_pto_policy: policy, previous_entry: previous, period: month, case_key: "month:#{month.iso8601}", kind:, minutes: quantity,
           allocations: parts, rate_basis: { "command_digest" => command_digest, "origin_compensation_id" => facts["compensation_id"],
-            "origin_amount" => facts["monthly_fee"], "origin_hours" => facts["expected_hours"],
-            "origin_period" => month.iso8601, "origin_source_digest" => facts.fetch("attendance_digest") },
+            "origin_amount" => facts["period_base_fee"] || facts["monthly_fee"], "origin_hours" => facts["expected_hours"],
+            "origin_period" => month.iso8601, "origin_source_digest" => facts.fetch("attendance_digest") }.tap do |basis|
+              basis["service_fee_review"] = facts["service_fee_review"] if facts["service_fee_review"]
+            end,
           debt_minutes: borrowed_minutes(advance, available - paid), balance_delta_minutes: -paid - advance,
           source_digest: facts.fetch("attendance_digest") }
+      end
+
+      def allocation_policy(facts)
+        if facts["service_fee_review_required"]
+          raise ConsultantReview::InvalidInput, "Review the service-period fee before deciding PTO"
+        end
+        policy = policies.find_by(id: facts["policy_id"])
+        raise ConsultantReview::InvalidInput, "Configure an approved PTO policy first" unless policy
+
+        policy
       end
 
       def approved_parts(canonical_parts, quantity, kind, previous)

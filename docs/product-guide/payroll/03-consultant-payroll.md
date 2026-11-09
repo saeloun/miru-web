@@ -36,7 +36,9 @@ For consultants with an approved PTO policy, approved leave decisions supply the
 unpaid quantity; it cannot be overridden in the preview. Without a policy, enter
 only explicitly confirmed unpaid hours and their decision/reason for the preview.
 Select eligible reimbursement claims, then choose **Recalculate preview**. The scenario
-uses `monthly fee × (expected hours − confirmed unpaid hours) / expected hours`.
+uses `period base fee × (expected hours − confirmed unpaid hours) / expected hours`.
+For an unchanged full month, the base is the contractual monthly fee. An explicitly
+reviewed service-period fee replaces that base for a joining, exit or changed-terms month.
 Missing work alone does not reduce the fee; historical negative PTO is never
 deducted automatically. Changed inputs hide the old totals until recalculation.
 These decisions are not saved payroll approvals.
@@ -45,6 +47,26 @@ Partial service months, missing service dates, midmonth fee changes and zero
 expected hours require resolution before a fee/total estimate is shown.
 Work/leave warnings remain visible for review. Tax withholding and other
 adjustments are not applied to the estimate.
+
+### Review a service-period fee
+
+Open **Service-period fee review** in accounts preparation, or under **PTO and
+decisions** in Consultant payroll. Check the active dates, scheduled time,
+contractual terms, funding source and legal entity. Enter the agreed **Service-period
+base fee (INR)** and a reason. This amount is before approved unpaid time; Miru
+does not choose a calendar-day or working-day proration policy for you.
+
+Save the basis before resolving leave. For example, an agreed INR 50,000 for 80
+scheduled hours with 8 explicitly unpaid hours yields INR 45,000. Reimbursements,
+withholding and other adjustments remain separate. The contractual monthly fee,
+reviewed period base and final amount are shown separately in the review and India report.
+
+Changing dates, applicable terms or the reviewed amount requires refreshed leave
+decisions and a new payroll revision with both approvals. Unsubmitted reservations
+that depend on this basis are released; unrelated recoveries are retained. A basis
+already used by protected bank activity or consumed historical PTO cannot be rewritten.
+Missing term coverage, inconsistent routing and zero scheduled time remain blocked.
+Saving this review does not transfer money or send an accounts email.
 
 Changing a selected holiday's calendar date can leave its recorded leave date
 unchanged. If either date falls in the service period, conflicting dates make

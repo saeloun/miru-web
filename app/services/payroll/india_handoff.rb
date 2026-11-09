@@ -159,15 +159,28 @@ module Payroll
         codes << "payroll_reference_key_missing" unless config.has_deterministic_key? && config.deterministic_key.is_a?(String)
         codes << "run_not_approved" unless Workflow.new(@run).status == "approved"
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
-        terms = sources.terms(employment.id)
-        codes << "terms_missing" unless terms
-        codes << "funding_not_india" if terms && terms.payment_source != "india"
-        codes << "terms_changed_during_month" if sources.terms_changed?(employment.id)
+        terms, term_codes = service_terms(employment, line, sources)
+        codes.concat(term_codes)
         codes << "consultant_inactive" if employment.discarded? || !User.kept.exists?(id: employment.user_id)
         codes << "bank_profile_incomplete" unless IndiaReport.bank_complete?(IndiaReport.bank_details(employment))
         codes << "mercury_activity_exists" if PayrollPaymentInstruction.where(payroll_run_id: @run.id, employment_id: employment.id).exists?
         codes << "split_not_supported" if PayrollSplitArrangement.current_for(employment)
         [codes, terms]
+      end
+
+      def service_terms(employment, line, sources)
+        codes = []
+        period = ServicePeriod.new(employment, month: @run.period, sources:)
+        binding = line&.dig("preparation", "service_fee_review")
+        terms = binding ? period.terms : sources.terms(employment.id)
+        codes << "terms_missing" unless terms
+        codes << "funding_not_india" if terms && terms.payment_source != "india"
+        if period.required? || binding
+          codes << "service_fee_review_changed" unless period.valid_binding?(binding)
+        elsif sources.terms_changed?(employment.id)
+          codes << "terms_changed_during_month"
+        end
+        [terms, codes]
       end
 
       def line_blockers(line)

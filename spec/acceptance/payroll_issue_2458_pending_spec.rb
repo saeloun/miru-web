@@ -32,7 +32,8 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   context "4. All five 160-hour examples and service policies" do
     # All five exact 160-hour cases: pto_ledger_spec.rb and responsive/payroll_pto_spec.rb.
     # Confirmed unpaid example: payroll_run_preparation_spec.rb exercises real facts, both approvals, a single mocked Mercury request and recorded INR credit.
-    it "applies an explicitly approved joining, exit or midmonth-fee policy without guessing a proration basis"
+    # Joining/exit/midmonth basis, source/SQL/locking and both approvals: service_fee_review_spec.rb
+    # and service_fee_concurrency_spec.rb; actual owner/accounts forms and retry: responsive/payroll_service_fees_spec.rb.
     it "resolves overlapping work and leave in the service timezone without double-crediting paid time"
   end
 

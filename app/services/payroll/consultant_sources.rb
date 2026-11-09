@@ -23,6 +23,19 @@ class Payroll::ConsultantSources
     @changed.include?(employment_id)
   end
 
+  def terms_at(employment_id, date)
+    @timelines ||= (compensations.where("effective_on <= ?", @period.begin)
+      .select("DISTINCT ON (employment_id) consultant_compensations.*").order(:employment_id, effective_on: :desc, id: :desc).to_a +
+      compensations.where(effective_on: (@period.begin + 1)..@period.end).order(:effective_on, :id).to_a)
+      .group_by(&:employment_id).transform_values { |rows| rows.sort_by { |row| [row.effective_on, row.id] } }
+    @timelines.fetch(employment_id, []).reverse.find { |term| term.effective_on <= date }
+  end
+
+  def service_fee_review(employment_id)
+    @service_fee_reviews ||= ConsultantServiceFeeReview.heads.where(company:, employment_id: @employment_ids, period: @period.begin).index_by(&:employment_id)
+    @service_fee_reviews[employment_id]
+  end
+
   def work(user_id, dates)
     work_rows.fetch(user_id, []).filter_map do |_user, _id, minutes, status, date, _updated|
       [status, minutes] if dates.cover?(date)

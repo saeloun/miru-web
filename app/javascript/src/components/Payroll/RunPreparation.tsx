@@ -10,6 +10,7 @@ import {
 import { exactAmount } from "./amount";
 import { errorMessage, label } from "./paymentLabels";
 import { PtoPanel, PtoSummary } from "./PtoPanel";
+import ServiceFeePanel from "./ServiceFeePanel";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
@@ -199,6 +200,13 @@ const ConsultantRow = ({
         {label(consultant.payment_source || "no_funding_source")}
       </p>
       {consultant.pto && <PtoSummary facts={consultant.pto} />}
+      <ServiceFeePanel
+        key={`${companyId}:${month}:${id}`}
+        companyId={companyId}
+        employmentId={id}
+        month={month}
+        onChanged={onSourceChanged}
+      />
       <details onToggle={event => setLeaveOpen(event.currentTarget.open)}>
         <summary className="min-h-10 cursor-pointer text-sm font-medium">
           Approved leave decisions and history

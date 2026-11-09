@@ -164,13 +164,27 @@ module Payroll
       def valid_preparation?(preparation)
         return true if preparation.nil?
 
-        keys?(preparation, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && preparation.values.all? { |value| value.nil? || value.is_a?(String) }
+        basic = preparation.is_a?(Hash) && preparation.except("service_fee_review")
+        return false unless keys?(basic, %w[cutoff confirmed_unpaid_hours unpaid_reason terms_id]) && basic.values.all? { |value| value.nil? || value.is_a?(String) }
+        return true unless preparation.key?("service_fee_review")
+
+        reviewed = preparation["service_fee_review"]
+        keys?(reviewed, %w[id amount_minor reason source_digest context]) && reviewed["context"].is_a?(Hash) &&
+          reviewed.except("context").values.all? { |value| value.is_a?(String) }
       end
 
       def consultant_terms_issues(line, employment, calculation)
         return [] unless line["pay_type"] == "consultant"
 
         sources = ConsultantSources.new(company: @run.company, employments: [employment], month: @run.period)
+        period = ServicePeriod.new(employment, month: @run.period, sources:)
+        binding = line.dig("preparation", "service_fee_review")
+        if binding || period.required?
+          amount = calculation.dig("input", "compensation", "amount")
+          valid = period.valid_binding?(binding) && BigDecimal(amount) == period.fee &&
+            line.dig("preparation", "terms_id") == period.terms&.id.to_s
+          return valid ? [] : ["service_fee_review_changed"]
+        end
         terms = sources.terms(employment.id)
         amount = calculation.dig("input", "compensation", "amount")
         frozen_terms = line.dig("preparation", "terms_id")
@@ -293,20 +307,26 @@ module Payroll
       end
 
       def resolved?(exception, line, source, calculation)
+        code = exception["code"]
         decisions = {
           "no_timeoff_entries" => "verified_zero_pto",
           "timeoff_pay_classification_required" => "reviewed_day_mapping",
           "work_review_required" => "reviewed_override"
         }
-        decision = decisions[exception["code"]]
-        decision = "reviewed_pto_ledger" if exception["code"] == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
+        decision = decisions[code]
+        if code == "partial_employment_month" && line.dig("preparation", "service_fee_review")
+          employment = Employment.find_by(id: line["employment_id"], company_id: @run.company_id)
+          period = ServicePeriod.new(employment, month: @run.period) if employment
+          decision = "reviewed_service_period_fee" if period&.valid_binding?(line.dig("preparation", "service_fee_review"))
+        end
+        decision = "reviewed_pto_ledger" if code == "no_timeoff_entries" && source.dig("pto", "paid_hours").to_d.positive?
         return false unless decision
-        if exception["code"] == "timeoff_pay_classification_required"
+        if code == "timeoff_pay_classification_required"
           return false unless calculation.dig("input", "paid_quantity") && calculation.dig("input", "basis_quantity")
         end
 
         line["source_resolutions"].any? do |resolution|
-          resolution["code"] == exception["code"] && resolution["source_id"] == exception["source_id"] &&
+          resolution["code"] == code && resolution["source_id"] == exception["source_id"] &&
             resolution["decision"] == decision && resolution["source_digest"] == source["digest"] &&
             resolution["actor_id"] == @actor_id && @actor_id == @run.accounts_reviewer_id
         end

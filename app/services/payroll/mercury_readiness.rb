@@ -22,7 +22,11 @@ module Payroll
     end
 
     def terms(employment)
-      sources(employment).terms(employment.id)
+      if line(employment)&.dig("preparation", "service_fee_review")
+        ServicePeriod.new(employment, month: @run.period, sources: sources(employment)).terms
+      else
+        sources(employment).terms(employment.id)
+      end
     end
 
     def active_arrangement(employment)
@@ -71,7 +75,13 @@ module Payroll
         current = terms(employment)
         codes << "terms_missing" unless current
         codes << "funding_not_mercury" if current && current.payment_source != "mercury_us"
-        codes << "terms_changed_during_month" if sources(employment).terms_changed?(employment.id)
+        period = ServicePeriod.new(employment, month: @run.period, sources: sources(employment))
+        binding = line(employment)&.dig("preparation", "service_fee_review")
+        if period.required? || binding
+          codes << "service_fee_review_changed" unless period.valid_binding?(binding)
+        elsif sources(employment).terms_changed?(employment.id)
+          codes << "terms_changed_during_month"
+        end
         codes << "consultant_inactive" if employment.discarded?
         codes
       end

@@ -25,8 +25,10 @@ module Payroll
         work = @sources.work_fingerprint(@employment.user_id)
         leave = @sources.leave_fingerprint(@employment.user_id)
         terms = @sources.terms(@employment.id)
-        digest([work, leave, @employment.attributes.slice("joined_at", "resigned_at"), terms&.id,
-          attendance.slice(:expected_hours, :recorded_hours, :approved_work_hours, :not_required_work_hours, :warnings)])
+        values = [work, leave, @employment.attributes.slice("joined_at", "resigned_at"), terms&.id,
+          attendance.slice(:expected_hours, :recorded_hours, :approved_work_hours, :not_required_work_hours, :warnings)]
+        values << attendance[:service_fee_review] if attendance[:service_fee_review]
+        digest(values)
       end
     end
 
@@ -49,7 +51,18 @@ module Payroll
           "attendance_digest" => attendance_digest, "decision_id" => current&.id,
           "decision" => fresh ? current.kind : nil, "expected_hours" => review[:expected_hours],
           "monthly_fee" => review[:monthly_fee], "compensation_id" => review[:compensation_id]
-        }.merge(balance_facts(policy, heads), treatment_facts(current, fresh, totals, unresolved, gap), history_facts(heads, historical, blockers))
+        }.merge(balance_facts(policy, heads), treatment_facts(current, fresh, totals, unresolved, gap), history_facts(heads, historical, blockers), service_fee_facts(review, blockers))
+      end
+
+      def service_fee_facts(review, blockers)
+        values = {}
+        values["service_fee_review"] = review[:service_fee_review] if review[:service_fee_review]
+        values["period_base_fee"] = review[:period_base_fee] if review[:service_fee_review]
+        if review[:period_base_fee].nil?
+          values["service_fee_review_required"] = true
+          values["blockers"] = blockers | ["service_fee_review_required"]
+        end
+        values
       end
 
       def allocation_totals(current, fresh)

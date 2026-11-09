@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -436,6 +436,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
     t.index ["employment_id", "idempotency_key"], name: "idx_on_employment_id_idempotency_key_affdb89c54", unique: true
     t.index ["employment_id"], name: "index_consultant_pto_policies_on_employment_id"
     t.check_constraint "monthly_accrual_minutes >= 0::numeric AND advance_limit_minutes >= 0::numeric AND exception_threshold_minutes >= 0::numeric AND negative_threshold_minutes >= 0::numeric AND accrual_day >= 1 AND accrual_day <= 28 AND leave_year_month >= 1 AND leave_year_month <= 12 AND leave_year_day >= 1 AND leave_year_day <= 28 AND carry_rule::text = 'review'::text AND rate_basis::text = 'origin_period_fee'::text AND opening_on <= effective_on", name: "pto_policy_configured_values"
+  end
+
+  create_table "consultant_service_fee_reviews", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.date "period", null: false
+    t.bigint "amount_minor", null: false
+    t.text "reason", null: false
+    t.string "source_digest", null: false
+    t.jsonb "context", null: false
+    t.bigint "actor_id", null: false
+    t.string "idempotency_key", null: false
+    t.bigint "previous_review_id"
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_service_fee_reviews_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "service_fee_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_service_fee_reviews_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "service_fee_command_identity", unique: true
+    t.index ["employment_id", "period"], name: "service_fee_one_root", unique: true, where: "(previous_review_id IS NULL)"
+    t.index ["employment_id"], name: "index_consultant_service_fee_reviews_on_employment_id"
+    t.index ["previous_review_id"], name: "index_consultant_service_fee_reviews_on_previous_review_id", unique: true
+    t.check_constraint "amount_minor > 0 AND amount_minor < '100000000000000'::bigint AND EXTRACT(day FROM period) = 1::numeric AND period >= '1900-01-01'::date AND period <= '2099-12-01'::date AND length(btrim(reason)) >= 1 AND length(btrim(reason)) <= 1000 AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND jsonb_typeof(context) = 'object'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "service_fee_review_values"
   end
 
   create_table "currency_pairs", force: :cascade do |t|
@@ -2638,6 +2660,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
   add_foreign_key "consultant_pto_policies", "companies"
   add_foreign_key "consultant_pto_policies", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
   add_foreign_key "consultant_pto_policies", "users", column: "created_by_id"
+  add_foreign_key "consultant_service_fee_reviews", "companies"
+  add_foreign_key "consultant_service_fee_reviews", "consultant_service_fee_reviews", column: ["company_id", "employment_id", "previous_review_id"], primary_key: ["company_id", "employment_id", "id"], name: "service_fee_previous_tenant"
+  add_foreign_key "consultant_service_fee_reviews", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_service_fee_reviews", "users", column: "actor_id"
   add_foreign_key "custom_leave_users", "custom_leaves", column: "custom_leave_id"
   add_foreign_key "custom_leave_users", "users"
   add_foreign_key "custom_leaves", "leaves", column: "leave_id"
@@ -3196,6 +3222,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_202000) do
   execute <<~SQL
     CREATE TRIGGER payroll_india_credits_immutable BEFORE UPDATE OR DELETE ON payroll_india_credits
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_service_fee_reviews_immutable BEFORE UPDATE OR DELETE ON consultant_service_fee_reviews
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_service_fee_review()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE previous public.consultant_service_fee_reviews;
+    BEGIN
+      PERFORM id FROM public.payroll_runs WHERE company_id=NEW.company_id AND period>=NEW.period ORDER BY id FOR UPDATE;
+      PERFORM id FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF NEW.previous_review_id IS NOT NULL THEN
+        SELECT * INTO previous FROM public.consultant_service_fee_reviews WHERE id=NEW.previous_review_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR previous.period<>NEW.period OR
+           EXISTS(SELECT 1 FROM public.consultant_service_fee_reviews WHERE previous_review_id=previous.id) THEN
+          RAISE EXCEPTION 'Service fee predecessor changed';
+        END IF;
+      END IF;
+      IF EXISTS(SELECT 1 FROM public.payroll_india_handoffs h JOIN public.payroll_runs r ON r.id=h.payroll_run_id
+        WHERE r.company_id=NEW.company_id AND r.period>=NEW.period AND h.employment_id=NEW.employment_id AND h.released_at IS NULL) OR
+        EXISTS(SELECT 1 FROM public.payroll_payment_instructions i JOIN public.payroll_payment_groups g ON g.id=i.payroll_payment_group_id
+          JOIN public.payroll_runs r ON r.id=g.payroll_run_id WHERE r.company_id=NEW.company_id AND r.period>=NEW.period AND g.employment_id=NEW.employment_id
+          AND i.released_at IS NULL AND i.submission_state <> 'prepared') THEN
+        RAISE EXCEPTION 'Service fee has protected bank activity';
+      END IF;
+      IF EXISTS(SELECT 1 FROM public.payroll_pto_entries e WHERE e.company_id=NEW.company_id AND e.employment_id=NEW.employment_id
+        AND e.period=NEW.period AND e.case_key='month:'||to_char(NEW.period,'YYYY-MM-DD') AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_entries child WHERE child.previous_entry_id=e.id)
+        AND (EXISTS(SELECT 1 FROM public.payroll_pto_allocations a WHERE a.origin_entry_id=e.id) OR
+          EXISTS(SELECT 1 FROM public.payroll_pto_entries r WHERE r.origin_entry_id=e.id AND r.kind IN ('review_unpaid','review_waive','review_advance')
+            AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_entries child WHERE child.previous_entry_id=r.id)) OR
+          EXISTS(SELECT 1 FROM public.payroll_pto_recoveries r WHERE r.payroll_pto_entry_id=e.id AND r.kind<>'released'
+            AND NOT EXISTS(SELECT 1 FROM public.payroll_pto_recoveries child WHERE child.previous_recovery_id=r.id)))) THEN
+        RAISE EXCEPTION 'Service fee has protected PTO history';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_service_fee_review_valid BEFORE INSERT ON consultant_service_fee_reviews
+    FOR EACH ROW EXECUTE FUNCTION validate_consultant_service_fee_review();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$

@@ -73,9 +73,15 @@ module Payroll
 
       def cash_amount(entry, employment)
         return entry.cash_amount_minor if entry.kind == "review_unpaid"
+        if entry.rate_basis["origin_amount"] && entry.rate_basis["origin_hours"].to_d.positive?
+          amount = entry.rate_basis.fetch("origin_amount").to_d
+          expected = entry.rate_basis.fetch("origin_hours").to_d * 60
+          unpaid = entry.kind == "allocation" ? entry.approved_allocations.find { |part| part["kind"] == "unpaid" }.fetch("minutes").to_d : entry.minutes
+          return ((amount - (amount * (expected - unpaid) / expected).round(2)) * 100).to_i
+        end
 
         review = ConsultantReview.new(employment:, month: entry.period, cutoff: @as_of).process(include_expenses: false)
-        review[:monthly_fee] && review[:fee_estimate] ? ((review[:monthly_fee].to_d - review[:fee_estimate].to_d) * 100).to_i : nil
+        review[:period_base_fee] && review[:fee_estimate] ? ((review[:period_base_fee].to_d - review[:fee_estimate].to_d) * 100).to_i : nil
       end
   end
 end

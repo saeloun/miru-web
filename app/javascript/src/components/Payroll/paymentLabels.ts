@@ -1,4 +1,13 @@
 const labels: Record<string, string> = {
+  service_fee_review_required:
+    "Review the service-period base fee before resolving leave and preparing payroll.",
+  service_fee_review_changed:
+    "The service-period fee or its source changed. Review leave and prepare a new payroll revision.",
+  service_terms_missing:
+    "Configure compensation terms for every active service date before reviewing this fee.",
+  service_routing_changed:
+    "The service period has different funding sources or legal entities. Resolve its payment arrangement first.",
+  service_period_empty: "This month has no active service dates.",
   pto_policy_required:
     "Configure an approved PTO policy and reconciled opening before payroll approval.",
   pto_decision_required:
