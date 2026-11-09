@@ -201,6 +201,8 @@ RSpec.describe "Approved signature delivery" do
     2.times { SignatureDeliveryJob.perform_now(cancel_operation.id) }
     expect(client).to have_received(:cancel).once
     expect(@revision.reload.status).to eq("cancelled")
+    expect(cancel_operation.reload).to have_attributes(state: "confirmed", run_token: nil)
+    expect(@record.audits.where(action: "cancel_confirmed").count).to eq(1)
     allow(client).to receive(:get).and_return(provider_record("PENDING"))
     refresh = request_operation(:refresh)
     SignatureDeliveryJob.perform_now(refresh.id)

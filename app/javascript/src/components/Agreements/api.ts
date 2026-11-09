@@ -5,14 +5,18 @@ export const endpoint = (type: string) =>
   type === "templates" ? "/agreement_templates" : "/agreements";
 export const recordKey = (type: string) =>
   type === "templates" ? "agreement_template" : "agreement";
-export const failureMessage = (error: any) => {
+/** Preserve server explanations while callers name the document action to retry. */
+export const failureMessage = (
+  error: any,
+  fallback: string = "Unable to save or load this document. Check your connection and retry."
+) => {
   const errors = error?.response?.data?.errors;
 
   return typeof errors === "string"
     ? errors
     : Array.isArray(errors)
     ? errors.join(". ")
-    : "Unable to save or load this document. Check your connection and retry.";
+    : fallback;
 };
 
 export const creationFailureMessage = (

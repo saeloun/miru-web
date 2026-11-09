@@ -57,6 +57,48 @@ RSpec.describe "Documenso callbacks", type: :request do
     expect(WebMock).not_to have_requested(:any, /untrusted/)
   end
 
+  it "confirms an interrupted cancellation through its authenticated callback without cancelling twice" do
+    client = instance_double(Signatures::DocumensoClient, origin: "https://signing.example.test")
+    allow(Signatures::DocumensoClient).to receive(:new).and_return(client)
+    expect(client).not_to receive(:create)
+    expect(client).not_to receive(:distribute)
+    expect(client).not_to receive(:remind)
+    @revision.signature_operations.create!(key: @revision.operation_id, kind: "send", requested_by: admin,
+      state: "confirmed", phase: "distributing", finished_at: Time.current)
+    cancellation = Signatures::Operations.new(@record, actor: admin, attributes: signature_context(@record)).cancel
+    provider_status = "PENDING"
+    allow(client).to receive(:get).with(@revision.provider_envelope_id) do
+      provider_signature_record(@revision, status: provider_status)
+    end
+    allow(client).to receive(:original).with("item_0")
+      .and_return(@revision.original_bytes(@revision.documents.first.fetch("key")).first)
+    interruption = Class.new(StandardError)
+    allow(client).to receive(:cancel).with(@revision.provider_envelope_id) do
+      provider_status = "CANCELLED"
+      raise interruption
+    end
+
+    expect { SignatureDeliveryJob.perform_now(cancellation.id) }.to raise_error(interruption)
+    expect(cancellation.reload).to have_attributes(state: "running", phase: "cancelling", finished_at: nil)
+    expect(cancellation.run_token).to be_present
+    cancelled = body.merge(event: "DOCUMENT_CANCELLED", payload: body.fetch(:payload).merge(status: "CANCELLED"))
+    2.times { callback(cancelled); expect(response).to have_http_status(:accepted) }
+    receipt = SignatureCallback.sole
+    jobs = ActiveJob::Base.queue_adapter.enqueued_jobs.select { |job| job[:job].name == "SignatureSyncJob" }
+    expect(jobs.pluck(:args)).to eq([[@revision.id, receipt.id]])
+
+    2.times { SignatureSyncJob.perform_now(@revision.id, receipt.id) }
+    SignatureDeliveryJob.perform_now(cancellation.id)
+    expect(@revision.reload).to have_attributes(status: "cancelled", provider_status: "CANCELLED", archived_at: nil)
+    expect(cancellation.reload).to have_attributes(state: "confirmed", error_code: nil, run_token: nil)
+    expect(cancellation.finished_at).to be_present
+    expect(receipt.reload.processed_at).to be_present
+    expect(@revision.signature_operations.count).to eq(2)
+    expect(@record.audits.where(action: "cancel_confirmed").count).to eq(1)
+    expect(client).to have_received(:cancel).once
+    expect(client).to have_received(:get).twice
+  end
+
   it "ignores foreign connections, unknown envelopes and mismatched operation identities" do
     other = SignatureConnection.create!(company: create(:company), created_by: admin, api_key: "other_synthetic_key",
       provider_origin: "https://signing.example.test")

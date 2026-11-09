@@ -296,6 +296,30 @@ RSpec.describe "Signature completion and private archives" do
     expect(@revision.reload).to have_attributes(status: "cancelled", archived_at: nil)
   end
 
+  it "confirms only current pending cancellations and preserves terminal operations and observations" do
+    pending = %w[queued waiting uncertain].map do |state|
+      @revision.signature_operations.create!(kind: "cancel", requested_by: admin, state:, phase: "cancelling",
+        error_code: "provider_uncertain", run_token: SecureRandom.uuid)
+    end
+    closed = @revision.signature_operations.create!(kind: "cancel", requested_by: admin, state: "failed", phase: "cancelling",
+      error_code: "request_closed", finished_at: 1.minute.ago)
+    @revision.update!(provider_checked_at: Time.current)
+    snapshot = Signatures::Snapshot.new(@revision)
+    cancelled = provider_signature_record(@revision, status: "CANCELLED")
+    expect(snapshot.apply!(cancelled, checked_at: 1.minute.ago)).to be(false)
+    expect(pending.map { |operation| operation.reload.state }).to eq(%w[queued waiting uncertain])
+    expect(@record.audits.where(action: "cancel_confirmed")).to be_empty
+
+    2.times { expect(snapshot.apply!(cancelled, checked_at: Time.current)).to be_truthy }
+    expect(pending.map(&:reload)).to all(have_attributes(state: "confirmed", error_code: nil, run_token: nil, finished_at: Time.current))
+    expect(closed.reload).to have_attributes(state: "failed", error_code: "request_closed", finished_at: 1.minute.ago)
+    expect(@record.audits.where(action: "cancel_confirmed").count).to eq(3)
+    expect(@revision.signature_operations.count).to eq(4)
+    expect { snapshot.apply!(provider_signature_record(@revision, status: "PENDING"), checked_at: 1.minute.from_now) }
+      .to raise_error(Signatures::Envelope::Mismatch)
+    expect(@revision.reload).to have_attributes(status: "cancelled", provider_status: "CANCELLED")
+  end
+
   it "clears a temporary retrieval failure after a verified pending status check succeeds" do
     data = stub_provider(status: "PENDING")
     allow(client).to receive(:get).and_raise(Signatures::DocumensoClient::Unavailable)
