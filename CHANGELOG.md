@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.2.0 - 2026-11-09
+## [3.3.0] - 2026-11-09
 
 ### Added
 
@@ -27,6 +27,17 @@
 - **Limit assigned payroll review to eligible consultants.** Keep initial preparation available while rejecting unconfigured or out-of-period subjects before reading their leave facts.
 - **Keep opening leave identities consistent.** Validate opening dates independently of the database session's date display format.
 - **Keep billing navigation stable.** Profile sections loading in the background no longer move the billing-identity link during a click.
+
+## [3.2.1] - 2026-11-09
+
+### Fixed
+
+- Birthday and work-anniversary reminders recheck corrected profile dates before sending, preventing stale messages and missing-date failures.
+- Signing cancellations finish after provider confirmation without duplicate completion records. Document-list and download failures show the appropriate retry guidance.
+
+### Added
+
+- An isolated AMD64 build check and downloadable image archive for the self-hosted signing provider, without publishing or deploying it.
 
 ## 3.0.8 - 2026-11-08
 

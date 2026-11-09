@@ -184,6 +184,7 @@ class Signatures::Delivery
       end
     end
 
+    # Cancel the verified envelope and let its terminal snapshot own the completion audit.
     def cancel_pending
       return unless mutation("cancelling")
 
@@ -191,7 +192,11 @@ class Signatures::Delivery
       data, checked_at = observe
       raise Signatures::DocumensoClient::Uncertain unless data["status"] == "CANCELLED"
 
-      locked { apply_snapshot(data, checked_at); finish_locked("confirmed") if current_run? }
+      locked do
+        apply_snapshot(data, checked_at)
+        @operation.reload
+        finish_locked("confirmed") if current_run?
+      end
     end
 
     def remind
