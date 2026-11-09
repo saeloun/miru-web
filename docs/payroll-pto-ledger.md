@@ -1,6 +1,6 @@
 # Consultant PTO ledger
 
-This delivery implements the PTO clauses in [issue #2458, sections 2–5 and 8](https://github.com/saeloun/miru-web/issues/2458). It does not complete consultant invoice authorization/generation, bank-issued FIRC/FIRA evidence, or live provider acceptance. Synthetic tests establish local behavior, not paid production payroll.
+This delivery implements the PTO clauses in [issue #2458, sections 2–5 and 8](https://github.com/saeloun/miru-web/issues/2458). Consultant invoice authorization is described in the [consultant payroll guide](product-guide/payroll/03-consultant-payroll.md); invoice generation, bank-issued FIRC/FIRA evidence and live provider acceptance remain unfinished. Synthetic tests establish local behavior, not paid production payroll.
 
 ## Adoption
 
