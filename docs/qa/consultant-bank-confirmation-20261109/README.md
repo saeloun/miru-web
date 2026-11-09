@@ -8,9 +8,9 @@ Original Brave captures use synthetic local data:
 The API regression first reproduced an initial bank number being accepted with one
 entry (expected422, actual200). The shared endpoint now checks exact text confirmation
 under its existing employment lock before assigning, saving or auditing changes.
-All28 employee-record request cases pass, including session/admin and token/self
+All29 employee-record request cases pass, including session/admin and token/self
 paths, missing/mismatch/type rejection, unchanged ciphertext/audits after rejection,
-leading zeros, no persisted/returned confirmation, filtering and clear/contact-only
+leading zeros, matching entries that still fail account format validation, no persisted/returned confirmation, filtering and clear/contact-only
 compatibility.
 
 Native verification passes3 new bank cases plus10 existing profile cases (13 unique).

@@ -103,6 +103,14 @@ RSpec.describe "Employee records", type: :request do
         .to eq("employee_record" => "[FILTERED]")
     end
 
+    it "retains account format validation when both entries match" do
+      update_record({ bank_account_number: "123bad" }, bank_account_number_confirmation: "123bad")
+      expect(response).to have_http_status(422)
+      expect(response.parsed_body.fetch("errors")).to include("bank_account_number")
+      expect(response.body).not_to include("123bad")
+      expect(EmployeeRecord.count).to eq(0)
+    end
+
     it "keeps unchanged, contact-only and clearing edits compatible" do
       record = EmployeeRecord.create!(employment:, private_details: { bank_account_number: "000111222333" })
       update_record({ bank_account_number: "000111222333", emergency_contact_name: "Updated contact" })
