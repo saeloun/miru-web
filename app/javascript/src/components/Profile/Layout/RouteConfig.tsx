@@ -51,22 +51,23 @@ const RouteConfig = () => {
       {isTeamContext && (
         <Route element={<Layout />} path="team/:memberId">
           <Route index element={<UserDetailsView />} />
-          {SETTINGS.filter(({ category }) => category === "personal").map(
-            ({ path, authorisedRoles, Component }) => (
-              <Route
-                key={path}
-                path={path}
-                element={
-                  <ProtectedRoute
-                    authorisedRoles={authorisedRoles}
-                    role={companyRole}
-                  >
-                    <Component />
-                  </ProtectedRoute>
-                }
-              />
-            )
-          )}
+          {SETTINGS.filter(
+            ({ category, path }) =>
+              category === "personal" && path !== "invoice-authorization"
+          ).map(({ path, authorisedRoles, Component }) => (
+            <Route
+              key={path}
+              path={path}
+              element={
+                <ProtectedRoute
+                  authorisedRoles={authorisedRoles}
+                  role={companyRole}
+                >
+                  <Component />
+                </ProtectedRoute>
+              }
+            />
+          ))}
         </Route>
       )}
       {/* Settings routes - Fixed to handle all settings paths directly */}

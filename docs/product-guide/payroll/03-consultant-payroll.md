@@ -221,11 +221,38 @@ consultant. Each transfer has its own principal, OUR fee, key and status, so a f
 transfer can be prepared again without resending the one that succeeded. The consultant
 stays the service provider for income and tax purposes.
 
+## Invoice authorization
+
+Configured consultants can open **Invoice authorization** in their profile settings
+or Employee records. Read the displayed statement, explicitly confirm it, then
+choose **Grant invoice authorization**. Owners and assigned accounts can inspect the status
+and receipts, but cannot grant or withdraw on someone else's behalf. Accounts
+preparation links to the consultant's authorization page without exposing their
+broader private employee record.
+
+Choose **Withdraw invoice authorization** to withdraw permission for future invoices.
+The dedicated settings page retains this action after service ends while your
+kept account remains signed into the workspace; granting again requires active
+service. Turning the payroll feature off also preserves your existing history and
+withdrawal action while blocking new grants and issuance. Each grant or withdrawal retains the statement, version, actor and date.
+An existing permission can still cover a final invoice for past services after exit;
+withdraw it explicitly if you no longer authorize that future issuance.
+Older receipts remain available through history. Withdrawal preserves previous
+receipts and any existing invoice or payment record.
+
+Saving permission does not generate an invoice. Consultant invoice issuance still
+needs verified legal/billing/tax facts, full settlement, numbering, document and
+delivery workflows. The later issuer must recheck current permission when it issues
+an invoice and retain the exact consent receipt.
+
 ## Not available yet
 
-Consultant invoices, FIRC or FIRA attachments, replacing returned funds, the India
-account handoff, consultant self-service for bank details and split requests, bank
-change notifications, Mercury webhooks and the PTO ledger and exception decisions are
-required follow-on work. A returned wire stays visible and can't be replaced from Miru.
+Consultant invoice issuance and verified billing/tax identity, FIRC or FIRA
+attachments, replacing returned funds, consultant split requests, bank-number
+confirmation, bank-change notifications and Mercury webhooks remain follow-on work.
+A returned wire stays visible and can't be replaced from Miru. The India accounts
+handoff, consultant bank-detail editing and explicit PTO policy/decision workflows
+are described above and in Employee records; they remain subject to their workspace
+rollout gates and payment-verification safeguards.
 See the [complete issue requirements](../../superpowers/specs/2026-10-19-consultant-payroll-requirements.md)
 for acceptance status.

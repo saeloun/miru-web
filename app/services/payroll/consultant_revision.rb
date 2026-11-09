@@ -53,7 +53,7 @@ module Payroll
         source = capture(employment)
         unresolvable = unresolvable_codes(source, review)
         not_ready = unresolvable + (review[:fee_estimate] ? [] : ["fee_unavailable"]) + Array(review.dig(:pto, "blockers"))
-        review.merge(source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
+        review.merge(user_id: employment.user_id, source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
           required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
           current: current_selection(employment), locked: bank_activity?(employment))
       end

@@ -11,6 +11,7 @@ import { downloadAttachment, employeeRecordsApi, errorMessage } from "./api";
 import { Fact, Field, Section, text } from "./Fields";
 import Reports from "./Reports";
 import { ArchiveList } from "../../SignedDocuments";
+import { InvoiceAuthorizationPanel } from "../InvoiceAuthorization";
 
 const bankFields = [
   "bank_account_name",
@@ -36,7 +37,7 @@ const paymentDefaults = {
   note: "",
 };
 
-const Records = ({ companyId, userId, self }) => {
+const Records = ({ companyId, companyName, userId, self }) => {
   const [controller] = useState(() => new window.AbortController());
   const [record, setRecord] = useState(null);
   const [details, setDetails] = useState<any>({});
@@ -214,6 +215,13 @@ const Records = ({ companyId, userId, self }) => {
               </Link>
             )}
           </Section>
+          {record.can_view_invoice_authorization && (
+            <InvoiceAuthorizationPanel
+              companyId={companyId}
+              companyName={companyName}
+              userId={userId}
+            />
+          )}
           <Section title={text("privateDetails")}>
             {!editing ? (
               <>
@@ -650,6 +658,7 @@ const EmployeeRecords = () => {
   return (
     <Records
       companyId={String(company.id)}
+      companyName={company.name}
       key={`${company.id}:${user.id}:${userId}:${companyRole}:${location.search}`}
       self={String(userId) === String(user.id)}
       userId={String(userId)}

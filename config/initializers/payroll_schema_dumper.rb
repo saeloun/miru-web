@@ -9,7 +9,7 @@ module PayrollSchemaDumper
 
       dump_pto_guards(stream)
 
-      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews].select { |table| @connection.table_exists?(table) }
+      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
       stream.puts <<~RUBY.indent(2)
@@ -30,6 +30,7 @@ module PayrollSchemaDumper
         RUBY
       end
       dump_service_fee_guard(stream)
+      dump_invoice_authorization_guard(stream)
       return unless @connection.table_exists?("payroll_india_handoffs")
 
       stream.puts <<~RUBY.indent(2)
@@ -103,6 +104,21 @@ module PayrollSchemaDumper
         execute <<~SQL
           CREATE TRIGGER consultant_service_fee_review_valid BEFORE INSERT ON consultant_service_fee_reviews
           FOR EACH ROW EXECUTE FUNCTION validate_consultant_service_fee_review();
+        SQL
+      RUBY
+    end
+
+    def dump_invoice_authorization_guard(stream)
+      return unless @connection.table_exists?("consultant_invoice_authorizations")
+
+      sql = @connection.select_value("SELECT pg_get_functiondef(oid) FROM pg_proc WHERE pronamespace='public'::regnamespace AND proname='validate_consultant_invoice_authorization' AND pronargs=0 AND prorettype='trigger'::regtype")
+      raise "Invoice authorization database guard is missing" unless sql
+
+      stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+      stream.puts <<~RUBY.indent(2)
+        execute <<~SQL
+          CREATE TRIGGER consultant_invoice_authorization_valid BEFORE INSERT ON consultant_invoice_authorizations
+          FOR EACH ROW EXECUTE FUNCTION validate_consultant_invoice_authorization();
         SQL
       RUBY
     end

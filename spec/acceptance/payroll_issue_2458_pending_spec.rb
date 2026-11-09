@@ -7,7 +7,8 @@ require "spec_helper"
 RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   context "1. Consultant identity and beneficiaries" do
     it "requires consultant legal name, billing address and applicable tax details before payment readiness"
-    it "records versioned authorization to invoice for the consultant and honors withdrawal"
+    # Self-only versioned consent/withdrawal, immutable SQL and retries: invoice_authorization_spec.rb,
+    # consultant_invoice_authorizations_spec.rb and responsive/consultant_invoice_authorization_spec.rb.
     it "requires matching account-number confirmation and country-specific currency, IFSC, SWIFT and provider fields"
     it "encrypts bank and tax identifiers and exposes only masked values outside authorized payment preparation"
     it "notifies a consultant about missing details while allowing other complete consultants to progress"

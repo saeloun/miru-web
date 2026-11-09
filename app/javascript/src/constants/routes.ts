@@ -46,6 +46,10 @@ const EmployeeRecords = lazy(
   () => import("components/Profile/EmployeeRecords")
 );
 
+const InvoiceAuthorization = lazy(
+  () => import("components/Profile/InvoiceAuthorization")
+);
+
 const InvoicesRouteConfig = lazy(
   () => import("components/Invoices/RouteConfig")
 );
@@ -310,6 +314,11 @@ export const ROUTES = [
       { path: "applications/:applicationId", Component: Hiring },
     ],
     authorisedRoles: [ADMIN, OWNER],
+  },
+  {
+    path: "/settings/invoice-authorization",
+    subRoutes: [{ path: "", Component: InvoiceAuthorization }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
   },
   {
     path: "/settings/employee-records",

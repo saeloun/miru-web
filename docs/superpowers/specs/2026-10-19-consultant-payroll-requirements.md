@@ -6,7 +6,7 @@ Primary source: [Sonam Goyal's Miru issue #2458](https://github.com/saeloun/miru
 
 The India accounts handoff now has an encrypted approved report, explicitly confirmed recipient/bank, durable attempts with ambiguous-delivery holds, assigned-accounts actual INR credit, protected reimbursement reservations and once-only settlement. Full report/source digests, company-wide normalized bank-reference deduplication, session-key rotation, concurrent revision/credit/compensation changes and schema-reloaded history protection have local executable coverage. See [verification and screenshots](../../qa/india-payroll-2458/verification-20261108.md). This advances sections 6/8/12; the historical ledger below is not a current absence-of-code inventory.
 
-Approved paid-leave classification is still unavailable in existing sources and is explicitly reported that way. The complete email contract, PTO ledger, consultant invoice/tax consent, remittance documentation and live bank/provider acceptance remain unfinished. No production or live bank acceptance is claimed.
+The subsequent PTO release adds explicit paid/unpaid decisions, immutable recovery history, closing/year-end/exit worklists and frozen leave balances in the complete India report/mail contract. A reviewed service-period fee resolves joining, exit and changed-term bases without selecting an automatic proration policy. Invoice authorization now has a separate explicit self-grant/withdrawal workflow. These features do not establish consultant legal/billing/tax identity or complete invoice issuance, remittance documentation and live bank/provider acceptance. No production or live bank acceptance is claimed.
 
 ## Product priority
 

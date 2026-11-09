@@ -153,6 +153,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
       documents = employment.employee_documents.includes(file_attachment: :blob).order(created_at: :desc, id: :desc)
       {
         company_id: current_company.id, can_manage: policy(EmployeeRecord).manage?,
+        can_view_invoice_authorization: ConsultantInvoiceAuthorizationPolicy.new(current_user, employment).show?,
         user: user.slice(:id, :first_name, :last_name, :date_of_birth, :phone, :personal_email_id, :social_accounts).merge(
           addresses: user.addresses.map do |address|
             address.slice(:id, :address_type, :address_line_1, :address_line_2, :city, :state, :country, :pin)

@@ -157,6 +157,7 @@ export interface ServicePeriodFee {
 }
 
 export interface PreparationConsultant {
+  user_id?: number;
   employment_id: number;
   consultant_name: string;
   monthly_fee: string | null;

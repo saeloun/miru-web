@@ -16,6 +16,7 @@ import AllocatedDevicesDetails from "components/Profile/Personal/Devices";
 import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmployeeRecords from "components/Profile/EmployeeRecords";
+import InvoiceAuthorization from "components/Profile/InvoiceAuthorization";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
 import PreferencesSettingsPage from "components/Settings/Preferences";
@@ -37,6 +38,15 @@ import {
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
 export const SETTINGS = [
+  {
+    label: "INVOICE AUTHORIZATION",
+    path: "invoice-authorization",
+    icon: <ProjectsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, "manager"],
+    Component: InvoiceAuthorization,
+    category: "personal",
+    isTab: true,
+  },
   {
     label: "EMPLOYEE RECORDS",
     path: "employee-records",

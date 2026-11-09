@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_09_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -407,6 +407,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
     t.index ["employment_id", "effective_on", "id"], name: "index_consultant_terms_effective_version"
     t.index ["employment_id"], name: "index_consultant_compensations_on_employment_id"
     t.check_constraint "monthly_fee > 0::numeric AND hours_per_day > 0::numeric AND hours_per_day <= 24::numeric", name: "consultant_compensations_positive_terms"
+  end
+
+  create_table "consultant_invoice_authorizations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "actor_id", null: false
+    t.string "action", null: false
+    t.string "statement_version", null: false
+    t.text "statement_text", null: false
+    t.string "statement_digest", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.bigint "previous_event_id"
+    t.datetime "created_at", null: false
+    t.index ["actor_id"], name: "index_consultant_invoice_authorizations_on_actor_id"
+    t.index ["company_id", "employment_id", "id"], name: "invoice_authorization_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_consultant_invoice_authorizations_on_company_id"
+    t.index ["employment_id", "idempotency_key"], name: "invoice_authorization_command_identity", unique: true
+    t.index ["employment_id"], name: "index_consultant_invoice_authorizations_on_employment_id"
+    t.index ["employment_id"], name: "invoice_authorization_one_root", unique: true, where: "(previous_event_id IS NULL)"
+    t.index ["previous_event_id"], name: "index_consultant_invoice_authorizations_on_previous_event_id", unique: true
+    t.check_constraint "id > 0 AND (action::text = ANY (ARRAY['grant'::character varying, 'withdraw'::character varying]::text[])) AND length(statement_version::text) >= 1 AND length(statement_version::text) <= 128 AND length(statement_text) >= 1 AND length(statement_text) <= 4000 AND statement_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "invoice_authorization_event_values"
   end
 
   create_table "consultant_pto_policies", force: :cascade do |t|
@@ -2657,6 +2679,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
   add_foreign_key "compensation_versions", "employments"
   add_foreign_key "consultant_compensations", "employments"
   add_foreign_key "consultant_compensations", "users", column: "created_by_id"
+  add_foreign_key "consultant_invoice_authorizations", "companies"
+  add_foreign_key "consultant_invoice_authorizations", "consultant_invoice_authorizations", column: ["company_id", "employment_id", "previous_event_id"], primary_key: ["company_id", "employment_id", "id"], name: "invoice_authorization_previous_tenant"
+  add_foreign_key "consultant_invoice_authorizations", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "consultant_invoice_authorizations", "users", column: "actor_id"
   add_foreign_key "consultant_pto_policies", "companies"
   add_foreign_key "consultant_pto_policies", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
   add_foreign_key "consultant_pto_policies", "users", column: "created_by_id"
@@ -3228,6 +3254,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
   SQL
   execute <<~SQL
+    CREATE TRIGGER consultant_invoice_authorizations_immutable BEFORE UPDATE OR DELETE ON consultant_invoice_authorizations
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
     CREATE OR REPLACE FUNCTION public.validate_consultant_service_fee_review()
      RETURNS trigger
      LANGUAGE plpgsql
@@ -3265,6 +3295,47 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_120000) do
   execute <<~SQL
     CREATE TRIGGER consultant_service_fee_review_valid BEFORE INSERT ON consultant_service_fee_reviews
     FOR EACH ROW EXECUTE FUNCTION validate_consultant_service_fee_review();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_consultant_invoice_authorization()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    DECLARE subject public.employments; previous public.consultant_invoice_authorizations;
+    BEGIN
+      SELECT * INTO subject FROM public.employments WHERE id=NEW.employment_id AND company_id=NEW.company_id FOR UPDATE;
+      IF subject.id IS NULL OR subject.discarded_at IS NOT NULL OR subject.user_id<>NEW.actor_id OR
+        NOT EXISTS(SELECT 1 FROM public.users WHERE id=NEW.actor_id AND discarded_at IS NULL AND current_workspace_id=NEW.company_id) THEN
+        RAISE EXCEPTION 'Invoice authorization requires its own kept consultant';
+      END IF;
+      IF NEW.previous_event_id IS NULL THEN
+        IF NEW.action<>'grant' OR EXISTS(SELECT 1 FROM public.consultant_invoice_authorizations WHERE employment_id=NEW.employment_id) THEN
+          RAISE EXCEPTION 'Invoice authorization predecessor changed';
+        END IF;
+      ELSE
+        SELECT * INTO previous FROM public.consultant_invoice_authorizations WHERE id=NEW.previous_event_id;
+        IF previous.id IS NULL OR previous.company_id<>NEW.company_id OR previous.employment_id<>NEW.employment_id OR
+          previous.actor_id<>NEW.actor_id OR NEW.id<=previous.id OR
+          EXISTS(SELECT 1 FROM public.consultant_invoice_authorizations WHERE previous_event_id=previous.id) THEN
+          RAISE EXCEPTION 'Invoice authorization predecessor changed';
+        END IF;
+        IF NEW.action='withdraw' AND (previous.action<>'grant' OR
+          (NEW.statement_version,NEW.statement_text,NEW.statement_digest) IS DISTINCT FROM
+          (previous.statement_version,previous.statement_text,previous.statement_digest)) THEN
+          RAISE EXCEPTION 'Withdrawal must retain the granted statement';
+        END IF;
+        IF NEW.action='grant' AND previous.action='grant' AND
+          (NEW.statement_version,NEW.statement_text,NEW.statement_digest) IS NOT DISTINCT FROM
+          (previous.statement_version,previous.statement_text,previous.statement_digest) THEN
+          RAISE EXCEPTION 'Invoice authorization is already granted';
+        END IF;
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_invoice_authorization_valid BEFORE INSERT ON consultant_invoice_authorizations
+    FOR EACH ROW EXECUTE FUNCTION validate_consultant_invoice_authorization();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$

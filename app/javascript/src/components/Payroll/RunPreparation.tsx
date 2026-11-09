@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import {
   payrollApi,
@@ -199,6 +200,15 @@ const ConsultantRow = ({
         {exactAmount(consultant.fee_estimate, "INR", false)} ·{" "}
         {label(consultant.payment_source || "no_funding_source")}
       </p>
+      {consultant.user_id && (
+        <Link
+          aria-label={`Invoice authorization for ${consultant.consultant_name}`}
+          className="inline-flex min-h-11 items-center text-sm text-primary underline"
+          to={`/settings/invoice-authorization?user_id=${consultant.user_id}`}
+        >
+          Invoice authorization
+        </Link>
+      )}
       {consultant.pto && <PtoSummary facts={consultant.pto} />}
       <ServiceFeePanel
         key={`${companyId}:${month}:${id}`}
