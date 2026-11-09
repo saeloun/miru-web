@@ -1,16 +1,21 @@
 # Changelog
 
-## 3.1.0 - 2026-11-09
+## 3.2.0 - 2026-11-09
 
 ### Added
 
 - **Approve consultant leave before payroll.** Configure a reconciled opening, earned leave and borrowing limits, then record explicit paid, unpaid, advance, deferred, waived or correction decisions for missing hours.
 - **Review leave at year end and exit.** Keep outstanding advances, deferred cases and cash recoveries visible, with private review notices and recorded decisions.
 - **Read approved leave in India payroll reports.** Retain paid leave and opening, accrued, advance, deferred and closing balances in the approved report and accounts email.
+- **Review fees for partial service months.** Record an explicit service-period base fee for joining, leaving or changed terms before leave decisions and payroll approval; fees are never automatically prorated.
+- **Record consultant invoice permission.** Consultants can grant or withdraw authorization and read its history, including after exit. Saving permission does not issue an invoice.
+- **Confirm changes to bank accounts.** Re-enter the account number when saving primary consultant bank details. Assigned payroll reviewers receive a generic change notice without bank values.
+- **Review private billing and tax facts.** Consultants submit declared legal name, address, PAN/GST applicability and private evidence for a separate accounts review before new payments. This does not establish government verification or select tax rates.
 
 ### Changed
 
 - **Prepare payroll from approved leave decisions.** Each consultant requires a policy approved by an active owner or admin before a new payroll revision. Changes to attendance, policy or decisions require fresh review; accepted bank reports retain their approved values.
+- **Keep existing transfers intact.** Later payroll revisions retain the original approved source, amounts and claims for transfers already started. New transfers and remaining split legs still need current review and source checks. Changed facts can hold an unsent leg; reconcile bank status without bypassing the hold.
 - **Back up before deployment.** Take a verified backup and follow the [deployment guide](docs/payroll-pto-ledger.md). After financial adoption, older application versions cannot safely write to the new ledger; the final migration prevents destructive rollback. Use a reviewed forward correction or restore a compatible database and application together.
 
 ### Fixed
