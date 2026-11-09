@@ -119,6 +119,11 @@ deletion does not create a successful-deletion audit record.
 Open **Payroll** and use **Make Payment**. Choose the month, an accounts reviewer
 and a different owner. This creates a run for review and moves no money.
 
+Assigned accounts reviewers can read leave facts and review service-period fees
+for configured consultants active during that run's month, including before the
+first revision is prepared. Unconfigured or out-of-period staff are outside this
+assignment; owners and admins retain historical review access.
+
 The accounts reviewer opens the run and chooses who to include. Consultants with
 unresolved data show **Not ready for payment** and don't hold up anyone else. For
 each consultant, an owner/admin must first configure a reconciled PTO policy and
@@ -135,6 +140,14 @@ claims or that month's consultant terms returns the run to draft until a new rev
 is approved. Once a transfer exists for a month, new terms have to start in a later month.
 A new revision starts from the current one, and a consultant with a transfer must keep
 the same amounts and claims.
+
+If an original transfer is cancelled without moving funds, or its India handoff
+is voided, a carried leave reservation can still belong to the earlier revision.
+Prepare and approve a fresh revision before creating a replacement payment.
+This hold returns the whole run to draft, so other new payments also wait for
+both approvals. Existing credit recording and reconciliation remain available.
+Keep an original active handoff attached to its approved revision. If multiple
+leave recoveries need return review, resolve each one before the group is complete.
 
 ## Pay through Mercury
 

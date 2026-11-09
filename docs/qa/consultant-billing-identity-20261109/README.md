@@ -87,3 +87,21 @@ including consultant invoice numbering/PDF/delivery, remittance documents, compl
 beneficiary fields and provider/account acceptance. No production restore/deployment,
 live provider request, real mail, official tax computation or statutory filing is
 established by these synthetic PostgreSQL 16 tests.
+
+### Integrated release follow-up
+
+Release validation at `bcb720d` passed 6,344 backend examples with 37 pending,
+but five of 405 browser examples failed while opening the billing-identity link.
+A controlled pointer regression reproduced the profile moving that link while
+asynchronous sections loaded. Moving the same self-only link above those sections
+passes that regression and all eight original identity journeys in a separate
+9/0 Brave run. Console error/exception collections are empty; both required Vite
+builds pass. Combined-release results are recorded separately on the release PR.
+
+![Stable billing-identity link above asynchronous profile sections](profile-link-settled-1440.png)
+
+Independent release review also reproduced and fixed carried-reservation
+replacement settlement, incomplete multi-recovery return review, opening-date
+validation under non-ISO PostgreSQL DateStyle, and assigned-reviewer scope.
+These fixes require the additional forward migration; historical test counts
+above describe their original commits, not the new combined release.

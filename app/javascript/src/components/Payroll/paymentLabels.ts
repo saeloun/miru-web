@@ -23,6 +23,8 @@ const labels: Record<string, string> = {
     "Prior credit needs explicit owner review before this recovery is settled.",
   pto_recovery_already_claimed:
     "Another payroll already reserved or settled this recovery. Refresh and reconcile it.",
+  pto_reservation_revision_changed:
+    "Prepare and approve a fresh payroll revision before creating a replacement payment.",
   pto_historical_source_changed:
     "The original leave decision or attendance changed. Correct or cancel the unsubmitted historical recovery before payroll approval.",
   ready_for_submission: "Ready for submission",

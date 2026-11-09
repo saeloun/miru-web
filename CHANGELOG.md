@@ -23,6 +23,10 @@
 - **Recover leave adjustments once.** Preserve reservations through partial or uncertain payments, settle against confirmed credit and reopen review after a return, including carried split payments.
 - **Keep minute-based pay exact.** Calculate leave quantities and pay from exact minutes so display rounding cannot change a deduction, available balance or payment amount.
 - **Preserve historical leave balances.** Prevent backdated decisions and policy changes from spending an already consumed balance or moving an earlier balance into a later month.
+- **Reconcile replacement payments safely.** Require a fresh payroll revision when a carried leave reservation loses its original payment, and finish return review only after every affected recovery is resolved.
+- **Limit assigned payroll review to eligible consultants.** Keep initial preparation available while rejecting unconfigured or out-of-period subjects before reading their leave facts.
+- **Keep opening leave identities consistent.** Validate opening dates independently of the database session's date display format.
+- **Keep billing navigation stable.** Profile sections loading in the background no longer move the billing-identity link during a click.
 
 ## 3.0.8 - 2026-11-08
 
