@@ -129,7 +129,11 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
   end
 
   def queue_candidate_message
-    click_button "Choose enabled inbox"
+    expect(page).to have_no_text("Loading messages…")
+    inbox = find("button[role='combobox']", text: "Choose enabled inbox", exact_text: true)
+    page.scroll_to(inbox, align: :center)
+    inbox.click
+    expect(inbox).to match_selector("[aria-expanded='true']")
     find("[cmdk-item]", text: "Hiring · #{mailbox.source_email}", exact_text: true).click
     click_button "Preview candidate message"
     expect(page).to have_button("Confirm and queue message", disabled: false)
