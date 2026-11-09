@@ -77,11 +77,14 @@ RSpec.describe "Approved payroll PTO", type: :request do
 
   it "denies employees, cross-workspace records and accounts approval of a PTO treatment" do
     sign_in accounts
+    allow(Payroll::PtoFacts).to receive(:new).and_call_original
     post "#{path}/policy", params: { company_id: company.id, pto_policy: configuration }
     expect(response).to have_http_status(403)
     get path, params: { company_id: company.id, month: "2026-11" }
     expect(response).to have_http_status(403)
+    expect(Payroll::PtoFacts).not_to have_received(:new)
     run
+    expect(run.current_revision).to be_nil
     get path, params: { company_id: company.id, month: "2026-11" }
     expect(response).to have_http_status(200)
     get "/api/v1/payroll_pto/report", params: { company_id: company.id, as_of: "2026-11-30" }
@@ -96,6 +99,59 @@ RSpec.describe "Approved payroll PTO", type: :request do
     get "/api/v1/payroll_pto/#{foreign.id}", params: { company_id: company.id, month: "2026-11" }
     expect(response).to have_http_status(404)
     expect(ConsultantPtoPolicy.count).to eq(0)
+  end
+
+  context "assigned-month subject scope" do
+    before do
+      run
+      sign_in accounts
+    end
+
+    ["unconfigured", "joining after the month", "exited before the month"].each do |state|
+      it "denies #{state} subjects before computing private PTO facts" do
+        subject = if state == "unconfigured"
+          create(:employment, company:, joined_at: "2020-01-01", resigned_at: nil)
+        else
+          employment.tap do |record|
+            record.update!(state == "joining after the month" ? { joined_at: "2026-12-01" } : { resigned_at: "2026-10-31" })
+          end
+        end
+        Payroll::PtoLedger.new(subject, actor: owner).configure!(**configuration)
+        allow(Payroll::PtoFacts).to receive(:new).and_call_original
+
+        get "/api/v1/payroll_pto/#{subject.id}", params: { company_id: company.id, month: "2026-11" }
+
+        expect(response).to have_http_status(403)
+        expect(Payroll::PtoFacts).not_to have_received(:new)
+        expect(response.body).not_to include(configuration.fetch(:reason), configuration.fetch(:evidence))
+      end
+    end
+
+    %w[owner admin].each do |role|
+      it "preserves #{role} access to historical policies outside the preparation population" do
+        manager = create(:user, current_workspace: company)
+        create(:employment, company:, user: manager, joined_at: "2020-01-01", resigned_at: nil)
+        manager.add_role(role, company)
+        subject = create(:employment, company:, joined_at: "2020-01-01", resigned_at: "2026-10-31")
+        Payroll::PtoLedger.new(subject, actor: owner).configure!(**configuration)
+        sign_in manager
+
+        get "/api/v1/payroll_pto/#{subject.id}", params: { company_id: company.id, month: "2026-11" }
+
+        expect(response).to have_http_status(200)
+        expect(response.parsed_body.dig("policy", "reason")).to eq(configuration.fetch(:reason))
+      end
+    end
+
+    it "denies a foreign subject and a switched workspace before computing private facts" do
+      foreign = create(:employment)
+      allow(Payroll::PtoFacts).to receive(:new).and_call_original
+      get "/api/v1/payroll_pto/#{foreign.id}", params: { company_id: company.id, month: "2026-11" }
+      expect(response).to have_http_status(404)
+      get path, params: { company_id: foreign.company_id, month: "2026-11" }
+      expect(response).to have_http_status(409)
+      expect(Payroll::PtoFacts).not_to have_received(:new)
+    end
   end
 
   context "historical component selection" do

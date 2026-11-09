@@ -10,11 +10,8 @@ class Api::V1::PayrollPtoController < Api::V1::PayrollBaseController
   def show
     month = Payroll::ConsultantReview.period(params[:month], current_company.resolved_time_zone.today.iso8601,
       today: current_company.resolved_time_zone.today).first
+    authorize_read!(month)
     facts = Payroll::PtoFacts.new(employment, month:).call
-    unless PayrollRunPolicy.new(current_user, PayrollRun).create? ||
-        PayrollRun.where(company: current_company, period: month, accounts_reviewer: current_user).exists?
-      raise Payroll::Workflow::NotAuthorized, "Only an assigned accounts reviewer or an active owner or admin can read this leave review"
-    end
     policy = ConsultantPtoPolicy.find_by(id: facts["policy_id"])
     history = PayrollPtoEntry.where(employment:, company: current_company).includes(:actor).order(id: :desc).limit(100)
     obligations = Payroll::PtoObligations.new(employment, as_of: month.end_of_month).call
@@ -82,6 +79,19 @@ class Api::V1::PayrollPtoController < Api::V1::PayrollBaseController
   end
 
   private
+
+    def authorize_read!(month)
+      return if PayrollRunPolicy.new(current_user, PayrollRun).create?
+      return if reviewable_subject?(month) && PayrollRun.where(company: current_company, period: month, accounts_reviewer: current_user).exists?
+
+      raise Payroll::Workflow::NotAuthorized, "Only an assigned accounts reviewer or an active owner or admin can read this leave review"
+    end
+
+    def reviewable_subject?(month)
+      current_company.employments.kept.joins(:consultant_compensations).where(id: employment.id)
+        .where("employments.joined_at IS NULL OR employments.joined_at <= ?", month.end_of_month)
+        .where("employments.resigned_at IS NULL OR employments.resigned_at >= ?", month).exists?
+    end
 
     def employment
       @employment ||= current_company.employments.kept.find(params[:id])

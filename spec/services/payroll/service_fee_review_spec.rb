@@ -122,6 +122,55 @@ RSpec.describe "Reviewed consultant service-period fee" do
     expect { service.summary(period: "2026-11") }.to raise_error(Payroll::Workflow::NotAuthorized)
   end
 
+  context "assigned-month subject scope" do
+    before { run }
+
+    ["unconfigured", "joining after the month", "exited before the month"].each do |state|
+      it "denies #{state} subjects before computing service-fee context" do
+        subject = if state == "unconfigured"
+          create(:employment, company:, joined_at: "2020-01-01", resigned_at: nil)
+        else
+          employment.tap do |record|
+            record.update!(joined_at: "2020-01-01", resigned_at: state == "exited before the month" ? "2026-10-31" : nil)
+            record.update!(joined_at: "2026-12-01") if state == "joining after the month"
+          end
+        end
+        allow(Payroll::ServicePeriod).to receive(:new).and_call_original
+
+        expect { Payroll::ServiceFeeReview.new(subject, actor: accounts).summary(period: "2026-11") }
+          .to raise_error(Payroll::Workflow::NotAuthorized)
+        expect do
+          Payroll::ServiceFeeReview.new(subject, actor: accounts).record!(period: "2026-11", amount: "1", reason: "Denied scope",
+            expected_digest: "0" * 64, expected_review_id: "", idempotency_key: "denied-scope")
+        end.to raise_error(Payroll::Workflow::NotAuthorized)
+        expect(Payroll::ServicePeriod).not_to have_received(:new)
+        expect(ConsultantServiceFeeReview.where(employment: subject)).to be_empty
+      end
+    end
+
+    it "preserves configured-subject bootstrap before a first revision and allows incomplete dates for correction" do
+      employment.update!(joined_at: "2020-01-01")
+      expect(run.current_revision).to be_nil
+      summary = Payroll::ServiceFeeReview.new(employment, actor: accounts).summary(period: "2026-11")
+      expect(summary[:context].fetch("employment_id")).to eq(employment.id)
+      employment.update_column(:joined_at, nil)
+      expect(Payroll::ServiceFeeReview.new(employment.reload, actor: accounts).summary(period: "2026-11")[:blockers])
+        .to include("missing_service_dates")
+    end
+
+    %w[owner admin].each do |role|
+      it "preserves #{role} access to historical service-fee context" do
+        manager = create(:user, current_workspace: company)
+        create(:employment, company:, user: manager, joined_at: "2020-01-01", resigned_at: nil)
+        manager.add_role(role, company)
+        subject = create(:employment, company:, joined_at: "2020-01-01", resigned_at: "2026-10-31")
+
+        expect(Payroll::ServiceFeeReview.new(subject, actor: manager).summary(period: "2026-11")[:blockers])
+          .to include("service_period_empty")
+      end
+    end
+  end
+
   it "protects adopted rows from raw SQL update, delete and cross-tenant insertion" do
     employment.update!(joined_at: "2026-11-16")
     save_fee
