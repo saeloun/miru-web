@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.5] - 2026-11-10
+
+### Changed
+
+- Verify saved personal profile details and populated family information in insurance reports through browser and export checks.
+
 ## [3.6.4] - 2026-11-10
 
 ### Fixed
