@@ -90,7 +90,7 @@ RSpec.describe "Consultant billing identity", type: :system, js: true do
   def submitted
     press "Submit billing identity"
     expect(page).to have_css("[role='status']", text: "Awaiting accounts review", exact_text: true)
-    expect(page).to have_no_field("Legal name")
+    expect(page).to have_no_field("Legal name", disabled: :all)
     expect(page).to have_no_text(PAN)
     expect(page).to have_no_text(GST)
   end

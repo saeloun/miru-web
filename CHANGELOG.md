@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.1] - 2026-11-10
+
+### Fixed
+
+- **Keep payroll exception decisions explicit.** Only explicit acknowledgements satisfy payroll exception review before saving a revision.
+- **Preserve reviewed reimbursement eligibility.** Claims changed after eligibility review require a fresh preview before payroll capture.
+- **Keep historical leave retries consistent.** Overlapping retries return the original accepted decision without duplicating its recovery.
+
 ## [3.3.0] - 2026-11-09
 
 ### Added

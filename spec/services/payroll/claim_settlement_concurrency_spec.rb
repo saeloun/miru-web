@@ -68,6 +68,8 @@ RSpec.describe "Payroll claim settlement concurrency" do
       second_pid = pids.fetch(([run.id, later.id] - [first_run_id]).sole)
       Timeout.timeout(10) do
         loop do
+          # Activity query text is cached within the transaction holding the claim lock.
+          ActiveRecord::Base.connection.execute("SELECT pg_stat_clear_snapshot()")
           claim_wait = ActiveRecord::Base.connection.select_value(<<~SQL)
             SELECT wait_event_type='Lock' AND #{Integer(claim_holder_pid)}=ANY(pg_blocking_pids(pid))
             FROM pg_stat_activity WHERE pid=#{Integer(first_pid)} AND query LIKE '%"expenses"%FOR UPDATE%'

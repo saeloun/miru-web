@@ -149,6 +149,7 @@ module Payroll
         (source.fetch("review_exceptions").pluck("code") & DECISIONS.keys).uniq + (review[:warnings] & ACKNOWLEDGED_WARNINGS)
       end
 
+      # Capture pay only from reviewed facts before reserving claims for approval.
       def build_line(input, cutoff)
         employment = @company.employments.kept.find(input[:employment_id])
         review = review_for(employment, cutoff, input.slice(:confirmed_unpaid_hours, :unpaid_reason, :expense_ids))
@@ -157,7 +158,7 @@ module Payroll
         raise MercuryPayment::Blocked.new(codes) if codes.any?
 
         expenses = @company.expenses.where(id: review[:selected_expense_ids]).order(:id).to_a
-        adjustments = reimbursement_adjustments(expenses) + reviewed_adjustments(input) + pto_adjustments(review)
+        adjustments = reimbursement_adjustments(expenses, review) + reviewed_adjustments(input) + pto_adjustments(review)
         calculation = calculate(employment, review, source, adjustments)
         raise MercuryPayment::Blocked.new("calculation_requires_review") unless calculation["review_ready"] && calculation_base(calculation) == review[:fee_estimate].to_d
 
@@ -173,7 +174,14 @@ module Payroll
         codes
       end
 
-      def reimbursement_adjustments(expenses)
+      # Reapproval can move a claim past cutoff without changing its selected ID.
+      def reimbursement_adjustments(expenses, review)
+        selected = review.fetch(:eligible_expenses).select { |expense| review[:selected_expense_ids].include?(expense[:id]) }
+          .sort_by { |expense| expense[:id] }
+        unless expenses.map { |expense| ClaimReference.for(expense) } == selected.pluck(:source_reference)
+          raise ConsultantReview::InvalidInput, "Selected claims changed after eligibility review; refresh the preview"
+        end
+
         expenses.map do |expense|
           adjustment("expense_#{expense.id}", "reimbursement", expense.amount.to_s("F"), ClaimReference.for(expense), "approved_claim")
         end

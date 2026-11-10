@@ -85,12 +85,13 @@ class Api::V1::PayrollRunsController < Api::V1::PayrollBaseController
       staff.filter_map { |user| { id: user.id.to_s, name: user.full_name } if template.eligible_actor?(user, stage) }
     end
 
+    # Preserve literal consent; boolean casting accepts negative text such as "no".
     def revision_consultants
       Array(params[:consultants]).map do |entry|
         raise Payroll::ConsultantReview::InvalidInput, "Invalid consultant selection" unless entry.is_a?(ActionController::Parameters)
 
         values = entry.permit(:employment_id, :confirmed_unpaid_hours, :unpaid_reason, :acknowledged, :other_earning, :other_deduction, :withholding, expense_ids: [])
-        values.to_h.symbolize_keys.merge(acknowledged: ActiveModel::Type::Boolean.new.cast(values[:acknowledged]) == true)
+        values.to_h.symbolize_keys
       end
     end
 end

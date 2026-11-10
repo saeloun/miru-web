@@ -66,6 +66,21 @@ RSpec.describe "Payroll run preparation API", type: :request do
     expect(created_run.payroll_revisions.count).to eq(1)
   end
 
+  it "does not treat negative text as acknowledgement of payroll exceptions" do
+    sign_in owner
+    create_run
+    sign_in accounts
+    get "/api/v1/payroll_runs/#{created_run.id}/preparation", as: :json
+    expect(json_response.fetch("consultants").first.fetch("required_acknowledgements")).not_to be_empty
+
+    expect do
+      post "/api/v1/payroll_runs/#{created_run.id}/revisions", params: { company_id: company.id, cutoff: "2026-12-05", idempotency_key: "not-reviewed",
+        consultants: [{ employment_id: employment.id, acknowledged: "no" }] }, as: :json
+    end.not_to change(PayrollRevision, :count)
+    expect(response).to have_http_status(422)
+    expect(json_response.fetch("codes")).to include("acknowledgement_required")
+  end
+
   it "carries Sonam's confirmed unpaid example from actual hours through approvals and INR credit" do
     ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 100_000,
       hours_per_day: 8, weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: legal_name, change_reason: "Agreed monthly fee")
