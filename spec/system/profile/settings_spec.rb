@@ -19,7 +19,7 @@ RSpec.describe "Profile Settings", type: :system, js: true do
   end
 
   before do
-    create(:employment, company:, user:, designation: "Senior Engineer", employment_type: "Salaried")
+    create(:employment, company:, user:, designation: "Senior Engineer", employment_type: "Salaried", resigned_at: nil)
     user.add_role :admin, company
     sign_in(user)
   end
@@ -286,6 +286,71 @@ RSpec.describe "Profile Settings", type: :system, js: true do
       expect(page).to have_content("Jane Doe", wait: 10)
       expect(page).to have_content("https://linkedin.com/in/janedoe", wait: 10)
       expect(page).not_to have_content("https://linkedin.com/in/unsaved-change")
+    end
+  end
+
+  [1440, 375].each do |width|
+    it "saves personal details through the form and reloads both profile views at #{width}px" do
+      page.current_window.resize_to(width, 1000)
+
+      with_forgery_protection do
+        visit "/settings/profile/edit"
+        expect(page).to have_field("email_id", with: "jane.personal@example.com", wait: 10)
+        find("#date_of_birth").click
+        within(".react-datepicker") do
+          find_all("select")[1].select("1993")
+          find_all("select")[0].select("Nov")
+          find(".react-datepicker__day--012:not(.react-datepicker__day--outside-month)").click
+        end
+        fill_in "email_id", with: "jane.updated@example.com"
+        find("input[type='tel']").set("+14155550123")
+        fill_in "address_line_1", with: "2461 Synthetic Street"
+        fill_in "address_line_2", with: "QA Apartment 2"
+        if width < 768
+          country_input = find("input[name='current_country_select']", visible: false)
+            .ancestor(".field-outline").find("[role='combobox']")
+          page.scroll_to(country_input, align: :center)
+          country_input.set("India")
+        else
+          find("#current_country_select").click
+        end
+        find("[role='option']", text: "India", exact_text: true).click
+        if width < 768
+          expect(page).to have_css("input[name='current_country_select'][value='IN']", visible: false)
+        else
+          expect(page).to have_button("India", id: "current_country_select")
+        end
+        fill_in "state", with: "Maharashtra"
+        fill_in "city", with: "Pune"
+        fill_in "zipcode", with: "411001"
+        fill_in "linkedin", with: "https://linkedin.com/in/jane-updated"
+        fill_in "github", with: "https://github.com/jane-updated"
+        click_button(width < 768 ? "Save" : "Update", exact: true)
+        expect(page).to have_field("Current password", wait: 10)
+        fill_in "Current password", with: "Password123!"
+        click_button "Continue", exact: true
+
+        expect(page).to have_current_path("/settings/profile", wait: 10)
+        visit "/settings/profile"
+        expect(page).to have_content("Born November 12, 1993", wait: 10)
+        expect(page).to have_content("jane.updated@example.com")
+        expect(page).to have_content("+14155550123")
+        expect(page).to have_content("https://linkedin.com/in/jane-updated")
+        expect(page).to have_content("https://github.com/jane-updated")
+        expect(page).to have_content("2461 Synthetic Street")
+
+        visit "/settings/employee-records"
+        ["1993-11-12", "jane.updated@example.com", "+14155550123",
+         "https://linkedin.com/in/jane-updated", "https://github.com/jane-updated",
+         "2461 Synthetic Street", "QA Apartment 2", "Pune", "Maharashtra", "IN", "411001"].each do |value|
+          expect(page).to have_content(value, wait: 10)
+        end
+        expect(user.reload).to have_attributes(date_of_birth: Date.new(1993, 11, 12),
+          personal_email_id: "jane.updated@example.com", phone: "+14155550123")
+        expect(user.addresses.find_by!(address_type: "current")).to have_attributes(
+          address_line_1: "2461 Synthetic Street", address_line_2: "QA Apartment 2", city: "Pune",
+          state: "Maharashtra", country: "IN", pin: "411001")
+      end
     end
   end
 

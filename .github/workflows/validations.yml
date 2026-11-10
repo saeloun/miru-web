@@ -236,6 +236,7 @@ jobs:
         run: >-
           bundle exec rspec spec/system/responsive spec/system/expenses/crud_spec.rb
           spec/system/auth/two_factor_spec.rb spec/system/invoices spec/system/time_tracking/add_entry_spec.rb
+          spec/system/profile/settings_spec.rb
 
       - name: Upload browser failure screenshots
         if: failure()

@@ -200,16 +200,35 @@ RSpec.describe "Employee reports and settings", type: :request do
     raw = EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE id = #{record.id}")
     expect(raw).not_to include("123.45", "INR")
     expect(record.reload.private_details).to include("salary_amount" => "123.45", "salary_currency" => "INR")
+    insured = create(:user, current_workspace: company, first_name: "Synthetic", last_name: "Insured",
+      date_of_birth: Date.new(1990, 5, 6), phone: "+14155550123")
+    insured.add_role(:employee, company)
+    insured_employment = create(:employment, company:, user: insured, joined_at: Date.new(2020, 3, 2),
+      resigned_at: nil, employee_id: "INS-2461", designation: "Engineer")
+    family = [
+      { "name" => "Synthetic Spouse", "date_of_birth" => "1991-07-08", "gender" => "Female", "relationship" => "Spouse" },
+      { "name" => "Synthetic Child", "date_of_birth" => "2018-09-10", "gender" => "Male", "relationship" => "Child" }
+    ]
+    EmployeeRecord.create!(employment: insured_employment, private_details: { family_members: family })
     %w[insurance salary].each do |preset|
       save_report(name: preset, columns: EmployeeReports::Columns::PRESETS.fetch(preset.to_sym))
       expect(response).to have_http_status(:created)
       get "/api/v1/employee_reports/#{EmployeeReport.last.id}/download", params: { month: "2026-10" }
       expect(response).to have_http_status(:ok)
       rows = CSV.parse(response.body, headers: true)
-      expect(rows.size).to eq(2)
-      rows.each do |row|
+      expect(rows.size).to eq(3)
+      incomplete_rows = rows.reject { |row| row["Employee ID"] == "INS-2461" }
+      expect(incomplete_rows.size).to eq(2)
+      incomplete_rows.each do |row|
         expect(row["Joining date"]).to eq("") if preset == "insurance"
         expect(row["Month calendar weekdays (Mon–Fri)"]).to eq("") if preset == "salary"
+      end
+      if preset == "insurance"
+        insured_row = rows.find { |row| row["Employee ID"] == "INS-2461" }
+        expect(insured_row.to_h.except("Family members (JSON)")).to eq(
+          "Employee name" => "Synthetic Insured", "Date of birth" => "1990-05-06", "Joining date" => "2020-03-02",
+          "Employee ID" => "INS-2461", "Designation" => "Engineer", "Phone" => "'+14155550123")
+        expect(JSON.parse(insured_row["Family members (JSON)"])).to eq(family)
       end
       expect(response.body).to include("123.45") if preset == "salary"
     end
