@@ -1,8 +1,51 @@
+diff --git a/.env.example b/.env.example
+index 8a48e24..3d27727 100644
+--- a/.env.example
++++ b/.env.example
+@@ -121,6 +121,8 @@ NEXT_PRIVATE_SMTP_APIKEY_USER=
+ NEXT_PRIVATE_SMTP_APIKEY=
+ # OPTIONAL: Defines whether to force the use of TLS.
+ NEXT_PRIVATE_SMTP_SECURE=
++# OPTIONAL: require STARTTLS before authentication when using SMTP without implicit TLS.
++NEXT_PRIVATE_SMTP_REQUIRE_TLS=
+ # OPTIONAL: if this is true and NEXT_PRIVATE_SMTP_SECURE is false then TLS is not used even if the server supports STARTTLS extension
+ NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS=
+ # REQUIRED: Defines the sender name to use for the from address.
+diff --git a/apps/remix/package.json b/apps/remix/package.json
+index d646886..0ec1696 100644
+--- a/apps/remix/package.json
++++ b/apps/remix/package.json
+@@ -26,7 +26,7 @@
+     "@documenso/ui": "*",
+     "@epic-web/remember": "^1.1.0",
+     "@faker-js/faker": "^10.1.0",
+-    "@hono/node-server": "^1.19.11",
++    "@hono/node-server": "2.1.3",
+     "@hono/standard-validator": "^0.2.0",
+     "@hono/trpc-server": "^0.4.0",
+     "@hookform/resolvers": "^3",
+@@ -69,7 +69,7 @@
+     "recharts": "^2.15.4",
+     "remeda": "^2.32.0",
+     "remix-themes": "^2.0.4",
+-    "satori": "^0.18.3",
++    "satori": "0.33.5",
+     "tailwindcss": "^3.4.18",
+     "ts-pattern": "^5.9.0",
+     "ua-parser-js": "^1.0.41",
 diff --git a/docker/Dockerfile b/docker/Dockerfile
-index 22cad2e..b3fb42c 100644
+index 22cad2e..bd4cdb1 100644
 --- a/docker/Dockerfile
 +++ b/docker/Dockerfile
-@@ -81,13 +81,18 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
+@@ -3,6 +3,7 @@
+ ###########################
+ FROM node:24-alpine3.23 AS base
+ 
++RUN apk add --no-cache 'zlib>=1.4-r0'
+ RUN apk add --no-cache openssl
+ RUN apk add --no-cache font-freefont
+ 
+@@ -81,13 +82,22 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
  COPY --from=builder /app/lingui.config.ts ./lingui.config.ts
  COPY --from=builder /app/patches ./patches
  
@@ -17,12 +60,16 @@ index 22cad2e..b3fb42c 100644
 +COPY --from=builder /app/scripts/security ./scripts/security
 +RUN node scripts/security/zod-size-gate-check.mjs \
 +    && node --import tsx scripts/security/mailchannels-transport-check.mjs \
-+    && node scripts/security/dependency-guards-check.mts
++    && node scripts/security/dependency-guards-check.mts \
++    && node scripts/security/runtime-dependencies-check.mjs \
++    && node scripts/security/dependency-refresh-check.mjs \
++    && node scripts/security/share-image-check.mjs \
++    && node --import tsx scripts/security/smtp-tls-check.mjs
 +
  ENV NODE_OPTIONS="--max-old-space-size=8192"
  
  RUN npx turbo run build --filter=@documenso/remix...
-@@ -145,6 +150,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
+@@ -145,6 +155,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
  RUN npx prisma generate --schema ./packages/prisma/schema.prisma --generator client \
      && npm cache clean --force
  
@@ -32,6 +79,18 @@ index 22cad2e..b3fb42c 100644
  
  # Get the start script from docker/
  COPY --chown=nodejs:nodejs ./docker/start.sh /app/apps/remix/start.sh
+diff --git a/docker/production/compose.yml b/docker/production/compose.yml
+index 5cf4ddc..4fae750 100644
+--- a/docker/production/compose.yml
++++ b/docker/production/compose.yml
+@@ -46,6 +46,7 @@ services:
+       - NEXT_PRIVATE_SMTP_APIKEY_USER=${NEXT_PRIVATE_SMTP_APIKEY_USER}
+       - NEXT_PRIVATE_SMTP_APIKEY=${NEXT_PRIVATE_SMTP_APIKEY}
+       - NEXT_PRIVATE_SMTP_SECURE=${NEXT_PRIVATE_SMTP_SECURE}
++      - NEXT_PRIVATE_SMTP_REQUIRE_TLS=${NEXT_PRIVATE_SMTP_REQUIRE_TLS:-false}
+       - NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS=${NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS}
+       - NEXT_PRIVATE_SMTP_FROM_NAME=${NEXT_PRIVATE_SMTP_FROM_NAME:?err}
+       - NEXT_PRIVATE_SMTP_FROM_ADDRESS=${NEXT_PRIVATE_SMTP_FROM_ADDRESS:?err}
 diff --git a/docker/start.sh b/docker/start.sh
 index 7121790..81400c7 100755
 --- a/docker/start.sh
@@ -55,7 +114,7 @@ index 7121790..81400c7 100755
 -HOSTNAME=0.0.0.0 node build/server/main.js
 +HOSTNAME=0.0.0.0 exec node build/server/main.js
 diff --git a/package-lock.json b/package-lock.json
-index b999c2b..f01fba8 100644
+index b999c2b..112ab0b 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -55,9 +55,9 @@
@@ -79,7 +138,75 @@ index b999c2b..f01fba8 100644
          "pdfjs-dist": "5.4.296",
          "pino": "^9.14.0",
          "pino-pretty": "^13.1.2",
-@@ -3721,9 +3721,9 @@
+@@ -207,7 +207,7 @@
+         "@documenso/ui": "*",
+         "@epic-web/remember": "^1.1.0",
+         "@faker-js/faker": "^10.1.0",
+-        "@hono/node-server": "^1.19.11",
++        "@hono/node-server": "2.1.3",
+         "@hono/standard-validator": "^0.2.0",
+         "@hono/trpc-server": "^0.4.0",
+         "@hookform/resolvers": "^3",
+@@ -250,7 +250,7 @@
+         "recharts": "^2.15.4",
+         "remeda": "^2.32.0",
+         "remix-themes": "^2.0.4",
+-        "satori": "^0.18.3",
++        "satori": "0.33.5",
+         "tailwindcss": "^3.4.18",
+         "ts-pattern": "^5.9.0",
+         "ua-parser-js": "^1.0.41",
+@@ -3538,12 +3538,12 @@
+       "license": "MIT"
+     },
+     "node_modules/@hono/node-server": {
+-      "version": "1.19.17",
+-      "resolved": "https://registry.npmjs.org/@hono/node-server/-/node-server-1.19.17.tgz",
+-      "integrity": "sha512-dSneS5qhiauZWGDCeK4o695Xd9nUNjviSZCMQrj10eetr8Uln1ucn6bbphOM6UynAMMtNIzZNSpL9vnASJwrPQ==",
++      "version": "2.1.3",
++      "resolved": "https://registry.npmjs.org/@hono/node-server/-/node-server-2.1.3.tgz",
++      "integrity": "sha512-TA//nWMqPhbfdfneACk6t5a9eqbS9lABEPyKn0/xZTah3H3U2XaVg85rJFl0/Fyit0I552YDHgXGVSf3GwqbUw==",
+       "license": "MIT",
+       "engines": {
+-        "node": ">=18.14.1"
++        "node": ">=20"
+       },
+       "peerDependencies": {
+         "hono": "^4"
+@@ -3601,25 +3601,17 @@
+         }
+       }
+     },
+-    "node_modules/@hono/vite-dev-server/node_modules/brace-expansion": {
+-      "version": "2.1.7",
+-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.1.7.tgz",
+-      "integrity": "sha512-uZbew1NqdmPDTMJ8ah1y+b+9QEJrfkXFk3RcTQw3X0jW/xRUvFKsg1CfQdSYGdTbXZWExtU3J3ccxtnfw1Fi0g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "balanced-match": "^1.0.0"
+-      }
+-    },
+     "node_modules/@hono/vite-dev-server/node_modules/minimatch": {
+-      "version": "9.0.9",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.9.tgz",
+-      "integrity": "sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==",
+-      "license": "ISC",
++      "version": "11.0.1",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.1.tgz",
++      "integrity": "sha512-t+Vn6DX4wPCxS23y03C0uhF7S1jpi1GfqPrnlEipCJaA2ykiNbMkVlDutZtmvLfRcUN6R8AYVlzTsQrT4RZoLQ==",
++      "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^2.0.2"
++        "@isaacs/nonrecursive-glob-match": "^1.0.1",
++        "brace-expansion": "^5.0.12"
+       },
+       "engines": {
+-        "node": ">=16 || 14 >=14.17"
++        "node": "18 || 20 || >=22"
+       },
+       "funding": {
+         "url": "https://github.com/sponsors/isaacs"
+@@ -3721,9 +3713,9 @@
        }
      },
      "node_modules/@img/sharp-darwin-arm64": {
@@ -92,7 +219,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -3739,13 +3739,13 @@
+@@ -3739,13 +3731,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -110,7 +237,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -3761,20 +3761,20 @@
+@@ -3761,20 +3753,20 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -136,7 +263,7 @@ index b999c2b..f01fba8 100644
        },
        "engines": {
          "node": ">=20.9.0"
-@@ -3784,9 +3784,9 @@
+@@ -3784,9 +3776,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-darwin-arm64": {
@@ -149,7 +276,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -3800,9 +3800,9 @@
+@@ -3800,9 +3792,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-darwin-x64": {
@@ -162,7 +289,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -3816,9 +3816,9 @@
+@@ -3816,9 +3808,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-arm": {
@@ -175,7 +302,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm"
        ],
-@@ -3835,9 +3835,9 @@
+@@ -3835,9 +3827,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-arm64": {
@@ -188,7 +315,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -3854,9 +3854,9 @@
+@@ -3854,9 +3846,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-ppc64": {
@@ -201,7 +328,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "ppc64"
        ],
-@@ -3873,9 +3873,9 @@
+@@ -3873,9 +3865,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-riscv64": {
@@ -214,7 +341,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "riscv64"
        ],
-@@ -3892,9 +3892,9 @@
+@@ -3892,9 +3884,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-s390x": {
@@ -227,7 +354,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "s390x"
        ],
-@@ -3911,9 +3911,9 @@
+@@ -3911,9 +3903,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linux-x64": {
@@ -240,7 +367,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -3930,9 +3930,9 @@
+@@ -3930,9 +3922,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linuxmusl-arm64": {
@@ -253,7 +380,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -3949,9 +3949,9 @@
+@@ -3949,9 +3941,9 @@
        }
      },
      "node_modules/@img/sharp-libvips-linuxmusl-x64": {
@@ -266,7 +393,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -3968,9 +3968,9 @@
+@@ -3968,9 +3960,9 @@
        }
      },
      "node_modules/@img/sharp-linux-arm": {
@@ -279,7 +406,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm"
        ],
-@@ -3989,13 +3989,13 @@
+@@ -3989,13 +3981,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -297,7 +424,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -4014,13 +4014,13 @@
+@@ -4014,13 +4006,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -315,7 +442,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "ppc64"
        ],
-@@ -4039,13 +4039,13 @@
+@@ -4039,13 +4031,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -333,7 +460,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "riscv64"
        ],
-@@ -4064,13 +4064,13 @@
+@@ -4064,13 +4056,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -351,7 +478,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "s390x"
        ],
-@@ -4089,13 +4089,13 @@
+@@ -4089,13 +4081,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -369,7 +496,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -4114,13 +4114,13 @@
+@@ -4114,13 +4106,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -387,7 +514,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -4139,13 +4139,13 @@
+@@ -4139,13 +4131,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -405,7 +532,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -4164,13 +4164,13 @@
+@@ -4164,13 +4156,13 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -423,7 +550,7 @@ index b999c2b..f01fba8 100644
        "license": "Apache-2.0 AND LGPL-3.0-or-later AND MIT",
        "optional": true,
        "dependencies": {
-@@ -4184,16 +4184,16 @@
+@@ -4184,16 +4176,16 @@
        }
      },
      "node_modules/@img/sharp-webcontainers-wasm32": {
@@ -444,7 +571,7 @@ index b999c2b..f01fba8 100644
        },
        "engines": {
          "node": ">=20.9.0"
-@@ -4203,9 +4203,9 @@
+@@ -4203,9 +4195,9 @@
        }
      },
      "node_modules/@img/sharp-win32-arm64": {
@@ -457,7 +584,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -4222,9 +4222,9 @@
+@@ -4222,9 +4214,9 @@
        }
      },
      "node_modules/@img/sharp-win32-ia32": {
@@ -470,7 +597,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "ia32"
        ],
-@@ -4241,9 +4241,9 @@
+@@ -4241,9 +4233,9 @@
        }
      },
      "node_modules/@img/sharp-win32-x64": {
@@ -483,7 +610,140 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -5761,15 +5761,15 @@
+@@ -4284,50 +4276,6 @@
+       "integrity": "sha512-JH8ZL/ywcJyR9MmJ5BNqZllXNZQqQbnVZOqpPQqE1vHiFgAw4NHbvE0FOduNU8IX9babitBT46571OnPTT0Zcw==",
+       "license": "MIT"
+     },
+-    "node_modules/@isaacs/cliui": {
+-      "version": "8.0.2",
+-      "resolved": "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz",
+-      "integrity": "sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "string-width": "^5.1.2",
+-        "string-width-cjs": "npm:string-width@^4.2.0",
+-        "strip-ansi": "^7.0.1",
+-        "strip-ansi-cjs": "npm:strip-ansi@^6.0.1",
+-        "wrap-ansi": "^8.1.0",
+-        "wrap-ansi-cjs": "npm:wrap-ansi@^7.0.0"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      }
+-    },
+-    "node_modules/@isaacs/cliui/node_modules/ansi-regex": {
+-      "version": "6.4.0",
+-      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.4.0.tgz",
+-      "integrity": "sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/ansi-regex?sponsor=1"
+-      }
+-    },
+-    "node_modules/@isaacs/cliui/node_modules/strip-ansi": {
+-      "version": "7.2.0",
+-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-7.2.0.tgz",
+-      "integrity": "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-regex": "^6.2.2"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/strip-ansi?sponsor=1"
+-      }
+-    },
+     "node_modules/@isaacs/fs-minipass": {
+       "version": "4.0.1",
+       "resolved": "https://registry.npmjs.org/@isaacs/fs-minipass/-/fs-minipass-4.0.1.tgz",
+@@ -4341,6 +4289,12 @@
+         "node": ">=18.0.0"
+       }
+     },
++    "node_modules/@isaacs/nonrecursive-glob-match": {
++      "version": "1.0.3",
++      "resolved": "https://registry.npmjs.org/@isaacs/nonrecursive-glob-match/-/nonrecursive-glob-match-1.0.3.tgz",
++      "integrity": "sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==",
++      "license": "BlueOak-1.0.0"
++    },
+     "node_modules/@jest/schemas": {
+       "version": "29.6.3",
+       "resolved": "https://registry.npmjs.org/@jest/schemas/-/schemas-29.6.3.tgz",
+@@ -5199,6 +5153,68 @@
+         "@esbuild/win32-x64": "0.25.12"
+       }
+     },
++    "node_modules/@lingui/cli/node_modules/glob": {
++      "version": "14.0.2",
++      "resolved": "https://registry.npmjs.org/glob/-/glob-14.0.2.tgz",
++      "integrity": "sha512-vfMgTR2djMHPUchsJMLpZlYQvtjVL+mHpEr5wPpoCbQs2vr/FBNK+3Gnl9Ara1DSs4Aeg4eG9HiADb5/rkY/ZA==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
++        "minimatch": "^11.0.0",
++        "minipass": "^7.1.3",
++        "path-scurry": "^3.0.0"
++      },
++      "engines": {
++        "node": "18 || 20 || >=22"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/isaacs"
++      }
++    },
++    "node_modules/@lingui/cli/node_modules/lru-cache": {
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "engines": {
++        "node": "20 || >=22"
++      }
++    },
++    "node_modules/@lingui/cli/node_modules/minimatch": {
++      "version": "11.0.4",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.4.tgz",
++      "integrity": "sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
++        "@isaacs/nonrecursive-glob-match": "^1.0.3",
++        "brace-expansion": "^5.0.12"
++      },
++      "engines": {
++        "node": "20 || >=22"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/isaacs"
++      }
++    },
++    "node_modules/@lingui/cli/node_modules/path-scurry": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-3.0.0.tgz",
++      "integrity": "sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
++        "lru-cache": "^11.0.0",
++        "minipass": "^7.1.2"
++      },
++      "engines": {
++        "node": "18 || 20 || >=22"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/isaacs"
++      }
++    },
+     "node_modules/@lingui/conf": {
+       "version": "5.9.5",
+       "resolved": "https://registry.npmjs.org/@lingui/conf/-/conf-5.9.5.tgz",
+@@ -5761,15 +5777,15 @@
        }
      },
      "node_modules/@next/env": {
@@ -505,7 +765,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -5783,9 +5783,9 @@
+@@ -5783,9 +5799,9 @@
        }
      },
      "node_modules/@next/swc-darwin-x64": {
@@ -518,7 +778,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -5799,9 +5799,9 @@
+@@ -5799,9 +5815,9 @@
        }
      },
      "node_modules/@next/swc-linux-arm64-gnu": {
@@ -531,7 +791,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -5818,9 +5818,9 @@
+@@ -5818,9 +5834,9 @@
        }
      },
      "node_modules/@next/swc-linux-arm64-musl": {
@@ -544,7 +804,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -5837,9 +5837,9 @@
+@@ -5837,9 +5853,9 @@
        }
      },
      "node_modules/@next/swc-linux-x64-gnu": {
@@ -557,7 +817,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -5856,9 +5856,9 @@
+@@ -5856,9 +5872,9 @@
        }
      },
      "node_modules/@next/swc-linux-x64-musl": {
@@ -570,7 +830,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -5875,9 +5875,9 @@
+@@ -5875,9 +5891,9 @@
        }
      },
      "node_modules/@next/swc-win32-arm64-msvc": {
@@ -583,7 +843,7 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "arm64"
        ],
-@@ -5891,9 +5891,9 @@
+@@ -5891,9 +5907,9 @@
        }
      },
      "node_modules/@next/swc-win32-x64-msvc": {
@@ -596,7 +856,24 @@ index b999c2b..f01fba8 100644
        "cpu": [
          "x64"
        ],
-@@ -13701,19 +13701,6 @@
+@@ -9993,16 +10009,6 @@
+       "integrity": "sha512-k2ENnmBugE/rzQfEcdWHcCY+/FM3VLzH9cYEsbdsoqrvzAKRhUZeRNhAZvB8OitQJ1TBed3yqWtdjzS6wJKBwg==",
+       "license": "MIT"
+     },
+-    "node_modules/@pkgjs/parseargs": {
+-      "version": "0.11.0",
+-      "resolved": "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz",
+-      "integrity": "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==",
+-      "license": "MIT",
+-      "optional": true,
+-      "engines": {
+-        "node": ">=14"
+-      }
+-    },
+     "node_modules/@playwright/browser-chromium": {
+       "version": "1.56.1",
+       "resolved": "https://registry.npmjs.org/@playwright/browser-chromium/-/browser-chromium-1.56.1.tgz",
+@@ -13701,19 +13707,6 @@
          "tailwindcss": ">=3.0.0 || >=4.0.0 || insiders"
        }
      },
@@ -616,7 +893,7 @@ index b999c2b..f01fba8 100644
      "node_modules/@tanstack/query-core": {
        "version": "5.90.10",
        "resolved": "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.90.10.tgz",
-@@ -13774,9 +13761,10 @@
+@@ -13774,9 +13767,10 @@
        }
      },
      "node_modules/@team-plain/typescript-sdk": {
@@ -630,7 +907,7 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "dependencies": {
          "@graphql-typed-document-node/core": "^3.2.0",
-@@ -14713,16 +14701,16 @@
+@@ -14713,16 +14707,16 @@
        }
      },
      "node_modules/@vitest/expect": {
@@ -652,7 +929,7 @@ index b999c2b..f01fba8 100644
          "chai": "^6.2.2",
          "tinyrainbow": "^3.1.0"
        },
-@@ -14731,13 +14719,13 @@
+@@ -14731,13 +14725,13 @@
        }
      },
      "node_modules/@vitest/mocker": {
@@ -670,7 +947,7 @@ index b999c2b..f01fba8 100644
          "estree-walker": "^3.0.3",
          "magic-string": "^0.30.21"
        },
-@@ -14768,9 +14756,9 @@
+@@ -14768,9 +14762,9 @@
        }
      },
      "node_modules/@vitest/pretty-format": {
@@ -683,7 +960,7 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "license": "MIT",
        "dependencies": {
-@@ -14781,13 +14769,13 @@
+@@ -14781,13 +14775,13 @@
        }
      },
      "node_modules/@vitest/runner": {
@@ -701,7 +978,7 @@ index b999c2b..f01fba8 100644
          "pathe": "^2.0.3"
        },
        "funding": {
-@@ -14802,14 +14790,14 @@
+@@ -14802,14 +14796,14 @@
        "license": "MIT"
      },
      "node_modules/@vitest/snapshot": {
@@ -721,7 +998,7 @@ index b999c2b..f01fba8 100644
          "magic-string": "^0.30.21",
          "pathe": "^2.0.3"
        },
-@@ -14825,9 +14813,9 @@
+@@ -14825,9 +14819,9 @@
        "license": "MIT"
      },
      "node_modules/@vitest/spy": {
@@ -734,7 +1011,7 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "license": "MIT",
        "funding": {
-@@ -14835,13 +14823,13 @@
+@@ -14835,13 +14829,13 @@
        }
      },
      "node_modules/@vitest/utils": {
@@ -752,7 +1029,7 @@ index b999c2b..f01fba8 100644
          "convert-source-map": "^2.0.0",
          "tinyrainbow": "^3.1.0"
        },
-@@ -15647,9 +15635,9 @@
+@@ -15647,9 +15641,9 @@
        "license": "MIT"
      },
      "node_modules/body-parser": {
@@ -765,7 +1042,7 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "dependencies": {
          "bytes": "~3.1.2",
-@@ -15705,22 +15693,6 @@
+@@ -15705,22 +15699,6 @@
        "integrity": "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A==",
        "license": "MIT"
      },
@@ -788,7 +1065,7 @@ index b999c2b..f01fba8 100644
      "node_modules/body-parser/node_modules/statuses": {
        "version": "2.0.2",
        "resolved": "https://registry.npmjs.org/statuses/-/statuses-2.0.2.tgz",
-@@ -16092,9 +16064,9 @@
+@@ -16092,9 +16070,9 @@
        }
      },
      "node_modules/chai": {
@@ -801,7 +1078,7 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "license": "MIT",
        "engines": {
-@@ -17851,9 +17823,19 @@
+@@ -17851,9 +17829,19 @@
        }
      },
      "node_modules/deepmerge-ts": {
@@ -824,7 +1101,7 @@ index b999c2b..f01fba8 100644
        "license": "BSD-3-Clause",
        "engines": {
          "node": ">=16.0.0"
-@@ -18058,9 +18040,9 @@
+@@ -18058,9 +18046,9 @@
        }
      },
      "node_modules/dompurify": {
@@ -837,7 +1114,33 @@ index b999c2b..f01fba8 100644
        "license": "(MPL-2.0 OR Apache-2.0)",
        "optionalDependencies": {
          "@types/trusted-types": "^2.0.7"
-@@ -18968,9 +18950,9 @@
+@@ -18210,12 +18198,6 @@
+       "integrity": "sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==",
+       "license": "MIT"
+     },
+-    "node_modules/eastasianwidth": {
+-      "version": "0.2.0",
+-      "resolved": "https://registry.npmjs.org/eastasianwidth/-/eastasianwidth-0.2.0.tgz",
+-      "integrity": "sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==",
+-      "license": "MIT"
+-    },
+     "node_modules/ecdsa-sig-formatter": {
+       "version": "1.0.11",
+       "resolved": "https://registry.npmjs.org/ecdsa-sig-formatter/-/ecdsa-sig-formatter-1.0.11.tgz",
+@@ -18262,12 +18244,6 @@
+       "integrity": "sha512-UvA/32XqrLDdZSn7Jllo1AYNcWji/G0d5M0GTViE7KoGBiMunw3a34Sb2KO4ZZyrSEhqsxFoVhWWJshdyfKqJA==",
+       "license": "ISC"
+     },
+-    "node_modules/emoji-regex": {
+-      "version": "9.2.2",
+-      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz",
+-      "integrity": "sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==",
+-      "license": "MIT"
+-    },
+     "node_modules/emoji-regex-xs": {
+       "version": "2.0.1",
+       "resolved": "https://registry.npmjs.org/emoji-regex-xs/-/emoji-regex-xs-2.0.1.tgz",
+@@ -18968,9 +18944,9 @@
        "license": "Unlicense"
      },
      "node_modules/fast-uri": {
@@ -850,20 +1153,43 @@ index b999c2b..f01fba8 100644
        "funding": [
          {
            "type": "github",
-@@ -19199,9 +19181,9 @@
+@@ -19199,9 +19175,9 @@
        }
      },
      "node_modules/follow-redirects": {
 -      "version": "1.16.0",
 -      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.0.tgz",
 -      "integrity": "sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==",
-+      "version": "1.16.1",
-+      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.1.tgz",
-+      "integrity": "sha512-FNvFGzoMLWmE6Yj9spb/zjd7yiNCHiAW9/Tg9CXrQ8wuu32HtlJOwWO11OJafl5FfY3DxTdQ0vj42zU1kvv5jg==",
++      "version": "1.16.2",
++      "resolved": "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.16.2.tgz",
++      "integrity": "sha512-/kVP2U8z596Ia0gwFrwyIeo74ta5aVmSeU1FfAUMAmcEP5EP7zydmag3SLiN64NaRKef3lxsq7i/g7ltJQDGow==",
        "funding": [
          {
            "type": "individual",
-@@ -19599,9 +19581,9 @@
+@@ -19218,22 +19194,6 @@
+         }
+       }
+     },
+-    "node_modules/foreground-child": {
+-      "version": "3.3.1",
+-      "resolved": "https://registry.npmjs.org/foreground-child/-/foreground-child-3.3.1.tgz",
+-      "integrity": "sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==",
+-      "license": "ISC",
+-      "dependencies": {
+-        "cross-spawn": "^7.0.6",
+-        "signal-exit": "^4.0.1"
+-      },
+-      "engines": {
+-        "node": ">=14"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      }
+-    },
+     "node_modules/form-data": {
+       "version": "4.0.6",
+       "resolved": "https://registry.npmjs.org/form-data/-/form-data-4.0.6.tgz",
+@@ -19599,9 +19559,9 @@
        }
      },
      "node_modules/fumadocs-mdx/node_modules/zod": {
@@ -876,7 +1202,224 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "funding": {
          "url": "https://github.com/sponsors/colinhacks"
-@@ -20483,9 +20465,9 @@
+@@ -19879,30 +19839,6 @@
+       "integrity": "sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==",
+       "license": "ISC"
+     },
+-    "node_modules/glob": {
+-      "version": "11.1.0",
+-      "resolved": "https://registry.npmjs.org/glob/-/glob-11.1.0.tgz",
+-      "integrity": "sha512-vuNwKSaKiqm7g0THUBu2x7ckSs3XJLXE+2ssL7/MfTGPLLcrJQ/4Uq1CjPTtO5cCIiRxqvN6Twy1qOwhL0Xjcw==",
+-      "dev": true,
+-      "license": "BlueOak-1.0.0",
+-      "dependencies": {
+-        "foreground-child": "^3.3.1",
+-        "jackspeak": "^4.1.1",
+-        "minimatch": "^10.1.1",
+-        "minipass": "^7.1.2",
+-        "package-json-from-dist": "^1.0.0",
+-        "path-scurry": "^2.0.0"
+-      },
+-      "bin": {
+-        "glob": "dist/esm/bin.mjs"
+-      },
+-      "engines": {
+-        "node": "20 || >=22"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      }
+-    },
+     "node_modules/glob-parent": {
+       "version": "5.1.2",
+       "resolved": "https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz",
+@@ -19915,22 +19851,6 @@
+         "node": ">= 6"
+       }
+     },
+-    "node_modules/glob/node_modules/minimatch": {
+-      "version": "10.2.6",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+-      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
+-      "dev": true,
+-      "license": "BlueOak-1.0.0",
+-      "dependencies": {
+-        "brace-expansion": "^5.0.8"
+-      },
+-      "engines": {
+-        "node": "18 || 20 || >=22"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      }
+-    },
+     "node_modules/global-directory": {
+       "version": "4.0.1",
+       "resolved": "https://registry.npmjs.org/global-directory/-/global-directory-4.0.1.tgz",
+@@ -19993,15 +19913,6 @@
+         "node": ">=18"
+       }
+     },
+-    "node_modules/google-gax/node_modules/brace-expansion": {
+-      "version": "2.1.7",
+-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.1.7.tgz",
+-      "integrity": "sha512-uZbew1NqdmPDTMJ8ah1y+b+9QEJrfkXFk3RcTQw3X0jW/xRUvFKsg1CfQdSYGdTbXZWExtU3J3ccxtnfw1Fi0g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "balanced-match": "^1.0.0"
+-      }
+-    },
+     "node_modules/google-gax/node_modules/duplexify": {
+       "version": "4.1.3",
+       "resolved": "https://registry.npmjs.org/duplexify/-/duplexify-4.1.3.tgz",
+@@ -20014,88 +19925,43 @@
+         "stream-shift": "^1.0.2"
+       }
+     },
+-    "node_modules/google-gax/node_modules/gaxios": {
+-      "version": "7.2.0",
+-      "resolved": "https://registry.npmjs.org/gaxios/-/gaxios-7.2.0.tgz",
+-      "integrity": "sha512-CUVb4wcYe+771XevyH6HtGmXFAGGKkIC3kswAP8Z1JCe0j80JMaTPZH930DWFrvo0atjh18Arc0pEyUCWa5bfg==",
+-      "license": "Apache-2.0",
+-      "dependencies": {
+-        "extend": "^3.0.2",
+-        "https-proxy-agent": "^7.0.1",
+-        "node-fetch": "^3.3.2"
+-      },
+-      "engines": {
+-        "node": ">=18"
+-      }
+-    },
+     "node_modules/google-gax/node_modules/glob": {
+-      "version": "10.5.0",
+-      "resolved": "https://registry.npmjs.org/glob/-/glob-10.5.0.tgz",
+-      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
+-      "license": "ISC",
++      "version": "14.0.2",
++      "resolved": "https://registry.npmjs.org/glob/-/glob-14.0.2.tgz",
++      "integrity": "sha512-vfMgTR2djMHPUchsJMLpZlYQvtjVL+mHpEr5wPpoCbQs2vr/FBNK+3Gnl9Ara1DSs4Aeg4eG9HiADb5/rkY/ZA==",
++      "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "foreground-child": "^3.1.0",
+-        "jackspeak": "^3.1.2",
+-        "minimatch": "^9.0.4",
+-        "minipass": "^7.1.2",
+-        "package-json-from-dist": "^1.0.0",
+-        "path-scurry": "^1.11.1"
++        "minimatch": "^11.0.0",
++        "minipass": "^7.1.3",
++        "path-scurry": "^3.0.0"
+       },
+-      "bin": {
+-        "glob": "dist/esm/bin.mjs"
++      "engines": {
++        "node": "18 || 20 || >=22"
+       },
+       "funding": {
+         "url": "https://github.com/sponsors/isaacs"
+       }
+     },
+-    "node_modules/google-gax/node_modules/google-auth-library": {
+-      "version": "10.9.0",
+-      "resolved": "https://registry.npmjs.org/google-auth-library/-/google-auth-library-10.9.0.tgz",
+-      "integrity": "sha512-xtvUqvINPhTaBm7nXqlYPcrMHJPm1lCNdSovxnKKhTm+4JsvQ+KGVYJViLoH9Yxu8w+T0Qv5HubzYT9BLrppJg==",
+-      "license": "Apache-2.0",
+-      "dependencies": {
+-        "base64-js": "^1.3.0",
+-        "ecdsa-sig-formatter": "^1.0.11",
+-        "gaxios": "^7.1.4",
+-        "gcp-metadata": "8.1.2",
+-        "google-logging-utils": "1.1.3",
+-        "jws": "^4.0.0"
+-      },
+-      "engines": {
+-        "node": ">=18"
+-      }
+-    },
+-    "node_modules/google-gax/node_modules/jackspeak": {
+-      "version": "3.4.3",
+-      "resolved": "https://registry.npmjs.org/jackspeak/-/jackspeak-3.4.3.tgz",
+-      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
++    "node_modules/google-gax/node_modules/lru-cache": {
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+       "license": "BlueOak-1.0.0",
+-      "dependencies": {
+-        "@isaacs/cliui": "^8.0.2"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      },
+-      "optionalDependencies": {
+-        "@pkgjs/parseargs": "^0.11.0"
++      "engines": {
++        "node": "20 || >=22"
+       }
+     },
+-    "node_modules/google-gax/node_modules/lru-cache": {
+-      "version": "10.4.3",
+-      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-10.4.3.tgz",
+-      "integrity": "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==",
+-      "license": "ISC"
+-    },
+     "node_modules/google-gax/node_modules/minimatch": {
+-      "version": "9.0.9",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-9.0.9.tgz",
+-      "integrity": "sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg==",
+-      "license": "ISC",
++      "version": "11.0.1",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.1.tgz",
++      "integrity": "sha512-t+Vn6DX4wPCxS23y03C0uhF7S1jpi1GfqPrnlEipCJaA2ykiNbMkVlDutZtmvLfRcUN6R8AYVlzTsQrT4RZoLQ==",
++      "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^2.0.2"
++        "@isaacs/nonrecursive-glob-match": "^1.0.1",
++        "brace-expansion": "^5.0.12"
+       },
+       "engines": {
+-        "node": ">=16 || 14 >=14.17"
++        "node": "18 || 20 || >=22"
+       },
+       "funding": {
+         "url": "https://github.com/sponsors/isaacs"
+@@ -20120,16 +19986,16 @@
+       }
+     },
+     "node_modules/google-gax/node_modules/path-scurry": {
+-      "version": "1.11.1",
+-      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-1.11.1.tgz",
+-      "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-3.0.0.tgz",
++      "integrity": "sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==",
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "lru-cache": "^10.2.0",
+-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
++        "lru-cache": "^11.0.0",
++        "minipass": "^7.1.2"
+       },
+       "engines": {
+-        "node": ">=16 || 14 >=14.18"
++        "node": "18 || 20 || >=22"
+       },
+       "funding": {
+         "url": "https://github.com/sponsors/isaacs"
+@@ -20209,6 +20075,12 @@
+       "integrity": "sha512-3GKBOn+m2LX9iq+JC1064cSFprJY4jL1jCXTcpnfER5HYE2l/4EfWSGzkPa/ZDBmYI0ZOEj5VHV/eKnPGkHuOg==",
+       "license": "MIT"
+     },
++    "node_modules/harfbuzzjs": {
++      "version": "0.10.0",
++      "resolved": "https://registry.npmjs.org/harfbuzzjs/-/harfbuzzjs-0.10.0.tgz",
++      "integrity": "sha512-SN8LVwCOzvTq3OPNd0+EAghgXugItz56wst567D1vs7LnnKGWprhi3EG58aVOBwhN8HEbQxL4I9NDWkcXUutRw==",
++      "license": "MIT"
++    },
+     "node_modules/has-flag": {
+       "version": "4.0.0",
+       "resolved": "https://registry.npmjs.org/has-flag/-/has-flag-4.0.0.tgz",
+@@ -20483,9 +20355,9 @@
        }
      },
      "node_modules/hono": {
@@ -889,7 +1432,7 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "engines": {
          "node": ">=16.9.0"
-@@ -20774,9 +20756,9 @@
+@@ -20774,9 +20646,9 @@
        "license": "MIT"
      },
      "node_modules/inngest": {
@@ -902,7 +1445,7 @@ index b999c2b..f01fba8 100644
        "license": "Apache-2.0",
        "dependencies": {
          "@bufbuild/protobuf": "^2.2.3",
-@@ -20856,9 +20838,9 @@
+@@ -20856,9 +20728,9 @@
        }
      },
      "node_modules/inngest-cli": {
@@ -915,7 +1458,40 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "hasInstallScript": true,
        "license": "SEE LICENSE IN LICENSE.md",
-@@ -24112,12 +24094,12 @@
+@@ -21254,32 +21126,6 @@
+       "integrity": "sha512-9hmdGErWdYDOurGYxSbqLhy4EFReIwk71hMZTJ5b+zfa2zjMNV1ftFno2b8VjAQvX615gNB8Qxbl9JMRqHnIVA==",
+       "license": "MIT"
+     },
+-    "node_modules/jackspeak": {
+-      "version": "4.2.3",
+-      "resolved": "https://registry.npmjs.org/jackspeak/-/jackspeak-4.2.3.tgz",
+-      "integrity": "sha512-ykkVRwrYvFm1nb2AJfKKYPr0emF6IiXDYUaFx4Zn9ZuIH7MrzEZ3sD5RlqGXNRpHtvUHJyOnCEFxOlNDtGo7wg==",
+-      "dev": true,
+-      "license": "BlueOak-1.0.0",
+-      "dependencies": {
+-        "@isaacs/cliui": "^9.0.0"
+-      },
+-      "engines": {
+-        "node": "20 || >=22"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      }
+-    },
+-    "node_modules/jackspeak/node_modules/@isaacs/cliui": {
+-      "version": "9.0.0",
+-      "resolved": "https://registry.npmjs.org/@isaacs/cliui/-/cliui-9.0.0.tgz",
+-      "integrity": "sha512-AokJm4tuBHillT+FpMtxQ60n8ObyXBatq7jD2/JA9dxbDDokKQm8KMht5ibGzLVU9IJDIKK4TPKgMHEYMn3lMg==",
+-      "dev": true,
+-      "license": "BlueOak-1.0.0",
+-      "engines": {
+-        "node": ">=18"
+-      }
+-    },
+     "node_modules/jake": {
+       "version": "10.9.4",
+       "resolved": "https://registry.npmjs.org/jake/-/jake-10.9.4.tgz",
+@@ -24112,12 +23958,12 @@
        }
      },
      "node_modules/next": {
@@ -932,7 +1508,7 @@ index b999c2b..f01fba8 100644
          "@swc/helpers": "0.5.23",
          "baseline-browser-mapping": "^2.9.19",
          "caniuse-lite": "^1.0.30001579",
-@@ -24131,15 +24113,15 @@
+@@ -24131,15 +23977,15 @@
          "node": ">=20.9.0"
        },
        "optionalDependencies": {
@@ -957,7 +1533,7 @@ index b999c2b..f01fba8 100644
        },
        "peerDependencies": {
          "@opentelemetry/api": "^1.1.0",
-@@ -24292,12 +24274,12 @@
+@@ -24292,12 +24138,12 @@
        }
      },
      "node_modules/nodemailer": {
@@ -974,7 +1550,47 @@ index b999c2b..f01fba8 100644
        }
      },
      "node_modules/normalize-path": {
-@@ -25664,9 +25646,9 @@
+@@ -24786,6 +24632,7 @@
+       "version": "1.0.1",
+       "resolved": "https://registry.npmjs.org/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz",
+       "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==",
++      "dev": true,
+       "license": "BlueOak-1.0.0"
+     },
+     "node_modules/package-manager-detector": {
+@@ -25067,31 +24914,6 @@
+       "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==",
+       "license": "MIT"
+     },
+-    "node_modules/path-scurry": {
+-      "version": "2.0.2",
+-      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-2.0.2.tgz",
+-      "integrity": "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==",
+-      "license": "BlueOak-1.0.0",
+-      "dependencies": {
+-        "lru-cache": "^11.0.0",
+-        "minipass": "^7.1.2"
+-      },
+-      "engines": {
+-        "node": "18 || 20 || >=22"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/isaacs"
+-      }
+-    },
+-    "node_modules/path-scurry/node_modules/lru-cache": {
+-      "version": "11.5.3",
+-      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
+-      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
+-      "license": "BlueOak-1.0.0",
+-      "engines": {
+-        "node": "20 || >=22"
+-      }
+-    },
+     "node_modules/path-to-regexp": {
+       "version": "0.1.13",
+       "resolved": "https://registry.npmjs.org/path-to-regexp/-/path-to-regexp-0.1.13.tgz",
+@@ -25664,9 +25486,9 @@
        }
      },
      "node_modules/postcss-selector-parser": {
@@ -987,16 +1603,16 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "dependencies": {
          "cssesc": "^3.0.0",
-@@ -26113,12 +26095,13 @@
+@@ -26113,12 +25935,13 @@
        }
      },
      "node_modules/qs": {
 -      "version": "6.14.2",
 -      "resolved": "https://registry.npmjs.org/qs/-/qs-6.14.2.tgz",
 -      "integrity": "sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==",
-+      "version": "6.16.0",
-+      "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.0.tgz",
-+      "integrity": "sha512-h6fhOIaRrID2CbEY2fqs+7t+UXZo+MLAnU5gRIq85uFtdiUPCdsApMlHhXogKVM4HM2DVbIjGNTTYH2OcmP1vA==",
++      "version": "6.16.1",
++      "resolved": "https://registry.npmjs.org/qs/-/qs-6.16.1.tgz",
++      "integrity": "sha512-5Px6J7rfHBAGUhNQ3es4YzcOdBBw0SDcVtThJml4RdnKw4tKs2epA0kPZ+K8X+WiHktT93RHVcQ/3ym5aTCgtg==",
        "license": "BSD-3-Clause",
        "dependencies": {
 -        "side-channel": "^1.1.0"
@@ -1005,7 +1621,210 @@ index b999c2b..f01fba8 100644
        },
        "engines": {
          "node": ">=0.6"
-@@ -27757,9 +27740,9 @@
+@@ -26449,14 +26272,14 @@
+       }
+     },
+     "node_modules/react-email/node_modules/glob": {
+-      "version": "13.0.6",
+-      "resolved": "https://registry.npmjs.org/glob/-/glob-13.0.6.tgz",
+-      "integrity": "sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==",
++      "version": "14.0.2",
++      "resolved": "https://registry.npmjs.org/glob/-/glob-14.0.2.tgz",
++      "integrity": "sha512-vfMgTR2djMHPUchsJMLpZlYQvtjVL+mHpEr5wPpoCbQs2vr/FBNK+3Gnl9Ara1DSs4Aeg4eG9HiADb5/rkY/ZA==",
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "minimatch": "^10.2.2",
++        "minimatch": "^11.0.0",
+         "minipass": "^7.1.3",
+-        "path-scurry": "^2.0.2"
++        "path-scurry": "^3.0.0"
+       },
+       "engines": {
+         "node": "18 || 20 || >=22"
+@@ -26493,6 +26316,15 @@
+         "url": "https://github.com/sponsors/sindresorhus"
+       }
+     },
++    "node_modules/react-email/node_modules/lru-cache": {
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
++      "license": "BlueOak-1.0.0",
++      "engines": {
++        "node": "20 || >=22"
++      }
++    },
+     "node_modules/react-email/node_modules/marked": {
+       "version": "15.0.12",
+       "resolved": "https://registry.npmjs.org/marked/-/marked-15.0.12.tgz",
+@@ -26531,15 +26363,16 @@
+       }
+     },
+     "node_modules/react-email/node_modules/minimatch": {
+-      "version": "10.2.6",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+-      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
++      "version": "11.0.4",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.4.tgz",
++      "integrity": "sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==",
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^5.0.8"
++        "@isaacs/nonrecursive-glob-match": "^1.0.3",
++        "brace-expansion": "^5.0.12"
+       },
+       "engines": {
+-        "node": "18 || 20 || >=22"
++        "node": "20 || >=22"
+       },
+       "funding": {
+         "url": "https://github.com/sponsors/isaacs"
+@@ -26562,6 +26395,22 @@
+         "node": ">=18"
+       }
+     },
++    "node_modules/react-email/node_modules/path-scurry": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-3.0.0.tgz",
++      "integrity": "sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==",
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
++        "lru-cache": "^11.0.0",
++        "minipass": "^7.1.2"
++      },
++      "engines": {
++        "node": "18 || 20 || >=22"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/isaacs"
++      }
++    },
+     "node_modules/react-email/node_modules/pathe": {
+       "version": "2.0.3",
+       "resolved": "https://registry.npmjs.org/pathe/-/pathe-2.0.3.tgz",
+@@ -27236,13 +27085,14 @@
+       }
+     },
+     "node_modules/remix-flat-routes/node_modules/minimatch": {
+-      "version": "10.2.6",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+-      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
++      "version": "11.0.1",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.1.tgz",
++      "integrity": "sha512-t+Vn6DX4wPCxS23y03C0uhF7S1jpi1GfqPrnlEipCJaA2ykiNbMkVlDutZtmvLfRcUN6R8AYVlzTsQrT4RZoLQ==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^5.0.8"
++        "@isaacs/nonrecursive-glob-match": "^1.0.1",
++        "brace-expansion": "^5.0.12"
+       },
+       "engines": {
+         "node": "18 || 20 || >=22"
+@@ -27414,15 +27264,15 @@
+       }
+     },
+     "node_modules/rimraf/node_modules/glob": {
+-      "version": "13.0.6",
+-      "resolved": "https://registry.npmjs.org/glob/-/glob-13.0.6.tgz",
+-      "integrity": "sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==",
++      "version": "14.0.2",
++      "resolved": "https://registry.npmjs.org/glob/-/glob-14.0.2.tgz",
++      "integrity": "sha512-vfMgTR2djMHPUchsJMLpZlYQvtjVL+mHpEr5wPpoCbQs2vr/FBNK+3Gnl9Ara1DSs4Aeg4eG9HiADb5/rkY/ZA==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "minimatch": "^10.2.2",
++        "minimatch": "^11.0.0",
+         "minipass": "^7.1.3",
+-        "path-scurry": "^2.0.2"
++        "path-scurry": "^3.0.0"
+       },
+       "engines": {
+         "node": "18 || 20 || >=22"
+@@ -27431,14 +27281,42 @@
+         "url": "https://github.com/sponsors/isaacs"
+       }
+     },
++    "node_modules/rimraf/node_modules/lru-cache": {
++      "version": "11.5.3",
++      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.3.tgz",
++      "integrity": "sha512-U4N8FgzmWxc8k1VH8Kr6lQg18U7Fjvby6wXHVRX/ZZ7IwWbRMgrRbP0Wrb5q5NVinryp4SQampHKdvtecItxUg==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "engines": {
++        "node": "20 || >=22"
++      }
++    },
+     "node_modules/rimraf/node_modules/minimatch": {
+-      "version": "10.2.6",
+-      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+-      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
++      "version": "11.0.4",
++      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.4.tgz",
++      "integrity": "sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==",
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
++        "@isaacs/nonrecursive-glob-match": "^1.0.3",
++        "brace-expansion": "^5.0.12"
++      },
++      "engines": {
++        "node": "20 || >=22"
++      },
++      "funding": {
++        "url": "https://github.com/sponsors/isaacs"
++      }
++    },
++    "node_modules/rimraf/node_modules/path-scurry": {
++      "version": "3.0.0",
++      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-3.0.0.tgz",
++      "integrity": "sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==",
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^5.0.8"
++        "lru-cache": "^11.0.0",
++        "minipass": "^7.1.2"
+       },
+       "engines": {
+         "node": "18 || 20 || >=22"
+@@ -27584,9 +27462,9 @@
+       "license": "MIT"
+     },
+     "node_modules/satori": {
+-      "version": "0.18.3",
+-      "resolved": "https://registry.npmjs.org/satori/-/satori-0.18.3.tgz",
+-      "integrity": "sha512-T3DzWNmnrfVmk2gCIlAxLRLbGkfp3K7TyRva+Byyojqu83BNvnMeqVeYRdmUw4TKCsyH4RiQ/KuF/I4yEzgR5A==",
++      "version": "0.33.5",
++      "resolved": "https://registry.npmjs.org/satori/-/satori-0.33.5.tgz",
++      "integrity": "sha512-PNW6ktrQ8SM6kk7u4aOuTkkUewkzyTOrj+QeEzXSsnNMAdff4ire9CAqIz8+4C3rCiBtK8QTELv52AZEd1PbRw==",
+       "license": "MPL-2.0",
+       "dependencies": {
+         "@shuding/opentype.js": "1.4.0-beta.0",
+@@ -27596,6 +27474,8 @@
+         "css-to-react-native": "^3.0.0",
+         "emoji-regex-xs": "^2.0.1",
+         "escape-html": "^1.0.3",
++        "fflate": "0.7.3",
++        "harfbuzzjs": "0.10.0",
+         "linebreak": "^1.1.0",
+         "parse-css-color": "^0.2.1",
+         "postcss-value-parser": "^4.2.0",
+@@ -27605,6 +27485,12 @@
+         "node": ">=16"
+       }
+     },
++    "node_modules/satori/node_modules/fflate": {
++      "version": "0.7.5",
++      "resolved": "https://registry.npmjs.org/fflate/-/fflate-0.7.5.tgz",
++      "integrity": "sha512-QieYf//cis6ywHNi5qW1+PXPQ4bC+XVJAtS4AXIML8P76GroEiOxm/oQtn1f02UkJY1+KsXMJcC+R2v/Eg4G3g==",
++      "license": "MIT"
++    },
+     "node_modules/scroll-into-view-if-needed": {
+       "version": "3.1.0",
+       "resolved": "https://registry.npmjs.org/scroll-into-view-if-needed/-/scroll-into-view-if-needed-3.1.0.tgz",
+@@ -27757,9 +27643,9 @@
        "license": "ISC"
      },
      "node_modules/sharp": {
@@ -1018,7 +1837,7 @@ index b999c2b..f01fba8 100644
        "license": "Apache-2.0",
        "dependencies": {
          "@img/colour": "^1.1.0",
-@@ -27773,31 +27756,31 @@
+@@ -27773,31 +27659,31 @@
          "url": "https://opencollective.com/libvips"
        },
        "optionalDependencies": {
@@ -1075,7 +1894,129 @@ index b999c2b..f01fba8 100644
        },
        "peerDependenciesMeta": {
          "@types/node": {
-@@ -29108,9 +29091,9 @@
+@@ -27940,6 +27826,7 @@
+       "version": "4.1.0",
+       "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-4.1.0.tgz",
+       "integrity": "sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==",
++      "dev": true,
+       "license": "ISC",
+       "engines": {
+         "node": ">=14"
+@@ -28282,80 +28169,6 @@
+         "parenthesis": "^3.1.5"
+       }
+     },
+-    "node_modules/string-width": {
+-      "version": "5.1.2",
+-      "resolved": "https://registry.npmjs.org/string-width/-/string-width-5.1.2.tgz",
+-      "integrity": "sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "eastasianwidth": "^0.2.0",
+-        "emoji-regex": "^9.2.2",
+-        "strip-ansi": "^7.0.1"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/sponsors/sindresorhus"
+-      }
+-    },
+-    "node_modules/string-width-cjs": {
+-      "name": "string-width",
+-      "version": "4.2.3",
+-      "resolved": "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz",
+-      "integrity": "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "emoji-regex": "^8.0.0",
+-        "is-fullwidth-code-point": "^3.0.0",
+-        "strip-ansi": "^6.0.1"
+-      },
+-      "engines": {
+-        "node": ">=8"
+-      }
+-    },
+-    "node_modules/string-width-cjs/node_modules/emoji-regex": {
+-      "version": "8.0.0",
+-      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz",
+-      "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==",
+-      "license": "MIT"
+-    },
+-    "node_modules/string-width-cjs/node_modules/is-fullwidth-code-point": {
+-      "version": "3.0.0",
+-      "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz",
+-      "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=8"
+-      }
+-    },
+-    "node_modules/string-width/node_modules/ansi-regex": {
+-      "version": "6.4.0",
+-      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.4.0.tgz",
+-      "integrity": "sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/ansi-regex?sponsor=1"
+-      }
+-    },
+-    "node_modules/string-width/node_modules/strip-ansi": {
+-      "version": "7.2.0",
+-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-7.2.0.tgz",
+-      "integrity": "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-regex": "^6.2.2"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/strip-ansi?sponsor=1"
+-      }
+-    },
+     "node_modules/string.prototype.codepointat": {
+       "version": "0.2.1",
+       "resolved": "https://registry.npmjs.org/string.prototype.codepointat/-/string.prototype.codepointat-0.2.1.tgz",
+@@ -28388,19 +28201,6 @@
+         "node": ">=8"
+       }
+     },
+-    "node_modules/strip-ansi-cjs": {
+-      "name": "strip-ansi",
+-      "version": "6.0.1",
+-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz",
+-      "integrity": "sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-regex": "^5.0.1"
+-      },
+-      "engines": {
+-        "node": ">=8"
+-      }
+-    },
+     "node_modules/strip-bom": {
+       "version": "3.0.0",
+       "resolved": "https://registry.npmjs.org/strip-bom/-/strip-bom-3.0.0.tgz",
+@@ -28709,9 +28509,9 @@
+       }
+     },
+     "node_modules/systeminformation": {
+-      "version": "5.33.1",
+-      "resolved": "https://registry.npmjs.org/systeminformation/-/systeminformation-5.33.1.tgz",
+-      "integrity": "sha512-DEN6ICHk3Tk0Uf/hrAHh7xlt7iL5CJFBtPZinA0H62DrGG/KPKqq/Nzj6lCXPS4Ay/sf/14zNnk9LpqKzBIc+w==",
++      "version": "5.33.16",
++      "resolved": "https://registry.npmjs.org/systeminformation/-/systeminformation-5.33.16.tgz",
++      "integrity": "sha512-R+Lh69IJXfJj6bfyH1In5cIR9FTr4hBS39YvlZHZjsK1p9cuELPq7hplZZIb56ZESMMb+DzdKqqE6Iomi01Mvg==",
+       "license": "MIT",
+       "os": [
+         "darwin",
+@@ -29108,9 +28908,9 @@
        }
      },
      "node_modules/tinyrainbow": {
@@ -1088,7 +2029,7 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "license": "MIT",
        "engines": {
-@@ -29234,9 +29217,9 @@
+@@ -29234,9 +29034,9 @@
        }
      },
      "node_modules/ts-deepmerge": {
@@ -1101,7 +2042,7 @@ index b999c2b..f01fba8 100644
        "license": "ISC",
        "engines": {
          "node": ">=14.13.1"
-@@ -29454,9 +29437,9 @@
+@@ -29454,9 +29254,9 @@
        "license": "MIT"
      },
      "node_modules/undici": {
@@ -1114,7 +2055,7 @@ index b999c2b..f01fba8 100644
        "license": "MIT",
        "engines": {
          "node": ">=20.18.1"
-@@ -29821,9 +29804,9 @@
+@@ -29821,9 +29621,9 @@
        }
      },
      "node_modules/vite": {
@@ -1127,7 +2068,7 @@ index b999c2b..f01fba8 100644
        "dev": true,
        "license": "MIT",
        "dependencies": {
-@@ -30040,19 +30023,19 @@
+@@ -30040,19 +29840,19 @@
        }
      },
      "node_modules/vitest": {
@@ -1157,7 +2098,7 @@ index b999c2b..f01fba8 100644
          "es-module-lexer": "^2.0.0",
          "expect-type": "^1.3.0",
          "magic-string": "^0.30.21",
-@@ -30080,12 +30063,12 @@
+@@ -30080,12 +29880,12 @@
          "@edge-runtime/vm": "*",
          "@opentelemetry/api": "^1.9.0",
          "@types/node": "^20.0.0 || ^22.0.0 || >=24.0.0",
@@ -1176,7 +2117,132 @@ index b999c2b..f01fba8 100644
          "happy-dom": "*",
          "jsdom": "*",
          "vite": "^6.0.0 || ^7.0.0 || ^8.0.0"
-@@ -30727,7 +30710,7 @@
+@@ -30236,124 +30036,6 @@
+         "node": ">=8"
+       }
+     },
+-    "node_modules/wrap-ansi": {
+-      "version": "8.1.0",
+-      "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-8.1.0.tgz",
+-      "integrity": "sha512-si7QWI6zUMq56bESFvagtmzMdGOtoxfR+Sez11Mobfc7tm+VkUckk9bW2UeffTGVUbOksxmSw0AA2gs8g71NCQ==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-styles": "^6.1.0",
+-        "string-width": "^5.0.1",
+-        "strip-ansi": "^7.0.1"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/wrap-ansi?sponsor=1"
+-      }
+-    },
+-    "node_modules/wrap-ansi-cjs": {
+-      "name": "wrap-ansi",
+-      "version": "7.0.0",
+-      "resolved": "https://registry.npmjs.org/wrap-ansi/-/wrap-ansi-7.0.0.tgz",
+-      "integrity": "sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-styles": "^4.0.0",
+-        "string-width": "^4.1.0",
+-        "strip-ansi": "^6.0.0"
+-      },
+-      "engines": {
+-        "node": ">=10"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/wrap-ansi?sponsor=1"
+-      }
+-    },
+-    "node_modules/wrap-ansi-cjs/node_modules/ansi-styles": {
+-      "version": "4.3.0",
+-      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
+-      "integrity": "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "color-convert": "^2.0.1"
+-      },
+-      "engines": {
+-        "node": ">=8"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+-      }
+-    },
+-    "node_modules/wrap-ansi-cjs/node_modules/emoji-regex": {
+-      "version": "8.0.0",
+-      "resolved": "https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz",
+-      "integrity": "sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==",
+-      "license": "MIT"
+-    },
+-    "node_modules/wrap-ansi-cjs/node_modules/is-fullwidth-code-point": {
+-      "version": "3.0.0",
+-      "resolved": "https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz",
+-      "integrity": "sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=8"
+-      }
+-    },
+-    "node_modules/wrap-ansi-cjs/node_modules/string-width": {
+-      "version": "4.2.3",
+-      "resolved": "https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz",
+-      "integrity": "sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "emoji-regex": "^8.0.0",
+-        "is-fullwidth-code-point": "^3.0.0",
+-        "strip-ansi": "^6.0.1"
+-      },
+-      "engines": {
+-        "node": ">=8"
+-      }
+-    },
+-    "node_modules/wrap-ansi/node_modules/ansi-regex": {
+-      "version": "6.4.0",
+-      "resolved": "https://registry.npmjs.org/ansi-regex/-/ansi-regex-6.4.0.tgz",
+-      "integrity": "sha512-KzTVk2tCWAHtYrvvvaP8bJKJq2pVinhLcGEQdtLIYPbmNGNyYe8QwNaTUYQp2J7/vIsUKt5QCqAfUkYyG9DkOw==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/ansi-regex?sponsor=1"
+-      }
+-    },
+-    "node_modules/wrap-ansi/node_modules/ansi-styles": {
+-      "version": "6.2.3",
+-      "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.3.tgz",
+-      "integrity": "sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==",
+-      "license": "MIT",
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/ansi-styles?sponsor=1"
+-      }
+-    },
+-    "node_modules/wrap-ansi/node_modules/strip-ansi": {
+-      "version": "7.2.0",
+-      "resolved": "https://registry.npmjs.org/strip-ansi/-/strip-ansi-7.2.0.tgz",
+-      "integrity": "sha512-yDPMNjp4WyfYBkHnjIRLfca1i6KMyGCtsVgoKe/z1+6vukgaENdgGBZt+ZmKPc4gavvEZ5OgHfHdrazhgNyG7w==",
+-      "license": "MIT",
+-      "dependencies": {
+-        "ansi-regex": "^6.2.2"
+-      },
+-      "engines": {
+-        "node": ">=12"
+-      },
+-      "funding": {
+-        "url": "https://github.com/chalk/strip-ansi?sponsor=1"
+-      }
+-    },
+     "node_modules/wrappy": {
+       "version": "1.0.2",
+       "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz",
+@@ -30727,7 +30409,7 @@
          "@documenso/nodemailer-resend": "5.0.0",
          "@documenso/tailwind-config": "*",
          "@react-email/render": "2.1.0",
@@ -1185,7 +2251,7 @@ index b999c2b..f01fba8 100644
          "react-email": "^6.9.0",
          "resend": "^6.5.2"
        },
-@@ -30793,7 +30776,7 @@
+@@ -30793,7 +30475,7 @@
          "posthog-node": "4.18.0",
          "react": "^19.2.7",
          "remeda": "^2.32.0",
@@ -1195,7 +2261,7 @@ index b999c2b..f01fba8 100644
          "ts-pattern": "^5.9.0",
          "zod": "^3.25.76"
 diff --git a/package.json b/package.json
-index 6aef8ce..839586f 100644
+index 6aef8ce..972ddfb 100644
 --- a/package.json
 +++ b/package.json
 @@ -85,7 +85,7 @@
@@ -1207,7 +2273,7 @@ index 6aef8ce..839586f 100644
      "pdfjs-dist": "5.4.296",
      "pino": "^9.14.0",
      "pino-pretty": "^13.1.2",
-@@ -145,13 +145,18 @@
+@@ -145,13 +145,27 @@
      "posthog-node": "4.18.0",
      "react": "^19.2.7",
      "react-dom": "^19.2.7",
@@ -1224,11 +2290,20 @@ index 6aef8ce..839586f 100644
 +    "postcss-selector-parser@6": "6.1.5",
 +    "postcss-selector-parser@7": "7.1.6",
      "lodash": "4.18.1",
-+    "qs": "6.16.0",
++    "qs": "6.16.1",
++    "follow-redirects": "1.16.2",
++    "systeminformation": "5.33.16",
++    "@hono/node-server": "2.1.3",
++    "fflate@0.7.3": "0.7.5",
++    "glob@10": "14.0.2",
++    "glob@11": "14.0.2",
++    "glob@13": "14.0.2",
++    "minimatch@9": "11.0.1",
++    "minimatch@10": "11.0.1",
      "brace-expansion@1": "^1.1.18",
      "pdfjs-dist": "5.4.296",
      "postcss": "^8.5.19",
-@@ -162,7 +167,7 @@
+@@ -162,7 +176,7 @@
      "typescript": "5.6.2",
      "zod": "$zod",
      "fumadocs-mdx": {
@@ -1237,6 +2312,28 @@ index 6aef8ce..839586f 100644
      }
    }
  }
+diff --git a/packages/email/mailer.ts b/packages/email/mailer.ts
+index e357e1f..fb18bd1 100644
+--- a/packages/email/mailer.ts
++++ b/packages/email/mailer.ts
+@@ -83,6 +83,7 @@ const getTransport = (): Transporter => {
+       host: env('NEXT_PRIVATE_SMTP_HOST'),
+       port: Number(env('NEXT_PRIVATE_SMTP_PORT')) || 587,
+       secure: env('NEXT_PRIVATE_SMTP_SECURE') === 'true',
++      requireTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') === 'true',
+       auth: {
+         user: env('NEXT_PRIVATE_SMTP_APIKEY_USER') ?? 'apikey',
+         pass: env('NEXT_PRIVATE_SMTP_APIKEY') ?? '',
+@@ -94,7 +95,8 @@ const getTransport = (): Transporter => {
+     host: env('NEXT_PRIVATE_SMTP_HOST') ?? '127.0.0.1:2500',
+     port: Number(env('NEXT_PRIVATE_SMTP_PORT')) || 587,
+     secure: env('NEXT_PRIVATE_SMTP_SECURE') === 'true',
+-    ignoreTLS: env('NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS') === 'true',
++    requireTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') === 'true',
++    ignoreTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') !== 'true' && env('NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS') === 'true',
+     auth: env('NEXT_PRIVATE_SMTP_USERNAME')
+       ? {
+           user: env('NEXT_PRIVATE_SMTP_USERNAME'),
 diff --git a/packages/email/package.json b/packages/email/package.json
 index e5ff687..7c5a9f9 100644
 --- a/packages/email/package.json
@@ -1250,6 +2347,34 @@ index e5ff687..7c5a9f9 100644
      "react-email": "^6.9.0",
      "resend": "^6.5.2"
    },
+diff --git a/packages/email/transports/build-transport.ts b/packages/email/transports/build-transport.ts
+index a16dd4f..e37535a 100644
+--- a/packages/email/transports/build-transport.ts
++++ b/packages/email/transports/build-transport.ts
+@@ -1,4 +1,5 @@
+ import type { TEmailTransportConfig } from '@documenso/lib/server-only/email/email-transport-config';
++import { env } from '@documenso/lib/utils/env';
+ import { ResendTransport } from '@documenso/nodemailer-resend';
+ import type { Transporter } from 'nodemailer';
+ import { createTransport } from 'nodemailer';
+@@ -27,6 +28,7 @@ export const buildTransport = (config: TEmailTransportConfig): Transporter => {
+         host: config.host,
+         port: config.port,
+         secure: config.secure,
++        requireTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') === 'true',
+         auth: {
+           user: config.apiKeyUser ?? 'apikey',
+           pass: config.apiKey,
+@@ -38,7 +40,8 @@ export const buildTransport = (config: TEmailTransportConfig): Transporter => {
+         host: config.host,
+         port: config.port,
+         secure: config.secure,
+-        ignoreTLS: config.ignoreTLS,
++        requireTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') === 'true',
++        ignoreTLS: env('NEXT_PRIVATE_SMTP_REQUIRE_TLS') !== 'true' && config.ignoreTLS,
+         auth: config.username
+           ? {
+               user: config.username,
 diff --git a/packages/email/transports/mailchannels.ts b/packages/email/transports/mailchannels.ts
 index 923346f..f8f0dd9 100644
 --- a/packages/email/transports/mailchannels.ts
@@ -1383,218 +2508,6 @@ index 01ff0f9..7be2070 100644
      "stripe": "^12.18.0",
      "ts-pattern": "^5.9.0",
      "zod": "^3.25.76"
-diff --git a/patches/zod+3.25.76.patch b/patches/zod+3.25.76.patch
-new file mode 100644
-index 0000000..d1570a7
---- /dev/null
-+++ b/patches/zod+3.25.76.patch
-@@ -0,0 +1,206 @@
-+diff --git a/node_modules/zod/v3/types.cjs b/node_modules/zod/v3/types.cjs
-+--- a/node_modules/zod/v3/types.cjs
-++++ b/node_modules/zod/v3/types.cjs
-+@@ -1790,6 +1790,8 @@
-+                     exact: true,
-+                     message: def.exactLength.message,
-+                 });
-++                if (tooBig)
-++                    return parseUtil_js_1.INVALID;
-+                 status.dirty();
-+             }
-+         }
-+@@ -1816,7 +1818,7 @@
-+                     exact: false,
-+                     message: def.maxLength.message,
-+                 });
-+-                status.dirty();
-++                return parseUtil_js_1.INVALID;
-+             }
-+         }
-+         if (ctx.common.async) {
-+@@ -2843,7 +2845,7 @@
-+                     exact: false,
-+                     message: def.maxSize.message,
-+                 });
-+-                status.dirty();
-++                return parseUtil_js_1.INVALID;
-+             }
-+         }
-+         const valueType = this._def.valueType;
-+diff --git a/node_modules/zod/v3/types.js b/node_modules/zod/v3/types.js
-+--- a/node_modules/zod/v3/types.js
-++++ b/node_modules/zod/v3/types.js
-+@@ -1769,6 +1769,8 @@
-+                     exact: true,
-+                     message: def.exactLength.message,
-+                 });
-++                if (tooBig)
-++                    return INVALID;
-+                 status.dirty();
-+             }
-+         }
-+@@ -1795,7 +1797,7 @@
-+                     exact: false,
-+                     message: def.maxLength.message,
-+                 });
-+-                status.dirty();
-++                return INVALID;
-+             }
-+         }
-+         if (ctx.common.async) {
-+@@ -2814,7 +2816,7 @@
-+                     exact: false,
-+                     message: def.maxSize.message,
-+                 });
-+-                status.dirty();
-++                return INVALID;
-+             }
-+         }
-+         const valueType = this._def.valueType;
-+diff --git a/node_modules/zod/v4/core/schemas.cjs b/node_modules/zod/v4/core/schemas.cjs
-+--- a/node_modules/zod/v4/core/schemas.cjs
-++++ b/node_modules/zod/v4/core/schemas.cjs
-+@@ -62,6 +62,8 @@
-+     }
-+     else {
-+         const runChecks = (payload, checks, ctx) => {
-++            if (payload.skipChecks)
-++                return payload;
-+             let isAborted = util.aborted(payload);
-+             let asyncResult;
-+             for (const ch of checks) {
-+@@ -650,6 +652,36 @@
-+     }
-+     final.value[index] = result.value;
-+ }
-++function capSize(inst, size) {
-++    const caps = [];
-++    for (const ch of inst._zod.def.checks ?? []) {
-++        const d = ch._zod.def;
-++        if (!/_(length|size)$|_equals$/.test(d.check))
-++            break;
-++        const max = d.maximum ?? d.length ?? d.size;
-++        if (max >= 0)
-++            caps.push([max, ch]);
-++    }
-++    if (!caps.length)
-++        return;
-++    const cap = Math.min(...caps.map(([max]) => max));
-++    const parse = inst._zod.parse;
-++    inst._zod.parse = (payload, ctx) => {
-++        const n = size(payload.value);
-++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
-++            for (const [max, ch] of caps) {
-++                if (n > max && ch._zod.def.when(payload)) {
-++                    const start = payload.issues.length;
-++                    ch._zod.check(payload);
-++                    payload.issues[start].continue = false;
-++                    payload.skipChecks = true;
-++                    return payload;
-++                }
-++            }
-++        }
-++        return parse(payload, ctx);
-++    };
-++}
-+ exports.$ZodArray = core.$constructor("$ZodArray", (inst, def) => {
-+     exports.$ZodType.init(inst, def);
-+     inst._zod.parse = (payload, ctx) => {
-+@@ -683,6 +715,7 @@
-+         }
-+         return payload; //handleArrayResultsAsync(parseResults, final);
-+     };
-++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
-+ });
-+ function handleObjectResult(result, final, key) {
-+     // if(isOptional)
-+@@ -1304,6 +1337,7 @@
-+             return Promise.all(proms).then(() => payload);
-+         return payload;
-+     };
-++    capSize(inst, input => input instanceof Map ? input.size : -1);
-+ });
-+ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
-+     if (keyResult.issues.length) {
-+@@ -1364,6 +1398,7 @@
-+             return Promise.all(proms).then(() => payload);
-+         return payload;
-+     };
-++    capSize(inst, input => input instanceof Set ? input.size : -1);
-+ });
-+ function handleSetResult(result, final) {
-+     if (result.issues.length) {
-+diff --git a/node_modules/zod/v4/core/schemas.js b/node_modules/zod/v4/core/schemas.js
-+--- a/node_modules/zod/v4/core/schemas.js
-++++ b/node_modules/zod/v4/core/schemas.js
-+@@ -32,6 +32,8 @@
-+     }
-+     else {
-+         const runChecks = (payload, checks, ctx) => {
-++            if (payload.skipChecks)
-++                return payload;
-+             let isAborted = util.aborted(payload);
-+             let asyncResult;
-+             for (const ch of checks) {
-+@@ -619,6 +621,36 @@
-+     }
-+     final.value[index] = result.value;
-+ }
-++function capSize(inst, size) {
-++    const caps = [];
-++    for (const ch of inst._zod.def.checks ?? []) {
-++        const d = ch._zod.def;
-++        if (!/_(length|size)$|_equals$/.test(d.check))
-++            break;
-++        const max = d.maximum ?? d.length ?? d.size;
-++        if (max >= 0)
-++            caps.push([max, ch]);
-++    }
-++    if (!caps.length)
-++        return;
-++    const cap = Math.min(...caps.map(([max]) => max));
-++    const parse = inst._zod.parse;
-++    inst._zod.parse = (payload, ctx) => {
-++        const n = size(payload.value);
-++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
-++            for (const [max, ch] of caps) {
-++                if (n > max && ch._zod.def.when(payload)) {
-++                    const start = payload.issues.length;
-++                    ch._zod.check(payload);
-++                    payload.issues[start].continue = false;
-++                    payload.skipChecks = true;
-++                    return payload;
-++                }
-++            }
-++        }
-++        return parse(payload, ctx);
-++    };
-++}
-+ export const $ZodArray = /*@__PURE__*/ core.$constructor("$ZodArray", (inst, def) => {
-+     $ZodType.init(inst, def);
-+     inst._zod.parse = (payload, ctx) => {
-+@@ -652,6 +684,7 @@
-+         }
-+         return payload; //handleArrayResultsAsync(parseResults, final);
-+     };
-++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
-+ });
-+ function handleObjectResult(result, final, key) {
-+     // if(isOptional)
-+@@ -1273,6 +1306,7 @@
-+             return Promise.all(proms).then(() => payload);
-+         return payload;
-+     };
-++    capSize(inst, input => input instanceof Map ? input.size : -1);
-+ });
-+ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
-+     if (keyResult.issues.length) {
-+@@ -1333,6 +1367,7 @@
-+             return Promise.all(proms).then(() => payload);
-+         return payload;
-+     };
-++    capSize(inst, input => input instanceof Set ? input.size : -1);
-+ });
-+ function handleSetResult(result, final) {
-+     if (result.issues.length) {
 diff --git a/patches/@anatine+zod-openapi+1.14.2.patch b/patches/@anatine+zod-openapi+1.14.2.patch
 new file mode 100644
 index 0000000..38c0016
@@ -1747,126 +2660,222 @@ index 0000000..38c0016
 + }
 + const workerMap = {
 +     ZodObject: parseObject,
-diff --git a/scripts/security/zod-size-gate-check.mjs b/scripts/security/zod-size-gate-check.mjs
+diff --git a/patches/zod+3.25.76.patch b/patches/zod+3.25.76.patch
 new file mode 100644
-index 0000000..24532f3
+index 0000000..27844ee
 --- /dev/null
-+++ b/scripts/security/zod-size-gate-check.mjs
-@@ -0,0 +1,47 @@
-+import assert from 'node:assert/strict';
-+import { createRequire } from 'node:module';
-+
-+const require = createRequire(import.meta.url);
-+
-+for (const [name, { z }] of [
-+  ['CommonJS', require('zod')],
-+  ['ESM', await import('zod')],
-+  ['CommonJS v4', require('zod/v4')],
-+  ['ESM v4', await import('zod/v4')],
-+]) {
-+  const oversized = Array(20_000).fill(0);
-+  for (const schema of [z.array(z.string()).max(1), z.array(z.string()).length(1)]) {
-+    const result = schema.safeParse(oversized);
-+    assert.equal(result.success, false);
-+    assert.equal(result.error.issues.length, 1);
-+    assert.equal(result.error.issues[0].code, 'too_big');
-+  }
-+
-+  let parsed = 0;
-+  const element = z.string().transform(value => { parsed += 1; return value; });
-+  const bounded = z.array(element).max(1);
-+  assert.equal(bounded.safeParse(Array(20_000).fill('valid element')).success, false);
-+  assert.equal((await bounded.safeParseAsync(Array(20_000).fill('valid element'))).success, false);
-+  assert.equal(parsed, 0);
-+
-+  const set = z.set(z.string()).max(1).safeParse(new Set(oversized.map((_, index) => index)));
-+  assert.equal(set.success, false);
-+  assert.equal(set.error.issues.length, 1);
-+  assert.equal(set.error.issues[0].code, 'too_big');
-+
-+  const nested = z.object({ values: z.array(z.string()).max(1) }).safeParse({ values: oversized });
-+  assert.deepEqual(nested.error.issues[0].path, ['values']);
-+  assert.equal(z.array(z.string()).min(2).safeParse(['valid']).error.issues[0].code, 'too_small');
-+  assert.deepEqual(z.array(z.number()).max(3).parse([1, 2]), [1, 2]);
-+  assert.deepEqual(z.preprocess(value => value.slice(0, 2), z.array(z.number()).max(2)).parse([1, 2, 3]), [1, 2]);
-+  assert.equal(z.array(z.number()).parse(oversized).length, oversized.length);
-+  assert.equal(z.array(z.string()).max(1, { message: 'synthetic cap' }).safeParse(oversized).error.issues[0].message, 'synthetic cap');
-+  if (name.endsWith('v4')) {
-+    const map = z.map(z.string(), z.string()).check(z.maxSize(1)).safeParse(new Map(oversized.map((_, index) => [index, index])));
-+    assert.equal(map.success, false);
-+    assert.equal(map.error.issues.length, 1);
-+    assert.equal(map.error.issues[0].code, 'too_big');
-+    assert.deepEqual(z.array(z.number()).overwrite(values => values.slice(0, 2)).max(2).parse([1, 2, 3]), [1, 2]);
-+  }
-+  console.log(JSON.stringify({ module: name, oversizedEntries: oversized.length, boundedIssues: 1, parsedElements: parsed }));
-+}
-diff --git a/scripts/security/mailchannels-transport-check.mjs b/scripts/security/mailchannels-transport-check.mjs
-new file mode 100644
-index 0000000..b360fd3
---- /dev/null
-+++ b/scripts/security/mailchannels-transport-check.mjs
-@@ -0,0 +1,61 @@
-+import assert from 'node:assert/strict';
-+import { createServer } from 'node:http';
-+import { createTransport } from 'nodemailer';
-+
-+import { MailChannelsTransport } from '../../packages/email/transports/mailchannels.ts';
-+
-+const requests = [];
-+let responseStatus = 202;
-+const server = createServer(async (request, response) => {
-+  const chunks = [];
-+  for await (const chunk of request) {
-+    chunks.push(chunk);
-+  }
-+  requests.push({ method: request.method, body: JSON.parse(Buffer.concat(chunks).toString()) });
-+  response.writeHead(responseStatus, { 'Content-Type': 'application/json' });
-+  response.end(JSON.stringify({ message: 'synthetic transport response' }));
-+});
-+
-+await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-+try {
-+  const transport = createTransport(MailChannelsTransport.makeTransport({
-+    endpoint: `http://127.0.0.1:${server.address().port}/send`,
-+  }));
-+  const message = {
-+    from: { name: 'Synthetic Sender', address: 'sender@example.test' },
-+    to: 'Consultants: First <first@example.test>, Second <second@example.test>;',
-+    cc: 'copy@example.test',
-+    bcc: 'private@example.test',
-+    replyTo: { name: 'Reply Desk', address: 'reply@example.test' },
-+    subject: 'Synthetic transport check',
-+    text: 'No external email is sent.',
-+    headers: { 'X-Synthetic-Check': 'yes' },
-+  };
-+  const result = await transport.sendMail(message);
-+  assert.deepEqual(result.envelope, {
-+    from: 'sender@example.test',
-+    to: ['first@example.test', 'second@example.test', 'copy@example.test', 'private@example.test'],
-+  });
-+  assert.deepEqual(result.accepted, result.envelope.to);
-+  assert.match(result.messageId, /^<.+>$/);
-+  const request = requests[0];
-+  assert.equal(request.method, 'POST');
-+  assert.deepEqual(request.body.from, { email: 'sender@example.test', name: 'Synthetic Sender' });
-+  assert.deepEqual(request.body.reply_to, { email: 'reply@example.test', name: 'Reply Desk' });
-+  assert.deepEqual(request.body.personalizations[0].to, [
-+    { email: 'first@example.test', name: 'First' },
-+    { email: 'second@example.test', name: 'Second' },
-+  ]);
-+  assert.equal(request.body.personalizations[0].cc[0].email, 'copy@example.test');
-+  assert.equal(request.body.personalizations[0].bcc[0].email, 'private@example.test');
-+  assert.equal(request.body.headers['X-Synthetic-Check'], 'yes');
-+  assert.equal(request.body.content[0].value, message.text);
-+
-+  responseStatus = 500;
-+  await assert.rejects(transport.sendMail(message), /MailChannels error: synthetic transport response/);
-+  await assert.rejects(transport.sendMail({ from: message.from, text: message.text }), /Missing required fields/);
-+  assert.equal(requests.length, 2);
-+  console.log(JSON.stringify({ transport: 'custom HTTP', acceptedRecipients: 4, errorPaths: 2 }));
-+} finally {
-+  await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
-+}
++++ b/patches/zod+3.25.76.patch
+@@ -0,0 +1,210 @@
++diff --git a/node_modules/zod/v3/types.cjs b/node_modules/zod/v3/types.cjs
++--- a/node_modules/zod/v3/types.cjs
+++++ b/node_modules/zod/v3/types.cjs
++@@ -1790,6 +1790,8 @@
++                     exact: true,
++                     message: def.exactLength.message,
++                 });
+++                if (tooBig)
+++                    return parseUtil_js_1.INVALID;
++                 status.dirty();
++             }
++         }
++@@ -1816,7 +1818,7 @@
++                     exact: false,
++                     message: def.maxLength.message,
++                 });
++-                status.dirty();
+++                return parseUtil_js_1.INVALID;
++             }
++         }
++         if (ctx.common.async) {
++@@ -2843,7 +2845,7 @@
++                     exact: false,
++                     message: def.maxSize.message,
++                 });
++-                status.dirty();
+++                return parseUtil_js_1.INVALID;
++             }
++         }
++         const valueType = this._def.valueType;
++diff --git a/node_modules/zod/v3/types.js b/node_modules/zod/v3/types.js
++--- a/node_modules/zod/v3/types.js
+++++ b/node_modules/zod/v3/types.js
++@@ -1769,6 +1769,8 @@
++                     exact: true,
++                     message: def.exactLength.message,
++                 });
+++                if (tooBig)
+++                    return INVALID;
++                 status.dirty();
++             }
++         }
++@@ -1795,7 +1797,7 @@
++                     exact: false,
++                     message: def.maxLength.message,
++                 });
++-                status.dirty();
+++                return INVALID;
++             }
++         }
++         if (ctx.common.async) {
++@@ -2814,7 +2816,7 @@
++                     exact: false,
++                     message: def.maxSize.message,
++                 });
++-                status.dirty();
+++                return INVALID;
++             }
++         }
++         const valueType = this._def.valueType;
++diff --git a/node_modules/zod/v4/core/schemas.cjs b/node_modules/zod/v4/core/schemas.cjs
++--- a/node_modules/zod/v4/core/schemas.cjs
+++++ b/node_modules/zod/v4/core/schemas.cjs
++@@ -62,6 +62,10 @@
++     }
++     else {
++         const runChecks = (payload, checks, ctx) => {
+++            if (payload.skipChecks) {
+++                delete payload.skipChecks;
+++                return payload;
+++            }
++             let isAborted = util.aborted(payload);
++             let asyncResult;
++             for (const ch of checks) {
++@@ -650,6 +654,36 @@
++     }
++     final.value[index] = result.value;
++ }
+++function capSize(inst, size) {
+++    const caps = [];
+++    for (const ch of inst._zod.def.checks ?? []) {
+++        const d = ch._zod.def;
+++        if (!/_(length|size)$|_equals$/.test(d.check))
+++            break;
+++        const max = d.maximum ?? d.length ?? d.size;
+++        if (max >= 0)
+++            caps.push([max, ch]);
+++    }
+++    if (!caps.length)
+++        return;
+++    const cap = Math.min(...caps.map(([max]) => max));
+++    const parse = inst._zod.parse;
+++    inst._zod.parse = (payload, ctx) => {
+++        const n = size(payload.value);
+++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+++            for (const [max, ch] of caps) {
+++                if (n > max && ch._zod.def.when(payload)) {
+++                    const start = payload.issues.length;
+++                    ch._zod.check(payload);
+++                    payload.issues[start].continue = false;
+++                    payload.skipChecks = true;
+++                    return payload;
+++                }
+++            }
+++        }
+++        return parse(payload, ctx);
+++    };
+++}
++ exports.$ZodArray = core.$constructor("$ZodArray", (inst, def) => {
++     exports.$ZodType.init(inst, def);
++     inst._zod.parse = (payload, ctx) => {
++@@ -683,6 +717,7 @@
++         }
++         return payload; //handleArrayResultsAsync(parseResults, final);
++     };
+++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
++ });
++ function handleObjectResult(result, final, key) {
++     // if(isOptional)
++@@ -1304,6 +1339,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Map ? input.size : -1);
++ });
++ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
++     if (keyResult.issues.length) {
++@@ -1364,6 +1400,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Set ? input.size : -1);
++ });
++ function handleSetResult(result, final) {
++     if (result.issues.length) {
++diff --git a/node_modules/zod/v4/core/schemas.js b/node_modules/zod/v4/core/schemas.js
++--- a/node_modules/zod/v4/core/schemas.js
+++++ b/node_modules/zod/v4/core/schemas.js
++@@ -32,6 +32,10 @@
++     }
++     else {
++         const runChecks = (payload, checks, ctx) => {
+++            if (payload.skipChecks) {
+++                delete payload.skipChecks;
+++                return payload;
+++            }
++             let isAborted = util.aborted(payload);
++             let asyncResult;
++             for (const ch of checks) {
++@@ -619,6 +623,36 @@
++     }
++     final.value[index] = result.value;
++ }
+++function capSize(inst, size) {
+++    const caps = [];
+++    for (const ch of inst._zod.def.checks ?? []) {
+++        const d = ch._zod.def;
+++        if (!/_(length|size)$|_equals$/.test(d.check))
+++            break;
+++        const max = d.maximum ?? d.length ?? d.size;
+++        if (max >= 0)
+++            caps.push([max, ch]);
+++    }
+++    if (!caps.length)
+++        return;
+++    const cap = Math.min(...caps.map(([max]) => max));
+++    const parse = inst._zod.parse;
+++    inst._zod.parse = (payload, ctx) => {
+++        const n = size(payload.value);
+++        if (n > cap && !ctx?.skipChecks && ctx?.direction !== "backward") {
+++            for (const [max, ch] of caps) {
+++                if (n > max && ch._zod.def.when(payload)) {
+++                    const start = payload.issues.length;
+++                    ch._zod.check(payload);
+++                    payload.issues[start].continue = false;
+++                    payload.skipChecks = true;
+++                    return payload;
+++                }
+++            }
+++        }
+++        return parse(payload, ctx);
+++    };
+++}
++ export const $ZodArray = /*@__PURE__*/ core.$constructor("$ZodArray", (inst, def) => {
++     $ZodType.init(inst, def);
++     inst._zod.parse = (payload, ctx) => {
++@@ -652,6 +686,7 @@
++         }
++         return payload; //handleArrayResultsAsync(parseResults, final);
++     };
+++    capSize(inst, input => Array.isArray(input) ? input.length : -1);
++ });
++ function handleObjectResult(result, final, key) {
++     // if(isOptional)
++@@ -1273,6 +1308,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Map ? input.size : -1);
++ });
++ function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
++     if (keyResult.issues.length) {
++@@ -1333,6 +1369,7 @@
++             return Promise.all(proms).then(() => payload);
++         return payload;
++     };
+++    capSize(inst, input => input instanceof Set ? input.size : -1);
++ });
++ function handleSetResult(result, final) {
++     if (result.issues.length) {
 diff --git a/scripts/security/dependency-guards-check.mts b/scripts/security/dependency-guards-check.mts
 new file mode 100644
 index 0000000..9e1ea56
@@ -1946,3 +2955,733 @@ index 0000000..9e1ea56
 +});
 +
 +assert.deepEqual(failures, [], `Dependency guards failed: ${failures.join(', ')}`);
+diff --git a/scripts/security/dependency-refresh-check.mjs b/scripts/security/dependency-refresh-check.mjs
+new file mode 100644
+index 0000000..7ebdb34
+--- /dev/null
++++ b/scripts/security/dependency-refresh-check.mjs
+@@ -0,0 +1,236 @@
++import assert from 'node:assert/strict';
++import { EventEmitter, once } from 'node:events';
++import fs from 'node:fs';
++import { createRequire } from 'node:module';
++import { tmpdir } from 'node:os';
++import { join } from 'node:path';
++import { setImmediate } from 'node:timers/promises';
++import { runInNewContext } from 'node:vm';
++
++const require = createRequire(import.meta.url);
++const failures = [];
++const check = async (name, run) => {
++  try {
++    await run();
++    console.log(JSON.stringify({ name, passed: true }));
++  } catch (error) {
++    failures.push(name);
++    console.error(JSON.stringify({ name, passed: false, error: error.message }));
++  }
++};
++
++await check('Compatible security patch versions', () => {
++  for (const [name, version] of [
++    ['follow-redirects', '1.16.2'],
++    ['systeminformation', '5.33.16'],
++    ['qs', '6.16.1'],
++  ]) {
++    assert.equal(require(`${name}/package.json`).version, version);
++  }
++});
++
++await check('Cross-realm redirect credentials', () => {
++  const requests = [];
++  const http = require('follow-redirects').wrap({
++    http: {
++      request(options, respond) {
++        requests.push({ headers: { ...options.headers }, respond });
++        return Object.assign(new EventEmitter(), { destroy() {}, end() {} });
++      },
++    },
++  }).http;
++  for (const sensitiveHeaders of [['X-API-Key'], runInNewContext("['X-API-Key']")]) {
++    const start = requests.length;
++    const request = http.request('http://origin.invalid/', {
++      sensitiveHeaders,
++      headers: { 'X-API-Key': 'synthetic', 'X-Public': 'preserved' },
++    });
++    request.end();
++    requests[start].respond({
++      statusCode: 302,
++      headers: { location: 'http://destination.invalid/' },
++      destroy() {},
++    });
++    assert.equal(requests.length, start + 2);
++    assert.deepEqual(requests[start + 1].headers, { 'X-Public': 'preserved' });
++    request.destroy();
++  }
++});
++
++await check('Comma query serialization with hostile toString', () => {
++  const qs = require('qs');
++  const input = JSON.parse('{"a":[{"toString":"x"}]}');
++  for (const encodeValuesOnly of [false, true]) {
++    assert.equal(qs.stringify(input, { arrayFormat: 'comma', encodeValuesOnly }), 'a=%5Bobject%20Object%5D');
++    assert.equal(
++      qs.stringify({ a: ['one', 'two'] }, { arrayFormat: 'comma', encodeValuesOnly }),
++      encodeValuesOnly ? 'a=one,two' : 'a=one%2Ctwo',
++    );
++  }
++});
++
++await check('Static middleware authentication and encoded paths', async () => {
++  const { Hono } = require('hono');
++  const { createAdaptorServer } = require('@hono/node-server');
++  const { serveStatic } = require('@hono/node-server/serve-static');
++  const root = fs.mkdtempSync(join(tmpdir(), 'documenso-static-'));
++  fs.mkdirSync(join(root, 'static/admin'), { recursive: true });
++  fs.mkdirSync(join(root, 'static/assets'));
++  fs.writeFileSync(join(root, 'static/admin/secret.txt'), 'synthetic-private');
++  fs.writeFileSync(join(root, 'static/public.txt'), 'synthetic-public');
++  fs.writeFileSync(join(root, 'static/assets/app.js'), 'synthetic-asset');
++  const app = new Hono();
++  app.use('/static/admin/*', (c) => c.text('Unauthorized', 401));
++  app.use('/static/*', serveStatic({ root }));
++  app.use(
++    '/ESign/*',
++    serveStatic({
++      root,
++      rewriteRequestPath: (path) => path.replace(/^\/ESign/, ''),
++      onFound: (path, c) =>
++        c.header(
++          'Cache-Control',
++          path.startsWith(join(root, 'static/assets'))
++            ? 'public, immutable, max-age=31536000'
++            : 'public, max-age=0, stale-while-revalidate=86400',
++        ),
++    }),
++  );
++  const server = createAdaptorServer(app);
++  try {
++    server.listen(0, '127.0.0.1');
++    await once(server, 'listening');
++    for (const [path, status] of [
++      ['/static/public.txt', 200],
++      ['/static/admin/secret.txt', 401],
++      ['/static/%61dmin/secret.txt', 401],
++      ['/static/%%36%31dmin/secret.txt', 404],
++    ]) {
++      const response = await fetch(`http://127.0.0.1:${server.address().port}${path}`);
++      assert.equal(response.status, status, path);
++      assert.notEqual(await response.text(), 'synthetic-private');
++    }
++    for (const [path, cache] of [
++      ['/ESign/static/assets/app.js', 'public, immutable, max-age=31536000'],
++      ['/ESign/static/public.txt', 'public, max-age=0, stale-while-revalidate=86400'],
++    ]) {
++      const response = await fetch(`http://127.0.0.1:${server.address().port}${path}`);
++      assert.equal(response.status, 200);
++      assert.equal(response.headers.get('Cache-Control'), cache);
++      await response.arrayBuffer();
++    }
++  } finally {
++    server.closeAllConnections();
++    await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
++    fs.rmSync(root, { recursive: true, force: true });
++  }
++});
++
++await check('Glob cancellation stops directory reads', async () => {
++  const root = fs.mkdtempSync(join(tmpdir(), 'documenso-glob-'));
++  try {
++    fs.mkdirSync(join(root, 'one/two/three'), { recursive: true });
++    fs.writeFileSync(join(root, 'one/two/three/file.txt'), 'synthetic');
++    for (const parent of ['google-gax', 'react-email', 'rimraf', '@lingui/cli']) {
++      const parentRequire = createRequire(require.resolve(parent));
++      const { glob, globSync } = parentRequire('glob');
++      assert.equal(parentRequire('glob/package.json').version, '14.0.2');
++      assert.deepEqual(await glob('**/*.txt', { cwd: root }), ['one/two/three/file.txt']);
++      assert.deepEqual(globSync('**/*.txt', { cwd: root }), ['one/two/three/file.txt']);
++    }
++    const googleRequire = createRequire(require.resolve('google-gax'));
++    const { glob } = googleRequire('glob');
++    const controller = new AbortController();
++    const reason = new Error('synthetic-cancel');
++    let reads = 0;
++    const walk = glob('**/*', {
++      cwd: root,
++      signal: controller.signal,
++      fs: {
++        ...fs,
++        readdir(path, options, callback) {
++          reads += 1;
++          const entries = fs.readdirSync(path, options);
++          queueMicrotask(() => {
++            controller.abort(reason);
++            callback(null, entries);
++          });
++        },
++      },
++    });
++    await assert.rejects(walk, (error) => error === reason);
++    await setImmediate();
++    assert.equal(reads, 1, 'cancelled traversal continued reading directories');
++    const legacyRequire = createRequire(require.resolve('mqtt'));
++    assert.equal(legacyRequire('glob/package.json').version, '7.2.3');
++    const legacyMatches = await new Promise((resolve, reject) =>
++      legacyRequire('glob')('**/*.txt', { cwd: root }, (error, matches) => (error ? reject(error) : resolve(matches))),
++    );
++    assert.deepEqual(legacyMatches, ['one/two/three/file.txt']);
++    const rimraf = googleRequire('rimraf');
++    assert.equal(await rimraf.rimraf(join(root, '**/*.txt'), { glob: true }), true);
++    assert.deepEqual(await glob('**/*.txt', { cwd: root }), []);
++  } finally {
++    fs.rmSync(root, { recursive: true, force: true });
++  }
++});
++
++await check('Minimatch preprocessing respects its expansion budget', () => {
++  for (const parent of [
++    '@hono/vite-dev-server',
++    'google-gax',
++    'react-email',
++    'rimraf',
++    'remix-flat-routes',
++    '@lingui/cli',
++  ]) {
++    const parentRequire = createRequire(require.resolve(parent));
++    const { Minimatch, minimatch } = parentRequire('minimatch');
++    const matcher = new Minimatch('a/**/../b/c/**/../d/e/**/../f/g', {
++      optimizationLevel: 2,
++      braceExpandMax: 4,
++    });
++    assert.ok(matcher.globParts.length <= 4, `${parent} exceeded the configured expansion budget`);
++    assert.equal(minimatch('app/routes/sign.tsx', '**/*.{ts,tsx}'), true);
++    assert.equal(minimatch('app/routes/sign.rb', '**/*.{ts,tsx}'), false);
++  }
++  assert.equal(typeof require('minimatch'), 'function');
++  assert.equal(require('minimatch/package.json').version, '3.1.5');
++});
++
++await check('Satori compression dependency round-trips ZIP content', () => {
++  const satoriRequire = createRequire(require.resolve('satori'));
++  const { strToU8, strFromU8, zipSync, unzipSync } = satoriRequire('fflate');
++  const archive = zipSync({ 'synthetic.txt': strToU8('synthetic signing document') });
++  const restored = unzipSync(archive);
++  assert.deepEqual(Object.keys(restored), ['synthetic.txt']);
++  assert.equal(strFromU8(restored['synthetic.txt']), 'synthetic signing document');
++});
++
++await check('Satori escapes SVG attributes and renders the share font', async () => {
++  const { default: satori } = await import('satori');
++  const font = fs.readFileSync('apps/remix/public/fonts/inter-regular.ttf');
++  const svg = await satori(
++    {
++      type: 'div',
++      props: { style: { color: 'red"/><path data-pwned="true"/><text fill="red' }, children: 'synthetic' },
++    },
++    {
++      width: 1200,
++      height: 630,
++      fonts: [{ name: 'Inter', data: font, weight: 400 }],
++      embedFont: false,
++    },
++  );
++  assert.ok(svg.startsWith('<svg'));
++  assert.ok(svg.includes('width="1200" height="630"'));
++  assert.ok(svg.includes('synthetic'));
++  assert.ok(!svg.includes('<path data-pwned="true"'));
++  assert.ok(svg.includes('fill="red&quot;/&gt;&lt;path data-pwned=&quot;true&quot;/&gt;&lt;text fill=&quot;red"'));
++  const { svgToPng } = await import('../../packages/lib/utils/images/svg-to-png.ts');
++  const png = await svgToPng(svg);
++  const metadata = await require('sharp')(png).metadata();
++  assert.deepEqual([metadata.format, metadata.width, metadata.height], ['png', 1200, 630]);
++});
++
++assert.deepEqual(failures, [], `Dependency refresh guards failed: ${failures.join(', ')}`);
+diff --git a/scripts/security/mailchannels-transport-check.mjs b/scripts/security/mailchannels-transport-check.mjs
+new file mode 100644
+index 0000000..b360fd3
+--- /dev/null
++++ b/scripts/security/mailchannels-transport-check.mjs
+@@ -0,0 +1,61 @@
++import assert from 'node:assert/strict';
++import { createServer } from 'node:http';
++import { createTransport } from 'nodemailer';
++
++import { MailChannelsTransport } from '../../packages/email/transports/mailchannels.ts';
++
++const requests = [];
++let responseStatus = 202;
++const server = createServer(async (request, response) => {
++  const chunks = [];
++  for await (const chunk of request) {
++    chunks.push(chunk);
++  }
++  requests.push({ method: request.method, body: JSON.parse(Buffer.concat(chunks).toString()) });
++  response.writeHead(responseStatus, { 'Content-Type': 'application/json' });
++  response.end(JSON.stringify({ message: 'synthetic transport response' }));
++});
++
++await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
++try {
++  const transport = createTransport(MailChannelsTransport.makeTransport({
++    endpoint: `http://127.0.0.1:${server.address().port}/send`,
++  }));
++  const message = {
++    from: { name: 'Synthetic Sender', address: 'sender@example.test' },
++    to: 'Consultants: First <first@example.test>, Second <second@example.test>;',
++    cc: 'copy@example.test',
++    bcc: 'private@example.test',
++    replyTo: { name: 'Reply Desk', address: 'reply@example.test' },
++    subject: 'Synthetic transport check',
++    text: 'No external email is sent.',
++    headers: { 'X-Synthetic-Check': 'yes' },
++  };
++  const result = await transport.sendMail(message);
++  assert.deepEqual(result.envelope, {
++    from: 'sender@example.test',
++    to: ['first@example.test', 'second@example.test', 'copy@example.test', 'private@example.test'],
++  });
++  assert.deepEqual(result.accepted, result.envelope.to);
++  assert.match(result.messageId, /^<.+>$/);
++  const request = requests[0];
++  assert.equal(request.method, 'POST');
++  assert.deepEqual(request.body.from, { email: 'sender@example.test', name: 'Synthetic Sender' });
++  assert.deepEqual(request.body.reply_to, { email: 'reply@example.test', name: 'Reply Desk' });
++  assert.deepEqual(request.body.personalizations[0].to, [
++    { email: 'first@example.test', name: 'First' },
++    { email: 'second@example.test', name: 'Second' },
++  ]);
++  assert.equal(request.body.personalizations[0].cc[0].email, 'copy@example.test');
++  assert.equal(request.body.personalizations[0].bcc[0].email, 'private@example.test');
++  assert.equal(request.body.headers['X-Synthetic-Check'], 'yes');
++  assert.equal(request.body.content[0].value, message.text);
++
++  responseStatus = 500;
++  await assert.rejects(transport.sendMail(message), /MailChannels error: synthetic transport response/);
++  await assert.rejects(transport.sendMail({ from: message.from, text: message.text }), /Missing required fields/);
++  assert.equal(requests.length, 2);
++  console.log(JSON.stringify({ transport: 'custom HTTP', acceptedRecipients: 4, errorPaths: 2 }));
++} finally {
++  await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
++}
+diff --git a/scripts/security/runtime-dependencies-check.mjs b/scripts/security/runtime-dependencies-check.mjs
+new file mode 100644
+index 0000000..29694c2
+--- /dev/null
++++ b/scripts/security/runtime-dependencies-check.mjs
+@@ -0,0 +1,77 @@
++import assert from 'node:assert/strict';
++import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs';
++import { join } from 'node:path';
++import { fileURLToPath } from 'node:url';
++
++const minimums = {
++  'follow-redirects': [1, 16, 2],
++  systeminformation: [5, 33, 16],
++  qs: [6, 16, 1],
++  '@hono/node-server': [2, 1, 3],
++  glob: [14, 0, 2],
++  minimatch: [11, 0, 1],
++  satori: [0, 33, 5],
++  fflate: [0, 8, 3],
++};
++const versions = {};
++const atLeast = (actual, minimum) => {
++  for (let index = 0; index < 3; index += 1) {
++    if (actual[index] !== minimum[index]) {
++      return actual[index] > minimum[index];
++    }
++  }
++  return true;
++};
++const inspect = (directory) => {
++  if (!existsSync(directory) || !lstatSync(directory).isDirectory()) {
++    return;
++  }
++  for (const entry of readdirSync(directory, { withFileTypes: true })) {
++    if (!entry.isDirectory() || entry.name.startsWith('.')) {
++      continue;
++    }
++    const path = join(directory, entry.name);
++    if (entry.name.startsWith('@')) {
++      inspect(path);
++      continue;
++    }
++    const { name, version } = JSON.parse(readFileSync(join(path, 'package.json'), 'utf8'));
++    if (name in minimums) {
++      assert.match(version, /^\d+\.\d+\.\d+$/);
++      const actual = version.split('.').map(Number);
++      if (!((name === 'glob' && actual[0] < 9) || (name === 'minimatch' && actual[0] < 7))) {
++        const minimum =
++          name === 'fflate' && actual[0] === 0 && actual[1] >= 4 && actual[1] < 8
++            ? [0, actual[1], { 4: 9, 5: 4, 6: 11, 7: 5 }[actual[1]]]
++            : minimums[name];
++        assert.ok(atLeast(actual, minimum), `${name}@${version} is below the security floor`);
++        versions[name] ??= new Set();
++        versions[name].add(version);
++      }
++    }
++    if (existsSync(join(path, 'node_modules'))) {
++      inspect(join(path, 'node_modules'));
++    }
++  }
++};
++const root = fileURLToPath(new URL('../../', import.meta.url));
++inspect(join(root, 'node_modules'));
++for (const group of ['apps', 'packages']) {
++  const directory = join(root, group);
++  if (!existsSync(directory) || !lstatSync(directory).isDirectory()) {
++    continue;
++  }
++  for (const workspace of readdirSync(directory, { withFileTypes: true })) {
++    if (workspace.isDirectory()) {
++      inspect(join(directory, workspace.name, 'node_modules'));
++    }
++  }
++}
++assert.deepEqual(Object.keys(versions).sort(), Object.keys(minimums).sort());
++console.log(
++  JSON.stringify({
++    runtimeDependencyVersions: Object.fromEntries(
++      Object.entries(versions).map(([name, found]) => [name, [...found].sort()]),
++    ),
++  }),
++);
+diff --git a/scripts/security/smtp-tls-check.mjs b/scripts/security/smtp-tls-check.mjs
+new file mode 100644
+index 0000000..7568923
+--- /dev/null
++++ b/scripts/security/smtp-tls-check.mjs
+@@ -0,0 +1,89 @@
++import assert from 'node:assert/strict';
++import { once } from 'node:events';
++import { createServer } from 'node:net';
++import { createTransport } from 'nodemailer';
++
++const commands = [];
++const server = createServer((socket) => {
++  socket.setTimeout(3000, () => socket.destroy());
++  socket.write('220 synthetic.local ESMTP\r\n');
++  let buffer = '';
++  socket.on('data', (chunk) => {
++    buffer += chunk.toString();
++    while (buffer.includes('\r\n')) {
++      const end = buffer.indexOf('\r\n');
++      const line = buffer.slice(0, end);
++      buffer = buffer.slice(end + 2);
++      const command = line.split(' ')[0].toUpperCase();
++      commands.push(command);
++      if (command === 'EHLO' || command === 'HELO') {
++        socket.write('250 synthetic.local\r\n');
++      } else if (command === 'QUIT') {
++        socket.end('221 bye\r\n');
++      } else {
++        socket.write('502 unavailable\r\n');
++      }
++    }
++  });
++});
++
++server.listen(0, '127.0.0.1');
++await once(server, 'listening');
++const saved = { ...process.env };
++try {
++  const host = '127.0.0.1';
++  const port = server.address().port;
++  const plaintext = createTransport({ host, port, secure: false, ignoreTLS: true });
++  assert.equal(await plaintext.verify(), true, 'synthetic SMTP fixture must accept plaintext');
++  plaintext.close();
++
++  Object.assign(process.env, {
++    NEXT_PRIVATE_SMTP_HOST: host,
++    NEXT_PRIVATE_SMTP_PORT: String(port),
++    NEXT_PRIVATE_SMTP_SECURE: 'false',
++    NEXT_PRIVATE_SMTP_REQUIRE_TLS: 'true',
++    NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS: 'true',
++    NEXT_PRIVATE_SMTP_APIKEY: 'synthetic',
++  });
++  const { buildTransport } = await import('../../packages/email/transports/build-transport.ts');
++  const configs = [
++    { type: 'SMTP_API', host, port, secure: false, apiKey: 'synthetic' },
++    { type: 'SMTP_AUTH', host, port, secure: false, ignoreTLS: true },
++  ];
++  const transports = configs.map(buildTransport);
++  for (const type of ['smtp-auth', 'smtp-api']) {
++    process.env.NEXT_PRIVATE_SMTP_TRANSPORT = type;
++    const { mailer } = await import(`../../packages/email/mailer.ts?synthetic=${type}`);
++    transports.push(mailer);
++  }
++  commands.length = 0;
++  for (const transport of transports) {
++    try {
++      assert.equal(transport.options.requireTLS, true);
++      assert.notEqual(transport.options.ignoreTLS, true);
++      await assert.rejects(transport.verify(), (error) => error.code === 'ETLS' && error.command === 'STARTTLS');
++    } finally {
++      transport.close();
++    }
++  }
++  assert.equal(commands.filter((command) => command === 'STARTTLS').length, 4);
++  assert.ok(!commands.some((command) => ['AUTH', 'MAIL', 'RCPT', 'DATA'].includes(command)));
++  delete process.env.NEXT_PRIVATE_SMTP_REQUIRE_TLS;
++  for (const config of configs) {
++    const transport = buildTransport(config);
++    assert.equal(transport.options.requireTLS, false);
++    if (config.type === 'SMTP_AUTH') {
++      assert.equal(transport.options.ignoreTLS, true);
++    }
++    transport.close();
++  }
++  console.log(JSON.stringify({ smtpTlsRequiredPaths: 4, plaintextRejected: true, externalEmailSent: false }));
++} finally {
++  for (const name of Object.keys(process.env)) {
++    if (!(name in saved)) {
++      delete process.env[name];
++    }
++  }
++  Object.assign(process.env, saved);
++  await new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
++}
+diff --git a/scripts/security/zod-size-gate-check.mjs b/scripts/security/zod-size-gate-check.mjs
+new file mode 100644
+index 0000000..d238171
+--- /dev/null
++++ b/scripts/security/zod-size-gate-check.mjs
+@@ -0,0 +1,84 @@
++import assert from 'node:assert/strict';
++import { createRequire } from 'node:module';
++
++const require = createRequire(import.meta.url);
++
++for (const [name, { z }] of [
++  ['CommonJS', require('zod')],
++  ['ESM', await import('zod')],
++  ['CommonJS v4', require('zod/v4')],
++  ['ESM v4', await import('zod/v4')],
++]) {
++  const oversized = Array(20_000).fill(0);
++  for (const schema of [z.array(z.string()).max(1), z.array(z.string()).length(1)]) {
++    const result = schema.safeParse(oversized);
++    assert.equal(result.success, false);
++    assert.equal(result.error.issues.length, 1);
++    assert.equal(result.error.issues[0].code, 'too_big');
++  }
++
++  let parsed = 0;
++  const element = z.string().transform((value) => {
++    parsed += 1;
++    return value;
++  });
++  const bounded = z.array(element).max(1);
++  assert.equal(bounded.safeParse(Array(20_000).fill('valid element')).success, false);
++  assert.equal((await bounded.safeParseAsync(Array(20_000).fill('valid element'))).success, false);
++  assert.equal(parsed, 0);
++
++  const set = z
++    .set(z.string())
++    .max(1)
++    .safeParse(new Set(oversized.map((_, index) => index)));
++  assert.equal(set.success, false);
++  assert.equal(set.error.issues.length, 1);
++  assert.equal(set.error.issues[0].code, 'too_big');
++
++  const nested = z.object({ values: z.array(z.string()).max(1) }).safeParse({ values: oversized });
++  assert.deepEqual(nested.error.issues[0].path, ['values']);
++  assert.equal(z.array(z.string()).min(2).safeParse(['valid']).error.issues[0].code, 'too_small');
++  assert.deepEqual(z.array(z.number()).max(3).parse([1, 2]), [1, 2]);
++  assert.deepEqual(z.preprocess((value) => value.slice(0, 2), z.array(z.number()).max(2)).parse([1, 2, 3]), [1, 2]);
++  assert.equal(z.array(z.number()).parse(oversized).length, oversized.length);
++  assert.equal(
++    z.array(z.string()).max(1, { message: 'synthetic cap' }).safeParse(oversized).error.issues[0].message,
++    'synthetic cap',
++  );
++  const fallback = z.array(z.string()).max(1).catch(['fallback']);
++  assert.deepEqual(fallback.parse(['a', 'b']), ['fallback']);
++  assert.deepEqual(await fallback.parseAsync(['a', 'b']), ['fallback']);
++  for (const caught of [fallback, fallback.optional(), fallback.default(['default'])]) {
++    let refined = 0;
++    const rejected = caught.refine(() => {
++      refined += 1;
++      return false;
++    });
++    assert.equal(rejected.safeParse(['a', 'b']).success, false);
++    assert.equal((await rejected.safeParseAsync(['a', 'b'])).success, false);
++    assert.equal(refined, 2);
++  }
++  if (name.endsWith('v4')) {
++    const map = z
++      .map(z.string(), z.string())
++      .check(z.maxSize(1))
++      .safeParse(new Map(oversized.map((_, index) => [index, index])));
++    assert.equal(map.success, false);
++    assert.equal(map.error.issues.length, 1);
++    assert.equal(map.error.issues[0].code, 'too_big');
++    assert.deepEqual(
++      z
++        .array(z.number())
++        .overwrite((values) => values.slice(0, 2))
++        .max(2)
++        .parse([1, 2, 3]),
++      [1, 2],
++    );
++    const overwritten = fallback.overwrite(() => []);
++    assert.deepEqual(overwritten.parse(['a', 'b']), []);
++    assert.deepEqual(await overwritten.parseAsync(['a', 'b']), []);
++  }
++  console.log(
++    JSON.stringify({ module: name, oversizedEntries: oversized.length, boundedIssues: 1, parsedElements: parsed }),
++  );
++}
+diff --git a/turbo.json b/turbo.json
+index b3b002d..811e0ee 100644
+--- a/turbo.json
++++ b/turbo.json
+@@ -122,6 +122,7 @@
+     "NEXT_PRIVATE_SMTP_APIKEY_USER",
+     "NEXT_PRIVATE_SMTP_APIKEY",
+     "NEXT_PRIVATE_SMTP_SECURE",
++    "NEXT_PRIVATE_SMTP_REQUIRE_TLS",
+     "NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS",
+     "NEXT_PRIVATE_SMTP_FROM_NAME",
+     "NEXT_PRIVATE_SMTP_FROM_ADDRESS",
+diff --git a/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx b/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
+index 5d70248..a82bcfb 100644
+--- a/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
++++ b/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
+@@ -1,3 +1,5 @@
++import { readFile } from 'node:fs/promises';
++
+ import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+ import { getRecipientOrSenderByShareLinkSlug } from '@documenso/lib/server-only/document/get-recipient-or-sender-by-share-link-slug';
+ import { svgToPng } from '@documenso/lib/utils/images/svg-to-png';
+@@ -28,10 +30,11 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
+ 
+   const baseUrl = NEXT_PUBLIC_WEBAPP_URL();
+ 
+-  const [interSemiBold, interRegular, caveatRegular] = await Promise.all([
++  const [interSemiBold, interRegular, caveatRegular, shareFrame] = await Promise.all([
+     fetch(new URL(`${baseUrl}/fonts/inter-semibold.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
+     fetch(new URL(`${baseUrl}/fonts/inter-regular.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
+     fetch(new URL(`${baseUrl}/fonts/caveat-regular.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
++    readFile('public/static/og-share-frame2.png'),
+   ]);
+ 
+   const recipientOrSender = await getRecipientOrSenderByShareLinkSlug({
+@@ -72,7 +75,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
+       }}
+     >
+       <img
+-        src={`${baseUrl}/static/og-share-frame2.png`}
++        src={`data:image/png;base64,${shareFrame.toString('base64')}`}
+         alt="og-share-frame"
+         style={{
+           position: 'absolute',
+diff --git a/scripts/security/share-image-check.mjs b/scripts/security/share-image-check.mjs
+new file mode 100644
+index 0000000..1280a62
+--- /dev/null
++++ b/scripts/security/share-image-check.mjs
+@@ -0,0 +1,103 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { once } from 'node:events';
++import http from 'node:http';
++import { join } from 'node:path';
++import { pathToFileURL } from 'node:url';
++import { build } from 'esbuild';
++import satori from 'satori';
++import sharp from 'sharp';
++
++const root = process.cwd();
++const publicRoot = join(root, 'apps/remix/public');
++const scratch = fs.mkdtempSync(join(root, '.share-image-check-'));
++const requestedPaths = [];
++const server = http.createServer((request, response) => {
++  const allowed = ['/fonts/inter-semibold.ttf', '/fonts/inter-regular.ttf', '/fonts/caveat-regular.ttf'];
++  requestedPaths.push(request.url);
++  response.writeHead(allowed.includes(request.url) ? 200 : 404);
++  response.end(allowed.includes(request.url) ? fs.readFileSync(join(publicRoot, request.url)) : 'Not found');
++});
++
++try {
++  server.listen(0, '127.0.0.1');
++  await once(server, 'listening');
++  const origin = `http://127.0.0.1:${server.address().port}`;
++  const output = join(scratch, 'route.mjs');
++  await build({
++    entryPoints: [join(root, 'apps/remix/app/routes/_share+/share.$slug.opengraph.tsx')],
++    outfile: output,
++    bundle: true,
++    format: 'esm',
++    platform: 'node',
++    packages: 'external',
++    jsx: 'automatic',
++    plugins: [
++      {
++        name: 'synthetic-share-boundaries',
++        setup(builder) {
++          builder.onResolve(
++            {
++              filter:
++                /^@documenso\/lib\/(constants\/app|server-only\/document\/get-recipient-or-sender-by-share-link-slug)$/,
++            },
++            ({ path }) => ({ path, namespace: 'fixture' }),
++          );
++          builder.onLoad({ filter: /.*/, namespace: 'fixture' }, ({ path }) => ({
++            contents: path.endsWith('/app')
++              ? `export const NEXT_PUBLIC_WEBAPP_URL = () => ${JSON.stringify(origin)};`
++              : 'export const getRecipientOrSenderByShareLinkSlug = async () => globalThis.__shareImageRecord;',
++          }));
++          builder.onResolve({ filter: /^@documenso\/lib\/utils\/images\/svg-to-png$/ }, () => ({
++            path: join(root, 'packages/lib/utils/images/svg-to-png.ts'),
++          }));
++        },
++      },
++    ],
++  });
++  const { loader } = await import(pathToFileURL(output).href);
++  process.chdir(join(root, 'apps/remix'));
++  const signature = await sharp({ create: { width: 64, height: 24, channels: 4, background: '#000000' } })
++    .png()
++    .toBuffer();
++  for (const signatureImage of [null, `data:image/png;base64,${signature.toString('base64')}`]) {
++    globalThis.__shareImageRecord = {
++      name: 'Synthetic Signer',
++      email: 'signer@example.test',
++      signature: signatureImage,
++    };
++    const response = await loader({ params: { slug: 'synthetic-share' } });
++    assert.equal(response.status, 200);
++    assert.equal(response.headers.get('Content-Type'), 'image/png');
++    const bytes = Buffer.from(await response.arrayBuffer());
++    const image = await sharp(bytes).metadata();
++    assert.deepEqual([image.format, image.width, image.height], ['png', 1200, 630]);
++    assert.equal(Number(response.headers.get('Content-Length')), bytes.length);
++  }
++  assert.ok(requestedPaths.every((path) => path.startsWith('/fonts/')));
++  assert.equal((await loader({ params: { slug: 'qr_synthetic' } })).status, 404);
++  globalThis.__shareImageRecord = { error: true };
++  assert.equal((await loader({ params: { slug: 'missing-synthetic' } })).status, 404);
++  await assert.rejects(
++    satori(
++      { type: 'img', props: { src: `${origin}/private.png`, width: 64, height: 24 } },
++      { width: 1200, height: 630, fonts: [] },
++    ),
++    /blocked address.*SSRF protection/,
++  );
++  console.log(
++    JSON.stringify({
++      shareImages: 2,
++      dimensions: [1200, 630],
++      notFoundPaths: 2,
++      ssrfProtection: true,
++      externalRequests: false,
++    }),
++  );
++} finally {
++  delete globalThis.__shareImageRecord;
++  process.chdir(root);
++  server.closeAllConnections();
++  await new Promise((resolve) => server.close(resolve));
++  fs.rmSync(scratch, { recursive: true, force: true });
++}
