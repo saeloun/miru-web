@@ -8,7 +8,7 @@ class Payroll::ProfileCompletion
   def summary(employment)
     source = current_source(employment)
     request = requests.where(employment:, source_digest: source[:source_digest]).order(id: :desc).first if source[:source_digest]
-    source.merge(can_request: source[:categories].any? && PayrollRunPolicy.new(@actor, @run).show? && (!request || request.state == "skipped"),
+    source.merge(can_request: source[:categories].any? && PayrollRunPolicy.new(@actor, @run).show? && (!request || %w[skipped failed].include?(request.state)),
       request: request&.receipt)
   end
 
@@ -32,7 +32,7 @@ class Payroll::ProfileCompletion
         source = current_source(employment)
         raise Payroll::MercuryPayment::Blocked.new("profile_completion_unavailable") if source[:categories].empty?
         raise Payroll::Workflow::Conflict, "Profile details changed; refresh before requesting completion" unless source[:source_digest] == expected_digest
-        if requests.where(employment:, source_digest: expected_digest).where.not(state: "skipped").exists?
+        if requests.where(employment:, source_digest: expected_digest).where.not(state: %w[skipped failed]).exists?
           raise Payroll::Workflow::Conflict, "A request already exists for these details; refresh to see its delivery status"
         end
         requests.create!(company: @run.company, employment:, recipient: employment.user, requested_by: @actor,
@@ -51,10 +51,14 @@ class Payroll::ProfileCompletion
     return empty if employment.joined_at && employment.joined_at > @run.period.end_of_month || employment.resigned_at && employment.resigned_at < @run.period
 
     terms = employment.consultant_compensations.where(effective_on: ..@run.period.end_of_month).order(effective_on: :desc, id: :desc).first
-    return empty unless terms && ConsultantCompensation::SOURCES.include?(terms.payment_source)
+    return empty unless terms
 
     details = Payroll::MercurySetup.bank_details(employment)
-    bank_complete = terms.payment_source == "mercury_us" ? Payroll::MercurySetup.bank_profile_complete?(details) : Payroll::IndiaReport.bank_complete?(details)
+    bank_complete = case terms.payment_source
+                    when "mercury_us" then Payroll::MercurySetup.bank_profile_complete?(details)
+                    when "india" then Payroll::IndiaReport.bank_complete?(details)
+                    else true # Funding setup belongs to accounts; do not guess consultant bank requirements.
+    end
     billing = Payroll::BillingIdentity.new(employment).completion_request_source
     categories = []
     categories << "bank_details" if !bank_complete && bank_self_service?(employment)

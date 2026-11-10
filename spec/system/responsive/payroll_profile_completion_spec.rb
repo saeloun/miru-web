@@ -161,4 +161,38 @@ RSpec.describe "Payroll profile completion requests", type: :system, js: true do
     expect(request_commands.map { |command| command.fetch("expected_digest") }.uniq.size).to eq(1)
     expect(run.reload.current_revision).to be_nil
   end
+
+  it "offers an explicit new request after email preparation fails before delivery" do
+    open_preparation(owner, 1440)
+    within_consultant(employment) do
+      click_button "Request profile completion"
+      expect(page).to have_text("Request email queued")
+    end
+    original = PayrollProfileCompletionRequest.sole
+    expect(ActionMailer::Base.delivery_method).to eq(:test)
+    ActionMailer::Base.deliveries.clear
+    allow(PayrollProfileCompletionMailer).to receive(:requested).and_raise("Synthetic mail preparation failure")
+    PayrollProfileCompletionRequestJob.perform_now(original.id)
+    expect(original.reload.state).to eq("failed")
+    expect(ActionMailer::Base.deliveries).to be_empty
+
+    visit "/payroll/#{run.id}"
+    within_consultant(employment) do
+      expect(page).to have_text("Request email failed; no email was sent")
+      expect(page).to have_button("Request profile completion", disabled: false)
+      click_button "Request profile completion"
+      expect(page).to have_text("Request email queued")
+      expect(page).to have_no_button("Request profile completion")
+    end
+    expect(PayrollProfileCompletionRequest.count).to eq(2)
+    expect(original.reload.state).to eq("failed")
+    replacement = PayrollProfileCompletionRequest.order(:id).last
+    expect(replacement.id).not_to eq(original.id)
+    expect(replacement.state).to eq("queued")
+    expect(request_commands.size).to eq(2)
+    expect(request_commands.map { |command| command.fetch("idempotency_key") }.uniq.size).to eq(2)
+    expect(request_commands.map { |command| command.fetch("expected_digest") }.uniq.size).to eq(1)
+    expect(ActionMailer::Base.deliveries).to be_empty
+    expect(run.reload.current_revision).to be_nil
+  end
 end

@@ -162,6 +162,10 @@ the mail transport accepted it. **Delivery needs review** holds an uncertain
 send rather than automatically sending another email. A **skipped** request sent
 no email because the details or access changed before delivery. Refresh the run
 to see current requirements before requesting again.
+A **Request email failed** status means preparation failed before sending. After
+checking delivery, request completion again to make a fresh attempt.
+Uncertain delivery has no in-app resend action for unchanged details. Check the
+mail transport before contacting the consultant separately.
 
 Consultants complete their own forms, and accounts still reviews billing facts.
 The request does not grant invoice authorization, verify a bank account or

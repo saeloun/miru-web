@@ -21,10 +21,10 @@ class CreatePayrollProfileCompletionRequests < ActiveRecord::Migration[8.1]
     add_index :payroll_profile_completion_requests, [:payroll_run_id, :requested_by_id, :idempotency_key], unique: true,
       name: "profile_completion_command_identity"
     add_index :payroll_profile_completion_requests, [:payroll_run_id, :employment_id, :source_digest], unique: true,
-      where: "state <> 'skipped'", name: "profile_completion_delivery_identity"
+      where: "state NOT IN ('skipped','failed')", name: "profile_completion_delivery_identity"
     add_index :payroll_profile_completion_requests, [:state, :id]
     add_check_constraint :payroll_profile_completion_requests,
-      "state IN ('queued','sending','sent','uncertain','skipped') AND (state NOT IN ('sending','sent','uncertain') OR attempted_at IS NOT NULL) AND (state <> 'sent' OR sent_at IS NOT NULL)",
+      "state IN ('queued','sending','sent','uncertain','skipped','failed') AND (state NOT IN ('sending','sent','uncertain') OR attempted_at IS NOT NULL) AND (state <> 'sent' OR sent_at IS NOT NULL)",
       name: "profile_completion_delivery_states"
     add_check_constraint :payroll_profile_completion_requests,
       "jsonb_typeof(categories) = 'array' AND jsonb_array_length(categories) BETWEEN 1 AND 2 AND categories <@ '[\"bank_details\",\"billing_identity\"]'::jsonb",

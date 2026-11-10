@@ -177,6 +177,7 @@ const profileRequestStates = {
   uncertain:
     "Delivery needs review; the request will not be resent automatically",
   skipped: "Request skipped; no email was sent",
+  failed: "Request email failed; no email was sent",
 };
 
 const ProfileCompletionRequestPanel = ({
@@ -205,7 +206,7 @@ const ProfileCompletionRequestPanel = ({
     profile.can_request &&
     profile.source_digest &&
     profile.categories.length > 0 &&
-    (!receipt || receipt.state === "skipped");
+    (!receipt || ["skipped", "failed"].includes(receipt.state));
 
   const categories =
     !receipt || canRequest ? profile.categories : receipt.categories;
@@ -229,7 +230,9 @@ const ProfileCompletionRequestPanel = ({
       const result: ProfileCompletionRequest =
         response.data.profile_completion_request;
       setReceipt(result);
-      if (result.state === "skipped") setKey(window.crypto.randomUUID());
+      if (["skipped", "failed"].includes(result.state)) {
+        setKey(window.crypto.randomUUID());
+      }
     } catch (failure) {
       if (controller.signal.aborted) return;
       const status = failure?.response?.status;

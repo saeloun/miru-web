@@ -1834,13 +1834,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
     t.datetime "updated_at", null: false
     t.index ["company_id"], name: "index_payroll_profile_completion_requests_on_company_id"
     t.index ["employment_id"], name: "index_payroll_profile_completion_requests_on_employment_id"
-    t.index ["payroll_run_id", "employment_id", "source_digest"], name: "profile_completion_delivery_identity", unique: true, where: "((state)::text <> 'skipped'::text)"
+    t.index ["payroll_run_id", "employment_id", "source_digest"], name: "profile_completion_delivery_identity", unique: true, where: "((state)::text <> ALL ((ARRAY['skipped'::character varying, 'failed'::character varying])::text[]))"
     t.index ["payroll_run_id", "requested_by_id", "idempotency_key"], name: "profile_completion_command_identity", unique: true
     t.index ["payroll_run_id"], name: "index_payroll_profile_completion_requests_on_payroll_run_id"
     t.index ["recipient_id"], name: "index_payroll_profile_completion_requests_on_recipient_id"
     t.index ["requested_by_id"], name: "index_payroll_profile_completion_requests_on_requested_by_id"
     t.index ["state", "id"], name: "index_payroll_profile_completion_requests_on_state_and_id"
-    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "profile_completion_delivery_states"
+    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying, 'failed'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "profile_completion_delivery_states"
     t.check_constraint "idempotency_key::text ~ '^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$'::text AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text", name: "profile_completion_command_format"
     t.check_constraint "jsonb_typeof(categories) = 'array'::text AND jsonb_array_length(categories) >= 1 AND jsonb_array_length(categories) <= 2 AND categories <@ '[\"bank_details\", \"billing_identity\"]'::jsonb", name: "profile_completion_categories"
   end

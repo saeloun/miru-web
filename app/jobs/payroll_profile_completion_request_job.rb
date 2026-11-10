@@ -10,18 +10,27 @@ class PayrollProfileCompletionRequestJob < ApplicationJob
     return unless mail
 
     mail.deliver_now
+    unless mail.message.perform_deliveries
+      mark_delivery_failure(request)
+      return
+    end
     request.with_lock { request.update!(state: "sent", sent_at: Time.current) if request.state == "sending" }
   rescue StandardError
-    mark_uncertain(request) if mail
+    mark_delivery_failure(request) if request
     Rails.logger.warn("Payroll profile-completion delivery requires review")
   end
 
   private
 
-    def mark_uncertain(request)
-      request.with_lock { request.update!(state: "uncertain") if request.state == "sending" }
+    def mark_delivery_failure(request)
+      request.with_lock do
+        case request.state
+        when "queued" then request.update!(state: "failed")
+        when "sending" then request.update!(state: "uncertain")
+        end
+      end
     rescue StandardError
-      # Recovery treats a stale sending row as uncertain without resending.
+      # Recovery retries queued work and holds a stale sending row without resending.
       nil
     end
 

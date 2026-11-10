@@ -151,6 +151,59 @@ RSpec.describe PayrollProfileCompletionRequestJob do
     expect(ActionMailer::Base.deliveries.size).to eq(1)
   end
 
+  it "terminally fails an unattempted render error and requires a fresh manual request to try again" do
+    id = request_fixture
+    original_options = PayrollProfileCompletionMailer.default_url_options
+    PayrollProfileCompletionMailer.default_url_options = {}
+    committed { described_class.perform_now(id) }
+    expect(committed { PayrollProfileCompletionRequest.find(id).attributes.slice("state", "attempted_at", "sent_at") })
+      .to eq("state" => "failed", "attempted_at" => nil, "sent_at" => nil)
+    expect(ActionMailer::Base.deliveries).to be_empty
+    PayrollProfileCompletionMailer.default_url_options = original_options
+    clear_enqueued_jobs
+    committed do
+      PayrollProfileCompletionRequest.find(id).update!(created_at: 16.minutes.ago)
+      described_class.perform_now(id)
+      PayrollProfileCompletionRecoveryJob.perform_now
+    end
+    expect(enqueued_jobs).to be_empty
+    expect(ActionMailer::Base.deliveries).to be_empty
+    replacement = committed do
+      request = PayrollProfileCompletionRequest.find(id)
+      service = Payroll::ProfileCompletion.new(request.payroll_run, actor: request.requested_by)
+      source = service.summary(request.employment)
+      expect(source.fetch(:can_request)).to be(true)
+      service.create!(employment_id: request.employment_id.to_s, expected_digest: source.fetch(:source_digest), idempotency_key: SecureRandom.uuid).id
+    end
+    expect(replacement).not_to eq(id)
+    committed { described_class.perform_now(replacement) }
+    expect(committed { PayrollProfileCompletionRequest.find(replacement).state }).to eq("sent")
+    expect(ActionMailer::Base.deliveries.size).to eq(1)
+  ensure
+    PayrollProfileCompletionMailer.default_url_options = original_options if original_options
+  end
+
+  it "keeps a real Mail-interceptor suppression uncertain rather than claiming delivery or retrying" do
+    id = request_fixture
+    intercepted = []
+    interceptor = Class.new
+    interceptor.define_singleton_method(:delivering_email) do |message|
+      intercepted << message.object_id
+      message.perform_deliveries = false
+    end
+    Mail.register_interceptor(interceptor)
+    committed { described_class.perform_now(id) }
+    expect(intercepted.size).to eq(1)
+    expect(ActionMailer::Base.deliveries).to be_empty
+    expect(committed { PayrollProfileCompletionRequest.find(id).attributes.slice("state", "sent_at") })
+      .to eq("state" => "uncertain", "sent_at" => nil)
+    committed { described_class.perform_now(id); PayrollProfileCompletionRecoveryJob.perform_now }
+    expect(intercepted.size).to eq(1)
+    expect(ActionMailer::Base.deliveries).to be_empty
+  ensure
+    Mail.unregister_interceptor(interceptor) if interceptor
+  end
+
   it "keeps a failed attempted delivery uncertain without logging private errors or retrying" do
     id = request_fixture
     output = StringIO.new

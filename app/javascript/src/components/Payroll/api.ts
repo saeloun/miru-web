@@ -195,7 +195,7 @@ export type ProfileCompletionCategory = "bank_details" | "billing_identity";
 
 export interface ProfileCompletionRequest {
   id: string;
-  state: "queued" | "sending" | "sent" | "uncertain" | "skipped";
+  state: "queued" | "sending" | "sent" | "uncertain" | "skipped" | "failed";
   categories: ProfileCompletionCategory[];
 }
 

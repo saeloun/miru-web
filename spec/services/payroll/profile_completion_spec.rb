@@ -104,6 +104,35 @@ RSpec.describe "Consultant profile completion requests" do
     expect(requests.summary(employment)).to include(categories: [], can_request: false, source_digest: nil)
   end
 
+  it "still requests billing corrections when accounts must resolve an unknown funding source" do
+    run
+    terms = employment.consultant_compensations.order(:id).last
+    ConsultantCompensation.insert_all!([terms.attributes.except("id").merge("payment_source" => "unconfigured")])
+    previous = ConsultantBillingSubmission.heads.find_by!(employment:)
+    Payroll::BillingIdentity.new(employment, actor: worker).submit!(facts: previous.facts, expected_submission_id: previous.id.to_s,
+      idempotency_key: "unknown-funding-billing", reuse_pan_evidence: true)
+    current = ConsultantBillingSubmission.heads.find_by!(employment:)
+    Payroll::BillingIdentity.new(employment, actor: accounts).review!(submission_id: current.id.to_s,
+      expected_review_id: "", decision: "needs_information", reason: "Please correct the address in your billing profile",
+      manual_tax_reviewed: false, missing_pan_acknowledged: false, idempotency_key: "unknown-funding-correction")
+    omit_bank
+
+    expect(requests.summary(employment)).to include(categories: ["billing_identity"], can_request: true)
+    expect(request_profile.categories).to eq(["billing_identity"])
+  end
+
+  it "permits a fresh explicit command after an unattempted failure while replaying the original failed receipt" do
+    omit_bank
+    original = request_profile
+    original.update!(state: "failed")
+
+    expect(requests.summary(employment)).to include(can_request: true, request: original.receipt)
+    expect(request_profile.id).to eq(original.id)
+    replacement = request_profile(key: "explicit-retry")
+    expect(replacement).to have_attributes(state: "queued", source_digest: original.source_digest)
+    expect(replacement.id).not_to eq(original.id)
+  end
+
   it "reauthorizes the current workspace and rejects a foreign employment before recording anything" do
     omit_bank
     source = requests.summary(employment).fetch(:source_digest)
