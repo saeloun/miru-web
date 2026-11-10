@@ -20,6 +20,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     controller.allow_forgery_protection = original if controller
   end
 
+  # sign_in resets the browser session, so apply any requested viewport afterward.
   def open_documents(files: [main_pdf, addendum], width: nil)
     sign_in(admin)
     page.current_window.resize_to(width, 1000) if width
