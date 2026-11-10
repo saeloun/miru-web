@@ -17,7 +17,7 @@ RSpec.describe "Billing identity retained history and fresh outbound sources" do
 
   def accepted_split
     revision = approve_revision
-    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN",
+    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_currency" => "INR",
       "bank_account_number" => "222233334444", "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
     split = Payroll::SplitArrangements.new(run)
     arrangement = split.request!(actor: accounts, employment_id: employment.id,

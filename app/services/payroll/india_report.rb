@@ -2,14 +2,15 @@
 
 module Payroll
   class IndiaReport
-    BANK_FIELDS = %w[bank_account_name bank_name bank_account_number bank_ifsc].freeze
+    BANK_FIELDS = %w[bank_account_name bank_name bank_country bank_account_currency bank_account_number bank_ifsc].freeze
 
     def self.bank_details(employment)
-      (employment.employee_record&.private_details || {}).slice(*BANK_FIELDS)
+      (employment.employee_record&.private_details || {}).slice(*EmployeeRecord::BANK_KEYS).compact_blank
     end
 
     def self.bank_complete?(details)
       BANK_FIELDS.all? { |field| details[field].is_a?(String) && details[field].strip.length.between?(1, 200) } &&
+        EmployeeRecord.supported_country?(details["bank_country"]) && EmployeeRecord.supported_currency?(details["bank_account_currency"]) &&
         details["bank_account_number"].match?(/\A\d{1,34}\z/) && details["bank_ifsc"].match?(/\A[A-Z]{4}0[A-Z0-9]{6}\z/)
     end
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.5.1] - 2026-11-10
+
+### Fixed
+
+- Record explicit bank country and account currency before preparing a new consultant or spouse payment, and verify the beneficiary again after bank details change.
+- Review declared bank country, currency, branch and SWIFT in India payroll reports while keeping full bank details in the confidential frozen accounts email.
+- Keep existing accepted payments and legacy split withdrawals readable while requiring complete, valid bank instructions for new requests.
+
 ## [3.4.2] - 2026-11-10
 
 ### Fixed

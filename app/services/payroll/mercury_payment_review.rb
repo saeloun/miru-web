@@ -120,7 +120,8 @@ module Payroll
         link = PayrollMercuryRecipientLink.current_for(employment, beneficiary)
         details = MercurySetup.bank_details(employment, beneficiary, arrangement: @readiness.active_arrangement(employment))
         { beneficiary:, linked: link.present?, current: link.present? && link.bank_details_digest == MercurySetup.digest(details.sort.to_h),
-          name: link&.display_name, account_mask: link&.account_mask, swift_code: link&.swift_code, verified_at: link&.created_at&.iso8601 }
+          name: link&.display_name, account_mask: link&.account_mask, swift_code: link&.swift_code, verified_at: link&.created_at&.iso8601,
+          bank_country: details["bank_country"], bank_account_currency: details["bank_account_currency"] }
       end
 
       def legs(group)

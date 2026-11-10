@@ -52,6 +52,16 @@ RSpec.describe "Confidential India payroll mail" do
     expect(html).not_to include("<script>", "Not classified in source records")
   end
 
+  it "includes the frozen declared country, account currency, branch and SWIFT for accounts" do
+    report["bank_details"].merge!("bank_country" => "IN", "bank_account_currency" => "USD",
+      "bank_branch" => "Synthetic <Branch>", "bank_swift" => "SYNTINBBXXX")
+    mail = PayrollIndiaMailer.report(21).message
+    expect(mail.text_part.body.decoded).to include("Declared bank country: IN", "Account currency: USD",
+      "Bank branch: Synthetic <Branch>", "SWIFT: SYNTINBBXXX")
+    expect(mail.html_part.body.decoded).to include("Synthetic &lt;Branch&gt;", "USD", "SYNTINBBXXX")
+    expect(mail.html_part.body.decoded).not_to include("Synthetic <Branch>")
+  end
+
   it "separates the frozen period basis from contractual pay and escapes its reason" do
     report["monthly_fee"] = "100000"
     report["period_base_fee"] = "50000"

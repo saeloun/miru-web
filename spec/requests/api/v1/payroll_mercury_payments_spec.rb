@@ -20,6 +20,23 @@ RSpec.describe "Mercury payroll API", type: :request do
     json_response.fetch("mercury_payments")
   end
 
+  describe "split bank input" do
+    [{ "name" => "branch" }, ["branch"]].each do |branch|
+      it "rejects a structured optional bank branch #{branch.class}" do
+        sign_in owner
+        payload = bank_details.merge("employment_id" => employment.id, "allocation_kind" => "percentage",
+          "allocation_value" => "25", "allocated_to" => "spouse", "remainder_to" => "consultant",
+          "account_number_confirmation" => bank_details.fetch("bank_account_number"), "bank_branch" => branch)
+
+        post "/api/v1/payroll_runs/#{run.id}/split_arrangements",
+          params: { company_id: company.id, payroll_split_arrangement: payload }, as: :json
+
+        expect(response).to have_http_status(422)
+        expect(PayrollSplitArrangement.where(employment:)).to be_empty
+      end
+    end
+  end
+
   describe "reading" do
     before { sign_in owner }
 

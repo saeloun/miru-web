@@ -56,6 +56,7 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
 
   it "lets staff save family, emergency and bank information without submitting admin salary keys" do
     employment.create_employee_record!(private_details: { salary_amount: "1200", salary_currency: "INR" })
+    expect(Payroll::MercurySetup.bank_profile_complete?(Payroll::MercurySetup.bank_details(employment))).to be(false)
     with_forgery_protection do
       open_records(employee)
       expect(page).to have_link("Employee records", href: "/settings/employee-records")
@@ -67,9 +68,14 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       expect(page).not_to have_field("Salary amount")
       fill_in "Account holder name", with: "Synthetic Employee"
       fill_in "Bank name", with: "Synthetic Bank"
+      fill_in "Bank country code (e.g. IN)", with: "in"
+      fill_in "Account currency (e.g. INR)", with: "usd"
+      expect(page).to have_field("Bank country code (e.g. IN)", with: "IN")
+      expect(page).to have_field("Account currency (e.g. INR)", with: "USD")
       fill_in "Bank account number", with: "001234567890"
       fill_in "Confirm bank account number", with: "001234567890"
       fill_in "IFSC", with: "SBIN0001234"
+      fill_in "SWIFT", with: "SBININBBXXX"
       fill_in "Emergency contact name", with: "Synthetic Contact"
       fill_in "Emergency contact phone", with: "9999999999"
       click_button "Add family member"
@@ -82,7 +88,9 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       expect(page).to have_content("••••••••7890")
       expect(page).not_to have_content("001234567890")
       expect(employment.reload.employee_record.private_details).to include("salary_amount" => "1200",
-        "bank_account_number" => "001234567890", "emergency_contact_name" => "Synthetic Contact")
+        "bank_account_number" => "001234567890", "emergency_contact_name" => "Synthetic Contact",
+        "bank_country" => "IN", "bank_account_currency" => "USD")
+      expect(Payroll::MercurySetup.bank_profile_complete?(Payroll::MercurySetup.bank_details(employment))).to be(true)
       [320, 375, 1440].each do |width|
         page.current_window.resize_to(width, 900)
         expect_mobile_fit

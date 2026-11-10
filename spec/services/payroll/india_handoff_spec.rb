@@ -41,6 +41,18 @@ RSpec.describe Payroll::IndiaHandoff do
     service.record_credit!(actor:, handoff_id: handoff.id, amount:, reference:, credited_on:)
   end
 
+  %w[bank_country bank_account_currency].each do |field|
+    it "refuses a new handoff without the declared #{field}" do
+      details = bank_details.merge("bank_country" => "IN", "bank_account_currency" => "INR").except(field)
+      employment.employee_record.update!(private_details: details)
+
+      expect { queue_handoff }.to raise_error(Payroll::MercuryPayment::Blocked) do |error|
+        expect(error.codes).to include("bank_profile_incomplete")
+      end
+      expect(PayrollIndiaHandoff.where(payroll_run: run)).to be_empty
+    end
+  end
+
   it "requires approval and explicit bank and single mailbox confirmation" do
     revision = workflow.revise!(actor: accounts, payload: synthetic_payload, idempotency_key: "draft", expected_digest: nil)
     expect { queue_handoff(revision) }.to raise_error(Payroll::MercuryPayment::Blocked) { |error| expect(error.codes).to include("run_not_approved") }
@@ -79,7 +91,7 @@ RSpec.describe Payroll::IndiaHandoff do
     expect(fresh_version).not_to eq(bank_version)
     handoff = service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
       accounts_email: mailbox, bank_confirmed: true, expected_bank_digest: fresh_version)
-    expect(handoff.report.fetch("bank_details")).to eq(changed_details.slice(*Payroll::IndiaReport::BANK_FIELDS))
+    expect(handoff.report.fetch("bank_details")).to eq(changed_details)
     expect(handoff.payroll_india_deliveries.sole.state).to eq("queued")
     expect do
       service.create!(actor: owner, employment_id: employment.id, expected_digest: revision.digest,
@@ -138,7 +150,8 @@ RSpec.describe Payroll::IndiaHandoff do
 
   it "records partial/full/overcredit exactly once using frozen entitlement after live bank changes" do
     handoff = delivered(queue_handoff)
-    employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999999999"))
+    employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999999999",
+      "bank_name" => "Changed Bank", "bank_country" => "US", "bank_account_currency" => "USD"))
     work_entry.update!(duration: 420)
     credit(handoff)
     expect(handoff.reload).to have_attributes(credited_minor: 100_000, fully_credited_at: nil)
@@ -150,6 +163,7 @@ RSpec.describe Payroll::IndiaHandoff do
     expect(handoff.reload.credited_minor).to eq(6_300_000)
     expect(handoff.fully_credited_at).to be_present
     expect(handoff.status).to eq("credited")
+    expect(handoff.report.fetch("bank_details")).to eq(bank_details)
     stamp = handoff.fully_credited_at
     credit(handoff, amount: "1.00", reference: "Synthetic overcredit")
     expect(handoff.reload.fully_credited_at).to eq(stamp)

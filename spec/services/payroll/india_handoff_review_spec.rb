@@ -49,6 +49,7 @@ RSpec.describe Payroll::IndiaHandoffReview do
       expect(handoff.fetch(:attempts).pluck(:attempt_number)).to eq([1, 2])
       expect(handoff.fetch(:attempts).pluck(:state)).to eq(%w[failed sent])
       expect(handoff.fetch(:credits).pluck(:amount_minor)).to eq(credited ? %w[10000 20000] : [])
+      expect(handoff.dig(:report, :bank)).to include(country: "IN", account_currency: "INR", branch: "Synthetic Branch", swift: "SYNTINBBXXX")
       expect(handoff.to_json).not_to include("123456789012", "SYNTHETIC-REVIEW")
     end
   end

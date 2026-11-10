@@ -12,7 +12,7 @@ RSpec.describe "Mercury payroll review findings" do
   let(:spouse_recipient_id) { "66666666-6666-4666-8666-666666666666" }
   let(:split_service) { Payroll::SplitArrangements.new(run) }
   let(:spouse_details) do
-    { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_number" => "222233334444",
+    { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_currency" => "INR", "bank_account_number" => "222233334444",
       "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
   end
 
@@ -774,10 +774,16 @@ RSpec.describe "Mercury payroll review findings" do
       expect(consultant[:settled_claims_need_review]).to be(false)
     end
 
-    it "marks a recipient unverified after bank details change" do
-      leg
-      employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999999999"))
-      expect(consultant[:recipients].first[:current]).to be(false)
+    { "bank_account_number" => "999999999999", "bank_name" => "Changed Bank", "bank_branch" => "Changed Branch",
+      "bank_country" => "GB", "bank_account_currency" => "USD" }.each do |field, value|
+      it "marks a recipient unverified after #{field} changes" do
+        leg
+        employment.employee_record.update!(private_details: bank_details.merge(field => value))
+        recipient = consultant[:recipients].first
+        expect(recipient[:current]).to be(false)
+        expect(recipient).to include(bank_country: field == "bank_country" ? value : "IN",
+          bank_account_currency: field == "bank_account_currency" ? value : "INR")
+      end
     end
 
     it "hides submit and void from the attester and resolve on a barred leg" do

@@ -2,9 +2,8 @@
 
 class EmployeeRecord < ApplicationRecord
   SALARY_KEYS = %w[salary_amount salary_currency salary_frequency salary_effective_on].freeze
-  BANK_KEYS = %w[bank_account_name bank_name bank_branch bank_account_number bank_ifsc bank_swift].freeze
-  TEXT_KEYS = %w[emergency_contact_name emergency_contact_phone bank_account_name bank_name bank_branch
-    bank_account_number bank_ifsc bank_swift].freeze
+  BANK_KEYS = %w[bank_account_name bank_name bank_branch bank_country bank_account_currency bank_account_number bank_ifsc bank_swift].freeze
+  TEXT_KEYS = (%w[emergency_contact_name emergency_contact_phone] + BANK_KEYS).freeze
   DETAIL_KEYS = (TEXT_KEYS + SALARY_KEYS + ["family_members"]).freeze
   FAMILY_KEYS = %w[name date_of_birth gender relationship].freeze
   AMOUNT_FORMAT = /\A\d{1,10}(?:\.\d{1,2})?\z/
@@ -22,6 +21,10 @@ class EmployeeRecord < ApplicationRecord
 
   def self.supported_currency?(value)
     value.is_a?(String) && value.match?(/\A[A-Z]{3}\z/) && Money::Currency.find(value).present?
+  end
+
+  def self.supported_country?(value)
+    value.is_a?(String) && value.match?(/\A[A-Z]{2}\z/) && ISO3166::Country[value].present?
   end
 
   def self.iso_date?(value)
@@ -69,11 +72,23 @@ class EmployeeRecord < ApplicationRecord
       details = private_details
       errors.add(:private_details, "has unsupported fields") if (details.keys - DETAIL_KEYS).any?
       TEXT_KEYS.each { |key| validate_text(details[key], key, key == "emergency_contact_phone" ? 50 : 200) }
+      validate_bank(details)
+      validate_salary(details)
+      validate_family(details["family_members"]) if details.key?("family_members")
+    end
+
+    def validate_bank(details)
       validate_format(details["bank_account_number"], "bank_account_number", /\A\d{1,34}\z/)
       validate_format(details["bank_ifsc"], "bank_ifsc", /\A[A-Z]{4}0[A-Z0-9]{6}\z/)
       validate_format(details["bank_swift"], "bank_swift", /\A[A-Z]{6}[A-Z0-9]{2}(?:[A-Z0-9]{3})?\z/)
-      validate_salary(details)
-      validate_family(details["family_members"]) if details.key?("family_members")
+      country = details["bank_country"]
+      if optional_value?(country) && !self.class.supported_country?(country)
+        errors.add(:private_details, "bank_country must be a valid uppercase country code")
+      end
+      currency = details["bank_account_currency"]
+      if optional_value?(currency) && !self.class.supported_currency?(currency)
+        errors.add(:private_details, "bank_account_currency is unsupported")
+      end
     end
 
     def validate_salary(details)

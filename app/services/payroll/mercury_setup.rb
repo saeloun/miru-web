@@ -2,7 +2,7 @@
 
 module Payroll
   class MercurySetup
-    BANK_FIELDS = %w[bank_account_name bank_account_number bank_ifsc bank_swift].freeze
+    BANK_FIELDS = %w[bank_account_name bank_name bank_country bank_account_currency bank_account_number bank_ifsc bank_swift].freeze
     Contract = PayrollProviders::MercuryContract
 
     def self.digest(values)
@@ -13,11 +13,12 @@ module Payroll
     def self.bank_details(employment, beneficiary = "consultant", arrangement: nil)
       return (arrangement&.bank_details || {}) if beneficiary == "spouse"
 
-      (employment.employee_record&.private_details || {}).slice(*BANK_FIELDS)
+      (employment.employee_record&.private_details || {}).slice(*EmployeeRecord::BANK_KEYS).compact_blank
     end
 
     def self.bank_profile_complete?(details)
-      BANK_FIELDS.all? { |field| details[field].present? }
+      BANK_FIELDS.all? { |field| details[field].is_a?(String) && details[field].strip.length.between?(1, 200) } &&
+        EmployeeRecord.supported_country?(details["bank_country"]) && EmployeeRecord.supported_currency?(details["bank_account_currency"])
     end
 
     def self.recipient_digest(recipient)

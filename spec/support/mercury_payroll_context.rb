@@ -55,6 +55,7 @@ RSpec.shared_context "approved mercury consultant payroll" do
   let(:legal_name) { "Synthetic US LLC" }
   let(:bank_details) do
     { "bank_account_name" => "Synthetic Consultant", "bank_name" => "Synthetic Bank", "bank_branch" => "Synthetic Branch",
+      "bank_country" => "IN", "bank_account_currency" => "INR",
       "bank_account_number" => "123456789012", "bank_ifsc" => "SYNT0000001", "bank_swift" => "SYNTINBBXXX" }
   end
   let(:net_minor) { 6_250_000 }
