@@ -42,6 +42,73 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     end
   end
 
+  def prepare_manual_approval
+    open_documents
+    add_signer
+    3.times do |index|
+      click_button "Add field"
+      select "Text", from: "Field type" if index == 1
+      select "qa-addendum.pdf", from: "Field document" if index == 2
+    end
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(page).to have_field("Approval evidence")
+    SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+  end
+
+  it "records long manual approval evidence for the exact saved uploaded version" do
+    record = prepare_manual_approval
+    revision = record.current_revision
+    evidence = "Synthetic QA only: owner reviewed this exact uploaded version. No legal commitment."
+    [375, 1440].each do |width|
+      page.current_window.resize_to(width, 1000)
+      expect(page).to have_css('[data-pdf-ready="true"]')
+    end
+    fill_in "Approval evidence", with: evidence
+    expect(page).to have_field("Approval evidence", with: evidence)
+    check "I confirm this version is approved for signature"
+    click_button "Record approval for signing"
+    expect(page).to have_content("Approval recorded for this version")
+    expect(record.reload.current_revision_id).to eq(revision.id)
+    expect(revision.reload).to have_attributes(status: "approved", approval_note: evidence,
+      approval_digest: revision.content_digest)
+    expect(revision.documents.size).to eq(2)
+    expect(revision.fields.size).to eq(3)
+    expect(revision.provider_envelope_id).to be_nil
+    expect(revision.signature_operations).to be_empty
+    expect(@console_errors).to be_empty
+  end
+
+  it "keeps either review draft dirty and clears it when a new version is saved" do
+    other = create(:company, name: "Other signing workspace")
+    create(:employment, company: other, user: admin, resigned_at: nil)
+    admin.add_role(:admin, other)
+    record = prepare_manual_approval
+    previous_id = record.current_revision_id
+    fill_in "Approval evidence", with: "Reviewed synthetic version"
+    fill_in "Reply to this review", with: "Unsent synthetic comment"
+    fill_in "Approval evidence", with: ""
+    click_link "All documents"
+    within('[role="dialog"]') { click_button "Keep editing" }
+    expect(page).to have_field("Reply to this review", with: "Unsent synthetic comment")
+    fill_in "Approval evidence", with: "Reviewed synthetic version"
+    fill_in "Reply to this review", with: ""
+    click_button admin.full_name
+    click_button "Other signing workspace"
+    expect(page).to have_content("Save your edits or leave the editor before changing workspaces.")
+    expect(admin.reload.current_workspace_id).to eq(company.id)
+    fill_in "Document title", with: "Updated synthetic document"
+    click_button "Save changes"
+    within('[role="dialog"]') { click_button "Discard review text and save" }
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(record.reload.current_revision_id).not_to eq(previous_id)
+    expect(page).to have_field("Approval evidence", with: "")
+    expect(page).to have_field("Reply to this review", with: "")
+    click_link "All documents"
+    expect(page).to have_current_path("/agreements")
+    expect(@console_errors).to be_empty
+  end
+
   it "saves explicit recipient authentication and keeps copy recipients on email links" do
     open_documents
     add_signer
