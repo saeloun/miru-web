@@ -97,6 +97,10 @@ const en = {
     bank_name: "Bank name",
     bank_branch: "Bank branch",
     bank_account_number: "Bank account number",
+    bank_country: "Bank country",
+    bank_account_currency: "Bank account currency",
+    documentsEditingHelp:
+      "Save or cancel your employee record changes before uploading documents.",
     bank_ifsc: "IFSC",
     bank_swift: "SWIFT (optional)",
     family: "Family members",

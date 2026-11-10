@@ -665,7 +665,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
     t.bigint "employment_id", null: false
     t.text "private_details", null: false
     t.datetime "updated_at", null: false
+    t.bigint "payroll_version", default: 0, null: false
+    t.bigint "lock_version", default: 0, null: false
     t.index ["employment_id"], name: "index_employee_records_on_employment_id", unique: true
+    t.check_constraint "payroll_version >= 0", name: "employee_records_payroll_version_nonnegative"
   end
 
   create_table "employee_reports", force: :cascade do |t|

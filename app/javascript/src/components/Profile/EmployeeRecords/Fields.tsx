@@ -12,19 +12,38 @@ export const Field = ({
   label = text(name),
   value,
   onChange,
+  options = null as Record<string, string> | null,
   ...props
-}) => (
-  <div className="min-w-0 space-y-2">
-    <Label htmlFor={name}>{label}</Label>
-    <Input
-      id={name}
-      name={name}
-      value={value ?? ""}
-      onChange={event => onChange(event.target.value)}
-      {...props}
-    />
-  </div>
-);
+}) => {
+  const attributes = {
+    id: name,
+    name,
+    value: value ?? "",
+    onChange: event => onChange(event.target.value),
+    ...props,
+  };
+
+  return (
+    <div className="min-w-0 space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      {options ? (
+        <select
+          {...attributes}
+          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          <option value="">{text("empty")}</option>
+          {Object.entries(options).map(([code, name]) => (
+            <option key={code} value={code}>
+              {name}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <Input {...attributes} />
+      )}
+    </div>
+  );
+};
 
 export const Section = ({ title, children }) => (
   <section className="min-w-0 space-y-4 rounded-xl border border-border bg-card p-4 sm:p-6">

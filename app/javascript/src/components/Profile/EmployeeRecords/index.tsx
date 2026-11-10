@@ -24,10 +24,6 @@ const bankFields = [
   "bank_swift",
 ];
 
-const bankLabels = {
-  bank_country: "Bank country code (e.g. IN)",
-  bank_account_currency: "Account currency (e.g. INR)",
-};
 const contactFields = ["emergency_contact_name", "emergency_contact_phone"];
 const salaryFields = [
   "salary_amount",
@@ -72,6 +68,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
     }
     setRecord(result);
     setDetails(result.private_details);
+    setBankConfirmation("");
   };
 
   const loadPayments = async (page = 1) => {
@@ -262,11 +259,13 @@ const Records = ({ companyId, companyName, userId, self }) => {
               <>
                 <dl className="grid gap-4 sm:grid-cols-2">
                   {[...contactFields, ...bankFields].map(key => (
-                    <Fact key={key} label={bankLabels[key] || text(key)}>
+                    <Fact key={key} label={text(key)}>
                       {key === "bank_account_number" && details[key]
                         ? `${"•".repeat(
                             Math.max(4, details[key].length - 4)
                           )}${details[key].slice(-4)}`
+                        : key === "bank_country"
+                        ? record.bank_countries?.[details[key]] || details[key]
                         : details[key]}
                     </Fact>
                   ))}
@@ -313,15 +312,18 @@ const Records = ({ companyId, companyName, userId, self }) => {
                   {[...contactFields, ...bankFields].map(key => (
                     <Field
                       key={key}
-                      label={bankLabels[key] || text(key)}
                       maxLength={key === "emergency_contact_phone" ? 50 : 200}
                       name={key}
+                      options={
+                        key === "bank_country"
+                          ? record.bank_countries || {}
+                          : null
+                      }
                       value={details[key]}
                       onChange={value =>
                         change(
                           key,
-                          key === "bank_country" ||
-                            key === "bank_account_currency"
+                          key === "bank_account_currency"
                             ? value.toUpperCase()
                             : value
                         )
@@ -332,8 +334,6 @@ const Records = ({ companyId, companyName, userId, self }) => {
                             inputMode: "numeric",
                             maxLength: 34,
                           }
-                        : key === "bank_country"
-                        ? { pattern: "[A-Z]{2}", maxLength: 2 }
                         : key === "bank_account_currency"
                         ? { pattern: "[A-Z]{3}", maxLength: 3 }
                         : key === "bank_ifsc"
@@ -530,6 +530,11 @@ const Records = ({ companyId, companyName, userId, self }) => {
             <p className="text-sm text-muted-foreground">
               {text("documentHelp")}
             </p>
+            {editing && (
+              <p className="text-sm text-muted-foreground" role="status">
+                {text("documentsEditingHelp")}
+              </p>
+            )}
             {["pan", "contract"].map(kind => (
               <div className="space-y-3" key={kind}>
                 <h3 className="font-medium">{text(kind)}</h3>
@@ -540,13 +545,13 @@ const Records = ({ companyId, companyName, userId, self }) => {
                     </Label>
                     <Input
                       accept="application/pdf,image/jpeg,image/png"
-                      disabled={busy}
+                      disabled={busy || editing}
                       id={`upload_${kind}`}
                       type="file"
                       onChange={event => {
                         const file = event.target.files?.[0];
                         event.target.value = "";
-                        if (!file) return;
+                        if (!file || editing || busy) return;
                         setError("");
                         if (
                           file.size > 5 * 1024 * 1024 ||

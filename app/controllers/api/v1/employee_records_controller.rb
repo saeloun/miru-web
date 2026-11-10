@@ -167,6 +167,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
           end),
         employment: employment.slice(:id, :employee_id, :designation, :employment_type, :joined_at, :resigned_at),
         private_details: (employment.employee_record || employment.build_employee_record).details_with_defaults,
+        bank_countries: ISO3166::Country.all.sort_by(&:common_name).to_h { |country| [country.alpha2, country.common_name] },
         documents: EmployeeDocument::KINDS.index_with do |kind|
           documents.filter_map { |document| document_details(document) if document.kind == kind }
         end
