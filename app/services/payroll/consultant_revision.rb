@@ -56,6 +56,7 @@ module Payroll
           .order(:id).limit(MAX_CONSULTANTS)
       end
 
+      # Add profile actions without changing financial readiness or retained transfer selections.
       def consultant_summary(employment, cutoff, retained:)
         review = review_for(employment, cutoff, {})
         source = capture(employment)
@@ -66,7 +67,7 @@ module Payroll
         review.merge(user_id: employment.user_id, source_exceptions: source.fetch("review_exceptions").pluck("code").uniq,
           required_acknowledgements: acknowledgement_codes(source, review), not_ready_reasons: not_ready, ready: not_ready.empty?,
           billing_identity: billing, current: current_selection(employment), locked: bank_activity?(employment),
-          retained:)
+          retained:, profile_completion: ProfileCompletion.new(@run, actor: @actor).summary(employment))
       end
 
       def current_selection(employment)

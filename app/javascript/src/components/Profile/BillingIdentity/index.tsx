@@ -999,12 +999,15 @@ export function BillingIdentityPanel({
   );
 }
 
+/** Rejects links for a different workspace before fetching private billing facts. */
 export default function BillingIdentityPage() {
   const { company, user, companyRole } = useUserContext();
   const search = new URLSearchParams(useLocation().search);
   const userId = search.get("user_id") ?? String(user?.id || "");
+  const linkedCompany = search.get("company_id");
   if (
     !company?.id ||
+    (linkedCompany !== null && linkedCompany !== String(company.id)) ||
     String(company.id) !== String(user?.current_workspace_id) ||
     search.getAll("user_id").length > 1 ||
     !/^[1-9]\d{0,18}$/.test(userId)

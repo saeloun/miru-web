@@ -23,6 +23,7 @@ class PayrollRunPolicy < ApplicationPolicy
   alias_method :mercury_payments?, :show?
   alias_method :split_arrangements?, :show?
   alias_method :india_handoffs?, :show?
+  alias_method :profile_completion_requests?, :show?
 
   def create?
     index? && roles.where(name: %w[owner admin]).exists?

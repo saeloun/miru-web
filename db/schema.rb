@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_09_160000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1817,6 +1817,34 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_160000) do
     t.check_constraint "transaction_status IS NULL OR (transaction_status::text = ANY (ARRAY['pending'::character varying, 'sent'::character varying, 'cancelled'::character varying, 'failed'::character varying, 'reversed'::character varying, 'blocked'::character varying]::text[]))", name: "payroll_payment_transaction_status"
   end
 
+  create_table "payroll_profile_completion_requests", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "recipient_id", null: false
+    t.bigint "requested_by_id", null: false
+    t.string "idempotency_key", limit: 128, null: false
+    t.string "command_digest", limit: 64, null: false
+    t.string "source_digest", limit: 64, null: false
+    t.jsonb "categories", default: [], null: false
+    t.string "state", default: "queued", null: false
+    t.datetime "attempted_at"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_payroll_profile_completion_requests_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_profile_completion_requests_on_employment_id"
+    t.index ["payroll_run_id", "employment_id", "source_digest"], name: "profile_completion_delivery_identity", unique: true, where: "((state)::text <> ALL ((ARRAY['skipped'::character varying, 'failed'::character varying])::text[]))"
+    t.index ["payroll_run_id", "requested_by_id", "idempotency_key"], name: "profile_completion_command_identity", unique: true
+    t.index ["payroll_run_id"], name: "index_payroll_profile_completion_requests_on_payroll_run_id"
+    t.index ["recipient_id"], name: "index_payroll_profile_completion_requests_on_recipient_id"
+    t.index ["requested_by_id"], name: "index_payroll_profile_completion_requests_on_requested_by_id"
+    t.index ["state", "id"], name: "index_payroll_profile_completion_requests_on_state_and_id"
+    t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying, 'failed'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "profile_completion_delivery_states"
+    t.check_constraint "idempotency_key::text ~ '^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$'::text AND source_digest::text ~ '^[0-9a-f]{64}$'::text AND command_digest::text ~ '^[0-9a-f]{64}$'::text", name: "profile_completion_command_format"
+    t.check_constraint "jsonb_typeof(categories) = 'array'::text AND jsonb_array_length(categories) >= 1 AND jsonb_array_length(categories) <= 2 AND categories <@ '[\"bank_details\", \"billing_identity\"]'::jsonb", name: "profile_completion_categories"
+  end
+
   create_table "payroll_pto_allocations", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "employment_id", null: false
@@ -2947,6 +2975,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_09_160000) do
   add_foreign_key "payroll_payment_instructions", "users", column: "prepared_by_id"
   add_foreign_key "payroll_payment_instructions", "users", column: "rate_entered_by_id"
   add_foreign_key "payroll_payment_instructions", "users", column: "submitted_by_id"
+  add_foreign_key "payroll_profile_completion_requests", "companies"
+  add_foreign_key "payroll_profile_completion_requests", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
+  add_foreign_key "payroll_profile_completion_requests", "payroll_runs"
+  add_foreign_key "payroll_profile_completion_requests", "users", column: "recipient_id"
+  add_foreign_key "payroll_profile_completion_requests", "users", column: "requested_by_id"
   add_foreign_key "payroll_pto_allocations", "companies"
   add_foreign_key "payroll_pto_allocations", "employments", column: ["company_id", "employment_id"], primary_key: ["company_id", "id"]
   add_foreign_key "payroll_pto_allocations", "payroll_pto_entries", column: ["company_id", "employment_id", "accrual_entry_id"], primary_key: ["company_id", "employment_id", "id"]
