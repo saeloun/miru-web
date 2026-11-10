@@ -14,6 +14,7 @@ class EmployeeRecord < ApplicationRecord
   encrypts :private_details
   audited associated_with: :company, only: [:employment_id]
   after_save :record_salary_version, if: :saved_change_to_private_details?
+  before_save :advance_payroll_version, if: :will_save_change_to_private_details?
   after_save :record_bank_change_notice, if: :saved_change_to_private_details?
 
   validates :employment_id, uniqueness: true
@@ -39,6 +40,13 @@ class EmployeeRecord < ApplicationRecord
   end
 
   private
+
+    # Equivalent empty bank values must not invalidate the payroll source version.
+    def advance_payroll_version
+      previous = private_details_in_database || {}
+      keys = BANK_KEYS + SALARY_KEYS
+      self.payroll_version += 1 unless previous.values_at(*keys).map(&:presence) == private_details.values_at(*keys).map(&:presence)
+    end
 
     def record_bank_change_notice
       previous = private_details_before_last_save || {}

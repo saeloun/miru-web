@@ -48,6 +48,8 @@ RSpec.describe "Employee records", type: :request do
       "joined_at" => employment.joined_at.iso8601)
     expect(record.fetch("private_details")).to include("family_members" => [], "salary_amount" => nil)
     expect(record.fetch("documents")).to eq("pan" => [], "contract" => [])
+    expect(record.fetch("bank_countries")).to include("IN" => "India")
+    expect(record.fetch("bank_countries")).not_to have_key("ZZ")
     expect(EmployeeRecord.count).to eq(0)
     expect(response.headers["Cache-Control"]).to include("private", "no-store")
   end

@@ -68,10 +68,10 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       expect(page).not_to have_field("Salary amount")
       fill_in "Account holder name", with: "Synthetic Employee"
       fill_in "Bank name", with: "Synthetic Bank"
-      fill_in "Bank country code (e.g. IN)", with: "in"
-      fill_in "Account currency (e.g. INR)", with: "usd"
-      expect(page).to have_field("Bank country code (e.g. IN)", with: "IN")
-      expect(page).to have_field("Account currency (e.g. INR)", with: "USD")
+      select "India", from: "Bank country"
+      fill_in "Bank account currency", with: "usd"
+      expect(page).to have_select("Bank country", selected: "India")
+      expect(page).to have_field("Bank account currency", with: "USD")
       fill_in "Bank account number", with: "001234567890"
       fill_in "Confirm bank account number", with: "001234567890"
       fill_in "IFSC", with: "SBIN0001234"
@@ -96,6 +96,84 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
         expect_mobile_fit
       end
       capture_records("employee-records-staff.png")
+      expect(@console_errors).to be_empty
+    end
+  end
+
+  [1400, 390].each do |width|
+    it "confirms bank changes, clears canceled confirmation and keeps account numbers masked at #{width}px" do
+      company.update!(name: "Synthetic bank QA")
+      employee.update!(first_name: "Synthetic", last_name: "Consultant")
+      record = employment.create_employee_record!(private_details: {
+        "bank_account_number" => "001234567890", "bank_country" => "IN", "bank_account_currency" => "INR"
+      })
+      with_forgery_protection do
+        page.current_window.resize_to(width, 1000)
+        open_records(employee)
+        click_button "Edit employee records"
+        expect(page).not_to have_field("Confirm bank account number")
+        bank_number = find_field("Bank account number", exact: true)
+        bank_number.set("")
+        bank_number.click
+        bank_number.send_keys("009876543210")
+        expect(page.evaluate_script("document.activeElement.id")).to eq("bank_account_number")
+        fill_in "Confirm bank account number", with: "009876543211"
+        find_field("Confirm bank account number").send_keys(:tab)
+        expect(page).to have_css("[role='alert']", text: "Bank account numbers must match.")
+        expect(page).to have_button("Save employee records", disabled: true)
+        expect(record.reload.private_details["bank_account_number"]).to eq("001234567890")
+        expect_mobile_fit
+        capture_records("employee-records-bank-edit-#{width}.png")
+
+        click_button "Cancel"
+        click_button "Edit employee records"
+        expect(page).not_to have_field("Confirm bank account number")
+        fill_in "Bank account number", with: "009876543210"
+        expect(page).to have_field("Confirm bank account number", with: "")
+        fill_in "Confirm bank account number", with: "009876543210"
+        click_button "Save employee records"
+        expect(page).to have_css("[role='status']", text: "Employee records saved.")
+        expect(page).to have_content("••••••••3210")
+        expect(page).to have_content("India")
+        expect(page).not_to have_content("009876543210")
+        expect(record.reload.private_details["bank_account_number"]).to eq("009876543210")
+        expect(record.private_details).not_to have_key("bank_account_number_confirmation")
+        expect_mobile_fit
+        capture_records("employee-records-bank-saved-#{width}.png")
+        expect(@console_errors).to be_empty
+      end
+    end
+  end
+
+  it "keeps a bank draft protected until edits finish and then resumes document uploads" do
+    record = employment.create_employee_record!(private_details: { "bank_account_number" => "001234567890" })
+    with_forgery_protection do
+      open_records(admin)
+      click_button "Edit employee records"
+      fill_in "Bank account number", with: "009876543210"
+      fill_in "Confirm bank account number", with: "009876543210"
+      expect(page).to have_field("Upload PAN copy", disabled: true)
+      expect(page).to have_field("Upload Contract", disabled: true)
+      expect(page).to have_content("Save or cancel your employee record changes before uploading documents.")
+      expect(page).to have_field("Bank account number", with: "009876543210", exact: true)
+      expect(page).to have_field("Confirm bank account number", with: "009876543210")
+
+      click_button "Cancel"
+      expect(page).to have_field("Upload PAN copy", disabled: false)
+      attach_file "Upload PAN copy", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
+      expect(page).to have_button("Download · pdf-file.pdf")
+      expect(record.reload.private_details["bank_account_number"]).to eq("001234567890")
+
+      click_button "Edit employee records"
+      fill_in "Bank account number", with: "009876543210"
+      expect(page).to have_field("Confirm bank account number", with: "")
+      fill_in "Confirm bank account number", with: "009876543210"
+      click_button "Save employee records"
+      expect(page).to have_css("[role='status']", text: "Employee records saved.")
+      expect(record.reload.private_details["bank_account_number"]).to eq("009876543210")
+      expect(page).to have_field("Upload Contract", disabled: false)
+      attach_file "Upload Contract", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
+      expect(page).to have_button("Download · pdf-file.pdf", count: 2)
       expect(@console_errors).to be_empty
     end
   end
