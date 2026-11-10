@@ -68,6 +68,7 @@ class PayrollSplitArrangement < ApplicationRecord
       errors.add(:allocation_value, "must be between 0 and 100") unless allocation_value.positive? && allocation_value < 100
     end
 
+    # Requires complete instructions only at creation, so legacy arrangements remain withdrawable.
     def valid_details
       errors.add(:details, "has unsupported fields") if (details.keys - DETAIL_KEYS).any?
       DETAIL_KEYS.each do |key|

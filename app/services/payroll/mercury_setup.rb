@@ -10,6 +10,7 @@ module Payroll
       OpenSSL::HMAC.hexdigest("SHA256", key, JSON.generate(values))
     end
 
+    # Returns the full declared identity for verification digests, omitting blanks without inventing defaults.
     def self.bank_details(employment, beneficiary = "consultant", arrangement: nil)
       return (arrangement&.bank_details || {}) if beneficiary == "spouse"
 

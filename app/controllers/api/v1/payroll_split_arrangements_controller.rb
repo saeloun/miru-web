@@ -3,6 +3,7 @@
 class Api::V1::PayrollSplitArrangementsController < Api::V1::PayrollBaseController
   before_action :set_payroll_run
 
+  # Rejects structured bank values before scalar filtering can discard an invalid declaration.
   def create
     authorize @payroll_run, :split_arrangements?
     input = params.require(:payroll_split_arrangement)

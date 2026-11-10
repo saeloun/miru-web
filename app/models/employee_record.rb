@@ -68,6 +68,7 @@ class EmployeeRecord < ApplicationRecord
       end
     end
 
+    # Allows partial private profiles without treating absent optional bank facts as payment readiness.
     def valid_private_details
       details = private_details
       errors.add(:private_details, "has unsupported fields") if (details.keys - DETAIL_KEYS).any?
@@ -77,6 +78,7 @@ class EmployeeRecord < ApplicationRecord
       validate_family(details["family_members"]) if details.key?("family_members")
     end
 
+    # Checks declared codes independently; bank country does not determine account currency or payment rail.
     def validate_bank(details)
       validate_format(details["bank_account_number"], "bank_account_number", /\A\d{1,34}\z/)
       validate_format(details["bank_ifsc"], "bank_ifsc", /\A[A-Z]{4}0[A-Z0-9]{6}\z/)

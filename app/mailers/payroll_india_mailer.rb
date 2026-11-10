@@ -6,6 +6,7 @@ class PayrollIndiaMailer < ActionMailer::Base
   include PrivateMailDelivery
   default from: ApplicationMailer.default.fetch(:from), reply_to: ApplicationMailer.default.fetch(:reply_to)
 
+  # Renders confidential bank instructions from the approved frozen report, never the current profile.
   def report(delivery_id)
     delivery = PayrollIndiaDelivery.find(delivery_id)
     handoff = delivery.payroll_india_handoff

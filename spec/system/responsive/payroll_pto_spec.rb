@@ -122,6 +122,7 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
           create(:employment, company:, user: final_reviewer, joined_at: "2020-01-01", resigned_at: nil)
           final_reviewer.add_role(:owner, company)
           bank_details = { "bank_account_name" => "Synthetic Consultant", "bank_name" => "Synthetic Bank",
+                           "bank_country" => "IN", "bank_account_currency" => "INR",
                            "bank_account_number" => "123456789012", "bank_ifsc" => "SYNT0000001" }
           record = create(:employee_record, employment:, private_details: bank_details).reload
           expect(record.private_details).to eq(bank_details)
