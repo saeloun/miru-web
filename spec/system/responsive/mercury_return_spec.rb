@@ -103,6 +103,7 @@ RSpec.describe "Returned Mercury payroll transfers", type: :system, js: true do
       .to_return(mercury_json({ "total" => 1, "transactions" => [mercury_transaction("status" => status)] }))
   end
 
+  # Writes opt-in QA images; scroll-aware viewport coordinates prevent blank captures after scrolling.
   def save_return_shot(width, prefix: "returned-after-refresh", full: true)
     return if ENV["MERCURY_RETURN_SHOTS"].blank?
 
