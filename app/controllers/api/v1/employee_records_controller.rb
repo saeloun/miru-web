@@ -155,6 +155,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
       employment
     end
 
+    # Display labels must not reinterpret stored bank country or currency declarations.
     def details(employment)
       user = employment.user
       documents = employment.employee_documents.includes(file_attachment: :blob).order(created_at: :desc, id: :desc)

@@ -7,6 +7,7 @@ import { t } from "../../../i18n";
 export const text = (key: string, options = {}) =>
   t(`employeeRecords.${key}`, options);
 
+/** Preserve the shared field contract used by employee records and saved reports. */
 export const Field = ({
   name,
   label = text(name),

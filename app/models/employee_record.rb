@@ -41,6 +41,7 @@ class EmployeeRecord < ApplicationRecord
 
   private
 
+    # Equivalent empty bank values must not invalidate the payroll source version.
     def advance_payroll_version
       previous = private_details_in_database || {}
       keys = BANK_KEYS + SALARY_KEYS
