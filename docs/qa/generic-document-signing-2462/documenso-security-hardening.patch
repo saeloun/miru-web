@@ -74,6 +74,18 @@ index 22cad2e..a1e9e57 100644
  
  # Get the start script from docker/
  COPY --chown=nodejs:nodejs ./docker/start.sh /app/apps/remix/start.sh
+diff --git a/docker/production/compose.yml b/docker/production/compose.yml
+index 5cf4ddc..4fae750 100644
+--- a/docker/production/compose.yml
++++ b/docker/production/compose.yml
+@@ -46,6 +46,7 @@ services:
+       - NEXT_PRIVATE_SMTP_APIKEY_USER=${NEXT_PRIVATE_SMTP_APIKEY_USER}
+       - NEXT_PRIVATE_SMTP_APIKEY=${NEXT_PRIVATE_SMTP_APIKEY}
+       - NEXT_PRIVATE_SMTP_SECURE=${NEXT_PRIVATE_SMTP_SECURE}
++      - NEXT_PRIVATE_SMTP_REQUIRE_TLS=${NEXT_PRIVATE_SMTP_REQUIRE_TLS:-false}
+       - NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS=${NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS}
+       - NEXT_PRIVATE_SMTP_FROM_NAME=${NEXT_PRIVATE_SMTP_FROM_NAME:?err}
+       - NEXT_PRIVATE_SMTP_FROM_ADDRESS=${NEXT_PRIVATE_SMTP_FROM_ADDRESS:?err}
 diff --git a/docker/start.sh b/docker/start.sh
 index 7121790..81400c7 100755
 --- a/docker/start.sh
@@ -97,7 +109,7 @@ index 7121790..81400c7 100755
 -HOSTNAME=0.0.0.0 node build/server/main.js
 +HOSTNAME=0.0.0.0 exec node build/server/main.js
 diff --git a/package-lock.json b/package-lock.json
-index b999c2b..fcdb94c 100644
+index b999c2b..112ab0b 100644
 --- a/package-lock.json
 +++ b/package-lock.json
 @@ -55,9 +55,9 @@
@@ -1746,10 +1758,9 @@ index b999c2b..fcdb94c 100644
 +      "version": "11.0.4",
 +      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-11.0.4.tgz",
 +      "integrity": "sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==",
-       "dev": true,
-       "license": "BlueOak-1.0.0",
-       "dependencies": {
--        "brace-expansion": "^5.0.8"
++      "dev": true,
++      "license": "BlueOak-1.0.0",
++      "dependencies": {
 +        "@isaacs/nonrecursive-glob-match": "^1.0.3",
 +        "brace-expansion": "^5.0.12"
 +      },
@@ -1764,9 +1775,10 @@ index b999c2b..fcdb94c 100644
 +      "version": "3.0.0",
 +      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-3.0.0.tgz",
 +      "integrity": "sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==",
-+      "dev": true,
-+      "license": "BlueOak-1.0.0",
-+      "dependencies": {
+       "dev": true,
+       "license": "BlueOak-1.0.0",
+       "dependencies": {
+-        "brace-expansion": "^5.0.8"
 +        "lru-cache": "^11.0.0",
 +        "minipass": "^7.1.2"
        },
@@ -1799,9 +1811,9 @@ index b999c2b..fcdb94c 100644
        }
      },
 +    "node_modules/satori/node_modules/fflate": {
-+      "version": "0.7.3",
-+      "resolved": "https://registry.npmjs.org/fflate/-/fflate-0.7.3.tgz",
-+      "integrity": "sha512-0Zz1jOzJWERhyhsimS54VTqOteCNwRtIlh8isdL0AXLo0g7xNTfTL7oWrkmCnPhZGocKIkWHBistBrrpoNH3aw==",
++      "version": "0.7.5",
++      "resolved": "https://registry.npmjs.org/fflate/-/fflate-0.7.5.tgz",
++      "integrity": "sha512-QieYf//cis6ywHNi5qW1+PXPQ4bC+XVJAtS4AXIML8P76GroEiOxm/oQtn1f02UkJY1+KsXMJcC+R2v/Eg4G3g==",
 +      "license": "MIT"
 +    },
      "node_modules/scroll-into-view-if-needed": {
@@ -2244,7 +2256,7 @@ index b999c2b..fcdb94c 100644
          "ts-pattern": "^5.9.0",
          "zod": "^3.25.76"
 diff --git a/package.json b/package.json
-index 6aef8ce..b144089 100644
+index 6aef8ce..972ddfb 100644
 --- a/package.json
 +++ b/package.json
 @@ -85,7 +85,7 @@
@@ -2256,7 +2268,7 @@ index 6aef8ce..b144089 100644
      "pdfjs-dist": "5.4.296",
      "pino": "^9.14.0",
      "pino-pretty": "^13.1.2",
-@@ -145,13 +145,26 @@
+@@ -145,13 +145,27 @@
      "posthog-node": "4.18.0",
      "react": "^19.2.7",
      "react-dom": "^19.2.7",
@@ -2277,6 +2289,7 @@ index 6aef8ce..b144089 100644
 +    "follow-redirects": "1.16.2",
 +    "systeminformation": "5.33.16",
 +    "@hono/node-server": "2.1.3",
++    "fflate@0.7.3": "0.7.5",
 +    "glob@10": "14.0.2",
 +    "glob@11": "14.0.2",
 +    "glob@13": "14.0.2",
@@ -2285,7 +2298,7 @@ index 6aef8ce..b144089 100644
      "brace-expansion@1": "^1.1.18",
      "pdfjs-dist": "5.4.296",
      "postcss": "^8.5.19",
-@@ -162,7 +175,7 @@
+@@ -162,7 +176,7 @@
      "typescript": "5.6.2",
      "zod": "$zod",
      "fumadocs-mdx": {
@@ -2644,10 +2657,10 @@ index 0000000..38c0016
 +     ZodObject: parseObject,
 diff --git a/patches/zod+3.25.76.patch b/patches/zod+3.25.76.patch
 new file mode 100644
-index 0000000..d1570a7
+index 0000000..27844ee
 --- /dev/null
 +++ b/patches/zod+3.25.76.patch
-@@ -0,0 +1,206 @@
+@@ -0,0 +1,210 @@
 +diff --git a/node_modules/zod/v3/types.cjs b/node_modules/zod/v3/types.cjs
 +--- a/node_modules/zod/v3/types.cjs
 ++++ b/node_modules/zod/v3/types.cjs
@@ -2711,16 +2724,18 @@ index 0000000..d1570a7
 +diff --git a/node_modules/zod/v4/core/schemas.cjs b/node_modules/zod/v4/core/schemas.cjs
 +--- a/node_modules/zod/v4/core/schemas.cjs
 ++++ b/node_modules/zod/v4/core/schemas.cjs
-+@@ -62,6 +62,8 @@
++@@ -62,6 +62,10 @@
 +     }
 +     else {
 +         const runChecks = (payload, checks, ctx) => {
-++            if (payload.skipChecks)
+++            if (payload.skipChecks) {
+++                delete payload.skipChecks;
 ++                return payload;
+++            }
 +             let isAborted = util.aborted(payload);
 +             let asyncResult;
 +             for (const ch of checks) {
-+@@ -650,6 +652,36 @@
++@@ -650,6 +654,36 @@
 +     }
 +     final.value[index] = result.value;
 + }
@@ -2757,7 +2772,7 @@ index 0000000..d1570a7
 + exports.$ZodArray = core.$constructor("$ZodArray", (inst, def) => {
 +     exports.$ZodType.init(inst, def);
 +     inst._zod.parse = (payload, ctx) => {
-+@@ -683,6 +715,7 @@
++@@ -683,6 +717,7 @@
 +         }
 +         return payload; //handleArrayResultsAsync(parseResults, final);
 +     };
@@ -2765,7 +2780,7 @@ index 0000000..d1570a7
 + });
 + function handleObjectResult(result, final, key) {
 +     // if(isOptional)
-+@@ -1304,6 +1337,7 @@
++@@ -1304,6 +1339,7 @@
 +             return Promise.all(proms).then(() => payload);
 +         return payload;
 +     };
@@ -2773,7 +2788,7 @@ index 0000000..d1570a7
 + });
 + function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
 +     if (keyResult.issues.length) {
-+@@ -1364,6 +1398,7 @@
++@@ -1364,6 +1400,7 @@
 +             return Promise.all(proms).then(() => payload);
 +         return payload;
 +     };
@@ -2784,16 +2799,18 @@ index 0000000..d1570a7
 +diff --git a/node_modules/zod/v4/core/schemas.js b/node_modules/zod/v4/core/schemas.js
 +--- a/node_modules/zod/v4/core/schemas.js
 ++++ b/node_modules/zod/v4/core/schemas.js
-+@@ -32,6 +32,8 @@
++@@ -32,6 +32,10 @@
 +     }
 +     else {
 +         const runChecks = (payload, checks, ctx) => {
-++            if (payload.skipChecks)
+++            if (payload.skipChecks) {
+++                delete payload.skipChecks;
 ++                return payload;
+++            }
 +             let isAborted = util.aborted(payload);
 +             let asyncResult;
 +             for (const ch of checks) {
-+@@ -619,6 +621,36 @@
++@@ -619,6 +623,36 @@
 +     }
 +     final.value[index] = result.value;
 + }
@@ -2830,7 +2847,7 @@ index 0000000..d1570a7
 + export const $ZodArray = /*@__PURE__*/ core.$constructor("$ZodArray", (inst, def) => {
 +     $ZodType.init(inst, def);
 +     inst._zod.parse = (payload, ctx) => {
-+@@ -652,6 +684,7 @@
++@@ -652,6 +686,7 @@
 +         }
 +         return payload; //handleArrayResultsAsync(parseResults, final);
 +     };
@@ -2838,7 +2855,7 @@ index 0000000..d1570a7
 + });
 + function handleObjectResult(result, final, key) {
 +     // if(isOptional)
-+@@ -1273,6 +1306,7 @@
++@@ -1273,6 +1308,7 @@
 +             return Promise.all(proms).then(() => payload);
 +         return payload;
 +     };
@@ -2846,7 +2863,7 @@ index 0000000..d1570a7
 + });
 + function handleMapResult(keyResult, valueResult, final, key, input, inst, ctx) {
 +     if (keyResult.issues.length) {
-+@@ -1333,6 +1367,7 @@
++@@ -1333,6 +1369,7 @@
 +             return Promise.all(proms).then(() => payload);
 +         return payload;
 +     };
@@ -2935,10 +2952,10 @@ index 0000000..9e1ea56
 +assert.deepEqual(failures, [], `Dependency guards failed: ${failures.join(', ')}`);
 diff --git a/scripts/security/dependency-refresh-check.mjs b/scripts/security/dependency-refresh-check.mjs
 new file mode 100644
-index 0000000..f3d9c3c
+index 0000000..7ebdb34
 --- /dev/null
 +++ b/scripts/security/dependency-refresh-check.mjs
-@@ -0,0 +1,227 @@
+@@ -0,0 +1,236 @@
 +import assert from 'node:assert/strict';
 +import { EventEmitter, once } from 'node:events';
 +import fs from 'node:fs';
@@ -3139,6 +3156,15 @@ index 0000000..f3d9c3c
 +  assert.equal(require('minimatch/package.json').version, '3.1.5');
 +});
 +
++await check('Satori compression dependency round-trips ZIP content', () => {
++  const satoriRequire = createRequire(require.resolve('satori'));
++  const { strToU8, strFromU8, zipSync, unzipSync } = satoriRequire('fflate');
++  const archive = zipSync({ 'synthetic.txt': strToU8('synthetic signing document') });
++  const restored = unzipSync(archive);
++  assert.deepEqual(Object.keys(restored), ['synthetic.txt']);
++  assert.equal(strFromU8(restored['synthetic.txt']), 'synthetic signing document');
++});
++
 +await check('Satori escapes SVG attributes and renders the share font', async () => {
 +  const { default: satori } = await import('satori');
 +  const font = fs.readFileSync('apps/remix/public/fonts/inter-regular.ttf');
@@ -3235,10 +3261,10 @@ index 0000000..b360fd3
 +}
 diff --git a/scripts/security/runtime-dependencies-check.mjs b/scripts/security/runtime-dependencies-check.mjs
 new file mode 100644
-index 0000000..92d6b7c
+index 0000000..29694c2
 --- /dev/null
 +++ b/scripts/security/runtime-dependencies-check.mjs
-@@ -0,0 +1,72 @@
+@@ -0,0 +1,77 @@
 +import assert from 'node:assert/strict';
 +import { existsSync, lstatSync, readdirSync, readFileSync } from 'node:fs';
 +import { join } from 'node:path';
@@ -3252,6 +3278,7 @@ index 0000000..92d6b7c
 +  glob: [14, 0, 2],
 +  minimatch: [11, 0, 1],
 +  satori: [0, 33, 5],
++  fflate: [0, 8, 3],
 +};
 +const versions = {};
 +const atLeast = (actual, minimum) => {
@@ -3280,7 +3307,11 @@ index 0000000..92d6b7c
 +      assert.match(version, /^\d+\.\d+\.\d+$/);
 +      const actual = version.split('.').map(Number);
 +      if (!((name === 'glob' && actual[0] < 9) || (name === 'minimatch' && actual[0] < 7))) {
-+        assert.ok(atLeast(actual, minimums[name]), `${name}@${version} is below the security floor`);
++        const minimum =
++          name === 'fflate' && actual[0] === 0 && actual[1] >= 4 && actual[1] < 8
++            ? [0, actual[1], { 4: 9, 5: 4, 6: 11, 7: 5 }[actual[1]]]
++            : minimums[name];
++        assert.ok(atLeast(actual, minimum), `${name}@${version} is below the security floor`);
 +        versions[name] ??= new Set();
 +        versions[name].add(version);
 +      }
@@ -3408,10 +3439,10 @@ index 0000000..7568923
 +}
 diff --git a/scripts/security/zod-size-gate-check.mjs b/scripts/security/zod-size-gate-check.mjs
 new file mode 100644
-index 0000000..24532f3
+index 0000000..d238171
 --- /dev/null
 +++ b/scripts/security/zod-size-gate-check.mjs
-@@ -0,0 +1,47 @@
+@@ -0,0 +1,84 @@
 +import assert from 'node:assert/strict';
 +import { createRequire } from 'node:module';
 +
@@ -3432,13 +3463,19 @@ index 0000000..24532f3
 +  }
 +
 +  let parsed = 0;
-+  const element = z.string().transform(value => { parsed += 1; return value; });
++  const element = z.string().transform((value) => {
++    parsed += 1;
++    return value;
++  });
 +  const bounded = z.array(element).max(1);
 +  assert.equal(bounded.safeParse(Array(20_000).fill('valid element')).success, false);
 +  assert.equal((await bounded.safeParseAsync(Array(20_000).fill('valid element'))).success, false);
 +  assert.equal(parsed, 0);
 +
-+  const set = z.set(z.string()).max(1).safeParse(new Set(oversized.map((_, index) => index)));
++  const set = z
++    .set(z.string())
++    .max(1)
++    .safeParse(new Set(oversized.map((_, index) => index)));
 +  assert.equal(set.success, false);
 +  assert.equal(set.error.issues.length, 1);
 +  assert.equal(set.error.issues[0].code, 'too_big');
@@ -3447,17 +3484,48 @@ index 0000000..24532f3
 +  assert.deepEqual(nested.error.issues[0].path, ['values']);
 +  assert.equal(z.array(z.string()).min(2).safeParse(['valid']).error.issues[0].code, 'too_small');
 +  assert.deepEqual(z.array(z.number()).max(3).parse([1, 2]), [1, 2]);
-+  assert.deepEqual(z.preprocess(value => value.slice(0, 2), z.array(z.number()).max(2)).parse([1, 2, 3]), [1, 2]);
++  assert.deepEqual(z.preprocess((value) => value.slice(0, 2), z.array(z.number()).max(2)).parse([1, 2, 3]), [1, 2]);
 +  assert.equal(z.array(z.number()).parse(oversized).length, oversized.length);
-+  assert.equal(z.array(z.string()).max(1, { message: 'synthetic cap' }).safeParse(oversized).error.issues[0].message, 'synthetic cap');
++  assert.equal(
++    z.array(z.string()).max(1, { message: 'synthetic cap' }).safeParse(oversized).error.issues[0].message,
++    'synthetic cap',
++  );
++  const fallback = z.array(z.string()).max(1).catch(['fallback']);
++  assert.deepEqual(fallback.parse(['a', 'b']), ['fallback']);
++  assert.deepEqual(await fallback.parseAsync(['a', 'b']), ['fallback']);
++  for (const caught of [fallback, fallback.optional(), fallback.default(['default'])]) {
++    let refined = 0;
++    const rejected = caught.refine(() => {
++      refined += 1;
++      return false;
++    });
++    assert.equal(rejected.safeParse(['a', 'b']).success, false);
++    assert.equal((await rejected.safeParseAsync(['a', 'b'])).success, false);
++    assert.equal(refined, 2);
++  }
 +  if (name.endsWith('v4')) {
-+    const map = z.map(z.string(), z.string()).check(z.maxSize(1)).safeParse(new Map(oversized.map((_, index) => [index, index])));
++    const map = z
++      .map(z.string(), z.string())
++      .check(z.maxSize(1))
++      .safeParse(new Map(oversized.map((_, index) => [index, index])));
 +    assert.equal(map.success, false);
 +    assert.equal(map.error.issues.length, 1);
 +    assert.equal(map.error.issues[0].code, 'too_big');
-+    assert.deepEqual(z.array(z.number()).overwrite(values => values.slice(0, 2)).max(2).parse([1, 2, 3]), [1, 2]);
++    assert.deepEqual(
++      z
++        .array(z.number())
++        .overwrite((values) => values.slice(0, 2))
++        .max(2)
++        .parse([1, 2, 3]),
++      [1, 2],
++    );
++    const overwritten = fallback.overwrite(() => []);
++    assert.deepEqual(overwritten.parse(['a', 'b']), []);
++    assert.deepEqual(await overwritten.parseAsync(['a', 'b']), []);
 +  }
-+  console.log(JSON.stringify({ module: name, oversizedEntries: oversized.length, boundedIssues: 1, parsedElements: parsed }));
++  console.log(
++    JSON.stringify({ module: name, oversizedEntries: oversized.length, boundedIssues: 1, parsedElements: parsed }),
++  );
 +}
 diff --git a/turbo.json b/turbo.json
 index b3b002d..811e0ee 100644
