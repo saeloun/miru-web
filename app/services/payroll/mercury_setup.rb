@@ -17,6 +17,7 @@ module Payroll
       (employment.employee_record&.private_details || {}).slice(*EmployeeRecord::BANK_KEYS).compact_blank
     end
 
+    # Checks required declarations, not whether the provider supports or has verified the destination.
     def self.bank_profile_complete?(details)
       BANK_FIELDS.all? { |field| details[field].is_a?(String) && details[field].strip.length.between?(1, 200) } &&
         EmployeeRecord.supported_country?(details["bank_country"]) && EmployeeRecord.supported_currency?(details["bank_account_currency"])

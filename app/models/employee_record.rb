@@ -23,6 +23,7 @@ class EmployeeRecord < ApplicationRecord
     value.is_a?(String) && value.match?(/\A[A-Z]{3}\z/) && Money::Currency.find(value).present?
   end
 
+  # Accepts canonical uppercase country codes without coercing stored bank declarations.
   def self.supported_country?(value)
     value.is_a?(String) && value.match?(/\A[A-Z]{2}\z/) && ISO3166::Country[value].present?
   end
