@@ -124,6 +124,22 @@ RSpec.describe "Consultant billing identity", type: :system, js: true do
     page.save_screenshot(File.join(ENV.fetch("BILLING_IDENTITY_SHOTS"), "#{name}-#{@width}.png"), area:)
   end
 
+  it "rejects a completion link for another workspace before fetching billing identity" do
+    sign_in_at_width(consultant, 1440)
+    visit "/settings/billing-identity?company_id=#{company.id + 1}"
+    aggregate_failures do
+      expect(page).to have_css("[role='alert']", text: "Billing identity is unavailable in this workspace.")
+      expect(page.evaluate_script(<<~JS)).to eq([])
+        performance.getEntriesByType('resource').filter(entry => entry.name.includes('/api/v1/consultant_billing_identity')).map(entry => entry.name)
+      JS
+    end
+    expect(consultant.reload.current_workspace_id).to eq(company.id)
+
+    visit "/settings/billing-identity?company_id=#{company.id}"
+    expect(page).to have_css("h1", text: "Consultant billing identity", exact_text: true)
+    expect(page).to have_button("Refresh billing identity", disabled: false)
+  end
+
   it "keeps the billing identity link under the pointer while profile sections finish loading" do
     profile_waiting = Queue.new
     release_profile = Queue.new
@@ -172,7 +188,7 @@ RSpec.describe "Consultant billing identity", type: :system, js: true do
       sign_in_at_width(accounts, width)
       expect(EmployeeRecordPolicy.new(accounts, employment).show?).to be(false)
       visit "/payroll/#{run.id}"
-      link = find_link("Billing identity", href: "/settings/billing-identity?user_id=#{consultant.id}")
+      link = find_link("Billing identity", href: "/settings/billing-identity?user_id=#{consultant.id}&company_id=#{company.id}")
       page.scroll_to(link, align: :center)
       link.click
       expect(page).to have_field("Review decision")

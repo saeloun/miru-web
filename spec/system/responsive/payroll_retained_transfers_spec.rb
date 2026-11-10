@@ -60,7 +60,7 @@ RSpec.describe "Retained transfers in mixed payroll preparation", type: :system,
       expect(page).to have_no_selector("input")
       expect(page).to have_no_text("Service-period fee review")
       expect(page).to have_no_text("Approved leave decisions and history")
-      expect(page).to have_link("Billing identity", href: "/settings/billing-identity?user_id=#{worker.id}")
+      expect(page).to have_link("Billing identity", href: "/settings/billing-identity?user_id=#{worker.id}&company_id=#{company.id}")
     end
     if ENV["RETAINED_TRANSFER_SHOTS"]
       [1440, 375].each do |width|

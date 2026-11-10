@@ -173,6 +173,12 @@ export interface PreparationConsultant {
   ready: boolean;
   locked: boolean;
   retained?: boolean;
+  profile_completion: {
+    categories: ProfileCompletionCategory[];
+    source_digest: string | null;
+    can_request: boolean;
+    request: ProfileCompletionRequest | null;
+  };
   pto?: PtoFacts;
   current: {
     included: boolean;
@@ -183,6 +189,14 @@ export interface PreparationConsultant {
     other_deduction?: string | null;
     withholding?: string | null;
   };
+}
+
+export type ProfileCompletionCategory = "bank_details" | "billing_identity";
+
+export interface ProfileCompletionRequest {
+  id: string;
+  state: "queued" | "sending" | "sent" | "uncertain" | "skipped";
+  categories: ProfileCompletionCategory[];
 }
 
 export interface RunPreparation {
@@ -395,11 +409,16 @@ type RequestSignal = InstanceType<typeof window.AbortController>["signal"];
 
 type Payload = Record<string, unknown>;
 
-const post = (path: string, companyId: string, payload: Payload = {}) =>
+const post = (
+  path: string,
+  companyId: string,
+  payload: Payload = {},
+  signal?: RequestSignal
+) =>
   http.post(
     path,
     { company_id: companyId, ...payload },
-    { skipErrorToast: true }
+    { skipErrorToast: true, signal }
   );
 
 const get = (
@@ -428,6 +447,22 @@ export const payrollApi = {
     get(
       `/payroll_runs/${encodeURIComponent(id)}/preparation`,
       companyId,
+      signal
+    ),
+  requestProfileCompletion: (
+    id: string,
+    companyId: string,
+    payload: {
+      employment_id: number;
+      expected_digest: string;
+      idempotency_key: string;
+    },
+    signal: RequestSignal
+  ) =>
+    post(
+      `/payroll_runs/${encodeURIComponent(id)}/profile_completion_requests`,
+      companyId,
+      payload,
       signal
     ),
   serviceFee: (
