@@ -81,6 +81,10 @@ const known = {
   ],
 };
 
+/**
+ * Verify reviewed runtime bytes and unsuppressed audit findings.
+ * Returns the affected package-version count; throws on unreviewed or inconsistent input.
+ */
 export function verifyAudit(report, installed) {
   assert.ok(
     report &&
