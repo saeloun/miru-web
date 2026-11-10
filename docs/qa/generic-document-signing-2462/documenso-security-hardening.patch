@@ -34,14 +34,18 @@ index d646886..0ec1696 100644
      "ts-pattern": "^5.9.0",
      "ua-parser-js": "^1.0.41",
 diff --git a/docker/Dockerfile b/docker/Dockerfile
-index 22cad2e..a1e9e57 100644
+index 22cad2e..bd4cdb1 100644
 --- a/docker/Dockerfile
 +++ b/docker/Dockerfile
-@@ -6,2 +6,3 @@
+@@ -3,6 +3,7 @@
+ ###########################
+ FROM node:24-alpine3.23 AS base
+ 
 +RUN apk add --no-cache 'zlib>=1.4-r0'
  RUN apk add --no-cache openssl
  RUN apk add --no-cache font-freefont
-@@ -81,13 +82,21 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
+ 
+@@ -81,13 +82,22 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
  COPY --from=builder /app/lingui.config.ts ./lingui.config.ts
  COPY --from=builder /app/patches ./patches
  
@@ -59,12 +63,13 @@ index 22cad2e..a1e9e57 100644
 +    && node scripts/security/dependency-guards-check.mts \
 +    && node scripts/security/runtime-dependencies-check.mjs \
 +    && node scripts/security/dependency-refresh-check.mjs \
++    && node scripts/security/share-image-check.mjs \
 +    && node --import tsx scripts/security/smtp-tls-check.mjs
 +
  ENV NODE_OPTIONS="--max-old-space-size=8192"
  
  RUN npx turbo run build --filter=@documenso/remix...
-@@ -145,6 +154,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
+@@ -145,6 +155,9 @@ COPY --from=installer --chown=nodejs:nodejs /app/packages/prisma/migrations ./pa
  RUN npx prisma generate --schema ./packages/prisma/schema.prisma --generator client \
      && npm cache clean --force
  
@@ -3539,3 +3544,144 @@ index b3b002d..811e0ee 100644
      "NEXT_PRIVATE_SMTP_UNSAFE_IGNORE_TLS",
      "NEXT_PRIVATE_SMTP_FROM_NAME",
      "NEXT_PRIVATE_SMTP_FROM_ADDRESS",
+diff --git a/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx b/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
+index 5d70248..a82bcfb 100644
+--- a/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
++++ b/apps/remix/app/routes/_share+/share.$slug.opengraph.tsx
+@@ -1,3 +1,5 @@
++import { readFile } from 'node:fs/promises';
++
+ import { NEXT_PUBLIC_WEBAPP_URL } from '@documenso/lib/constants/app';
+ import { getRecipientOrSenderByShareLinkSlug } from '@documenso/lib/server-only/document/get-recipient-or-sender-by-share-link-slug';
+ import { svgToPng } from '@documenso/lib/utils/images/svg-to-png';
+@@ -28,10 +30,11 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
+ 
+   const baseUrl = NEXT_PUBLIC_WEBAPP_URL();
+ 
+-  const [interSemiBold, interRegular, caveatRegular] = await Promise.all([
++  const [interSemiBold, interRegular, caveatRegular, shareFrame] = await Promise.all([
+     fetch(new URL(`${baseUrl}/fonts/inter-semibold.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
+     fetch(new URL(`${baseUrl}/fonts/inter-regular.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
+     fetch(new URL(`${baseUrl}/fonts/caveat-regular.ttf`, import.meta.url)).then(async (res) => res.arrayBuffer()),
++    readFile('public/static/og-share-frame2.png'),
+   ]);
+ 
+   const recipientOrSender = await getRecipientOrSenderByShareLinkSlug({
+@@ -72,7 +75,7 @@ export const loader = async ({ params }: Route.LoaderArgs) => {
+       }}
+     >
+       <img
+-        src={`${baseUrl}/static/og-share-frame2.png`}
++        src={`data:image/png;base64,${shareFrame.toString('base64')}`}
+         alt="og-share-frame"
+         style={{
+           position: 'absolute',
+diff --git a/scripts/security/share-image-check.mjs b/scripts/security/share-image-check.mjs
+new file mode 100644
+index 0000000..1280a62
+--- /dev/null
++++ b/scripts/security/share-image-check.mjs
+@@ -0,0 +1,103 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { once } from 'node:events';
++import http from 'node:http';
++import { join } from 'node:path';
++import { pathToFileURL } from 'node:url';
++import { build } from 'esbuild';
++import satori from 'satori';
++import sharp from 'sharp';
++
++const root = process.cwd();
++const publicRoot = join(root, 'apps/remix/public');
++const scratch = fs.mkdtempSync(join(root, '.share-image-check-'));
++const requestedPaths = [];
++const server = http.createServer((request, response) => {
++  const allowed = ['/fonts/inter-semibold.ttf', '/fonts/inter-regular.ttf', '/fonts/caveat-regular.ttf'];
++  requestedPaths.push(request.url);
++  response.writeHead(allowed.includes(request.url) ? 200 : 404);
++  response.end(allowed.includes(request.url) ? fs.readFileSync(join(publicRoot, request.url)) : 'Not found');
++});
++
++try {
++  server.listen(0, '127.0.0.1');
++  await once(server, 'listening');
++  const origin = `http://127.0.0.1:${server.address().port}`;
++  const output = join(scratch, 'route.mjs');
++  await build({
++    entryPoints: [join(root, 'apps/remix/app/routes/_share+/share.$slug.opengraph.tsx')],
++    outfile: output,
++    bundle: true,
++    format: 'esm',
++    platform: 'node',
++    packages: 'external',
++    jsx: 'automatic',
++    plugins: [
++      {
++        name: 'synthetic-share-boundaries',
++        setup(builder) {
++          builder.onResolve(
++            {
++              filter:
++                /^@documenso\/lib\/(constants\/app|server-only\/document\/get-recipient-or-sender-by-share-link-slug)$/,
++            },
++            ({ path }) => ({ path, namespace: 'fixture' }),
++          );
++          builder.onLoad({ filter: /.*/, namespace: 'fixture' }, ({ path }) => ({
++            contents: path.endsWith('/app')
++              ? `export const NEXT_PUBLIC_WEBAPP_URL = () => ${JSON.stringify(origin)};`
++              : 'export const getRecipientOrSenderByShareLinkSlug = async () => globalThis.__shareImageRecord;',
++          }));
++          builder.onResolve({ filter: /^@documenso\/lib\/utils\/images\/svg-to-png$/ }, () => ({
++            path: join(root, 'packages/lib/utils/images/svg-to-png.ts'),
++          }));
++        },
++      },
++    ],
++  });
++  const { loader } = await import(pathToFileURL(output).href);
++  process.chdir(join(root, 'apps/remix'));
++  const signature = await sharp({ create: { width: 64, height: 24, channels: 4, background: '#000000' } })
++    .png()
++    .toBuffer();
++  for (const signatureImage of [null, `data:image/png;base64,${signature.toString('base64')}`]) {
++    globalThis.__shareImageRecord = {
++      name: 'Synthetic Signer',
++      email: 'signer@example.test',
++      signature: signatureImage,
++    };
++    const response = await loader({ params: { slug: 'synthetic-share' } });
++    assert.equal(response.status, 200);
++    assert.equal(response.headers.get('Content-Type'), 'image/png');
++    const bytes = Buffer.from(await response.arrayBuffer());
++    const image = await sharp(bytes).metadata();
++    assert.deepEqual([image.format, image.width, image.height], ['png', 1200, 630]);
++    assert.equal(Number(response.headers.get('Content-Length')), bytes.length);
++  }
++  assert.ok(requestedPaths.every((path) => path.startsWith('/fonts/')));
++  assert.equal((await loader({ params: { slug: 'qr_synthetic' } })).status, 404);
++  globalThis.__shareImageRecord = { error: true };
++  assert.equal((await loader({ params: { slug: 'missing-synthetic' } })).status, 404);
++  await assert.rejects(
++    satori(
++      { type: 'img', props: { src: `${origin}/private.png`, width: 64, height: 24 } },
++      { width: 1200, height: 630, fonts: [] },
++    ),
++    /blocked address.*SSRF protection/,
++  );
++  console.log(
++    JSON.stringify({
++      shareImages: 2,
++      dimensions: [1200, 630],
++      notFoundPaths: 2,
++      ssrfProtection: true,
++      externalRequests: false,
++    }),
++  );
++} finally {
++  delete globalThis.__shareImageRecord;
++  process.chdir(root);
++  server.closeAllConnections();
++  await new Promise((resolve) => server.close(resolve));
++  fs.rmSync(scratch, { recursive: true, force: true });
++}

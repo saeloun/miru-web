@@ -59,7 +59,7 @@ jobs:
           source = pathlib.Path("vendor-documenso")
           require(subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip() == os.environ["UPSTREAM_SHA"])
           patches = {
-              "documenso-security-hardening.patch": "b2001a316b1ca54701e02bda69cec0a1024970a89a24f5bbfb2c7e1c69e5bfed",
+              "documenso-security-hardening.patch": "f076aa134f1e482f74093b362b6221f02f196e11f1fba1e7ed78d775528314f9",
               "documenso-signing-compatibility.patch": "3c1154411b0e0196e962932253f018700ad71fc3642e0bd4535f302def1cdd6f",
           }
           paths = [pathlib.Path("docs/qa/generic-document-signing-2462", name).resolve() for name in patches]
@@ -88,7 +88,7 @@ jobs:
           original = dockerfile.read_text()
           require(original.count("FROM node:24-alpine3.23 AS base") == 1)
           dockerfile.write_text(original.replace("FROM node:24-alpine3.23 AS base", "FROM " + os.environ["NODE_BASE"] + " AS base"))
-          require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() == "bfe41109f9a1fab790d8d2fd1daadfb6226d175328f7c40741e19936743e200c")
+          require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() == "2d8ecf2fe6650ab8ba639d7d47752e8bdf9f890be3712f4e31cd4cf169998388")
           require(hashlib.sha256((source / "LICENSE").read_bytes()).hexdigest() == "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef")
           subprocess.run(["git", "-C", str(source), "diff", "--check"], check=True)
           print("Pinned upstream, both patches, AMD64 base and license verified; resource admission passed.")
