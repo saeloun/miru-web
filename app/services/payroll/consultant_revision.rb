@@ -56,6 +56,7 @@ module Payroll
           .order(:id).limit(MAX_CONSULTANTS)
       end
 
+      # Add profile actions without changing financial readiness or retained transfer selections.
       def consultant_summary(employment, cutoff, retained:)
         review = review_for(employment, cutoff, {})
         source = capture(employment)

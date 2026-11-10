@@ -5,6 +5,7 @@ class Payroll::ProfileCompletion
     @run, @actor = run, actor
   end
 
+  # Show only consultant-actionable gaps and the receipt for that exact source.
   def summary(employment)
     source = current_source(employment)
     request = requests.where(employment:, source_digest: source[:source_digest]).order(id: :desc).first if source[:source_digest]
@@ -12,6 +13,7 @@ class Payroll::ProfileCompletion
       request: request&.receipt)
   end
 
+  # Replay the original command before checking newer facts, without granting any payroll approval.
   def create!(employment_id:, expected_digest:, idempotency_key:)
     authorize!
     unless (employment_id.is_a?(String) || employment_id.is_a?(Integer)) && employment_id.to_s.match?(/\A[1-9]\d{0,18}\z/) &&
@@ -68,6 +70,7 @@ class Payroll::ProfileCompletion
 
   private
 
+    # A reused key may recover its receipt but cannot authorize different request details.
     def replay(idempotency_key, command)
       existing = requests.find_by(requested_by: @actor, idempotency_key:)
       return unless existing
@@ -80,11 +83,13 @@ class Payroll::ProfileCompletion
       PayrollProfileCompletionRequest.where(company_id: @run.company_id, payroll_run: @run)
     end
 
+    # Recheck membership under the run lock so a revoked reviewer cannot queue mail.
     def authorize!
       Payroll::Entitlement.require!(@run.company_id)
       raise Payroll::Workflow::NotAuthorized, "An owner or the assigned accounts reviewer is required" unless PayrollRunPolicy.new(@actor, @run).show?
     end
 
+    # Match the bank form's active-staff access; historical billing uses its own policy.
     def bank_self_service?(employment)
       (employment.joined_at.nil? || employment.joined_at <= Date.current) && (employment.resigned_at.nil? || employment.resigned_at >= Date.current) &&
         employment.user.roles.where(resource_type: "Company", resource_id: employment.company_id, name: EmployeeRecordPolicy::STAFF_ROLES).exists?

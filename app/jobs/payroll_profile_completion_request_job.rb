@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class PayrollProfileCompletionRequestJob < ApplicationJob
+  # Send outside financial locks and hold ambiguous transport outcomes without automatic resend.
   def perform(id)
     raise ActiveRecord::ActiveRecordError, "Profile requests require committed records" if PayrollProfileCompletionRequest.connection.transaction_open?
     request = PayrollProfileCompletionRequest.find_by(id:)
@@ -22,6 +23,7 @@ class PayrollProfileCompletionRequestJob < ApplicationJob
 
   private
 
+    # Only a failure before the sending claim is safe to offer as a fresh manual request.
     def mark_delivery_failure(request)
       request.with_lock do
         case request.state
@@ -34,6 +36,7 @@ class PayrollProfileCompletionRequestJob < ApplicationJob
       nil
     end
 
+    # Recheck source and access in the shared run-to-employment lock order before any transport attempt.
     def claim(request)
       request.payroll_run.with_lock do
         request.employment.with_lock do

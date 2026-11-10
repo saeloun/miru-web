@@ -4,6 +4,7 @@ class Api::V1::PayrollProfileCompletionRequestsController < Api::V1::PayrollBase
   wrap_parameters false
   before_action :set_payroll_run
 
+  # Accept only the source-bound command; callers cannot supply recipients or mail content.
   def create
     authorize @payroll_run, :profile_completion_requests?
     attributes = params.permit(:employment_id, :expected_digest, :idempotency_key)

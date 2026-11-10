@@ -366,6 +366,7 @@ export function InvoiceAuthorizationPanel({
   );
 }
 
+/** Rejects links for a different workspace before fetching invoice permissions. */
 export default function InvoiceAuthorizationPage() {
   const { company, user, companyRole } = useUserContext();
   const location = useLocation();

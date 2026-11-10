@@ -180,6 +180,7 @@ const profileRequestStates = {
   failed: "Request email failed; no email was sent",
 };
 
+/** Keeps profile requests independent of payroll selections and source-bound retries. */
 const ProfileCompletionRequestPanel = ({
   companyId,
   runId,
@@ -211,6 +212,7 @@ const ProfileCompletionRequestPanel = ({
   const categories =
     !receipt || canRequest ? profile.categories : receipt.categories;
 
+  /** Reuses the command after uncertain HTTP responses to avoid duplicate mail. */
   const request = async () => {
     if (!canRequest || !profile.source_digest || busy) return;
     setBusy(true);

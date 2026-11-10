@@ -14,12 +14,14 @@ class PayrollProfileCompletionRequest < ApplicationRecord
     { id: id.to_s, state:, categories: }
   end
 
+  # Workspace switching is harmless, but revoked membership or reviewer assignment prevents delivery.
   def delivery_eligible?
     payroll_run.company_id == company_id && employment.company_id == company_id && employment.user_id == recipient_id &&
       payroll_run.eligible_actor?(requested_by, "accounts") &&
       (payroll_run.accounts_reviewer_id == requested_by_id || requested_by.roles.where(resource: company, name: "owner").exists?)
   end
 
+  # Queue failure leaves the committed request available to the recovery scan.
   def enqueue_delivery
     PayrollProfileCompletionRequestJob.perform_later(id) if state == "queued"
   rescue StandardError

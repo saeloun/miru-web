@@ -6,6 +6,7 @@ class PayrollProfileCompletionMailer < ActionMailer::Base
   include PrivateMailDelivery
   default from: ApplicationMailer.default.fetch(:from), reply_to: ApplicationMailer.default.fetch(:reply_to)
 
+  # Link to the stored consultant's workspace-bound forms without embedding private profile facts.
   def requested(id)
     request = PayrollProfileCompletionRequest.find(id)
     base = root_url.delete_suffix("/")

@@ -999,6 +999,7 @@ export function BillingIdentityPanel({
   );
 }
 
+/** Rejects links for a different workspace before fetching private billing facts. */
 export default function BillingIdentityPage() {
   const { company, user, companyRole } = useUserContext();
   const search = new URLSearchParams(useLocation().search);
