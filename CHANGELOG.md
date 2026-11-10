@@ -6,6 +6,7 @@
 
 - Keep document review drafts marked as unsaved while their comments or approval evidence change.
 - Start parallel tests when cached timing data is incomplete.
+- Keep hiring browser checks stable while finalized decision history refreshes.
 
 ## [3.6.3] - 2026-11-10
 
