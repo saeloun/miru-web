@@ -70,6 +70,27 @@ RSpec.describe "Employee records", type: :request do
   end
 
   context "bank account confirmation" do
+    %i[admin employee].each do |actor|
+      it "allows #{actor} to save explicit India and USD bank declarations" do
+        sign_in public_send(actor)
+        update_record({ bank_country: "IN", bank_account_currency: "USD" })
+
+        expect(response).to have_http_status(:ok)
+        expect(employment.reload.employee_record.private_details).to include("bank_country" => "IN", "bank_account_currency" => "USD")
+        expect(response.parsed_body.dig("employee_record", "private_details")).to include("bank_country" => "IN", "bank_account_currency" => "USD")
+      end
+    end
+
+    [{ bank_country: "ZZ" }, { bank_country: "in" }, { bank_country: [] },
+      { bank_account_currency: "BAD" }, { bank_account_currency: "usd" }, { bank_account_currency: { value: "USD" } }].each do |details|
+      it "rejects invalid bank declarations #{details.inspect}" do
+        update_record(details)
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(employment.reload.employee_record).to be_nil
+      end
+    end
+
     it "requires independent confirmation for an initial account entry" do
       expect do
         update_record({ bank_account_number: "000123456789" })

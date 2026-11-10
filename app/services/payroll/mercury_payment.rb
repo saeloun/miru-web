@@ -246,9 +246,13 @@ module Payroll
         false
       end
 
+      # Rechecks current declarations before submission even when a legacy frozen bank digest still matches.
       def beneficiary_blockers(employment, instruction, readiness)
         beneficiary = instruction.beneficiary
         details = MercurySetup.bank_details(employment, beneficiary, arrangement: readiness.active_arrangement(employment))
+        prefix = beneficiary == "spouse" ? "spouse_" : ""
+        return ["#{prefix}bank_profile_incomplete"] unless MercurySetup.bank_profile_complete?(details)
+
         codes = MercurySetup.digest(details.sort.to_h) == instruction.bank_details_digest ? [] : ["bank_details_changed"]
         codes << "recipient_changed" unless PayrollMercuryRecipientLink.current_for(employment, beneficiary)&.id == instruction.recipient_link_id
         codes

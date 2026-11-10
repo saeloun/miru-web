@@ -29,7 +29,8 @@ RSpec.describe "Mercury payroll concurrency" do
       owner.add_role(:owner, company)
       project = create(:project, client: create(:client, company:))
       create(:timesheet_entry, user: worker, project:, work_date: Date.new(2026, 11, 2), duration: 480)
-      EmployeeRecord.create!(employment:, private_details: { "bank_account_name" => "Synthetic Consultant", "bank_account_number" => "123456789012",
+      EmployeeRecord.create!(employment:, private_details: { "bank_account_name" => "Synthetic Consultant", "bank_name" => "Synthetic Bank",
+        "bank_country" => "IN", "bank_account_currency" => "INR", "bank_account_number" => "123456789012",
         "bank_ifsc" => "SYNT0000001", "bank_swift" => "SYNTINBBXXX" })
       ConsultantCompensation.create!(employment:, created_by: owner, effective_on: Date.new(2026, 11, 1), monthly_fee: 62_500, hours_per_day: 8,
         weekdays: [1, 2, 3, 4, 5], payment_source: "mercury_us", legal_entity_name: "Synthetic US LLC", change_reason: "Synthetic")

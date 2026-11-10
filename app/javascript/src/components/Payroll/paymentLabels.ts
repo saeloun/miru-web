@@ -81,7 +81,7 @@ const labels: Record<string, string> = {
   split_pending_approval: "A spouse split awaits verification and approval",
   split_changed: "The spouse split changed. Prepare again",
   bank_profile_incomplete:
-    "Add account holder, account number, IFSC and SWIFT in Employee records",
+    "Add account holder, bank name, country code, account currency, account number, IFSC and SWIFT in Employee records",
   spouse_bank_profile_incomplete: "Spouse bank details are incomplete",
   recipient_not_linked: "Link the consultant's Mercury recipient",
   spouse_recipient_not_linked: "Link the spouse's Mercury recipient",

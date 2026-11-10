@@ -45,6 +45,10 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
         expect(page).to have_text("Synthetic internet reimbursement", wait: 15)
         expect(page).to have_text("INR 63,000.25")
         expect(page).to have_text("••••9012")
+        expect(page).to have_text("Declared bank country IN", normalize_ws: true)
+        expect(page).to have_text("Account currency INR", normalize_ws: true)
+        expect(page).to have_text("Synthetic Branch")
+        expect(page).to have_text("SYNTINBBXXX")
         expect(page).to have_no_text(bank_details.fetch("bank_account_number"))
         fill_in "Accounts recipient email", with: mailbox
         check "I verified the beneficiary and recipient mailbox."
@@ -109,7 +113,7 @@ RSpec.describe "India payroll accounts handoff", type: :system, js: true do
     with_forgery_protection do
       visit "/payroll/#{run.id}"
       within("[aria-label='India accounts payments']") do
-        expect(page).to have_text("Complete the account holder, bank name, account number and IFSC in Employee records, then refresh.", wait: 15)
+        expect(page).to have_text("Complete the account holder, bank name, country code, account currency, account number and IFSC in Employee records, then refresh.", wait: 15)
         fill_in "Accounts recipient email", with: mailbox
         check "I verified the beneficiary and recipient mailbox."
         expect(page).to have_button("Send approved report to accounts", disabled: true)

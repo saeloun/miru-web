@@ -3,8 +3,13 @@
 class Api::V1::PayrollSplitArrangementsController < Api::V1::PayrollBaseController
   before_action :set_payroll_run
 
+  # Rejects structured bank values before scalar filtering can discard an invalid declaration.
   def create
     authorize @payroll_run, :split_arrangements?
+    input = params.require(:payroll_split_arrangement)
+    unless input.is_a?(ActionController::Parameters) && input.slice(*PayrollSplitArrangement::DETAIL_KEYS).values.all? { |value| value.nil? || value.is_a?(String) }
+      raise Payroll::ConsultantReview::InvalidInput, "Provide bank details as text"
+    end
     values = params.expect(payroll_split_arrangement: [:employment_id, :allocation_kind, :allocation_value, :allocated_to, :remainder_to,
       :account_number_confirmation, *PayrollSplitArrangement::DETAIL_KEYS])
     arrangement = service.request!(actor: current_user, employment_id: values[:employment_id],

@@ -121,7 +121,7 @@ RSpec.describe "PTO recovery replacement and owner review" do
   it "rebinds only the stale recovery when a newer spouse leg still protects the split and its claim" do
     claim = create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: "2026-11-02", status: :approved, approved_at: 1.hour.ago)
     first_revision = fresh_revision(expense_ids: [claim.id])
-    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN",
+    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_currency" => "INR",
       "bank_account_number" => "222233334444", "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
     split = Payroll::SplitArrangements.new(run)
     arrangement = split.request!(actor: accounts, employment_id: employment.id,

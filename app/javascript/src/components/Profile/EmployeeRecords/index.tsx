@@ -17,10 +17,17 @@ const bankFields = [
   "bank_account_name",
   "bank_name",
   "bank_branch",
+  "bank_country",
+  "bank_account_currency",
   "bank_account_number",
   "bank_ifsc",
   "bank_swift",
 ];
+
+const bankLabels = {
+  bank_country: "Bank country code (e.g. IN)",
+  bank_account_currency: "Account currency (e.g. INR)",
+};
 const contactFields = ["emergency_contact_name", "emergency_contact_phone"];
 const salaryFields = [
   "salary_amount",
@@ -37,6 +44,7 @@ const paymentDefaults = {
   note: "",
 };
 
+/** Edits permitted private records with independent bank-account confirmation. */
 const Records = ({ companyId, companyName, userId, self }) => {
   const [controller] = useState(() => new window.AbortController());
   const [record, setRecord] = useState(null);
@@ -254,7 +262,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
               <>
                 <dl className="grid gap-4 sm:grid-cols-2">
                   {[...contactFields, ...bankFields].map(key => (
-                    <Fact key={key} label={text(key)}>
+                    <Fact key={key} label={bankLabels[key] || text(key)}>
                       {key === "bank_account_number" && details[key]
                         ? `${"•".repeat(
                             Math.max(4, details[key].length - 4)
@@ -305,16 +313,29 @@ const Records = ({ companyId, companyName, userId, self }) => {
                   {[...contactFields, ...bankFields].map(key => (
                     <Field
                       key={key}
+                      label={bankLabels[key] || text(key)}
                       maxLength={key === "emergency_contact_phone" ? 50 : 200}
                       name={key}
                       value={details[key]}
-                      onChange={value => change(key, value)}
+                      onChange={value =>
+                        change(
+                          key,
+                          key === "bank_country" ||
+                            key === "bank_account_currency"
+                            ? value.toUpperCase()
+                            : value
+                        )
+                      }
                       {...(key === "bank_account_number"
                         ? {
                             pattern: "[0-9]{1,34}",
                             inputMode: "numeric",
                             maxLength: 34,
                           }
+                        : key === "bank_country"
+                        ? { pattern: "[A-Z]{2}", maxLength: 2 }
+                        : key === "bank_account_currency"
+                        ? { pattern: "[A-Z]{3}", maxLength: 3 }
                         : key === "bank_ifsc"
                         ? { pattern: "[A-Z]{4}0[A-Z0-9]{6}" }
                         : key === "bank_swift"

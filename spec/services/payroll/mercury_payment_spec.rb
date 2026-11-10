@@ -295,11 +295,14 @@ RSpec.describe Payroll::MercuryPayment do
       expect(stub).not_to have_been_requested
     end
 
-    it "blocks when the bank profile changes" do
-      stub = stub_mercury_write
-      employment.employee_record.update!(private_details: bank_details.merge("bank_account_number" => "999999999999"))
-      expect(blocked_codes { submit(instruction) }).to include("bank_details_changed")
-      expect(stub).not_to have_been_requested
+    { "bank_account_number" => "999999999999", "bank_name" => "Changed Bank", "bank_branch" => "Changed Branch",
+      "bank_country" => "US", "bank_account_currency" => "USD" }.each do |field, value|
+      it "blocks outbound submission when #{field} changes" do
+        stub = stub_mercury_write
+        employment.employee_record.update!(private_details: bank_details.merge(field => value))
+        expect(blocked_codes { submit(instruction) }).to include("bank_details_changed")
+        expect(stub).not_to have_been_requested
+      end
     end
 
     it "blocks when Mercury's recipient routing changes" do

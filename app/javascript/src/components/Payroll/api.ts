@@ -253,6 +253,9 @@ export interface MercurySplit {
     bank_name: string;
     account_mask: string;
     swift_code: string;
+    bank_branch?: string | null;
+    bank_country?: string | null;
+    bank_account_currency?: string | null;
   };
 }
 
@@ -272,6 +275,8 @@ export interface MercuryConsultant {
     name: string | null;
     account_mask: string | null;
     swift_code: string | null;
+    bank_country?: string | null;
+    bank_account_currency?: string | null;
   }[];
   fully_credited_at: string | null;
   combined_company_debit_minor: string;
@@ -328,7 +333,16 @@ export interface IndiaReport {
   amounts: Record<string, string>;
   extras: Adjustment[];
   deductions: Adjustment[];
-  bank: { holder: string; name: string; account_mask: string; ifsc: string };
+  bank: {
+    holder: string;
+    name: string;
+    account_mask: string;
+    ifsc: string;
+    branch?: string | null;
+    country?: string | null;
+    account_currency?: string | null;
+    swift?: string | null;
+  };
 }
 
 export interface IndiaHandoff {

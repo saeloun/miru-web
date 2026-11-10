@@ -6,6 +6,7 @@ class PayrollIndiaMailer < ActionMailer::Base
   include PrivateMailDelivery
   default from: ApplicationMailer.default.fetch(:from), reply_to: ApplicationMailer.default.fetch(:reply_to)
 
+  # Renders confidential bank instructions from the approved frozen report, never the current profile.
   def report(delivery_id)
     delivery = PayrollIndiaDelivery.find(delivery_id)
     handoff = delivery.payroll_india_handoff
@@ -45,7 +46,10 @@ class PayrollIndiaMailer < ActionMailer::Base
       end }
     ]
     @bank = { "Account holder" => bank.fetch("bank_account_name"), "Bank" => bank.fetch("bank_name"),
-              "Account number" => bank.fetch("bank_account_number"), "IFSC" => bank.fetch("bank_ifsc") }
+              "Account number" => bank.fetch("bank_account_number"), "IFSC" => bank.fetch("bank_ifsc"),
+              "Declared bank country" => bank["bank_country"].presence || "Not recorded",
+              "Account currency" => bank["bank_account_currency"].presence || "Not recorded",
+              "Bank branch" => bank["bank_branch"].presence || "Not recorded", "SWIFT" => bank["bank_swift"].presence || "Not recorded" }
     mail(to: report.fetch("accounts_email"), subject: "Confidential India payroll report — #{report.fetch('period')}",
       message_id: "payroll-india-#{delivery.id}@miru")
   end

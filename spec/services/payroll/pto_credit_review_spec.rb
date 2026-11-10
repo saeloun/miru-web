@@ -131,7 +131,7 @@ RSpec.describe "PTO recovery after credit reconciliation" do
     original_revision = approve_current
     split = Payroll::SplitArrangements.new(run)
     spouse_id = "66666666-6666-4666-8666-666666666666"
-    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Synthetic Bank", "bank_country" => "IN",
+    details = { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Synthetic Bank", "bank_country" => "IN", "bank_account_currency" => "INR",
       "bank_account_number" => "222233334444", "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
     arrangement = split.request!(actor: accounts, employment_id: employment.id,
       attributes: { allocation_kind: "percentage", allocation_value: "25", allocated_to: "spouse", remainder_to: "consultant" },

@@ -78,7 +78,7 @@ const issueLabel = (code: string) =>
     consultant_inactive:
       "Ask an administrator to review this consultant's employment access.",
     bank_profile_incomplete:
-      "Complete the account holder, bank name, account number and IFSC in Employee records, then refresh.",
+      "Complete the account holder, bank name, country code, account currency, account number and IFSC in Employee records, then refresh.",
     mercury_activity_exists:
       "A Mercury payment instruction exists. Resolve it before preparing an India payment.",
     split_not_supported:
@@ -129,6 +129,10 @@ const Report = ({ report }: { report: IndiaReport }) => (
         ],
         ["Total INR payable", exactAmount(report.amounts.net_minor, "INR")],
         ["Beneficiary", report.bank.holder],
+        ["Declared bank country", report.bank.country || "Not recorded"],
+        ["Account currency", report.bank.account_currency || "Not recorded"],
+        ["Bank branch", report.bank.branch || "Not recorded"],
+        ["SWIFT", report.bank.swift || "Not recorded"],
         [
           "Bank",
           `${report.bank.name} ••••${report.bank.account_mask} · ${report.bank.ifsc}`,

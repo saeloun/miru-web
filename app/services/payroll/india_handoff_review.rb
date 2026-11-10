@@ -48,7 +48,8 @@ module Payroll
           reimbursements: report["reimbursements"], amounts: report.dig("line", "amounts")&.transform_values(&:to_s),
           extras: report.dig("line", "extras"), deductions: report.dig("line", "deductions"),
           bank: { holder: bank["bank_account_name"], name: bank["bank_name"], account_mask: bank["bank_account_number"].to_s.last(4),
-                  ifsc: bank["bank_ifsc"] } }
+                  ifsc: bank["bank_ifsc"], branch: bank["bank_branch"], country: bank["bank_country"],
+                  account_currency: bank["bank_account_currency"], swift: bank["bank_swift"] } }
       end
 
       def handoff_detail(handoff)

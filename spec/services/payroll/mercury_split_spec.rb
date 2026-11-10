@@ -8,7 +8,7 @@ RSpec.describe "Mercury spouse split payments" do
   let(:spouse_recipient_id) { "66666666-6666-4666-8666-666666666666" }
   let(:split_service) { Payroll::SplitArrangements.new(run) }
   let(:spouse_details) do
-    { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_number" => "222233334444",
+    { "bank_account_name" => "Synthetic Spouse", "bank_name" => "Spouse Bank", "bank_country" => "IN", "bank_account_currency" => "INR", "bank_account_number" => "222233334444",
       "bank_ifsc" => "SPOU0000002", "bank_swift" => "SPOUINBBXXX" }
   end
   let(:spouse_recipient) do
@@ -51,6 +51,36 @@ RSpec.describe "Mercury spouse split payments" do
   end
 
   describe "arrangement approval" do
+    it "requires the spouse account currency before accepting a new arrangement" do
+      expect do
+        split_service.request!(actor: accounts, employment_id: employment.id,
+          attributes: { allocation_kind: "percentage", allocation_value: "25", allocated_to: "spouse", remainder_to: "consultant" },
+          details: spouse_details.except("bank_account_currency"), account_number_confirmation: spouse_details["bank_account_number"])
+      end.to raise_error(ActiveRecord::RecordInvalid, /bank_account_currency is required/)
+    end
+
+    it "can withdraw an immutable legacy arrangement without inventing missing metadata" do
+      # Persist the shape accepted before country/currency declarations were required.
+      legacy = PayrollSplitArrangement.new(company:, employment:, requested_by: accounts,
+        allocation_kind: "percentage", allocation_value: "25", allocated_to: "spouse", remainder_to: "consultant",
+        details: spouse_details.except("bank_account_currency").merge("bank_country" => "India"))
+      legacy.save!(validate: false)
+
+      split_service.withdraw!(actor: owner, arrangement_id: legacy.id)
+
+      expect(legacy.reload).to be_withdrawn
+      expect(legacy.details["bank_country"]).to eq("India")
+      expect(legacy.details).not_to have_key("bank_account_currency")
+    end
+
+    it "rejects a structured optional bank branch" do
+      expect do
+        split_service.request!(actor: accounts, employment_id: employment.id,
+          attributes: { allocation_kind: "percentage", allocation_value: "25", allocated_to: "spouse", remainder_to: "consultant" },
+          details: spouse_details.merge("bank_branch" => {}), account_number_confirmation: spouse_details["bank_account_number"])
+      end.to raise_error(ActiveRecord::RecordInvalid, /bank_branch/)
+    end
+
     it "requires the account number twice" do
       expect(blocked_codes do
         split_service.request!(actor: accounts, employment_id: employment.id,

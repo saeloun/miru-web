@@ -187,6 +187,7 @@ const Setup = ({ companyId, data, apply, busy }: Context) => {
   );
 };
 
+/** Collects a spouse split for review with independent account confirmation. */
 const SplitPanel = ({
   consultant,
   context,
@@ -204,7 +205,9 @@ const SplitPanel = ({
     remainder_to: "consultant",
     bank_account_name: "",
     bank_name: "",
-    bank_country: "India",
+    bank_branch: "",
+    bank_country: "",
+    bank_account_currency: "",
     bank_account_number: "",
     account_number_confirmation: "",
     bank_ifsc: "",
@@ -217,7 +220,9 @@ const SplitPanel = ({
   const fields: [string, string, string?][] = [
     ["bank_account_name", "Spouse legal name (account holder)"],
     ["bank_name", "Bank name"],
-    ["bank_country", "Bank country"],
+    ["bank_branch", "Bank branch (optional)"],
+    ["bank_country", "Bank country code (e.g. IN)"],
+    ["bank_account_currency", "Account currency (e.g. INR)"],
     ["bank_account_number", "Account number", "password"],
     ["account_number_confirmation", "Confirm account number", "password"],
     ["bank_ifsc", "IFSC"],
@@ -238,8 +243,11 @@ const SplitPanel = ({
           to {label(split.allocated_to).toLowerCase()}, remainder to{" "}
           {label(split.remainder_to).toLowerCase()} · {split.spouse.name} ·{" "}
           {split.spouse.bank_name} ••••{split.spouse.account_mask} ·{" "}
-          {split.spouse.swift_code}. Reimbursements stay with the consultant,
-          and income and tax details remain the consultant&apos;s.
+          {split.spouse.swift_code}. Declared bank country:{" "}
+          {split.spouse.bank_country || "Not recorded"}; account currency:{" "}
+          {split.spouse.bank_account_currency || "Not recorded"}. Reimbursements
+          stay with the consultant, and income and tax details remain the
+          consultant&apos;s.
         </p>
       ) : (
         <p className="text-sm text-muted-foreground">
@@ -356,12 +364,33 @@ const SplitPanel = ({
                 {name}
               </Label>
               <Input
-                required
+                required={key !== "bank_branch"}
                 autoComplete="off"
                 id={`${key}-${consultant.employment_id}`}
                 type={type || "text"}
                 value={form[key]}
-                onChange={event => set(key, event.target.value)}
+                maxLength={
+                  key === "bank_country"
+                    ? 2
+                    : key === "bank_account_currency"
+                    ? 3
+                    : undefined
+                }
+                pattern={
+                  key === "bank_country"
+                    ? "[A-Z]{2}"
+                    : key === "bank_account_currency"
+                    ? "[A-Z]{3}"
+                    : undefined
+                }
+                onChange={event =>
+                  set(
+                    key,
+                    ["bank_country", "bank_account_currency"].includes(key)
+                      ? event.target.value.toUpperCase()
+                      : event.target.value
+                  )
+                }
               />
             </div>
           ))}
@@ -929,7 +958,9 @@ const Consultant = ({
               <p className="text-sm">
                 {label(recipient.beneficiary)} recipient last verified against
                 the Miru profile: {recipient.name} ••••{recipient.account_mask}{" "}
-                · {recipient.swift_code}
+                · {recipient.swift_code}. Declared bank country:{" "}
+                {recipient.bank_country || "Not recorded"}; account currency:{" "}
+                {recipient.bank_account_currency || "Not recorded"}.
               </p>
               {manage && (
                 <details>
