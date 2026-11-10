@@ -76,6 +76,18 @@ class Payroll::BillingIdentity
     expected.present? && value.is_a?(Hash) && value == expected
   end
 
+  # A pending review belongs to accounts; request only missing facts or an explicit self-correction.
+  def completion_request_source
+    return unless Payroll::Entitlement.enabled?(@company.id) && kept_subject?
+    submission = head
+    return ["missing"] unless submission
+
+    review = review_head(submission)
+    return unless review && %w[needs_information rejected].include?(review.decision) && profile_intact?(submission) && review_command_intact?(review)
+
+    [submission.id, submission.source_digest, review.id, review.command_digest]
+  end
+
   def download(submission_id:, kind:)
     authorize!(:show?)
     submission = find_submission(submission_id)

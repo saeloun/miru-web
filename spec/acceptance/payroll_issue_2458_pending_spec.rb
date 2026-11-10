@@ -15,7 +15,10 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
     # Spouse double-entry: split_arrangements_spec.rb.
     it "requires bank country, account currency and the applicable IFSC, SWIFT and provider beneficiary fields"
     it "encrypts bank and tax identifiers and exposes only masked values outside authorized payment preparation"
-    it "notifies a consultant about missing details while allowing other complete consultants to progress"
+    # Scoped, retry-safe consultant-self completion requests with other consultants still available:
+    # profile_completion_spec.rb, payroll_profile_completion_requests_spec.rb,
+    # payroll_profile_completion_request_job_spec.rb, payroll_profile_completion_mailer_spec.rb
+    # and responsive/payroll_profile_completion_spec.rb. Real mail transport/provider acceptance remains separate.
     # Private committed bank-change notices: payroll_bank_change_notice_spec.rb,
     # employee_bank_change_notices_spec.rb and responsive/employee_bank_change_notices_spec.rb.
     # Changed-bank readiness and frozen submitted destinations: mercury_payment_spec.rb / india_handoff_spec.rb.

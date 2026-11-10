@@ -13,10 +13,34 @@ RSpec.describe "Unbooked interview invitation journeys", type: :system, js: true
 
   before do
     @console_errors = []
+    @message_network = []
     page.driver.browser.on("Runtime.consoleAPICalled") { |event| @console_errors << event if event["type"] == "error" }
     page.driver.browser.on("Runtime.exceptionThrown") { |event| @console_errors << event }
+    %w[Network.requestWillBeSent Network.responseReceived].each do |name|
+      page.driver.browser.on(name) do |event|
+        data = event[name.end_with?("requestWillBeSent") ? "request" : "response"] || {}
+        path = data["url"].to_s.sub(%r{\Ahttps?://[^/]+}, "").split(/[?#]/, 2).first.to_s
+        @message_network << data.slice("method", "status").merge("path" => path) if path.match?(%r{\A/api/v1/hiring/.*/messages(?:/|$)})
+      end
+    end
   end
-  after { expect(@console_errors).to eq([]) }
+  after do |example|
+    if example.exception
+      begin
+        layout = page.evaluate_script(<<~JS)
+          ({ pathname: location.pathname, readyState: document.readyState, viewport: [innerWidth, innerHeight],
+             body: document.body?.getBoundingClientRect().toJSON(), root: document.querySelector('#react-root')?.getBoundingClientRect().toJSON(),
+             buttons: [...document.querySelectorAll('button')].filter(button => /^(Preview candidate message|Confirm and queue message)$/.test(button.textContent.trim()))
+               .map(button => ({ label: button.textContent.trim(), disabled: button.matches(':disabled'),
+                 fieldsetDisabled: Boolean(button.closest('fieldset')?.disabled), bounds: button.getBoundingClientRect().toJSON() })) })
+        JS
+        warn JSON.generate(hiring_message_failure: { network: @message_network.last(12), layout: })
+      rescue StandardError => error
+        warn JSON.generate(hiring_message_diagnostic_error: error.class.name)
+      end
+    end
+    expect(@console_errors).to eq([])
+  end
 
   around do |example|
     original = Api::V1::Hiring::BaseController.allow_forgery_protection

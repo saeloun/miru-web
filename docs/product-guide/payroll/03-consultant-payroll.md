@@ -149,6 +149,29 @@ both approvals. Existing credit recording and reconciliation remain available.
 Keep an original active handoff attached to its approved revision. If multiple
 leave recoveries need return review, resolve each one before the group is complete.
 
+### Request missing consultant details
+
+An owner or the assigned accounts reviewer can choose **Request profile
+completion** beside a consultant who needs bank or billing details. Miru emails
+that consultant links to their own forms in the correct workspace. Other
+consultants remain available for preparation. Billing facts already awaiting
+accounts review are not treated as missing consultant information.
+
+**Request email queued** means delivery is pending; **Request email sent** means
+the mail transport accepted it. **Delivery needs review** holds an uncertain
+send rather than automatically sending another email. A **skipped** request sent
+no email because the details or access changed before delivery. Refresh the run
+to see current requirements before requesting again.
+A **Request email failed** status means preparation failed before sending. After
+checking delivery, request completion again to make a fresh attempt.
+Uncertain delivery has no in-app resend action for unchanged details. Check the
+mail transport before contacting the consultant separately.
+
+Consultants complete their own forms, and accounts still reviews billing facts.
+The request does not grant invoice authorization, verify a bank account or
+approve a payment. Repeating a request for the same unchanged details does not
+send another email, and requesting details preserves other unsaved selections.
+
 ## Pay through Mercury
 
 When a configured consultant's bank details change, Miru queues a private review

@@ -366,14 +366,17 @@ export function InvoiceAuthorizationPanel({
   );
 }
 
+/** Rejects links for a different workspace before fetching invoice permissions. */
 export default function InvoiceAuthorizationPage() {
   const { company, user, companyRole } = useUserContext();
   const location = useLocation();
   const search = new URLSearchParams(location.search);
   const requestedUser = search.get("user_id");
   const userId = requestedUser ?? String(user?.id || "");
+  const linkedCompany = search.get("company_id");
   if (
     !company?.id ||
+    (linkedCompany !== null && linkedCompany !== String(company.id)) ||
     search.getAll("user_id").length > 1 ||
     String(company.id) !== String(user?.current_workspace_id) ||
     !/^[1-9]\d{0,18}$/.test(userId)

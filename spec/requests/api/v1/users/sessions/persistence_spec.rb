@@ -11,9 +11,33 @@ RSpec.describe "Browser session persistence", type: :request do
     user.add_role :admin, company
   end
 
+  after do |example|
+    next unless example.exception.is_a?(ActiveRecord::InvalidForeignKey)
+
+    begin
+      records = [User, BrowserSession].map do |model|
+        connection = model.connection
+        record = { model: model.name, database: connection.raw_connection.db, backend_pid: connection.raw_connection.backend_pid,
+          connection_id: connection.object_id, open_transactions: connection.open_transactions }
+        if @session_fixture_user_id
+          begin
+            record[:fixture_user_exists] = connection.select_value("SELECT EXISTS(SELECT 1 FROM users WHERE id = #{Integer(@session_fixture_user_id)})")
+          rescue StandardError => error
+            record[:query_error] = error.class.name
+          end
+        end
+        record
+      end
+      warn JSON.generate(browser_session_fk_diagnostic: records)
+    rescue StandardError => error
+      warn JSON.generate(browser_session_fk_diagnostic_error: error.class.name)
+    end
+  end
+
   def signed_in_browser
     ActionDispatch::Integration::Session.new(Rails.application).tap do |browser|
       browser.host! "localhost"
+      @session_fixture_user_id = user.id
       browser.post api_v1_users_login_path, params: { user: { email: user.email, password: user.password } }
       expect(browser.response).to have_http_status(:ok)
     end

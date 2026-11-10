@@ -51,6 +51,9 @@ default: &default
         payroll_bank_change_recovery:
           class: PayrollBankChangeRecoveryJob
           schedule: '*/5 * * * *'
+        payroll_profile_completion_recovery:
+          class: PayrollProfileCompletionRecoveryJob
+          schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob
           schedule: '2-59/5 * * * *'
@@ -143,6 +146,9 @@ production:
           schedule: '11 * * * *'
         payroll_bank_change_recovery:
           class: PayrollBankChangeRecoveryJob
+          schedule: '*/5 * * * *'
+        payroll_profile_completion_recovery:
+          class: PayrollProfileCompletionRecoveryJob
           schedule: '*/5 * * * *'
         hiring_feedback_requests:
           class: HiringFeedbackRequestsJob

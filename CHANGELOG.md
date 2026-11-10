@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.6.1] - 2026-11-10
+
+### Fixed
+
+- Register the India tax browser-test error collector on the active page after sign-in so the first example checks console errors reliably.
+- Retry pending signed-document downloads with Capybara's supported assertion error while preserving download identity and file-content checks.
+
+## [3.6.0] - 2026-11-10
+
+### Added
+
+- Request missing bank or billing details from a consultant's payroll review while other ready consultants continue.
+- Send private completion requests with workspace-specific self-service links and visible delivery status, without approving details or initiating payment.
+
+### Fixed
+
+- Reject billing identity and invoice authorization links for a different workspace before loading private profile data.
+
 ## [3.5.1] - 2026-11-10
 
 ### Fixed

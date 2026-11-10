@@ -82,6 +82,23 @@ RSpec.describe "Consultant invoice authorization", type: :system, js: true do
     page.save_screenshot(File.join(ENV.fetch("INVOICE_AUTHORIZATION_SHOTS"), "#{name}-#{width}.png"), area:)
   end
 
+  it "rejects a completion link for another workspace before fetching invoice authorization" do
+    sign_in_at_width(consultant, 375)
+    visit "/settings/invoice-authorization?company_id=#{company.id + 1}"
+    aggregate_failures do
+      expect(page).to have_css("[role='alert']", text: "Invoice authorization is unavailable in this workspace.")
+      expect(page.evaluate_script(<<~JS)).to eq([])
+        performance.getEntriesByType('resource').filter(entry => entry.name.includes('/api/v1/consultant_invoice_authorization')).map(entry => entry.name)
+      JS
+    end
+    expect(consultant.reload.current_workspace_id).to eq(company.id)
+
+    visit "/settings/invoice-authorization?company_id=#{company.id}"
+    expect(page).to have_css("p[role='status']", text: "Authorization not granted", exact_text: true)
+    expect(page).to have_unchecked_field("I have read and agree to this authorization.")
+    expect(page).to have_button("Grant invoice authorization", disabled: true)
+  end
+
   [1440, 375].each do |width|
     it "requires explicit self consent and retains grant, withdrawal and regrant receipts at #{width}px" do
       open_self(width)
@@ -146,7 +163,7 @@ RSpec.describe "Consultant invoice authorization", type: :system, js: true do
     expect(EmployeeRecordPolicy.new(accounts, employment).show?).to be(false)
     sign_in_at_width(accounts, 1440)
     visit "/payroll/#{run.id}"
-    link = find_link("Invoice authorization", href: "/settings/invoice-authorization?user_id=#{consultant.id}")
+    link = find_link("Invoice authorization", href: "/settings/invoice-authorization?user_id=#{consultant.id}&company_id=#{company.id}")
     page.scroll_to(link, align: :center)
     link.click
     expect(page).to have_text(consultant.full_name)

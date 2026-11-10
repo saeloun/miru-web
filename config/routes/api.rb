@@ -438,6 +438,7 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resources :payroll_runs, only: [:index, :show, :create] do
+      resources :profile_completion_requests, only: [:create], controller: "payroll_profile_completion_requests"
       member do
         get :preflight
         get :preparation

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import {
   payrollApi,
   PreparationConsultant,
+  ProfileCompletionRequest,
   RunDetail,
   RunPreparation,
   RunPreparationOptions,
@@ -164,12 +165,134 @@ const initialSelection = (row: PreparationConsultant): Selection => ({
   withholding: row.current.withholding || "",
 });
 
+const profileCategoryLabels = {
+  bank_details: "Bank details",
+  billing_identity: "Billing identity",
+};
+
+const profileRequestStates = {
+  queued: "Request email queued",
+  sending: "Request email delivery in progress",
+  sent: "Request email sent",
+  uncertain:
+    "Delivery needs review; the request will not be resent automatically",
+  skipped: "Request skipped; no email was sent",
+  failed: "Request email failed; no email was sent",
+};
+
+/** Keeps profile requests independent of payroll selections and source-bound retries. */
+const ProfileCompletionRequestPanel = ({
+  companyId,
+  runId,
+  employmentId,
+  profile,
+}: {
+  companyId: string;
+  runId: string;
+  employmentId: number;
+  profile: PreparationConsultant["profile_completion"];
+}) => {
+  const [controller] = useState(() => new window.AbortController());
+  const [key, setKey] = useState(() => window.crypto.randomUUID());
+  const [receipt, setReceipt] = useState<ProfileCompletionRequest | null>(
+    profile.request
+  );
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  useEffect(() => () => controller.abort(), [controller]);
+
+  if (!profile.categories.length && !receipt) return null;
+
+  const canRequest =
+    profile.can_request &&
+    profile.source_digest &&
+    profile.categories.length > 0 &&
+    (!receipt || ["skipped", "failed"].includes(receipt.state));
+
+  const categories =
+    !receipt || canRequest ? profile.categories : receipt.categories;
+
+  /** Reuses the command after uncertain HTTP responses to avoid duplicate mail. */
+  const request = async () => {
+    if (!canRequest || !profile.source_digest || busy) return;
+    setBusy(true);
+    setError("");
+    try {
+      const response = await payrollApi.requestProfileCompletion(
+        runId,
+        companyId,
+        {
+          employment_id: employmentId,
+          expected_digest: profile.source_digest,
+          idempotency_key: key,
+        },
+        controller.signal
+      );
+      if (controller.signal.aborted) return;
+      const result: ProfileCompletionRequest =
+        response.data.profile_completion_request;
+      setReceipt(result);
+      if (["skipped", "failed"].includes(result.state)) {
+        setKey(window.crypto.randomUUID());
+      }
+    } catch (failure) {
+      if (controller.signal.aborted) return;
+      const status = failure?.response?.status;
+      setError(
+        status >= 500 || !status
+          ? `${errorMessage(
+              failure
+            )} The request may already be queued. Retry to confirm its status.`
+          : errorMessage(failure)
+      );
+    } finally {
+      if (!controller.signal.aborted) setBusy(false);
+    }
+  };
+
+  return (
+    <section aria-label="Profile completion" className="space-y-2">
+      <p className="text-sm">
+        {receipt && !canRequest
+          ? "Requested details: "
+          : "Details to request: "}
+        {categories.map(category => profileCategoryLabels[category]).join(", ")}
+      </p>
+      <p className="text-sm text-muted-foreground">
+        Ask the consultant to review these profile details. This does not
+        approve a payment or verify bank details.
+      </p>
+      {receipt && (
+        <p className="text-sm" role="status">
+          {profileRequestStates[receipt.state]}
+        </p>
+      )}
+      {error && (
+        <p className="text-sm text-destructive" role="alert">
+          {error}
+        </p>
+      )}
+      {canRequest && (
+        <Button
+          disabled={busy}
+          type="button"
+          variant="outline"
+          onClick={request}
+        >
+          {busy ? "Requesting…" : "Request profile completion"}
+        </Button>
+      )}
+    </section>
+  );
+};
+
 const ConsultantRow = ({
   consultant,
   selection,
   canPrepare,
   onChange,
   companyId,
+  runId,
   month,
   onSourceChanged,
 }: {
@@ -178,6 +301,7 @@ const ConsultantRow = ({
   canPrepare: boolean;
   onChange: (next: Selection) => void;
   companyId: string;
+  runId: string;
   month: string;
   onSourceChanged: () => void;
 }) => {
@@ -214,18 +338,27 @@ const ConsultantRow = ({
           <Link
             aria-label={`Invoice authorization for ${consultant.consultant_name}`}
             className="inline-flex min-h-11 items-center text-sm text-primary underline"
-            to={`/settings/invoice-authorization?user_id=${consultant.user_id}`}
+            to={`/settings/invoice-authorization?user_id=${consultant.user_id}&company_id=${companyId}`}
           >
             Invoice authorization
           </Link>
           <Link
             aria-label={`Billing identity for ${consultant.consultant_name}`}
             className="inline-flex min-h-11 items-center text-sm text-primary underline"
-            to={`/settings/billing-identity?user_id=${consultant.user_id}`}
+            to={`/settings/billing-identity?user_id=${consultant.user_id}&company_id=${companyId}`}
           >
             Billing identity
           </Link>
         </div>
+      )}
+      {consultant.profile_completion && (
+        <ProfileCompletionRequestPanel
+          companyId={companyId}
+          employmentId={id}
+          key={`${companyId}:${runId}:${id}:${consultant.profile_completion.source_digest}:${consultant.profile_completion.request?.id}:${consultant.profile_completion.request?.state}`}
+          profile={consultant.profile_completion}
+          runId={runId}
+        />
       )}
       {consultant.retained ? (
         <p className="text-sm">
@@ -540,6 +673,7 @@ export const PrepareRevisionPanel = ({
           <ConsultantRow
             companyId={companyId}
             month={month}
+            runId={runId}
             onSourceChanged={onChanged}
             canPrepare={data.can_prepare}
             consultant={row}
