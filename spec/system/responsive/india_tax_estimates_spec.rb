@@ -10,7 +10,8 @@ RSpec.describe "India tax estimates", type: :system, js: true do
     enable_synthetic_payroll(company.id)
     create(:employment, company:, user: employee, joined_at: "2026-01-01", resigned_at: nil)
     employee.add_role(:employee, company)
-    page.driver.browser.evaluate_on_new_document(<<~JS)
+    with_forgery_protection { sign_in employee }
+    page.driver.browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: <<~JS)
       (() => {
         if (window.__indiaTaxErrors) return;
         window.__indiaTaxErrors = [];
@@ -23,7 +24,6 @@ RSpec.describe "India tax estimates", type: :system, js: true do
         window.addEventListener('unhandledrejection', event => window.__indiaTaxErrors.push(String(event.reason)));
       })();
     JS
-    with_forgery_protection { sign_in employee }
   end
 
   def confirm_profile

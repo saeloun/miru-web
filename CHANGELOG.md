@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.1] - 2026-11-10
+
+### Fixed
+
+- Register the India tax browser-test error collector on the active page after sign-in so the first example checks console errors reliably.
+- Retry pending signed-document downloads with Capybara's supported assertion error while preserving download identity and file-content checks.
+
 ## [3.6.0] - 2026-11-10
 
 ### Added
