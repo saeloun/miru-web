@@ -244,6 +244,11 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     click_button "Save assignment decision"
     expect(page).to have_text("Assignment decision saved.")
     expect(application.reload.stage).to eq("interview")
+    within("section[aria-label='Assignments']") do
+      expect(page).to have_css("summary",
+        text: "#{assignment_template.title} · Completed · ##{record.id}", exact_text: true, normalize_ws: true)
+      expect(page).to have_button("Reload saved state", disabled: false)
+    end
   end
 
   def interview_and_decide
