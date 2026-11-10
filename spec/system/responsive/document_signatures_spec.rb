@@ -20,8 +20,10 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     controller.allow_forgery_protection = original if controller
   end
 
-  def open_documents(files: [main_pdf, addendum])
+  # sign_in resets the browser session, so apply any requested viewport afterward.
+  def open_documents(files: [main_pdf, addendum], width: nil)
     sign_in(admin)
+    page.current_window.resize_to(width, 1000) if width
     @console_errors = []
     page.driver.browser.on("Runtime.consoleAPICalled") { |event| @console_errors << event if event["type"] == "error" }
     page.driver.browser.on("Runtime.exceptionThrown") { |event| @console_errors << event }
@@ -40,6 +42,93 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
       fill_in "Name", with: name
       fill_in "Email", with: email
     end
+  end
+
+  # Approval must bind saved documents and fields, rather than unsaved editor state.
+  def prepare_manual_approval(width: nil)
+    open_documents(width:)
+    add_signer
+    3.times do |index|
+      click_button "Add field"
+      select "Text", from: "Field type" if index == 1
+      select "qa-addendum.pdf", from: "Field document" if index == 2
+    end
+    click_button "Save changes"
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(page).to have_field("Approval evidence")
+    SignatureRequest.find_by!(title: "Synthetic uploaded agreement")
+  end
+
+  [375, 1440].each do |width|
+    it "records long manual approval evidence for the exact saved uploaded version at #{width}px" do
+      record = prepare_manual_approval(width:)
+      revision = record.current_revision
+      evidence = "Synthetic QA only: owner reviewed this exact uploaded version. No legal commitment."
+      page.document.synchronize(Capybara.default_max_wait_time) do
+        settled = page.evaluate_script(<<~JS, width)
+          (() => {
+            const width = arguments[0];
+            const box = document.querySelector('.signature-workspace').getBoundingClientRect();
+            const columns = getComputedStyle(document.querySelector('.signature-layout')).gridTemplateColumns.split(' ').length;
+            return innerWidth === width && columns === (width >= 1100 ? 2 : 1) &&
+              (width >= 1100 || (box.left <= 40 && box.width >= width - 80));
+          })()
+        JS
+        raise Capybara::ExpectationNotMet, "The signing workspace did not settle at #{width}px" unless settled
+      end
+      expect(page).to have_css('[data-pdf-ready="true"]')
+      expect(page).not_to have_content("Loading PDF preview…")
+      within("section[aria-label='Review and approval']") do
+        expect(page).to have_select("Approval source", selected: "Recorded external approval", disabled: false)
+        expect(page).to have_field("Approval evidence", disabled: false)
+        expect(page).to have_unchecked_field("I confirm this version is approved for signature", disabled: false)
+        fill_in "Approval evidence", with: evidence
+        expect(page).to have_field("Approval evidence", with: evidence)
+        check "I confirm this version is approved for signature"
+        expect(page).to have_button("Record approval for signing", disabled: false)
+        click_button "Record approval for signing"
+      end
+      expect(page).to have_content("Approval recorded for this version")
+      expect(page.evaluate_script("window.innerWidth")).to eq(width)
+      expect(record.reload.current_revision_id).to eq(revision.id)
+      expect(revision.reload).to have_attributes(status: "approved", approval_note: evidence,
+        approval_digest: revision.content_digest)
+      expect(revision.documents.size).to eq(2)
+      expect(revision.fields.size).to eq(3)
+      expect(revision.provider_envelope_id).to be_nil
+      expect(revision.signature_operations).to be_empty
+      expect(@console_errors).to be_empty
+    end
+  end
+
+  it "keeps either review draft dirty and clears it when a new version is saved" do
+    other = create(:company, name: "Other signing workspace")
+    create(:employment, company: other, user: admin, resigned_at: nil)
+    admin.add_role(:admin, other)
+    record = prepare_manual_approval
+    previous_id = record.current_revision_id
+    fill_in "Approval evidence", with: "Reviewed synthetic version"
+    fill_in "Reply to this review", with: "Unsent synthetic comment"
+    fill_in "Approval evidence", with: ""
+    click_link "All documents"
+    within('[role="dialog"]') { click_button "Keep editing" }
+    expect(page).to have_field("Reply to this review", with: "Unsent synthetic comment")
+    fill_in "Approval evidence", with: "Reviewed synthetic version"
+    fill_in "Reply to this review", with: ""
+    click_button admin.full_name
+    click_button "Other signing workspace"
+    expect(page).to have_content("Save your edits or leave the editor before changing workspaces.")
+    expect(admin.reload.current_workspace_id).to eq(company.id)
+    fill_in "Document title", with: "Updated synthetic document"
+    click_button "Save changes"
+    within('[role="dialog"]') { click_button "Discard review text and save" }
+    expect(page).to have_css('[role="status"]', text: "All changes saved")
+    expect(record.reload.current_revision_id).not_to eq(previous_id)
+    expect(page).to have_field("Approval evidence", with: "")
+    expect(page).to have_field("Reply to this review", with: "")
+    click_link "All documents"
+    expect(page).to have_current_path("/agreements")
+    expect(@console_errors).to be_empty
   end
 
   it "saves explicit recipient authentication and keeps copy recipients on email links" do

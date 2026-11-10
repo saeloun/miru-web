@@ -49,12 +49,13 @@ export default function ReviewPanel({
     ["draft", "under_review", "changes_requested", "approved"].includes(
       record.revision.status
     );
+  const dirty = Boolean(body.trim() || note.trim());
 
   useEffect(() => {
-    onDirtyChange(Boolean(body.trim() || note.trim()));
+    onDirtyChange(dirty);
 
     return () => onDirtyChange(false);
-  }, [body, note, onDirtyChange]);
+  }, [dirty, onDirtyChange]);
 
   useEffect(() => {
     const controller = new window.AbortController();
