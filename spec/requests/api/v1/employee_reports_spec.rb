@@ -209,7 +209,14 @@ RSpec.describe "Employee reports and settings", type: :request do
       { "name" => "Synthetic Spouse", "date_of_birth" => "1991-07-08", "gender" => "Female", "relationship" => "Spouse" },
       { "name" => "Synthetic Child", "date_of_birth" => "2018-09-10", "gender" => "Male", "relationship" => "Child" }
     ]
-    EmployeeRecord.create!(employment: insured_employment, private_details: { family_members: family })
+    insured_record = create(:employee_record, employment: insured_employment, private_details: { family_members: family })
+    family_ciphertext = EmployeeRecord.connection.select_value(EmployeeRecord.sanitize_sql_array(
+      ["SELECT private_details FROM employee_records WHERE id = ?", insured_record.id]))
+    expect(JSON.parse(family_ciphertext)).to include(
+      "p" => a_string_matching(/\S/),
+      "h" => a_hash_including("iv" => a_string_matching(/\S/), "at" => a_string_matching(/\S/)))
+    expect(family_ciphertext).not_to include(*family.flat_map { |member| member.values_at("name", "date_of_birth") })
+    expect(insured_record.reload.private_details.fetch("family_members")).to eq(family)
     %w[insurance salary].each do |preset|
       save_report(name: preset, columns: EmployeeReports::Columns::PRESETS.fetch(preset.to_sym))
       expect(response).to have_http_status(:created)
