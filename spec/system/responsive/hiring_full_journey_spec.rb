@@ -305,6 +305,11 @@ RSpec.describe "Continuous synthetic hiring journey", type: :system, js: true do
     click_button "Finalize saved decision"
     expect(page).to have_text("Decision finalized.")
     expect(application.reload.stage).to eq("final_decision")
+    decision = application.hiring_decisions.sole
+    within("section[aria-label='Hiring decisions']") do
+      expect(page).to have_css("h5", text: "Decision ##{decision.id} · Finalized · Pass", exact_text: true)
+      expect(page).to have_button("Refresh decision history", disabled: false)
+    end
   end
 
   def offer_and_onboard
