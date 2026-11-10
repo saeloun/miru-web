@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.3] - 2026-11-10
+
+### Fixed
+
+- Wait for completed assignment history before opening interview controls in the full hiring journey test.
+
 ## [3.6.2] - 2026-11-10
 
 ### Removed
