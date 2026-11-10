@@ -187,6 +187,7 @@ const Setup = ({ companyId, data, apply, busy }: Context) => {
   );
 };
 
+/** Collects a spouse split for review with independent account confirmation. */
 const SplitPanel = ({
   consultant,
   context,

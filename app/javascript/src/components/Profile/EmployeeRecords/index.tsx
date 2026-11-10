@@ -44,6 +44,7 @@ const paymentDefaults = {
   note: "",
 };
 
+/** Edits permitted private records with independent bank-account confirmation. */
 const Records = ({ companyId, companyName, userId, self }) => {
   const [controller] = useState(() => new window.AbortController());
   const [record, setRecord] = useState(null);
