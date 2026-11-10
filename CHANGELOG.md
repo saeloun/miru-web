@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.2] - 2026-11-10
+
+### Fixed
+
+- Keep documentation dependency checks compatible with minimatch 11.0.5, including expansion limits and audit integrity checks.
+- Update OmniAuth to 2.2.0 and Hashie to 5.2.0 while preserving sign-in, second-factor and workspace SSO behavior.
+
 ## [3.4.1] - 2026-11-10
 
 ### Fixed

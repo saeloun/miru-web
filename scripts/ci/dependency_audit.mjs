@@ -5,7 +5,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// These attest only the reviewed backports, not a clean upstream audit. See patches/README.md.
+// Attest reviewed runtime bytes, not a clean audit. See patches/README.md.
 const proofs = {
   "minimatch@3.1.5": {
     "package.json":
@@ -28,6 +28,26 @@ const proofs = {
       "235c5458355f1449cc100f1cea1a43d45f788a4feb524a83497aa146bea88f32",
     "dist/esm/index.js":
       "b238ca70371b1f192817ae9516afaacb566d1df2a7a85e47c6c24f41f1707864",
+  },
+  "minimatch@11.0.5": {
+    "package.json":
+      "0b5a1fdcbd7aa6905e5c56d1c50de03d52fa1dbd1ed48d62d4c2eb0675b4d43b",
+    "dist/commonjs/index.js":
+      "00dae9725d5e8ec07bc366cd5e7f53c989d3e968b3d0c388e62903cb5d7bd7e0",
+    "dist/commonjs/assert-valid-pattern.js":
+      "fcd3b0e6efee67b11249804cc64bf4d22c883395491f79bfb484869d61823600",
+    "dist/commonjs/escape.js":
+      "54b57f8f50c8e834f35a30c1848ac3f79acf8dd85894505f046afaf3965e63a0",
+    "dist/commonjs/unescape.js":
+      "bec1bb4483a2c325599949dd6668b5b7daa2dcbe046c5a09899bc8c5b51c08c1",
+    "dist/esm/index.js":
+      "b9d440e8e784f5cac857b76970b50dfa2ff4b1c0e9dfe143dfd546833b6567b7",
+    "dist/esm/assert-valid-pattern.js":
+      "90e8d3327d573b9d2391edf03dc7d50c1c0b468d720a4c0fb4a08a36ee5c50dc",
+    "dist/esm/escape.js":
+      "8418e37c202bcd247e76b1c205d4eff9474f15fb76c1db1ef0688cb6a8ec3c94",
+    "dist/esm/unescape.js":
+      "2cd61ba96e616969f152445c61ec2ca129a0afd2028ea71309b862a4222304d6",
   },
   "deepmerge@2.2.1": {
     "package.json":
@@ -61,6 +81,10 @@ const known = {
   ],
 };
 
+/**
+ * Verify reviewed runtime bytes and unsuppressed audit findings.
+ * Returns the affected package-version count; throws on unreviewed or inconsistent input.
+ */
 export function verifyAudit(report, installed) {
   assert.ok(
     report &&
@@ -107,7 +131,7 @@ export function verifyAudit(report, installed) {
     for (const finding of advisory.findings) {
       const id = `${advisory.module_name}@${finding.version}`;
       assert.ok(
-        proofs[id] && id !== "minimatch@11.0.3",
+        proofs[id] && !["minimatch@11.0.3", "minimatch@11.0.5"].includes(id),
         `unreviewed advisory version: ${id}`
       );
       assert.ok(verified.has(id), `no installed copy for ${id}`);

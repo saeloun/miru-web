@@ -118,3 +118,53 @@ test("rejects an altered copy even when another installed copy is patched", () =
     rmSync(scratch, { recursive: true, force: true });
   }
 });
+
+test("rejects altered minimatch 11 runtime files even on a clean report", () => {
+  const original = installed.find(
+    p => p.name === "minimatch" && p.version === "11.0.5"
+  );
+  assert.ok(original, "docs must install the reviewed minimatch release");
+  const clean = report();
+  clean.advisories = {};
+  clean.metadata.vulnerabilities.low = 0;
+  for (const file of [
+    "package.json",
+    "dist/commonjs/index.js",
+    "dist/commonjs/assert-valid-pattern.js",
+    "dist/commonjs/escape.js",
+    "dist/commonjs/unescape.js",
+    "dist/esm/index.js",
+    "dist/esm/assert-valid-pattern.js",
+    "dist/esm/escape.js",
+    "dist/esm/unescape.js",
+  ]) {
+    const scratch = mkdtempSync(join(tmpdir(), "miru-minimatch-audit-"));
+    try {
+      cpSync(original.path, scratch, { recursive: true });
+      writeFileSync(join(scratch, file), "synthetic altered runtime file");
+      assert.throws(
+        () =>
+          verifyAudit(clean, [...installed, { ...original, path: scratch }]),
+        /unverified installed file:/
+      );
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  }
+});
+
+test("does not excuse an advisory against upstream-fixed minimatch 11", () => {
+  const raw = report();
+  raw.advisories[2] = {
+    module_name: "minimatch",
+    severity: "moderate",
+    cves: ["CVE-2026-118764"],
+    url: "https://github.com/advisories/GHSA-g3hv-75wg-m249",
+    findings: [{ version: "11.0.5", paths: [] }],
+  };
+  raw.metadata.vulnerabilities.moderate = 1;
+  assert.throws(
+    () => verifyAudit(raw, installed),
+    /unreviewed advisory version: minimatch@11\.0\.5/
+  );
+});
