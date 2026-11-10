@@ -44,6 +44,7 @@ RSpec.describe "Uploaded documents for signing", type: :system, js: true do
     end
   end
 
+  # Approval must bind saved documents and fields, rather than unsaved editor state.
   def prepare_manual_approval(width: nil)
     open_documents(width:)
     add_signer
