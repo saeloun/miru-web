@@ -78,10 +78,6 @@ parallel_env = {
   "PARALLEL_FAILURES_LOG" => options[:failures_log]
 }
 
-if File.exist?(options[:runtime_log]) && !File.zero?(options[:runtime_log])
-  command.concat(["--group-by", "runtime"])
-end
-
 # Add spec files or directories
 if ARGV.empty?
   if options[:exclude_system]
