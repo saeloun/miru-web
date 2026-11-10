@@ -1,5 +1,7 @@
 # Repo Testing
 
+Recorded profile Save and insurance export checks: [synthetic QA evidence](../qa/profile-form-save-2461/README.md).
+
 ## General
 
 - Run the smallest relevant test set first, then widen if needed.
