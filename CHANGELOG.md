@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.9] - 2026-11-11
+
+### Fixed
+
+- Update mobile certificate tooling to node-forge 1.4.3 for published security fixes.
+
 ## [3.6.7] - 2026-11-11
 
 ### Fixed
