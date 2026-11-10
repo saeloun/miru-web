@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
+RSpec.shared_context "native transactional request fixtures" do
+  # Rails pins the fixture connection across the request executor's lease cleanup.
+  self.use_transactional_tests = true
+end
+
 RSpec.configure do |config|
+  config.include_context "native transactional request fixtures", type: :request
+
   config.before(:suite) do
     DatabaseCleaner.allow_remote_database_url = true
     DatabaseCleaner.url_allowlist = [ENV["DATABASE_URL"]]
@@ -12,11 +19,17 @@ RSpec.configure do |config|
   end
 
   config.before do
-    DatabaseCleaner.start unless RSpec.current_example.metadata[:type] == :system
+    next if RSpec.current_example.metadata[:type] == :system ||
+      (RSpec.current_example.metadata[:type] == :request && use_transactional_tests)
+
+    DatabaseCleaner.start
   end
 
   config.append_after do
-    DatabaseCleaner.clean unless RSpec.current_example.metadata[:type] == :system
+    next if RSpec.current_example.metadata[:type] == :system ||
+      (RSpec.current_example.metadata[:type] == :request && use_transactional_tests)
+
+    DatabaseCleaner.clean
   end
 
   config.before(:each, type: :system) do

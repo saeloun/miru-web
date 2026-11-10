@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Razorpay OAuth invoice collection", type: :request do
+  self.use_transactional_tests = false
+
   before do
     # Exercise token rotation with durable commits, matching real requests.
     DatabaseCleaner.clean
@@ -645,6 +647,8 @@ RSpec.describe "Razorpay OAuth account webhooks", type: :request do
 end
 
 RSpec.describe PaymentProviders::RazorpayPaymentLinkService, "concurrent OAuth link creation" do
+  self.use_transactional_tests = false
+
   let(:company) { create(:india_company, base_currency: "INR") }
   let(:owner) { create(:user, current_workspace: company) }
   let(:client) { create(:client, company:, currency: "INR", name: "Acme", email: "client@example.com") }

@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Mobile connected-account collection creation", type: :request do
+  self.use_transactional_tests = false
+
   let(:company) { create(:india_company, base_currency: "INR", plan_tier: "paid") }
   let(:owner) { create(:user, current_workspace: company) }
   let(:provider) { create(:payments_provider, company:, name: "razorpay", settings: { platform_fee_percent: "0", sms_notifications_enabled: true }) }

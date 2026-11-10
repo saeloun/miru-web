@@ -4,6 +4,8 @@ require "rails_helper"
 require "csv"
 
 RSpec.describe "Payroll document CLI revocation", type: :request do
+  self.use_transactional_tests = false
+
   let(:company) { create(:company, base_currency: "INR") }
   let(:actor) { create(:user, current_workspace: company) }
   let(:employment) { create(:employment, company:, user: actor, joined_at: Date.new(2020, 1, 1), resigned_at: nil) }

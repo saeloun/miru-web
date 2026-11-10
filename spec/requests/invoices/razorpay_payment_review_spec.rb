@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
+  self.use_transactional_tests = false
+
   before do
     DatabaseCleaner.clean
     DatabaseCleaner.strategy = :deletion, { except: %w[ar_internal_metadata schema_migrations] }
@@ -569,6 +571,8 @@ RSpec.describe "Razorpay OAuth captured payment reviews", type: :request do
 end
 
 RSpec.describe InvoicePayment::RazorpayOauthPaymentLinkWebhookFulfillment, "stale webhook writes" do
+  self.use_transactional_tests = false
+
   let(:company) { create(:india_company, base_currency: "INR") }
   let(:client) { create(:client, company:, currency: "INR", name: "Acme", email: "client@example.com") }
   let(:invoice) do

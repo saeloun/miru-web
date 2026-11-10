@@ -6,6 +6,10 @@
 
 - Remove the retired Render deployment trigger while preserving container image builds and registry publishing.
 
+### Fixed
+
+- Keep transactional request fixtures on Rails' pinned connection while preserving real-commit payment and revocation tests.
+
 ## [3.6.1] - 2026-11-10
 
 ### Fixed
