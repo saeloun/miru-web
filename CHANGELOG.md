@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.2] - 2026-11-10
+
+### Removed
+
+- Remove the retired Render deployment trigger while preserving container image builds and registry publishing.
+
 ## [3.6.1] - 2026-11-10
 
 ### Fixed
