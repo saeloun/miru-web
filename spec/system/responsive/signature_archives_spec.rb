@@ -51,10 +51,12 @@ RSpec.describe "Signed document archives", type: :system, js: true do
       path = File.join(directory, filename)
       click_button filename, exact: true
       # Ferrum's global wait also wakes for older/canceled transfers and returns true on timeout.
-      page.document.synchronize(10, errors: [RSpec::Expectations::ExpectationNotMetError]) do
+      # Capybara retries its own assertion error; RSpec expectation failures bypass that loop.
+      page.document.synchronize(10, errors: [Capybara::ExpectationNotMet]) do
         current = downloads.files.find { |file| !earlier_guids.include?(file.fetch("guid")) && file["suggestedFilename"] == filename }
-        expect(current&.fetch("state", nil)).to eq("completed")
-        expect(File).to exist(path)
+        unless current&.fetch("state", nil) == "completed" && File.exist?(path)
+          raise Capybara::ExpectationNotMet, "Current archive download is not complete"
+        end
       end
       expect(Digest::SHA256.file(path).hexdigest).to eq(entry.fetch("sha256"))
     end
