@@ -5,7 +5,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// These attest only the reviewed backports, not a clean upstream audit. See patches/README.md.
+// Attest reviewed runtime bytes, not a clean audit. See patches/README.md.
 const proofs = {
   "minimatch@3.1.5": {
     "package.json":
@@ -28,6 +28,14 @@ const proofs = {
       "235c5458355f1449cc100f1cea1a43d45f788a4feb524a83497aa146bea88f32",
     "dist/esm/index.js":
       "b238ca70371b1f192817ae9516afaacb566d1df2a7a85e47c6c24f41f1707864",
+  },
+  "minimatch@11.0.5": {
+    "package.json":
+      "0b5a1fdcbd7aa6905e5c56d1c50de03d52fa1dbd1ed48d62d4c2eb0675b4d43b",
+    "dist/commonjs/index.js":
+      "00dae9725d5e8ec07bc366cd5e7f53c989d3e968b3d0c388e62903cb5d7bd7e0",
+    "dist/esm/index.js":
+      "b9d440e8e784f5cac857b76970b50dfa2ff4b1c0e9dfe143dfd546833b6567b7",
   },
   "deepmerge@2.2.1": {
     "package.json":
@@ -107,7 +115,7 @@ export function verifyAudit(report, installed) {
     for (const finding of advisory.findings) {
       const id = `${advisory.module_name}@${finding.version}`;
       assert.ok(
-        proofs[id] && id !== "minimatch@11.0.3",
+        proofs[id] && !["minimatch@11.0.3", "minimatch@11.0.5"].includes(id),
         `unreviewed advisory version: ${id}`
       );
       assert.ok(verified.has(id), `no installed copy for ${id}`);

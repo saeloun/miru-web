@@ -131,6 +131,36 @@ for (const pkg of copies.values()) {
       });
     }
   }
+  if (pkg.name === "minimatch" && pkg.version === "11.0.5") {
+    for (const format of ["commonjs", "esm"]) {
+      test(`${label} ${format} rejects amplified patterns and preserves matching`, async () => {
+        const entry = resolve(pkg.path, `dist/${format}/index.js`);
+        const { Minimatch, minimatch } =
+          format === "esm"
+            ? await import(pathToFileURL(entry))
+            : require(entry);
+        assert.throws(
+          () =>
+            new Minimatch("**/../a/b/".repeat(8) + "tail", {
+              optimizationLevel: 2,
+              braceExpandMax: 32,
+            }),
+          RangeError
+        );
+        const matcher = new Minimatch("{**/x,x/y}", {
+          optimizationLevel: 2,
+        });
+        assert.equal(matcher.match("x/y"), true);
+        const rows = Array.from({ length: 1001 }, (_, i) => [`row-${i}`]);
+        assert.deepEqual(
+          matcher.secondPhasePreProcess([...rows, rows[0]]),
+          rows
+        );
+        assert.equal(minimatch("src/file.ts", "**/*.{js,ts}"), true);
+        assert.equal(minimatch("src/.hidden.ts", "**/*.{js,ts}"), false);
+      });
+    }
+  }
   if (pkg.name === "minimatch" && pkg.version.startsWith("3.")) {
     test(`${label} retains legacy APIs without the affected optimizer`, () => {
       const match = require(pkg.path);
