@@ -29,6 +29,7 @@ These are separate runs and overlapping subsets, not numbers to add together.
 | Delivery owner: actual missing-host rendering failure and registered Mail interceptor | 2 failures before the fix, then 2 passed; complete owned job/mailer files 14 examples, 0 failures |
 | UI owner: failed delivery and explicit fresh-command retry plus retained-transfer regression | 5 browser examples, 0 failures, with strict console/exception checks |
 | Independent root: final request, retained-transfer, billing, authorization and existing wrong-workspace employee-record link | 27 browser examples, 0 failures in one 70.1-second run; includes the failed-delivery follow-up |
+| CI follow-up: unchanged command replay extracted from creation | Full CI-equivalent Reek command: 0 warnings; affected service/API: 19 examples, 0 failures; Ruby lint: 0 offenses |
 
 Both component development and test Vite builds passed with 9,829 modules before the version stamp; root's required development build also passed with 9,829 modules after stamping 3.6.0. The browser runs used isolated synthetic databases and normal-security headless Brave; unsafe browser flags were rejected. Viewport widths were asserted after sign-in. The local PostgreSQL server version was not recorded in this receipt. Earlier component failure and correction receipts remain in the external QA history. Root's first follow-up browser invocation collided with a backend suite on the same synthetic database and stopped before examples; the final serialized 27-example run above passed.
 
@@ -47,6 +48,13 @@ RAILS_ENV=test DATABASE_URL="$QA_DATABASE_URL" bundle exec rspec \
 The native specs are `spec/system/responsive/payroll_profile_completion_spec.rb`, `consultant_billing_identity_spec.rb`, `consultant_invoice_authorization_spec.rb` and `payroll_retained_transfers_spec.rb` in the same directory. Local QA loaded an external strict Brave driver helper with `bundle exec rspec -r <normal_brave.rb>`, explicit isolated `DATABASE_URL`, `RAILS_ENV=test`, `CI=1`, `SKIP_VITE_TEST_BUILD=1`, `VITE_RUBY_AUTO_BUILD=false` and `FERRUM_BROWSER_PATH` pointing to Brave. The helper checked browser flags and console/exception events; it is not shipped application code. The focused new guard selector was `--example 'rejects a completion link'`.
 
 Asset checks use `bin/vite build` and the corresponding test build with `RAILS_ENV=test` and `--mode test`. Recorded local runs used `rtk mise exec -- timeout 30` around those commands. Both final follow-up builds passed with 9,829 modules. Builds were serialized between the two UI owners. Payroll pages follow the app's existing HTTPS and `crypto.randomUUID` browser requirements.
+
+CodeQL alerts [65](https://github.com/saeloun/miru-web/security/code-scanning/65)
+and [66](https://github.com/saeloun/miru-web/security/code-scanning/66) flag
+hard-coded synthetic bank fixtures in the new job and mailer specs. Both write
+through `EmployeeRecord`, which declares `encrypts :private_details`. GitHub
+accepted and read back the specific **used in tests** dispositions. No query
+exclusion, scan rule or encryption change was made.
 
 ## Screenshots
 

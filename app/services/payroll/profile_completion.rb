@@ -24,11 +24,8 @@ class Payroll::ProfileCompletion
     @run.with_lock do
       employment.with_lock do
         authorize!
-        existing = requests.find_by(requested_by: @actor, idempotency_key:)
-        if existing
-          raise Payroll::Workflow::Conflict, "This request key was already used for different details" unless existing.command_digest == command
-          next existing
-        end
+        existing = replay(idempotency_key, command)
+        next existing if existing
         source = current_source(employment)
         raise Payroll::MercuryPayment::Blocked.new("profile_completion_unavailable") if source[:categories].empty?
         raise Payroll::Workflow::Conflict, "Profile details changed; refresh before requesting completion" unless source[:source_digest] == expected_digest
@@ -70,6 +67,14 @@ class Payroll::ProfileCompletion
   end
 
   private
+
+    def replay(idempotency_key, command)
+      existing = requests.find_by(requested_by: @actor, idempotency_key:)
+      return unless existing
+      raise Payroll::Workflow::Conflict, "This request key was already used for different details" unless existing.command_digest == command
+
+      existing
+    end
 
     def requests
       PayrollProfileCompletionRequest.where(company_id: @run.company_id, payroll_run: @run)
