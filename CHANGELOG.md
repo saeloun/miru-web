@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.6] - 2026-11-11
+
+### Fixed
+
+- Refresh signing-provider dependencies and preserve validation after Zod fallback handling.
+- Pass required SMTP STARTTLS through the provider's production Compose configuration.
+
 ## [3.6.5] - 2026-11-10
 
 ### Changed
