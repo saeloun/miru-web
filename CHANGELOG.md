@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.6.7] - 2026-11-11
+
+### Fixed
+
+- Preserve employee bank drafts while documents are uploaded and select bank countries independently of account currency.
+- Reject stale employee-record writes and version changes to payroll details.
+
 ## [3.6.5] - 2026-11-10
 
 ### Changed
