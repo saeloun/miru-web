@@ -119,7 +119,7 @@ test("rejects an altered copy even when another installed copy is patched", () =
   }
 });
 
-test("rejects altered minimatch 11 entry points even on a clean report", () => {
+test("rejects altered minimatch 11 runtime files even on a clean report", () => {
   const original = installed.find(
     p => p.name === "minimatch" && p.version === "11.0.5"
   );
@@ -130,12 +130,18 @@ test("rejects altered minimatch 11 entry points even on a clean report", () => {
   for (const file of [
     "package.json",
     "dist/commonjs/index.js",
+    "dist/commonjs/assert-valid-pattern.js",
+    "dist/commonjs/escape.js",
+    "dist/commonjs/unescape.js",
     "dist/esm/index.js",
+    "dist/esm/assert-valid-pattern.js",
+    "dist/esm/escape.js",
+    "dist/esm/unescape.js",
   ]) {
     const scratch = mkdtempSync(join(tmpdir(), "miru-minimatch-audit-"));
     try {
       cpSync(original.path, scratch, { recursive: true });
-      writeFileSync(join(scratch, file), "synthetic altered entry point");
+      writeFileSync(join(scratch, file), "synthetic altered runtime file");
       assert.throws(
         () =>
           verifyAudit(clean, [...installed, { ...original, path: scratch }]),

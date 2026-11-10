@@ -34,8 +34,20 @@ const proofs = {
       "0b5a1fdcbd7aa6905e5c56d1c50de03d52fa1dbd1ed48d62d4c2eb0675b4d43b",
     "dist/commonjs/index.js":
       "00dae9725d5e8ec07bc366cd5e7f53c989d3e968b3d0c388e62903cb5d7bd7e0",
+    "dist/commonjs/assert-valid-pattern.js":
+      "fcd3b0e6efee67b11249804cc64bf4d22c883395491f79bfb484869d61823600",
+    "dist/commonjs/escape.js":
+      "54b57f8f50c8e834f35a30c1848ac3f79acf8dd85894505f046afaf3965e63a0",
+    "dist/commonjs/unescape.js":
+      "bec1bb4483a2c325599949dd6668b5b7daa2dcbe046c5a09899bc8c5b51c08c1",
     "dist/esm/index.js":
       "b9d440e8e784f5cac857b76970b50dfa2ff4b1c0e9dfe143dfd546833b6567b7",
+    "dist/esm/assert-valid-pattern.js":
+      "90e8d3327d573b9d2391edf03dc7d50c1c0b468d720a4c0fb4a08a36ee5c50dc",
+    "dist/esm/escape.js":
+      "8418e37c202bcd247e76b1c205d4eff9474f15fb76c1db1ef0688cb6a8ec3c94",
+    "dist/esm/unescape.js":
+      "2cd61ba96e616969f152445c61ec2ca129a0afd2028ea71309b862a4222304d6",
   },
   "deepmerge@2.2.1": {
     "package.json":
