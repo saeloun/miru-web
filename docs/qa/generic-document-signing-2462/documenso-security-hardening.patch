@@ -34,11 +34,11 @@ index d646886..0ec1696 100644
      "ts-pattern": "^5.9.0",
      "ua-parser-js": "^1.0.41",
 diff --git a/docker/Dockerfile b/docker/Dockerfile
-index 22cad2e..766b82e 100644
+index 22cad2e..a1e9e57 100644
 --- a/docker/Dockerfile
 +++ b/docker/Dockerfile
 @@ -6,2 +6,3 @@
-+RUN apk upgrade --no-cache 'zlib>=1.4-r0'
++RUN apk add --no-cache 'zlib>=1.4-r0'
  RUN apk add --no-cache openssl
  RUN apk add --no-cache font-freefont
 @@ -81,13 +82,21 @@ COPY --from=builder /app/out/package-lock.json ./package-lock.json
