@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "timeout"
 
 RSpec.describe "Browser session persistence", type: :request do
   let(:company) { create(:company) }
@@ -78,6 +79,39 @@ RSpec.describe "Browser session persistence", type: :request do
     expect(first_browser.response).to have_http_status(:ok)
     second_browser.get api_v1_users_me_path
     expect(second_browser.response).to have_http_status(:unauthorized)
+  end
+
+  it "keeps transactional fixtures visible when another thread borrows a connection during sign in" do
+    pool = User.connection_pool
+    fixture_connection = pool.lease_connection
+    first_browser = signed_in_browser
+    borrowed, release = Queue.new, Queue.new
+    borrower = nil
+    allow(User).to receive(:find_for_database_authentication).and_wrap_original do |original, *arguments|
+      original.call(*arguments).tap do |authenticated_user|
+        expect(authenticated_user.id).to eq(user.id)
+        borrower = Thread.new do
+          pool.with_connection do |connection|
+            borrowed << connection
+            Timeout.timeout(5) { release.pop }
+          end
+        end
+        expect(Timeout.timeout(5) { borrowed.pop }).to equal(fixture_connection)
+      end
+    end
+
+    second_browser = signed_in_browser
+    release << true
+    borrower.value
+    second_browser.delete api_v1_users_logout_path
+    expect(second_browser.response).to have_http_status(:ok)
+    first_browser.get api_v1_users_me_path
+    expect(first_browser.response).to have_http_status(:ok)
+    second_browser.get api_v1_users_me_path
+    expect(second_browser.response).to have_http_status(:unauthorized)
+  ensure
+    release << true if release
+    borrower&.value
   end
 
   it "keeps and renews the persistent cookie beyond the old thirty-day limit" do

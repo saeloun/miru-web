@@ -413,6 +413,8 @@ RSpec.describe "Razorpay merchant connection", type: :request do
 end
 
 RSpec.describe "Razorpay API key update concurrency", type: :request do
+  self.use_transactional_tests = false
+
   around do |example|
     VCR.turned_off do
       WebMock.disable_net_connect!
