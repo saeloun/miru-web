@@ -6,6 +6,14 @@
 
 - Update mobile certificate tooling to node-forge 1.4.3 for published security fixes.
 
+## [3.6.8] - 2026-11-11
+
+### Fixed
+
+- Refresh signing-provider dependencies and preserve validation after Zod fallback handling.
+- Pass required SMTP STARTTLS through the provider's production Compose configuration.
+- Render signing share previews on private origins without disabling image SSRF protection.
+
 ## [3.6.7] - 2026-11-11
 
 ### Fixed

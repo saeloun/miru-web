@@ -46,7 +46,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-          import hashlib, os, pathlib, re, shutil, subprocess
+          import hashlib, json, os, pathlib, re, shutil, subprocess
           def require(value):
               if not value:
                   raise RuntimeError("Documenso build input refused")
@@ -59,7 +59,7 @@ jobs:
           source = pathlib.Path("vendor-documenso")
           require(subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip() == os.environ["UPSTREAM_SHA"])
           patches = {
-              "documenso-security-hardening.patch": "37c1768a96bc465e18b5af4f885620dc4efbaa43e21a4a0994d616ed452cbae8",
+              "documenso-security-hardening.patch": "f076aa134f1e482f74093b362b6221f02f196e11f1fba1e7ed78d775528314f9",
               "documenso-signing-compatibility.patch": "3c1154411b0e0196e962932253f018700ad71fc3642e0bd4535f302def1cdd6f",
           }
           paths = [pathlib.Path("docs/qa/generic-document-signing-2462", name).resolve() for name in patches]
@@ -67,11 +67,28 @@ jobs:
               require(hashlib.sha256(path.read_bytes()).hexdigest() == patches[path.name])
           subprocess.run(["git", "-C", str(source), "apply", "--check", *map(str, paths)], check=True)
           subprocess.run(["git", "-C", str(source), "apply", *map(str, paths)], check=True)
+          patched_versions = {
+              "follow-redirects": (1, 16, 2), "systeminformation": (5, 33, 16), "qs": (6, 16, 1),
+              "@hono/node-server": (2, 1, 3), "glob": (14, 0, 2), "minimatch": (11, 0, 1), "satori": (0, 33, 5), "fflate": (0, 8, 3),
+          }
+          seen = set()
+          for package_path, metadata in json.loads((source / "package-lock.json").read_text())["packages"].items():
+              for name, minimum in patched_versions.items():
+                  if not package_path.endswith("node_modules/" + name):
+                      continue
+                  version = tuple(map(int, metadata["version"].split(".")))
+                  if (name == "glob" and version[0] < 9) or (name == "minimatch" and version[0] < 7):
+                      continue
+                  if name == "fflate" and version[0] == 0 and 4 <= version[1] < 8:
+                      minimum = (0, version[1], {4: 9, 5: 4, 6: 11, 7: 5}[version[1]])
+                  require(version >= minimum)
+                  seen.add(name)
+          require(seen == set(patched_versions))
           dockerfile = source / "docker/Dockerfile"
           original = dockerfile.read_text()
           require(original.count("FROM node:24-alpine3.23 AS base") == 1)
           dockerfile.write_text(original.replace("FROM node:24-alpine3.23 AS base", "FROM " + os.environ["NODE_BASE"] + " AS base"))
-          require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() == "36f4ecad683135162dfbf101035108fcccc3d226978531e9e298169074c2a265")
+          require(hashlib.sha256(dockerfile.read_bytes()).hexdigest() == "2d8ecf2fe6650ab8ba639d7d47752e8bdf9f890be3712f4e31cd4cf169998388")
           require(hashlib.sha256((source / "LICENSE").read_bytes()).hexdigest() == "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef")
           subprocess.run(["git", "-C", str(source), "diff", "--check"], check=True)
           print("Pinned upstream, both patches, AMD64 base and license verified; resource admission passed.")
@@ -91,7 +108,7 @@ jobs:
             [worker.oci]
               max-parallelism = 2
 
-      - name: Build with existing security guards and TypeScript checks
+      - name: Build with security guards and TypeScript checks
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7
         with:
           context: ./vendor-documenso
@@ -118,7 +135,10 @@ jobs:
             --security-opt no-new-privileges --log-driver none --memory 512m --memory-swap 512m \
             --pids-limit 64 --entrypoint node \
             --mount "type=bind,src=$PWD/vendor-documenso/scripts/security,dst=/app/scripts/security,readonly" \
-            "$IMAGE_REF" /app/scripts/security/zod-size-gate-check.mjs
+            "$IMAGE_REF" --input-type=module -e 'await import("/app/scripts/security/zod-size-gate-check.mjs"); await import("/app/scripts/security/runtime-dependencies-check.mjs");'
+          docker run --rm --network none --read-only --user 1001:1001 --cap-drop ALL \
+            --security-opt no-new-privileges --log-driver none --memory 512m --memory-swap 512m \
+            --pids-limit 64 --entrypoint /sbin/apk "$IMAGE_REF" info --exists 'zlib>=1.4-r0'
 
       - name: Export immutable archive and provenance
         shell: bash
