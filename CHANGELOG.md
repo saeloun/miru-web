@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.14] - 2026-11-11
+
+### Fixed
+
+- Require Debian's patched OpenEXR package in production images while retaining supported image thumbnails and PDF generation.
+
 ## [3.6.12] - 2026-11-11
 
 ### Changed
