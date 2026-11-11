@@ -62,6 +62,7 @@ export type ConsultantRow = {
   consultant_name: string;
   legal_entity_name: string;
   billing_identity: Record<string, string> | null;
+  generation_supported: boolean;
   supplemental_billing_binding: Record<string, string> | null;
   amounts: Record<string, string>;
   preparation: Preparation | null;

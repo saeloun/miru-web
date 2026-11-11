@@ -21,6 +21,10 @@ class Payroll::ConsultantInvoicePreparation
     "#{first}-#{first + 1}"
   end
 
+  def self.generation_supported?(billing)
+    billing.is_a?(Hash) && billing["gst_status"] == "not_registered"
+  end
+
   def self.invoice_number(facts)
     facts.fetch("mode") == "existing" ? facts.fetch("number") : "#{facts.fetch('series')}/#{facts.fetch('number')}"
   end
@@ -88,7 +92,12 @@ class Payroll::ConsultantInvoicePreparation
           elsif facts.key?("supplemental_billing_binding")
             invalid!
           end
-          Payroll::BillingIdentity.new(employment).frozen_binding!(binding) if reviewed
+          if reviewed
+            billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding)
+            if facts["mode"] == "generate" && !self.class.generation_supported?(billing)
+              raise Payroll::ConsultantReview::InvalidInput, "Use an existing invoice: Miru does not generate documents for this GST billing status"
+            end
+          end
           blob = staged || (facts["mode"] == "existing" && head&.original_blob)
           invalid! if facts["mode"] == "existing" && (!blob || blob.service.public?)
           frozen = facts.merge("revision_digest" => revision.digest, "line_digest" => Payroll::IndiaHandoff.line_digest(line),

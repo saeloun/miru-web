@@ -23,10 +23,10 @@ exact stored-byte downloads. Actual invoice rendering, parsing, metadata/title
 and visual checks were verified separately; these images do not prove long
 Unicode/multipage layout, real delivery or production activation.
 
-The later removal of an unread optional prop and its caller value does not change
+The checkpoint removal of an unread optional prop and its caller value does not change
 behavior. Browser results are carried from the captured source; the required Vite
 build and scoped lint were re-executed after that cleanup, without claiming a new
-browser run. The current build manifest was copied to a retained snapshot with
+browser run. That checkpoint build manifest was copied to a retained snapshot with
 SHA256 `880e815f39b26b7213cc8e0f71e6fcda07ed578efe45f44afb9dbed812c21312`.
 The earlier browser manifest's bytes were not retained before the build overwrote
 the volatile output; its recorded hash remains historical evidence only. API/core verification passed 52 examples; delivery/setter verification
@@ -50,7 +50,7 @@ the new invoice modules; no full typecheck success is claimed.
 The current 375px linked screenshot is byte-identical to the prior capture, so it
 is stored once. All older captures remain unaltered.
 
-## Current source inputs
+## Checkpoint source inputs
 
 | Source | SHA256 |
 | --- | --- |
@@ -60,3 +60,29 @@ is stored once. All older captures remain unaltered.
 | Profile/ConsultantInvoices/api.ts | `f364384940dd0a3c7567afb4531bac894cf93446ff8154413e483925d728d23a` |
 | Own API controller | `d63a566fc79085906ead87a583d23b9a748469310dc658179a165c6335dde69b` |
 | Manager API controller | `bddb862db88d830ffda84c3fb69bac6e2b0f8e96df684c345b76566938d04fec` |
+
+## Document support boundary follow-up
+
+A separate regression reproduced unsupported generation for all three reviewed
+registered GST schemes. Preparation review and issuance now refuse registered,
+needs-review or unknown status; the exact original-linking flow is preserved.
+The API marks generation unsupported and the chooser explains the manual
+existing-original path. This is an interim document-support boundary, not tax
+exemption determination or full India GST/export automation.
+
+The focused server/request batch passed 66 examples. A fresh normal-Brave case at 375px
+passed with zero console/uncaught errors, a disabled generation choice and
+both native original/paid-statement download hashes matched. The required build
+and scoped lint passed. Current retained build manifest SHA256:
+`6d291ef8296ed974fa539de6a360c62e155349875bea5ae411e6a3320409e210`.
+The earlier screenshots and 7+2 cases remain historical checkpoint evidence; they
+were not relabelled as newly executed for this follow-up.
+
+[Registered generation unavailable,375px](registered-generation-unavailable-375.png)
+is the unaltered follow-up capture, SHA256
+`d081747f38d6813ade001334f303c1fbeb1325ea09d8df97f08714d57148333a`.
+The follow-up's [linked statement,375px](linked-paid-statement-375.png) was also
+captured after linking the registered consultant's original. It is byte-identical
+to the existing image with SHA256
+`df63fab03447e68c9bae9f00618ab22d2a6d0d8be6d45fa418cfa79d13045cd8`,
+so that file is reused rather than duplicated.

@@ -146,6 +146,33 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     end
   end
 
+  context "with registered GST billing facts" do
+    let(:billing_identity_ready) { false }
+    before { review_synthetic_billing_identity(employment:, reviewer: owner, gst_scheme: "regular") }
+
+    it "disables unsupported generation and links/downloads the exact original instead" do
+      revision
+      credited_invoice_leg
+      open_invoices(accounts, 375)
+      expect(find_field("Invoice choice").value).to eq("")
+      expect(find("option", text: "Generate in Miru", exact_text: true, visible: :all)).to be_disabled
+      expect(page).to have_text("Registered or unresolved GST status requires an existing invoice and manual document review.")
+      capture("registered-generation-unavailable")
+      complete_facts(existing: true)
+      check "I reviewed and confirm this fixed accounts destination for this invoice."
+      press "Review preparation"
+      expect(page).to have_text("Accounts reviewed")
+      invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
+      expect(invoice).to be_a(PayrollConsultantInvoice)
+      expect(invoice.mode).to eq("existing")
+      press "Refresh invoice status"
+      expect(page).to have_css("h3", text: "INV-2026-0042", exact_text: true)
+      capture("registered-linked-statement")
+      download_exact("Download original invoice", File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")))
+      download_exact("Download paid statement", invoice.pdf_blob.download)
+    end
+  end
+
   it "lets an unassigned admin discover an approved period and save facts without review or send authority" do
     revision
     admin = create(:user, current_workspace: company)

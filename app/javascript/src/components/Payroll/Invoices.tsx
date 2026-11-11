@@ -33,6 +33,8 @@ const stateLabels: Record<string, string> = {
 };
 
 const reasons: Record<string, string> = {
+  unsupported_generated_document:
+    "This GST billing status needs an existing invoice and manual document review. Miru cannot generate its required document.",
   consent_required:
     "The consultant must authorize future invoice generation in their profile.",
   consent_changed:
@@ -77,6 +79,7 @@ type FormProps = {
   preparation: Preparation | null;
   canReview?: boolean;
   canConfigure?: boolean;
+  generationSupported?: boolean;
   own?: boolean;
   issueDate?: string;
   supplementalBinding?: Record<string, string> | null;
@@ -86,7 +89,11 @@ type FormProps = {
 export function InvoiceForm(props: FormProps) {
   const existing = props.preparation?.facts;
   const [mode, setMode] = useState<InvoiceFacts["mode"]>(
-    props.own ? "existing" : existing?.mode || ""
+    props.own
+      ? "existing"
+      : existing?.mode === "generate" && !props.generationSupported
+      ? ""
+      : existing?.mode || ""
   );
 
   const [entity, setEntity] = useState({
@@ -125,6 +132,10 @@ export function InvoiceForm(props: FormProps) {
 
   const save = async (reviewed: boolean) => {
     if (!form.current?.reportValidity() || busy) return;
+
+    if (mode === "generate" && !props.generationSupported) {
+      return setError(reasons.unsupported_generated_document);
+    }
 
     if (reviewed && !destination) {
       return setError("Confirm the fixed accounts destination before review.");
@@ -238,9 +249,19 @@ export function InvoiceForm(props: FormProps) {
             }
           >
             <option value="">Choose after checking existing invoices</option>
-            <option value="generate">Generate in Miru</option>
+            <option value="generate" disabled={!props.generationSupported}>
+              Generate in Miru
+            </option>
             <option value="existing">Link an existing invoice</option>
           </select>
+          {!props.generationSupported && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Generation is available only for reviewed billing facts declared
+              not GST registered. Registered or unresolved GST status requires
+              an existing invoice and manual document review. This is a document
+              support limit, not a tax exemption determination.
+            </p>
+          )}
         </div>
       )}
       {mode && (
@@ -897,7 +918,7 @@ function ScopedPayrollInvoices({
                   <InvoiceForm
                     key={`${scope}:${row.employment_id}:${
                       row.preparation?.id || ""
-                    }:${data.revision_digest}`}
+                    }:${data.revision_digest}:${row.generation_supported}`}
                     companyId={companyId}
                     runId={runId}
                     employmentId={row.employment_id}
@@ -909,6 +930,7 @@ function ScopedPayrollInvoices({
                     preparation={row.preparation}
                     canReview={row.can_review}
                     canConfigure={row.can_configure}
+                    generationSupported={row.generation_supported}
                     supplementalBinding={row.supplemental_billing_binding}
                     onSaved={() => setRefresh(value => value + 1)}
                   />

@@ -158,6 +158,9 @@ class Payroll::ConsultantInvoiceIssue
       raise Blocked, "revision_changed" unless line && Payroll::IndiaHandoff.line_digest(line) == preparation.facts["line_digest"]
       binding = preparation.facts["billing_identity"]
       billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding)
+      if preparation.facts["mode"] == "generate" && !Payroll::ConsultantInvoicePreparation.generation_supported?(billing)
+        raise Blocked, "unsupported_generated_document"
+      end
       terms = employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id"))
       raise Blocked, "contracting_entity_changed" unless preparation.facts.dig("billed_entity", "name") == terms.legal_entity_name
       open_legs = legs.select { |leg| leg.released_at.nil? }

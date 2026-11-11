@@ -43,6 +43,7 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
       { employment_id: employment.id.to_s, consultant_name: employment.user.full_name,
         legal_entity_name: employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name,
         billing_identity: billing, supplemental_billing_binding: line.dig("preparation", "billing_identity") ? nil : binding,
+        generation_supported: Payroll::ConsultantInvoicePreparation.generation_supported?(billing),
         amounts: line.fetch("amounts").transform_values(&:to_s), preparation: preparation_details(preparation), invoice: invoice && invoice_details(invoice),
         can_configure: invoice_policy(context).configure?, can_review: invoice_policy(context).review? }
     end

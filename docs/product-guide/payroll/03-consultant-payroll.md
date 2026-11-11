@@ -345,6 +345,12 @@ issuer financial year/number explicitly. Unsupported tax or earlier-document
 timing requires manual review and an existing invoice; Miru does not certify tax
 status or calculate statutory taxes.
 
+Miru generation currently supports only reviewed billing facts declared **not GST
+registered**. Registered regular, composition or other schemes, and unresolved or
+unknown status, require an existing original and manual document review. Both
+preparation review and issuance enforce this document-support boundary. This does
+not establish an exemption or complete India GST/export tax automation.
+
 Generation requires current consultant authorization and full confirmed credit,
 including both split legs and any PTO credit review. Generated invoices use the
 actual issue date in Asia/Kolkata and the reviewed financial year/number. Linking

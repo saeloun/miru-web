@@ -25,6 +25,23 @@ RSpec.describe "Private consultant invoice API", type: :request do
       expected_preparation_id: "", idempotency_key: "http-review", reviewed: true }
   end
 
+  context "with reviewed registered billing facts" do
+    let(:billing_identity_ready) { false }
+    before { review_synthetic_billing_identity(employment:, reviewer: owner, gst_scheme: "composition") }
+
+    it "marks generation unsupported and rejects a direct reviewed generation request" do
+      revision
+      get manager_path, params: { company_id: company.id }
+      expect(response).to have_http_status(:ok)
+      row = response.parsed_body.dig("consultant_invoices", "consultants").sole
+      expect(row).to include("generation_supported" => false, "can_review" => true)
+      post "#{manager_path}/preparations", params: { company_id: company.id, invoice_preparation: review_input }, as: :json
+      expect(response).to have_http_status(422)
+      expect(response.parsed_body.fetch("errors")).to match(/existing invoice/i)
+      expect(PayrollInvoicePreparation.count).to eq(0)
+    end
+  end
+
   it "shows scoped preparation facts and the fixed destination without choosing a mode for the reviewer" do
     revision
     get manager_path, params: { company_id: company.id }
