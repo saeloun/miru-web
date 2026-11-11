@@ -14,7 +14,7 @@ const Reports = ({ companyId }) => {
   const [columns, setColumns] = useState<string[]>([]);
   const [editingReportId, setEditingReportId] = useState<number | null>(null);
   const form = useRef<React.ElementRef<"form">>(null);
-  const [month, setMonth] = useState(new Date().toISOString().slice(0, 7));
+  const [month, setMonth] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -39,6 +39,8 @@ const Reports = ({ companyId }) => {
     ) {
       throw new Error("workspace");
     }
+
+    if (!metadata) setMonth(reports.data.current_month);
     setMetadata(reports.data);
     setEnabled(
       settings.data.employee_record_setting.occasion_reminders_enabled
