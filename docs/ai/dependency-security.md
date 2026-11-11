@@ -1,6 +1,6 @@
 # Dependency security maintenance
 
-Updated 8 November 2026. Run all checks from the repository root:
+Updated 11 November 2026. Run all checks from the repository root:
 
 ```sh
 rtk mise exec -- bundle exec bundler-audit check --update
@@ -15,6 +15,17 @@ CI runs these checks in the security-audit job. Brakeman was already present; it
 upgraded to 8.1.0. Keep its warnings visible and fix actionable findings.
 
 ## Runtimes and package compatibility
+
+The Debian trixie image explicitly installs `libopenexr-3-1-30`. Its final runtime
+verifier requires version `3.2.12-1~deb13u1` or newer using `dpkg --compare-versions`,
+with real Debian comparison controls for old, missing, fixed and newer versions.
+[DSA-6618-1](https://lists.debian.org/debian-security-announce/2026/msg00538.html)
+fixes CVE-2026-42216 and CVE-2026-42217 while retaining the existing trixie library
+ABI. The explicit package changes the apt install layer; the minimum-version
+check refuses a stale image even when its native loader tests pass. Existing EXR
+positive/refusal, raster/logo and Unicode PDF checks remain required. A new exact
+image must pass those checks and a fresh scan; this does not remediate libxml2's
+separate CVE-2026-6653 or establish a clean scan for other installed packages.
 
 - Rails 8.1.4.1 includes the [November 4 security fixes](https://rubyonrails.org/2026/11/4/Rails-8.0.5.2-and-8.1.4.1-have-been-released); Ruby 4.0.9 across mise, Gemfile, Docker, and CI.
 - Node 24.22.1 LTS across local version files, mise, Docker build arguments, and CI.
