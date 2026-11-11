@@ -3533,10 +3533,18 @@ index 0000000..d238171
 +  );
 +}
 diff --git a/turbo.json b/turbo.json
-index b3b002d..811e0ee 100644
+index b3b002d..b93f2ac 100644
 --- a/turbo.json
 +++ b/turbo.json
-@@ -122,6 +122,7 @@
+@@ -43,6 +43,7 @@
+     "NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY",
+     "NEXTAUTH_SECRET",
+     "NEXT_PUBLIC_PROJECT",
++    "NEXT_PUBLIC_BASE_PATH",
+     "NEXT_PUBLIC_WEBAPP_URL",
+     "NEXT_PRIVATE_INTERNAL_WEBAPP_URL",
+     "NEXT_PUBLIC_POSTHOG_KEY",
+@@ -122,6 +123,7 @@
      "NEXT_PRIVATE_SMTP_APIKEY_USER",
      "NEXT_PRIVATE_SMTP_APIKEY",
      "NEXT_PRIVATE_SMTP_SECURE",
@@ -3685,3 +3693,36 @@ index 0000000..1280a62
 +  await new Promise((resolve) => server.close(resolve));
 +  fs.rmSync(scratch, { recursive: true, force: true });
 +}
+diff --git a/apps/remix/app/root.tsx b/apps/remix/app/root.tsx
+index b7f1caf..780976d 100644
+--- a/apps/remix/app/root.tsx
++++ b/apps/remix/app/root.tsx
+@@ -117,7 +117,7 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
+ 
+   const [theme] = useTheme();
+ 
+-  const basePath = data.basePath ?? '';
++  const basePath = data.basePath ?? import.meta.env.BASE_URL.replace(/\/$/, '');
+ 
+   // Recipient routes (signing pages) put `documenso-branded` on <body> so the
+   // <style> block from `RecipientBranding` applies to BOTH the main tree and
+@@ -170,6 +170,19 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
+           </div>
+         )} */}
+ 
++        {/* Keep the source notice clear of full-height layouts and fixed signing controls. */}
++        <div className="relative z-10 flex w-full justify-center border-border border-b bg-background px-4 text-muted-foreground text-xs">
++          <a
++            href={`${basePath}/source`}
++            lang="en"
++            target="_blank"
++            rel="noopener noreferrer"
++            className="inline-flex min-h-11 items-center rounded-sm underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
++          >
++            Corresponding source
++          </a>
++        </div>
++
+         <NuqsAdapter>
+           <SessionProvider initialSession={session}>
+             <TooltipProvider>
