@@ -2,7 +2,7 @@
 
 class Payroll::ConsultantInvoicePreparation
   ACCOUNTS_EMAIL = "accounts@saeloun.com"
-  FIELDS = %w[mode billed_entity document_kind treatment treatment_reason timing financial_year series number existing_invoice_considered tax_lines].freeze
+  FIELDS = %w[mode billed_entity document_kind treatment treatment_reason timing financial_year series number existing_invoice_considered accounts_destination_confirmed tax_lines].freeze
   ENTITY_FIELDS = %w[name address country tax_identifier tax_reason].freeze
 
   def initialize(run, actor:)
@@ -41,11 +41,9 @@ class Payroll::ConsultantInvoicePreparation
         employment = @run.company.employments.kept.find(employment_id)
         employment.with_lock do
           authorize!(employment, reviewed:, mode: facts["mode"])
-          existing = preparations(employment).find_by(idempotency_key:)
-          if existing
-            raise Payroll::Workflow::Conflict, "Preparation command was used differently" unless existing.command_digest == command && existing.actor_id == @actor.id
-            return existing
-          end
+          existing = replay(preparations(employment), idempotency_key, command)
+          return existing if existing
+          ensure_unissued!(employment)
           head = preparations(employment).heads.first
           raise Payroll::Workflow::Conflict, "Invoice preparation changed" unless head&.id.to_s == expected_preparation_id.to_s
         end
@@ -57,6 +55,9 @@ class Payroll::ConsultantInvoicePreparation
         employment.with_lock do
           authorize!(employment, reviewed:, mode: facts["mode"])
           scope = preparations(employment)
+          existing = replay(scope, idempotency_key, command)
+          return existing if existing
+          ensure_unissued!(employment)
           head = scope.heads.first
           raise Payroll::Workflow::Conflict, "Invoice preparation changed" unless head&.id.to_s == expected_preparation_id.to_s
           revision = @run.current_revision
@@ -65,10 +66,21 @@ class Payroll::ConsultantInvoicePreparation
           line = revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
           raise Payroll::Workflow::Conflict, "An approved consultant revision is required" unless line && Payroll::Workflow.new(@run).status == "approved"
           invalid! unless facts.dig("billed_entity", "name") == employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name
+          reserve_number!(employment, facts) if reviewed
+          binding = line.dig("preparation", "billing_identity")
+          supplemental = binding.nil? && reviewed
+          if supplemental
+            binding = facts["supplemental_billing_binding"]
+            invalid! unless binding && Payroll::BillingIdentity.new(employment).valid_binding?(binding)
+          elsif facts.key?("supplemental_billing_binding")
+            invalid!
+          end
+          Payroll::BillingIdentity.new(employment).frozen_binding!(binding) if reviewed
           blob = staged || (facts["mode"] == "existing" && head&.original_blob)
           invalid! if facts["mode"] == "existing" && (!blob || blob.service.public?)
           frozen = facts.merge("revision_digest" => revision.digest, "line_digest" => Payroll::IndiaHandoff.line_digest(line),
-            "billing_identity" => line.dig("preparation", "billing_identity"), "original" => descriptor || head&.facts&.fetch("original", nil))
+            "billing_identity" => binding, "supplemental_billing" => supplemental, "original" => descriptor || head&.facts&.fetch("original", nil))
+          frozen["accounts_email"] = ACCOUNTS_EMAIL if reviewed
           scope.create!(company: @run.company, payroll_revision: revision, actor: @actor, previous_preparation: head,
             facts: frozen, reviewed:, original_blob: blob, command_digest: command, idempotency_key:)
         end
@@ -84,6 +96,33 @@ class Payroll::ConsultantInvoicePreparation
       PayrollInvoicePreparation.where(company_id: @run.company_id, payroll_run: @run, employment:)
     end
 
+    def replay(scope, key, command)
+      saved = scope.find_by(idempotency_key: key)
+      return unless saved
+      unless saved.command_digest == command && saved.actor_id == @actor.id
+        raise Payroll::Workflow::Conflict, "Preparation command was used differently"
+      end
+      saved
+    end
+
+    def ensure_unissued!(employment)
+      if PayrollConsultantInvoice.exists?(company_id: @run.company_id, payroll_run: @run, employment:)
+        raise Payroll::Workflow::Conflict, "An immutable invoice already exists for this settlement"
+      end
+    end
+
+    def reserve_number!(employment, facts)
+      digest = self.class.digest([facts.fetch("series").upcase, facts.fetch("number").upcase])
+      used = PayrollConsultantInvoice.exists?(company_id: @run.company_id, issuer_id: employment.user_id,
+        financial_year: facts.fetch("financial_year"), number_digest: digest)
+      reserved = PayrollInvoicePreparation.heads.joins(:employment).where(company_id: @run.company_id, reviewed: true)
+        .where(employments: { user_id: employment.user_id }).where.not(payroll_run_id: @run.id).any? do |receipt|
+          receipt.facts["financial_year"] == facts["financial_year"] &&
+            self.class.digest([receipt.facts.fetch("series").upcase, receipt.facts.fetch("number").upcase]) == digest
+        end
+      raise Payroll::Workflow::Conflict, "This issuer number is already issued or reserved for another run" if used || reserved
+    end
+
     def authorize!(employment, reviewed:, mode:)
       own_original = mode == "existing" && @actor&.id == employment.user_id && User.kept.exists?(id: @actor.id, current_workspace_id: @run.company_id)
       allowed = reviewed ? reviewer?(employment) : configurer?(employment) || own_original
@@ -97,7 +136,10 @@ class Payroll::ConsultantInvoicePreparation
 
     def validate_facts!(facts, reviewed:)
       extra = facts.is_a?(Hash) && facts["mode"] == "existing" ? ["original_date"] : []
+      extra << "supplemental_billing_binding" if facts.is_a?(Hash) && facts.key?("supplemental_billing_binding")
       invalid! unless facts.is_a?(Hash) && facts.keys.sort == (FIELDS + extra).sort && [true, false].include?(reviewed)
+      invalid! unless [true, false].include?(facts["accounts_destination_confirmed"]) && (!reviewed || facts["accounts_destination_confirmed"] == true)
+      invalid! if extra.include?("supplemental_billing_binding") && (!reviewed || !facts["supplemental_billing_binding"].is_a?(Hash))
       invalid! unless %w[generate existing].include?(facts["mode"])
       entity = facts["billed_entity"]
       invalid! unless entity.is_a?(Hash) && entity.keys.sort == ENTITY_FIELDS.sort && entity.values.all? { |value| value.is_a?(String) && value.length <= 1000 && !value.match?(/[\x00-\x1f\x7f]/) }

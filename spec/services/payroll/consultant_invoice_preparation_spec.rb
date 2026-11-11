@@ -11,7 +11,7 @@ RSpec.describe "Consultant invoice preparation" do
     { "mode" => "generate", "billed_entity" => { "name" => legal_name, "address" => "1 Fictional Street, US", "country" => "US", "tax_identifier" => "", "tax_reason" => "Synthetic not applicable" },
       "document_kind" => "consultant_invoice", "treatment" => "manual_reviewed", "treatment_reason" => "Synthetic non-statutory review fixture",
       "timing" => "post_credit_supported", "financial_year" => "2026-2027", "series" => "SYN", "number" => "1",
-      "existing_invoice_considered" => true, "tax_lines" => [] }
+      "existing_invoice_considered" => true, "accounts_destination_confirmed" => true, "tax_lines" => [] }
   end
 
   def prepare(input = facts, key: "preparation", previous: "")
@@ -24,6 +24,7 @@ RSpec.describe "Consultant invoice preparation" do
     expect(receipt.payroll_revision).to eq(revision)
     expect(receipt.facts).to include(facts)
     expect(receipt.accounts_email).to eq("accounts@saeloun.com")
+    expect(receipt.facts.fetch("accounts_email")).to eq("accounts@saeloun.com")
     raw = PayrollInvoicePreparation.connection.select_value("SELECT facts FROM payroll_invoice_preparations WHERE id=#{receipt.id}")
     expect(raw).not_to include("Fictional Street")
     expect(receipt.serializable_hash).not_to have_key("facts")
@@ -40,6 +41,13 @@ RSpec.describe "Consultant invoice preparation" do
       expect { prepare(input) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
     end
     expect(PayrollInvoicePreparation.count).to eq(0)
+  end
+
+  it "requires an explicit reviewed accounts destination acknowledgement and rejects false or string confirmation" do
+    [facts.except("accounts_destination_confirmed"), facts.merge("accounts_destination_confirmed" => false),
+     facts.merge("accounts_destination_confirmed" => "true")].each do |input|
+      expect { prepare(input) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
+    end
   end
 
   it "rejects self-review and revoked/mismatched reviewer authority" do
@@ -113,7 +121,7 @@ RSpec.describe "Consultant invoice preparation" do
     file = original
     expected = Digest::SHA256.file(file.tempfile.path).hexdigest
     own = Payroll::ConsultantInvoicePreparation.new(run, actor: worker)
-    pending = own.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts, expected_preparation_id: "", idempotency_key: "own-original", original_pdf: file, reviewed: false)
+    pending = own.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts.merge("accounts_destination_confirmed" => false), expected_preparation_id: "", idempotency_key: "own-original", original_pdf: file, reviewed: false)
     expect(pending).not_to be_reviewed
     expect(pending.original_blob.download).to eq(File.binread(file.tempfile.path))
     expect(pending.facts.fetch("original")).to include("sha256" => expected)
