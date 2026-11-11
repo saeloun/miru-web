@@ -17,6 +17,7 @@ import AllocatedDevicesEdit from "components/Profile/Personal/Devices/Edit";
 import EmploymentDetails from "components/Profile/Personal/Employment";
 import EmployeeRecords from "components/Profile/EmployeeRecords";
 import InvoiceAuthorization from "components/Profile/InvoiceAuthorization";
+import ConsultantInvoices from "components/Profile/ConsultantInvoices";
 import BillingIdentity from "components/Profile/BillingIdentity";
 import EmploymentDetailsEdit from "components/Profile/Personal/Employment/Edit";
 import NotificationPreferences from "components/Profile/Personal/NotificationPreferences";
@@ -39,6 +40,15 @@ import {
 const { ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, CLIENT } = Roles;
 
 export const SETTINGS = [
+  {
+    label: "CONSULTANT INVOICES",
+    path: "consultant-invoices",
+    icon: <ProjectsIcon className="mr-2" size={20} weight="bold" />,
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, "manager"],
+    Component: ConsultantInvoices,
+    category: "personal",
+    isTab: true,
+  },
   {
     label: "BILLING IDENTITY",
     path: "billing-identity",

@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="en">
+<head><meta name="viewport" content="width=device-width, initial-scale=1"></head>
+<body style="margin:0;padding:16px;font:14px/1.5 Arial,sans-serif;color:#202632;overflow-wrap:anywhere">
+  <main style="max-width:640px;margin:auto">
+    <h1 style="font-size:22px">Confidential consultant invoice</h1>
+    <dl><% @summary.each do |label, value| %><dt><strong><%= label %></strong></dt><dd><%= value %></dd><% end %></dl>
+    <p>The attached documents retain the reviewed invoice and recorded settlement facts. Corrections require a separate review.</p>
+  </main>
+</body>
+</html>

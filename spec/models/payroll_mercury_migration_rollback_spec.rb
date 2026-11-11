@@ -10,16 +10,28 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
   VERSION = 20_261_103_090_000
   FIRST_PTO_VERSION = 20_261_108_200_000
   EMPLOYMENT_TENANT_INDEX_VERSION = 20_261_107_092_900
+  INVOICE_VERSIONS = [20_261_111_100_000, 20_261_111_110_000].freeze
+  INVOICE_TABLES = %w[payroll_invoice_preparations payroll_consultant_invoices payroll_consultant_invoice_deliveries].freeze
+  # Exact schema-load/migration-up deparse pairs: only text-array casts and associative AND grouping differ.
+  INVOICE_DEPARSE_EQUIVALENTS = {
+    "CHECK (((attempt_number > 0) AND ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('sending'::character varying)::text, ('sent'::character varying)::text, ('failed'::character varying)::text, ('uncertain'::character varying)::text]))))" =>
+      "CHECK (((attempt_number > 0) AND ((state)::text = ANY ((ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'failed'::character varying, 'uncertain'::character varying])::text[]))))",
+    "CREATE UNIQUE INDEX invoice_delivery_one_open ON public.payroll_consultant_invoice_deliveries USING btree (payroll_consultant_invoice_id) WHERE ((state)::text = ANY (ARRAY[('queued'::character varying)::text, ('sending'::character varying)::text, ('uncertain'::character varying)::text]))" =>
+      "CREATE UNIQUE INDEX invoice_delivery_one_open ON public.payroll_consultant_invoice_deliveries USING btree (payroll_consultant_invoice_id) WHERE ((state)::text = ANY ((ARRAY['queued'::character varying, 'sending'::character varying, 'uncertain'::character varying])::text[]))",
+    "CHECK ((((state)::text = ANY (ARRAY[('waiting_credit'::character varying)::text, ('blocked'::character varying)::text, ('queued'::character varying)::text, ('generating'::character varying)::text, ('failed'::character varying)::text, ('completed'::character varying)::text])) AND ((command_digest)::text ~ '^[0-9a-f]{64}$'::text) AND (length((idempotency_key)::text) >= 1) AND (length((idempotency_key)::text) <= 128)))" =>
+      "CHECK ((((state)::text = ANY ((ARRAY['waiting_credit'::character varying, 'blocked'::character varying, 'queued'::character varying, 'generating'::character varying, 'failed'::character varying, 'completed'::character varying])::text[])) AND ((command_digest)::text ~ '^[0-9a-f]{64}$'::text) AND ((length((idempotency_key)::text) >= 1) AND (length((idempotency_key)::text) <= 128))))"
+  }.freeze
 
   before(:context) do
     @migration_context = ActiveRecord::Base.connection_pool.migration_context
     @original_versions = @migration_context.get_all_versions.sort
     @original_pto_schema = pto_schema_snapshot
+    @original_invoice_dependencies = invoice_dependencies_snapshot
     @rewound_versions = []
     DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata schema_migrations]
-    # Retain independent current PTO guards and their shared employment tenant index.
+    # Unwind invoice children before their historical parents; retain independent PTO guards.
     @original_versions.reverse_each do |version|
-      next unless version > VERSION && version < FIRST_PTO_VERSION
+      next unless (version > VERSION && version < FIRST_PTO_VERSION) || INVOICE_VERSIONS.include?(version)
       next if version == EMPLOYMENT_TENANT_INDEX_VERSION # Five current PTO foreign keys depend on this shared index.
 
       @migration_context.run(:down, version)
@@ -40,6 +52,8 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
     end
     expect(@migration_context.get_all_versions.sort).to eq(@original_versions)
     expect(pto_schema_snapshot).to eq(@original_pto_schema)
+    verify_invoice_catalog_oracle
+    expect(invoice_dependencies_snapshot).to eq(@original_invoice_dependencies)
     expect([ConsultantPtoPolicy, PayrollPtoEntry, PayrollPtoAllocation, PayrollPtoRecovery, PayrollPtoNotification].map(&:count)).to eq([0] * 5)
     puts "Historical Mercury fixture restored #{@original_versions.size} versions; PTO #{@original_pto_schema[:functions].size} functions/#{@original_pto_schema[:triggers].size} triggers unchanged"
   end
@@ -109,16 +123,56 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
     }
   end
 
-  def snapshot
+  def snapshot(tables = TABLES)
     connection = ActiveRecord::Base.connection
-    TABLES.index_with do |table|
+    tables.index_with do |table|
       {
         rows: connection.select_rows("SELECT * FROM #{connection.quote_table_name(table)} ORDER BY id"),
         columns: connection.columns(table).map { |column| [column.name, column.sql_type, column.null, column.default] },
         indexes: connection.select_rows("SELECT indexname, indexdef FROM pg_indexes WHERE schemaname = current_schema() AND tablename = #{connection.quote(table)} ORDER BY indexname"),
+        index_metadata: connection.indexes(table).map { |index| [index.name, index.unique, index.columns, index.where.present?] }.sort_by(&:first),
         constraints: connection.select_rows("SELECT conname, pg_get_constraintdef(oid), convalidated FROM pg_constraint WHERE conrelid = #{connection.quote(table)}::regclass ORDER BY conname"),
-        triggers: connection.select_rows("SELECT tgname, pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = #{connection.quote(table)}::regclass AND NOT tgisinternal ORDER BY tgname")
+        triggers: connection.select_rows("SELECT tgname, pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = #{connection.quote(table)}::regclass AND NOT tgisinternal ORDER BY tgname"),
+        trigger_functions: connection.select_rows("SELECT t.tgname, pg_get_functiondef(t.tgfoid) FROM pg_trigger t WHERE t.tgrelid = #{connection.quote(table)}::regclass AND NOT t.tgisinternal ORDER BY t.tgname")
       }
+    end
+  end
+
+  def invoice_dependencies_snapshot(catalog = snapshot(INVOICE_TABLES))
+    # Preserve every catalog field; normalize only the three reviewed whole-SQL pairs.
+    catalog.transform_values do |definition|
+      definition.merge(
+        constraints: definition.fetch(:constraints).map { |name, sql, validated| [name, INVOICE_DEPARSE_EQUIVALENTS.fetch(sql, sql), validated] },
+        indexes: definition.fetch(:indexes).map { |name, sql| [name, INVOICE_DEPARSE_EQUIVALENTS.fetch(sql, sql)] })
+    end
+  end
+
+  def verify_invoice_catalog_oracle
+    cases = <<~SQL
+      FROM unnest(ARRAY[NULL,'waiting_credit','blocked','queued','generating','failed','completed','sending','sent','uncertain','invalid']::varchar[]) AS states(state)
+      CROSS JOIN unnest(ARRAY[NULL,-1,0,1,2]) AS attempts(attempt_number)
+      CROSS JOIN unnest(ARRAY[NULL,repeat('a',64),repeat('a',63),repeat('q',64)]::varchar[]) AS digests(command_digest)
+      CROSS JOIN unnest(ARRAY[NULL,'','k',repeat('k',128),repeat('k',129)]::varchar[]) AS keys(idempotency_key)
+    SQL
+    INVOICE_DEPARSE_EQUIVALENTS.each do |schema_sql, migration_sql|
+      left, right = [schema_sql, migration_sql].map do |sql|
+        sql.start_with?("CHECK ") ? sql.delete_prefix("CHECK ") : sql.split(" WHERE ", 2).last
+      end
+      expect(ActiveRecord::Base.connection.select_rows("SELECT count(*), bool_and((#{left}) IS NOT DISTINCT FROM (#{right})) #{cases}").sole).to eq([1100, true])
+    end
+    original = snapshot(INVOICE_TABLES)
+    before = invoice_dependencies_snapshot
+    changes = [
+      ["payroll_consultant_invoice_deliveries", :constraints, "invoice_delivery_values", "attempt_number > 0", "attempt_number > 1"],
+      ["payroll_consultant_invoice_deliveries", :indexes, "invoice_delivery_one_open", "'uncertain'::character varying", "'sent'::character varying"],
+      ["payroll_invoice_preparations", :constraints, "invoice_preparation_values", "^[0-9a-f]{64}$", "^[0-9a-f]{64}$::text"]
+    ]
+    changes.each do |table, kind, name, from, to|
+      altered = original.deep_dup
+      row = altered.fetch(table).fetch(kind).find { |entry| entry.first == name }
+      expect(row.fetch(1)).to include(from)
+      row[1] = row.fetch(1).sub(from, to)
+      expect(invoice_dependencies_snapshot(altered)).not_to eq(before), "Changed #{name} was hidden"
     end
   end
 

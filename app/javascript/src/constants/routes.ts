@@ -23,6 +23,10 @@ const ClientDetails = lazy(() => import("../components/Clients/Details"));
 const ExpenseDetails = lazy(() => import("components/Expenses/Details"));
 const ExpensesTable = lazy(() => import("components/Expenses/ExpensesTable"));
 const SalarySlips = lazy(() => import("components/SalarySlips"));
+const ConsultantInvoices = lazy(
+  () => import("components/Profile/ConsultantInvoices")
+);
+const PayrollInvoicePage = lazy(() => import("components/Payroll/InvoicePage"));
 const TaxDeclarations = lazy(() => import("components/TaxDeclarations"));
 const Agreements = lazy(() => import("components/Agreements"));
 const DocumentSignatures = lazy(() => import("components/DocumentSignatures"));
@@ -324,6 +328,11 @@ export const ROUTES = [
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
   },
   {
+    path: "/settings/consultant-invoices",
+    subRoutes: [{ path: "", Component: ConsultantInvoices }],
+    authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
+  },
+  {
     path: "/settings/invoice-authorization",
     subRoutes: [{ path: "", Component: InvoiceAuthorization }],
     authorisedRoles: [ADMIN, OWNER, BOOK_KEEPER, EMPLOYEE, Roles.MANAGER],
@@ -383,6 +392,10 @@ export const ROUTES = [
   {
     path: "/payroll",
     subRoutes: [
+      {
+        path: ":runId/consultant-invoices",
+        Component: withPayrollGate(PayrollInvoicePage),
+      },
       { path: "", Component: withPayrollGate(PayrollReview) },
       { path: ":runId", Component: withPayrollGate(PayrollReview) },
     ],

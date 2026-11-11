@@ -16,6 +16,7 @@ RSpec.configure do |config|
       allow(Ferrum::Browser).to receive(:new).and_return(double("browser",
         quit: nil,
         go_to: nil,
+        evaluate: nil,
         network: double("network", wait_for_idle: nil),
         pdf: Base64.strict_encode64("%PDF-1.4\nMocked PDF content")
       ))

@@ -76,6 +76,24 @@ class Payroll::BillingIdentity
     expected.present? && value.is_a?(Hash) && value == expected
   end
 
+  # Resolve the approved historical receipt, without substituting today's head or
+  # requiring its historic reviewer to retain their role/workspace today.
+  def frozen_binding!(value, verify_evidence: false)
+    raise Payroll::Workflow::Conflict, "Frozen billing receipt is unavailable" unless value.is_a?(Hash) && value["version"] == VERSION
+
+    submission = submissions.find(value.fetch("submission_id"))
+    review = reviews.where(submission_id: submission.id).find(value.fetch("review_id"))
+    expected = { "version" => VERSION, "submission_id" => submission.id.to_s, "review_id" => review.id.to_s,
+      "digest" => digest([VERSION, @company.id, @employment.id, submission.id, submission.source_digest, review.id, review.command_digest]) }
+    unless value == expected && approval_intact?(submission, review)
+      raise Payroll::Workflow::Conflict, "Frozen billing receipt failed integrity verification"
+    end
+    Payroll::BillingEvidence.verify!(submission) if verify_evidence
+    submission.facts.deep_dup
+  rescue KeyError, ActiveRecord::RecordNotFound
+    raise Payroll::Workflow::Conflict, "Frozen billing receipt is unavailable", cause: nil
+  end
+
   # A pending review belongs to accounts; request only missing facts or an explicit self-correction.
   def completion_request_source
     return unless Payroll::Entitlement.enabled?(@company.id) && kept_subject?
