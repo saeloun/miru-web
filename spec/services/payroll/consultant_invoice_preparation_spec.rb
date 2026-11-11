@@ -113,6 +113,26 @@ RSpec.describe "Consultant invoice preparation" do
     facts.merge("mode" => "existing", "timing" => "existing_invoice", "original_date" => "2026-11-30")
   end
 
+  it "rejects a future original date before upload but accepts today and a pre-service original" do
+    file = original
+    blobs = ActiveStorage::Blob.count
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id,
+        facts: existing_facts.merge("original_date" => "2026-12-06"), expected_preparation_id: "", idempotency_key: "future-original", original_pdf: file)
+    end.to raise_error(Payroll::ConsultantReview::InvalidInput, /future/)
+    expect(PayrollInvoicePreparation.count).to eq(0)
+    expect(ActiveStorage::Blob.count).to eq(blobs)
+    today = service.record!(expected_revision_digest: revision.digest, employment_id: employment.id,
+      facts: existing_facts.merge("original_date" => "2026-12-05"), expected_preparation_id: "", idempotency_key: "today-original", original_pdf: file)
+    before_service = service.record!(expected_revision_digest: revision.digest, employment_id: employment.id,
+      facts: existing_facts.merge("original_date" => "2026-10-01"), expected_preparation_id: today.id.to_s, idempotency_key: "advance-original")
+    expect(before_service.facts.fetch("original_date")).to eq("2026-10-01")
+    expect(before_service.original_blob_id).to eq(today.original_blob_id)
+    expect(before_service.original_blob.download).to eq(File.binread(file.tempfile.path))
+  ensure
+    file&.close
+  end
+
   it "rejects an unsupported country rather than accepting arbitrary two-letter text" do
     input = facts.merge("billed_entity" => facts["billed_entity"].merge("country" => "ZZ"))
     expect { prepare(input) }.to raise_error(Payroll::ConsultantReview::InvalidInput)

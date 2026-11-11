@@ -174,6 +174,7 @@ class Payroll::ConsultantInvoiceIssue
         raise Blocked, "waiting_credit"
       end
       date = preparation.facts["mode"] == "generate" ? Time.current.in_time_zone("Asia/Kolkata").to_date : Date.iso8601(preparation.facts.fetch("original_date"))
+      raise Blocked, "original_date_in_future" if date > Time.current.in_time_zone("Asia/Kolkata").to_date
       raise Blocked, "numbering_review_required" unless preparation.facts["financial_year"] == Payroll::ConsultantInvoicePreparation.financial_year(date)
       preparation.facts.slice(*Payroll::ConsultantInvoicePreparation::FIELDS).merge(source).merge(
         "version" => 1, "status" => "Paid", "issued_on" => date.iso8601, "accounts_email" => preparation.facts.fetch("accounts_email"),

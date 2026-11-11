@@ -131,6 +131,38 @@ RSpec.describe "Consultant paid invoice issuance" do
     expect(invoice.snapshot.fetch("billing_receipt")).to eq(binding)
   end
 
+  it "blocks an older reviewed future-dated original independently of the preparation validator" do
+    upload = Rack::Test::UploadedFile.new(Rails.root.join("spec/support/fixtures/pdf-file.pdf"), "application/pdf")
+    file = ActionDispatch::Http::UploadedFile.new(tempfile: upload.tempfile, filename: "legacy-original.pdf", type: "application/pdf")
+    valid = prepare_consultant_invoice(facts: invoice_facts.merge("mode" => "existing", "timing" => "existing_invoice", "original_date" => "2026-12-05"), original_pdf: file)
+    legacy = valid.dup
+    legacy.previous_preparation = valid
+    legacy.facts = valid.facts.merge("original_date" => "2026-12-06")
+    legacy.idempotency_key = "legacy-future-original"
+    legacy.save!
+    credited_invoice_leg
+    expect(issuer.issue!).to eq(legacy)
+    expect(legacy.reload).to have_attributes(state: "blocked", error_code: "original_date_in_future")
+    expect(PayrollConsultantInvoice.count).to eq(0)
+    expect(legacy.original_blob.download).to eq(File.binread(file.tempfile.path))
+  ensure
+    file&.close
+  end
+
+  it "issues an original dated today and preserves its bytes and date on later replay" do
+    upload = Rack::Test::UploadedFile.new(Rails.root.join("spec/support/fixtures/pdf-file.pdf"), "application/pdf")
+    file = ActionDispatch::Http::UploadedFile.new(tempfile: upload.tempfile, filename: "today-original.pdf", type: "application/pdf")
+    prepare_consultant_invoice(facts: invoice_facts.merge("mode" => "existing", "timing" => "existing_invoice", "original_date" => "2026-12-05"), original_pdf: file)
+    credited_invoice_leg
+    invoice = issuer.issue!
+    travel 2.days
+    expect(issuer.issue!.id).to eq(invoice.id)
+    expect(invoice.issued_on).to eq(Date.new(2026, 12, 5))
+    expect(invoice.original_blob.download).to eq(File.binread(file.tempfile.path))
+  ensure
+    file&.close
+  end
+
   it "lets a fresh owner review an already credited historical run after its old approver leaves" do
     grant_invoice_consent
     credited_invoice_leg

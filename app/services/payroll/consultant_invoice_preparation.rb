@@ -141,11 +141,13 @@ class Payroll::ConsultantInvoicePreparation
     end
 
     def reserve_number!(employment, facts)
+      lock_id = Digest::SHA256.hexdigest("consultant-invoice-number:#{@run.company_id}:#{employment.user_id}")[0, 15].to_i(16)
+      PayrollInvoicePreparation.connection.execute(PayrollInvoicePreparation.sanitize_sql_array(["SELECT pg_advisory_xact_lock(?)", lock_id]))
       digest = self.class.number_digest(facts)
       used = PayrollConsultantInvoice.exists?(company_id: @run.company_id, issuer_id: employment.user_id,
         financial_year: facts.fetch("financial_year"), number_digest: digest)
       reserved = PayrollInvoicePreparation.heads.joins(:employment).where(company_id: @run.company_id, reviewed: true)
-        .where(employments: { user_id: employment.user_id }).where.not(payroll_run_id: @run.id).any? do |receipt|
+        .where(employments: { user_id: employment.user_id }).where.not(payroll_run_id: @run.id, employment_id: employment.id).any? do |receipt|
           receipt.facts["financial_year"] == facts["financial_year"] &&
             self.class.number_digest(receipt.facts) == digest
         end
@@ -182,6 +184,9 @@ class Payroll::ConsultantInvoicePreparation
         invalid! unless facts["timing"] == "post_credit_supported" && facts["financial_year"] == self.class.financial_year
       else
         date = Date.iso8601(facts["original_date"])
+        if date > Time.current.in_time_zone("Asia/Kolkata").to_date
+          raise Payroll::ConsultantReview::InvalidInput, "Original invoice date is in the future"
+        end
         invalid! unless facts["original_date"].match?(/\A\d{4}-\d{2}-\d{2}\z/) && facts["financial_year"] == self.class.financial_year(date) && facts["timing"] == "existing_invoice"
       end
     rescue Date::Error, TypeError
