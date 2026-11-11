@@ -16,6 +16,95 @@ RSpec.describe "Consultant invoice committed races and SQL boundaries" do
     credited_invoice_leg
   end
 
+  def after_render(&change)
+    allow_any_instance_of(Payroll::ConsultantInvoicePdf).to receive(:render).and_wrap_original do |method|
+      bytes = method.call
+      expect(ApplicationRecord.connection.transaction_open?).to be(false)
+      change.call
+      bytes
+    end
+  end
+
+  it "rejects a preparation superseded through a fresh review during rendering and cleans its staged PDF" do
+    prior = PayrollInvoicePreparation.sole
+    blobs = ActiveStorage::Blob.count
+    replacement = nil
+    after_render do
+      replacement = Payroll::ConsultantInvoicePreparation.new(run, actor: accounts).record!(employment_id: employment.id,
+        facts: invoice_facts.merge("number" => "2"), expected_revision_digest: revision.digest,
+        expected_preparation_id: prior.id.to_s, idempotency_key: "supersede-rendering")
+    end
+    expect(issue.id).to eq(prior.id)
+    expect(prior.reload.error_code).to eq("preparation_changed")
+    expect(PayrollInvoicePreparation.heads.sole.id).to eq(replacement.id)
+    expect(replacement.reload.state).to eq("waiting_credit")
+    expect(PayrollConsultantInvoice.count).to eq(0)
+    expect(ActiveStorage::Blob.count).to eq(blobs)
+  end
+
+  it "does not clear a replacement operational claim when the rendering worker loses its token" do
+    preparation = PayrollInvoicePreparation.sole
+    blobs = ActiveStorage::Blob.count
+    token = SecureRandom.hex(32)
+    after_render do
+      preparation.reload
+      expect(PayrollInvoicePreparation.where(id: preparation.id, claim_token: preparation.claim_token)
+        .update_all(claim_token: token, started_at: Time.current)).to eq(1)
+    end
+    expect(issue.id).to eq(preparation.id)
+    expect(preparation.reload).to have_attributes(state: "generating", claim_token: token, error_code: nil)
+    expect(PayrollConsultantInvoice.count).to eq(0)
+    expect(ActiveStorage::Blob.count).to eq(blobs)
+  end
+
+  it "returns a newer stale-claim winner without replacing its PDF or duplicating delivery" do
+    blobs = ActiveStorage::Blob.count
+    winner = nil
+    renders = 0
+    after_render do
+      renders += 1
+      if renders == 1
+        travel 16.minutes
+        winner = issue
+      end
+    end
+    result = issue
+    expect(winner).to be_a(PayrollConsultantInvoice)
+    expect(result.id).to eq(winner.id)
+    expect(result.pdf_blob_id).to eq(winner.pdf_blob_id)
+    expect(renders).to eq(2)
+    expect(PayrollConsultantInvoice.count).to eq(1)
+    expect(winner.payroll_consultant_invoice_deliveries.count).to eq(1)
+    expect(ActiveStorage::Blob.count).to eq(blobs + 1)
+  end
+
+  it "keeps an intact credited revision as the source when a new payroll draft appears during rendering" do
+    approved = revision
+    draft = nil
+    after_render do
+      draft = workflow.revise!(actor: accounts, payload: approved.payroll_payload.deep_dup,
+        expected_digest: approved.digest, idempotency_key: "draft-during-render")
+    end
+    invoice = issue
+    expect(draft.payroll_approvals.count).to eq(0)
+    expect(run.current_revision.id).to eq(draft.id)
+    expect(invoice).to be_a(PayrollConsultantInvoice)
+    expect(invoice.payroll_revision_id).to eq(approved.id)
+    expect(invoice.snapshot.fetch("amounts")).to eq(approved.payroll_payload.fetch("lines").sole.fetch("amounts"))
+  end
+
+  it "blocks a subject discarded during rendering without deleting its real credit" do
+    preparation = PayrollInvoicePreparation.sole
+    group = PayrollPaymentGroup.sole
+    blobs = ActiveStorage::Blob.count
+    after_render { employment.discard! }
+    expect(issue.id).to eq(preparation.id)
+    expect(preparation.reload.error_code).to eq("subject_unavailable")
+    expect(group.reload).to be_fully_credited
+    expect(PayrollConsultantInvoice.count).to eq(0)
+    expect(ActiveStorage::Blob.count).to eq(blobs)
+  end
+
   it "lets one concurrent worker render and returns the durable winner on later replay" do
     ready = Queue.new
     release = Queue.new
