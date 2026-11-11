@@ -23,6 +23,17 @@ abort "Obsolete default JSON remains" if Gem::Specification.find_all_by_name("js
   spec.default_gem? && spec.version < Gem::Version.new("2.19.9")
 end
 
+openexr_floor = "3.2.12-1~deb13u1"
+{ "" => 1, "3.1.13-2" => 1, openexr_floor => 0, "3.2.12-1~deb13u2" => 0 }.each do |version, expected_exit|
+  _, status = Open3.capture2e("dpkg", "--compare-versions", version, "ge", openexr_floor)
+  abort "OpenEXR version comparison control failed" unless status.exitstatus == expected_exit
+end
+abort "OpenEXR package is not installed" unless capture!("dpkg-query", "-W", "-f=${Status}", "libopenexr-3-1-30") == "install ok installed"
+openexr_version = capture!("dpkg-query", "-W", "-f=${Version}", "libopenexr-3-1-30").strip
+abort "OpenEXR package version is missing" if openexr_version.empty?
+capture!("dpkg", "--compare-versions", openexr_version, "ge", openexr_floor)
+puts "OpenEXR distro package verified: #{openexr_version}"
+
 exr = File.expand_path("fixtures/openexr/stripes.exr", __dir__)
 # A separate process proves the fixture decodes without weakening the application's boundary.
 capture!(Gem.ruby, "-rvips", "-e", <<~RUBY, exr)
