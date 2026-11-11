@@ -2,7 +2,7 @@
 
 class PayrollInvoicePreparation < ApplicationRecord
   OPERATIONAL_FIELDS = %w[state claim_token error_code started_at next_attempt_at updated_at].freeze
-  self.filter_attributes += [:facts, :command_digest, :idempotency_key]
+  self.filter_attributes += [:facts, :command_digest, :idempotency_key, :claim_token]
   belongs_to :company
   belongs_to :payroll_run
   belongs_to :payroll_revision
@@ -17,12 +17,19 @@ class PayrollInvoicePreparation < ApplicationRecord
     raise ActiveRecord::ReadOnlyRecord, "Reviewed preparation is immutable" if (changed - OPERATIONAL_FIELDS).any?
   end
   before_destroy { raise ActiveRecord::ReadOnlyRecord, "Invoice preparation is retained" }
+  after_create_commit :enqueue_consultant_invoice, if: :reviewed?
 
   def accounts_email
-    Payroll::ConsultantInvoicePreparation::ACCOUNTS_EMAIL
+    facts["accounts_email"].presence || Payroll::ConsultantInvoicePreparation::ACCOUNTS_EMAIL
   end
 
   def serializable_hash(options = nil)
-    super.except("facts", "command_digest", "idempotency_key")
+    super.except("facts", "command_digest", "idempotency_key", "claim_token")
   end
+
+  private
+
+    def enqueue_consultant_invoice
+      PayrollConsultantInvoiceIssueJob.enqueue_safely(payroll_run_id, employment_id)
+    end
 end

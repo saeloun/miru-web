@@ -355,7 +355,7 @@ RSpec.describe Payroll::MercuryReconciliation do
     end
 
     it "marks the entitlement credited only from a recorded credit" do
-      expect(credit.credit_state).to eq("credited")
+      expect { expect(credit.credit_state).to eq("credited") }.to have_enqueued_job(PayrollConsultantInvoiceIssueJob).with(run.id, employment.id)
       expect(leg.reload.display_state).to eq("credited")
       expect(leg.payroll_payment_group.reload.fully_credited_at).to be_present
     end

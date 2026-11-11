@@ -159,7 +159,7 @@ RSpec.describe Payroll::IndiaHandoff do
     credit(handoff)
     expect(handoff.payroll_india_credits.count).to eq(1)
     expect { credit(handoff, amount: "1001.00") }.to raise_error(Payroll::Workflow::Conflict)
-    credit(handoff, amount: "62000.00", reference: "Synthetic balance")
+    expect { credit(handoff, amount: "62000.00", reference: "Synthetic balance") }.to have_enqueued_job(PayrollConsultantInvoiceIssueJob).with(run.id, employment.id)
     expect(handoff.reload.credited_minor).to eq(6_300_000)
     expect(handoff.fully_credited_at).to be_present
     expect(handoff.status).to eq("credited")

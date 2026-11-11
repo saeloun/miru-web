@@ -11,6 +11,7 @@ class PayrollPaymentGroup < ApplicationRecord
   has_many :payroll_payment_instructions, dependent: :restrict_with_exception
 
   before_validation :require_payroll_entitlement
+  after_update_commit :enqueue_consultant_invoice, if: -> { saved_change_to_fully_credited_at? && fully_credited_at_before_last_save.nil? && fully_credited_at.present? }
 
   validates :entitlement_minor, numericality: { only_integer: true, greater_than: 0 }
   validates :required_legs, inclusion: { in: [1, 2] }
@@ -48,6 +49,10 @@ class PayrollPaymentGroup < ApplicationRecord
   end
 
   private
+
+    def enqueue_consultant_invoice
+      PayrollConsultantInvoiceIssueJob.enqueue_safely(payroll_run_id, employment_id)
+    end
 
     def require_payroll_entitlement
       Payroll::Entitlement.require!(company_id)
