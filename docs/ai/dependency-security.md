@@ -1,6 +1,6 @@
 # Dependency security maintenance
 
-Updated 8 November 2026. Run all checks from the repository root:
+Updated 11 November 2026. Run all checks from the repository root:
 
 ```sh
 rtk mise exec -- bundle exec bundler-audit check --update

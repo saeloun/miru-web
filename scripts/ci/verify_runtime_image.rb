@@ -31,7 +31,8 @@ end
 abort "OpenEXR package is not installed" unless capture!("dpkg-query", "-W", "-f=${Status}", "libopenexr-3-1-30") == "install ok installed"
 openexr_version = capture!("dpkg-query", "-W", "-f=${Version}", "libopenexr-3-1-30").strip
 abort "OpenEXR package version is missing" if openexr_version.empty?
-capture!("dpkg", "--compare-versions", openexr_version, "ge", openexr_floor)
+output, status = Open3.capture2e("dpkg", "--compare-versions", openexr_version, "ge", openexr_floor)
+abort "OpenEXR #{openexr_version} does not meet required #{openexr_floor}: #{output}" unless status.success?
 puts "OpenEXR distro package verified: #{openexr_version}"
 
 exr = File.expand_path("fixtures/openexr/stripes.exr", __dir__)
