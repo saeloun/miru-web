@@ -662,6 +662,7 @@ function ScopedPayrollInvoices({
 }) {
   const [data, setData] = useState<RunInvoices>();
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [refresh, setRefresh] = useState(0);
   const [busy, setBusy] = useState(false);
   const scope = `${companyId}:${runId}`;
@@ -673,6 +674,7 @@ function ScopedPayrollInvoices({
     const controller = new AbortController();
     abort.current = controller;
     setError("");
+    setNotice("");
     setData(undefined);
     consultantInvoicesApi
       .run(companyId, runId, controller.signal)
@@ -683,7 +685,16 @@ function ScopedPayrollInvoices({
       })
       .catch(failure => {
         if (!axios.isCancel(failure) && !controller.signal.aborted) {
-          setError(invoiceError(failure));
+          const message = invoiceError(failure);
+          if (
+            axios.isAxiosError(failure) &&
+            failure.response?.status === 403 &&
+            message === "Invoice preparation waits for payroll approval"
+          ) {
+            setNotice(message);
+          } else {
+            setError(message);
+          }
         }
       });
 
@@ -761,7 +772,14 @@ function ScopedPayrollInvoices({
           {error}
         </p>
       )}
-      {!data && !error && <p role="status">Loading invoice preparation…</p>}
+      {notice && (
+        <p role="status" className="text-sm text-muted-foreground">
+          {notice}
+        </p>
+      )}
+      {!data && !error && !notice && (
+        <p role="status">Loading invoice preparation…</p>
+      )}
       {data?.consultants.length === 0 && (
         <p className="text-sm">
           No approved consultant lines are available for invoice preparation.

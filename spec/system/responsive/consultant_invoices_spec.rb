@@ -192,6 +192,56 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     capture("admin-unreviewed")
   end
 
+  it "shows approval waiting as a neutral status and clears it after an approved refresh" do
+    draft = workflow.revise!(actor: accounts, payload: revision.payroll_payload.deep_dup,
+      idempotency_key: "browser-waiting-for-approval", expected_digest: revision.digest)
+    sign_in accounts
+    @width = 1440
+    page.current_window.resize_to(@width, 1000)
+    visit "/payroll/#{run.id}/consultant-invoices"
+    expect(page).to have_css("[role='status']", text: "Invoice preparation waits for payroll approval", exact_text: true)
+    expect(page).to have_no_css("[role='alert']")
+    expect(page).to have_no_text("Loading invoice preparation…")
+    [1440, 375].each do |width|
+      @width = width
+      page.current_window.resize_to(width, 1000)
+      visit "/payroll/#{run.id}/consultant-invoices"
+      expect(page).to have_css("[role='status']", text: "Invoice preparation waits for payroll approval", exact_text: true)
+      bounds = page.evaluate_script(<<~JS)
+        (() => { const card = document.querySelector('[aria-label="Consultant invoices"]');
+          const button = card.querySelector('button').getBoundingClientRect();
+          const parent = card.querySelector('button').parentElement.getBoundingClientRect();
+          const panel = card.getBoundingClientRect();
+          return {left:button.left,right:button.right,parentLeft:parent.left,parentRight:parent.right,
+            cardLeft:panel.left,cardRight:panel.right}; })()
+      JS
+      expect(bounds.fetch("cardLeft")).to be >= 0
+      expect(bounds.fetch("cardRight")).to be <= width
+      expect(bounds.fetch("left")).to be >= bounds.fetch("parentLeft")
+      expect(bounds.fetch("right")).to be <= [bounds.fetch("parentRight"), width].min
+      capture("approval-waiting")
+    end
+    workflow.approve!(actor: accounts, stage: "accounts", expected_digest: draft.digest)
+    workflow.approve!(actor: owner, stage: "final", expected_digest: draft.digest)
+    press "Refresh invoice status"
+    expect(page).to have_text("Synthetic Consultant")
+    expect(page).to have_no_text("Invoice preparation waits for payroll approval")
+    expect(page).to have_no_css("[role='alert']")
+  end
+
+  it "keeps an unrelated authorization refusal as an error alert after refresh" do
+    workflow.revise!(actor: accounts, payload: revision.payroll_payload.deep_dup,
+      idempotency_key: "browser-unrelated-approval-refusal", expected_digest: revision.digest)
+    sign_in accounts
+    visit "/payroll/#{run.id}/consultant-invoices"
+    expect(page).to have_css("[role='status']", text: "Invoice preparation waits for payroll approval", exact_text: true)
+    accounts.remove_role(:book_keeper, company)
+    press "Refresh invoice status"
+    expect(page).to have_css("[role='alert']")
+    expect(page).to have_no_css("[role='status']", text: "Invoice preparation waits for payroll approval")
+    expect(page).to have_no_text("Synthetic Consultant")
+  end
+
   it "keeps a reopened run's issued document downloadable without exposing draft forms or billing facts" do
     prepare_consultant_invoice
     grant_invoice_consent

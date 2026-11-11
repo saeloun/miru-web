@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.6.13] - 2026-11-11
+## [3.6.15] - 2026-11-11
 
 ### Added
 
@@ -9,6 +9,7 @@
 ### Fixed
 
 - Keep invoice preparation private until payroll approval, preserve exact PDF amounts and prevent conflicting issuer-number reservations.
+- Show an approval wait as a neutral status while retaining alerts for permission errors.
 - Keep leave review controls stable while payroll loads, retain the selected report date and wrap long consultant names on mobile.
 - Use a neutral PDF title when a document has none, keeping rendered content out of PDF metadata.
 
