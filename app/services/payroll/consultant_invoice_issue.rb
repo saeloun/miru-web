@@ -190,7 +190,7 @@ class Payroll::ConsultantInvoiceIssue
     end
 
     def number_digest(snapshot)
-      Payroll::ConsultantInvoicePreparation.digest([snapshot.fetch("series").upcase, snapshot.fetch("number").upcase])
+      Payroll::ConsultantInvoicePreparation.number_digest(snapshot)
     end
 
     def verify_original!(blob, descriptor)

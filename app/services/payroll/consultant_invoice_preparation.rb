@@ -21,6 +21,14 @@ class Payroll::ConsultantInvoicePreparation
     "#{first}-#{first + 1}"
   end
 
+  def self.invoice_number(facts)
+    facts.fetch("mode") == "existing" ? facts.fetch("number") : "#{facts.fetch('series')}/#{facts.fetch('number')}"
+  end
+
+  def self.number_digest(facts)
+    digest(["consultant_invoice_number_v1", invoice_number(facts).upcase])
+  end
+
   def reviewer?(employment)
     return false unless @actor && @actor.id != employment.user_id &&
       User.kept.exists?(id: @actor.id, current_workspace_id: @run.company_id) && @run.eligible_actor?(@actor, "accounts")
@@ -112,13 +120,13 @@ class Payroll::ConsultantInvoicePreparation
     end
 
     def reserve_number!(employment, facts)
-      digest = self.class.digest([facts.fetch("series").upcase, facts.fetch("number").upcase])
+      digest = self.class.number_digest(facts)
       used = PayrollConsultantInvoice.exists?(company_id: @run.company_id, issuer_id: employment.user_id,
         financial_year: facts.fetch("financial_year"), number_digest: digest)
       reserved = PayrollInvoicePreparation.heads.joins(:employment).where(company_id: @run.company_id, reviewed: true)
         .where(employments: { user_id: employment.user_id }).where.not(payroll_run_id: @run.id).any? do |receipt|
           receipt.facts["financial_year"] == facts["financial_year"] &&
-            self.class.digest([receipt.facts.fetch("series").upcase, receipt.facts.fetch("number").upcase]) == digest
+            self.class.number_digest(receipt.facts) == digest
         end
       raise Payroll::Workflow::Conflict, "This issuer number is already issued or reserved for another run" if used || reserved
     end

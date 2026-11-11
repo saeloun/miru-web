@@ -9,10 +9,10 @@
 <h1><%= kind == "paid_settlement" ? "Paid settlement statement" : "Consultant invoice" %></h1>
 <% if kind == "paid_settlement" %>
   <p><strong>Paid</strong> · Statement generated: <%= snapshot.fetch("document_on") %> (Asia/Kolkata)</p>
-  <p>Original invoice: <%= snapshot.fetch("series") %>/<%= snapshot.fetch("number") %> · Original invoice date: <%= snapshot.fetch("issued_on") %></p>
+  <p>Original invoice: <%= Payroll::ConsultantInvoicePreparation.invoice_number(snapshot) %> · Original invoice date: <%= snapshot.fetch("issued_on") %></p>
   <p>This statement links the existing consultant invoice above. Its original PDF, number and date are preserved; this is settlement evidence, not a replacement invoice.</p>
 <% else %>
-  <p><strong>Paid</strong> · Invoice: <%= snapshot.fetch("series") %>/<%= snapshot.fetch("number") %> · Issue date: <%= snapshot.fetch("issued_on") %> (Asia/Kolkata)</p>
+  <p><strong>Paid</strong> · Invoice: <%= Payroll::ConsultantInvoicePreparation.invoice_number(snapshot) %> · Issue date: <%= snapshot.fetch("issued_on") %> (Asia/Kolkata)</p>
 <% end %>
 <h2>Service provider</h2>
 <% person = snapshot.fetch("consultant") %>

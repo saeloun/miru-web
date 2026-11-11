@@ -47,13 +47,14 @@ RSpec.describe "Real consultant invoice PDF" do
     upload = Rack::Test::UploadedFile.new(Rails.root.join("spec/support/fixtures/pdf-file.pdf"), "application/pdf")
     file = ActionDispatch::Http::UploadedFile.new(tempfile: upload.tempfile, filename: "existing.pdf", type: "application/pdf")
     original = File.binread(file.tempfile.path)
-    prepare_consultant_invoice(facts: invoice_facts.merge("mode" => "existing", "timing" => "existing_invoice", "original_date" => "2026-11-30"), original_pdf: file)
+    prepare_consultant_invoice(facts: invoice_facts.merge("mode" => "existing", "timing" => "existing_invoice", "original_date" => "2026-11-30", "series" => "INV", "number" => "INV-2026-0042"), original_pdf: file)
     credited_invoice_leg
     actual_renderer
     invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
     expect(invoice).to be_a(PayrollConsultantInvoice)
     text = parsed_text(invoice)
-    expect(text).to include("Paid settlement statement", "Statement generated: 2026-12-05", "Original invoice date: 2026-11-30", "Original invoice: SYN/1", "Synthetic credit")
+    expect(text).to include("Paid settlement statement", "Statement generated: 2026-12-05", "Original invoice date: 2026-11-30", "Original invoice: INV-2026-0042", "Synthetic credit")
+    expect(text).not_to include("INV/INV-2026-0042")
     expect(invoice.original_blob.download).to eq(original)
   ensure
     file&.close

@@ -72,6 +72,15 @@ RSpec.describe "Consultant invoice preparation" do
     expect { prepare(facts.merge("financial_year" => "2025-2026")) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
   end
 
+  it "preserves an existing full invoice number and shares uniqueness with the equivalent generated number" do
+    generated = facts.merge("series" => "INV", "number" => "1")
+    linked = facts.merge("mode" => "existing", "series" => "internal", "number" => "INV/1")
+    expect(Payroll::ConsultantInvoicePreparation.invoice_number(generated)).to eq("INV/1")
+    expect(Payroll::ConsultantInvoicePreparation.invoice_number(linked)).to eq("INV/1")
+    expect(Payroll::ConsultantInvoicePreparation.invoice_number(linked.merge("number" => "INV-2026-0042"))).to eq("INV-2026-0042")
+    expect(Payroll::ConsultantInvoicePreparation.number_digest(generated)).to eq(Payroll::ConsultantInvoicePreparation.number_digest(linked))
+  end
+
   it "refuses a payroll revision digest different from the facts the reviewer saw" do
     expect do
       service.record!(employment_id: employment.id, facts:, expected_preparation_id: "", idempotency_key: "revision", expected_revision_digest: "0" * 64)
