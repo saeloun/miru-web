@@ -30,8 +30,26 @@ browser run. That checkpoint build manifest was copied to a retained snapshot wi
 SHA256 `880e815f39b26b7213cc8e0f71e6fcda07ed578efe45f44afb9dbed812c21312`.
 The earlier browser manifest's bytes were not retained before the build overwrote
 the volatile output; its recorded hash remains historical evidence only. API/core verification passed 52 examples; delivery/setter verification
-is a separate suite. The whole-repository TypeScript check remains failing outside
-the new invoice modules; no full typecheck success is claimed.
+is a separate suite. The whole-repository TypeScript check reports 327 untriaged
+diagnostics; no full typecheck success or clean baseline is claimed.
+
+The integrated backend follow-up passed 231 examples across 16 service, job,
+mailer, schedule and request files. This includes the default-pool issuer-number
+race, future-original-date guards, draft privacy and delivery recovery. All 54
+captured Ruby/template/config inputs stayed unchanged during that run. It excludes
+the separate real-PDF and browser suites; the earlier counts overlap this batch.
+Eight focused issuance-boundary examples also passed, including five added checks
+for preparation/claim supersession, a stale worker's durable winner, a new draft
+after real credit and a discarded subject. These use committed interleavings and
+fixture PDF bytes; they add no new actual-renderer or production qualification.
+
+The public PTO integration passed four native browser cases plus the affected
+admin invoice-discovery case, with zero console errors. The leave queue stays
+above asynchronously loaded archive/invoice content, its date is locked while
+loading, and long review labels fit at 375px. Panel/spec bytes match the separately
+verified deployment-branch fix; the public caller retains its invoice selector.
+An initial local driver-configuration failure reached no product assertion and is
+kept separate from the corrected five-case pass. The final 3.6.13 Vite build passed.
 
 ## Images
 
@@ -46,6 +64,8 @@ the new invoice modules; no full typecheck success is claimed.
 | [Linked statement,375](linked-paid-statement-375.png) | `df63fab03447e68c9bae9f00618ab22d2a6d0d8be6d45fa418cfa79d13045cd8` |
 | [Admin draft,1440](admin-unreviewed-1440.png) | `7a0fc37602af2004f20c28ef160095dbef94e0e2644f32b03bfddc30a3cd5239` |
 | [Isolated email evidence,1440](uncertain-evidence-isolated-1440.png) | `9830ea04af3277c34c15a95045d82ed066306cec9215c293190d592ac8b11a78` |
+| [Leave review queue,1440](pto-review-queue-1440.png) | `b0e2d37ef031e1c961fcf8262360443f8759b7770f0a3147fd32c0626dabe98f` |
+| [Leave review queue,375](pto-review-queue-375.png) | `872f9efc38b64688cea4363b77bf456a5eb8950be83e5bf102dbd25f17a06b00` |
 
 The current 375px linked screenshot is byte-identical to the prior capture, so it
 is stored once. All older captures remain unaltered.
