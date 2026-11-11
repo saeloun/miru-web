@@ -112,6 +112,9 @@ RSpec.describe "PTO recovery replacement and owner review" do
     expect(PayrollPtoRecovery.heads.where(payroll_run: run, kind: "returned_review")).to exist
     expect(leg.payroll_payment_group.reload).to be_fully_credited
     expect(Payroll::ConsultantInvoiceDelivery.credit_review?(invoice)).to be(true)
+    line = current.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == employment.id }
+    expect(Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).credited_source_for_review?(revision: current, line:,
+      group: leg.payroll_payment_group, legs: leg.payroll_payment_group.payroll_payment_instructions.reload.to_a, handoff: nil)).to be(false)
     expect(Payroll::ConsultantInvoiceDelivery.pdf_bytes(invoice, kind: :paid)).to eq(bytes)
     expect(invoice.reload.snapshot.fetch("status")).to eq("Paid")
   end

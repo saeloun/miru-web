@@ -118,8 +118,8 @@ class Payroll::ConsultantInvoiceDelivery
 
       sent = outcome == "delivered"
       @delivery.update!(state: sent ? "sent" : "failed", claim_token: nil, sent_at: sent ? Time.current : nil,
-        error_code: sent ? nil : "delivery_confirmed_absent", reviewed_by: actor, reviewed_at: Time.current,
-        review_evidence: JSON.generate(values.merge("reference" => values["reference"].strip)))
+        error_code: sent ? nil : "delivery_confirmed_absent", reconciled_by: actor, reconciled_at: Time.current,
+        reconciliation_evidence: JSON.generate(values.merge("reference" => values["reference"].strip)))
     end
     @delivery
   end
@@ -192,13 +192,19 @@ class Payroll::ConsultantInvoiceDelivery
       end
       message.raise_delivery_errors = true
       return unless locked do
-        next false unless claimed? && permitted_to_send?
+        next false unless claimed?
+        if stale_sending?
+          @delivery.update!(state: "failed", claim_token: nil, error_code: "claim_expired")
+          next false
+        end
+        next false unless permitted_to_send?
 
         recipient = self.class.recipient(@invoice)
         unless message.to == [recipient] && message.cc.blank? && message.bcc.blank?
           @delivery.update!(state: "failed", claim_token: nil, error_code: "recipient_changed")
           next false
         end
+        @delivery.update!(started_at: Time.current)
         true
       end
 

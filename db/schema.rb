@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_11_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1582,11 +1582,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_100000) do
     t.text "review_evidence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "reconciled_by_id"
+    t.datetime "reconciled_at"
+    t.text "reconciliation_evidence"
     t.index ["payroll_consultant_invoice_id", "attempt_number"], name: "invoice_delivery_attempt", unique: true
     t.index ["payroll_consultant_invoice_id"], name: "invoice_delivery_invoice"
     t.index ["payroll_consultant_invoice_id"], name: "invoice_delivery_one_open", unique: true, where: "((state)::text = ANY ((ARRAY['queued'::character varying, 'sending'::character varying, 'uncertain'::character varying])::text[]))"
+    t.index ["reconciled_by_id"], name: "idx_on_reconciled_by_id_60473463bc"
     t.index ["reviewed_by_id"], name: "index_payroll_consultant_invoice_deliveries_on_reviewed_by_id"
     t.check_constraint "attempt_number > 0 AND (state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'failed'::character varying, 'uncertain'::character varying]::text[]))", name: "invoice_delivery_values"
+    t.check_constraint "reconciled_by_id IS NULL AND reconciled_at IS NULL AND reconciliation_evidence IS NULL OR reconciled_by_id IS NOT NULL AND reconciled_at IS NOT NULL AND reconciliation_evidence IS NOT NULL", name: "invoice_delivery_reconciliation_complete"
   end
 
   create_table "payroll_consultant_invoices", force: :cascade do |t|
@@ -2832,6 +2837,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_100000) do
 
   add_foreign_key "payroll_consultant_invoice_deliveries", "payroll_consultant_invoices"
   add_foreign_key "payroll_consultant_invoice_deliveries", "users", column: "reviewed_by_id"
+  add_foreign_key "payroll_consultant_invoice_deliveries", "users", column: "reconciled_by_id"
   add_foreign_key "payroll_consultant_invoices", "active_storage_blobs", column: "original_blob_id"
   add_foreign_key "payroll_consultant_invoices", "active_storage_blobs", column: "pdf_blob_id"
   add_foreign_key "payroll_consultant_invoices", "companies"
@@ -3671,6 +3677,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_100000) do
       IF TG_OP='DELETE' OR NEW.payroll_consultant_invoice_id IS DISTINCT FROM OLD.payroll_consultant_invoice_id OR
         NEW.attempt_number IS DISTINCT FROM OLD.attempt_number OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
         RAISE EXCEPTION 'Consultant invoice delivery identity is immutable';
+      END IF;
+      IF (OLD.reviewed_by_id IS NOT NULL OR OLD.reviewed_at IS NOT NULL OR OLD.review_evidence IS NOT NULL) AND
+        ROW(NEW.reviewed_by_id, NEW.reviewed_at, NEW.review_evidence) IS DISTINCT FROM
+        ROW(OLD.reviewed_by_id, OLD.reviewed_at, OLD.review_evidence) THEN
+        RAISE EXCEPTION 'Consultant invoice dispatch review is immutable';
+      END IF;
+      IF (OLD.reconciled_by_id IS NOT NULL OR OLD.reconciled_at IS NOT NULL OR OLD.reconciliation_evidence IS NOT NULL) AND
+        ROW(NEW.reconciled_by_id, NEW.reconciled_at, NEW.reconciliation_evidence) IS DISTINCT FROM
+        ROW(OLD.reconciled_by_id, OLD.reconciled_at, OLD.reconciliation_evidence) THEN
+        RAISE EXCEPTION 'Consultant invoice reconciliation review is immutable';
       END IF;
       RETURN NEW;
     END; $function$
