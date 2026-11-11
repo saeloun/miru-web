@@ -290,6 +290,13 @@ const PayrollWorkspace = ({
           {t("consultantPayroll.configure")}
         </Button>
       </header>
+      <PtoReviewQueue
+        companyId={String(companyId)}
+        onSelect={(employment, name, reviewMonth, event) => {
+          dialogFocus.remember(event);
+          setPto({ employment, name, month: reviewMonth });
+        }}
+      />
       <InvoiceRunSelector />
       <p className="rounded-lg border bg-muted/30 p-4 text-sm">
         {t("consultantPayroll.previewHelp")}
@@ -466,13 +473,6 @@ const PayrollWorkspace = ({
         </nav>
       )}
 
-      <PtoReviewQueue
-        companyId={String(companyId)}
-        onSelect={(employment, name, reviewMonth, event) => {
-          dialogFocus.remember(event);
-          setPto({ employment, name, month: reviewMonth });
-        }}
-      />
       <Dialog open={!!pto} onOpenChange={open => !open && setPto(null)}>
         <DialogContent
           className="max-w-3xl"

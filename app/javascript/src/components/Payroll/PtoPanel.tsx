@@ -913,6 +913,7 @@ export const PtoReviewQueue = ({
         <div className="space-y-1">
           <Label htmlFor="pto-review-date">Leave review as of</Label>
           <Input
+            disabled={busy}
             id="pto-review-date"
             required
             type="date"
@@ -961,6 +962,7 @@ export const PtoReviewQueue = ({
             </p>
           ))}
           <Button
+            className="h-auto min-h-10 max-w-full whitespace-normal text-left"
             disabled={busy}
             size="sm"
             variant="outline"
