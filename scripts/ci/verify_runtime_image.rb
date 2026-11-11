@@ -4,7 +4,6 @@ require "active_support/all"
 require "base64"
 require "erb"
 require "ferrum"
-require "image_processing/vips"
 require "json"
 require "open3"
 require "tmpdir"
@@ -22,6 +21,36 @@ abort "Build dependencies remain" if File.exist?("node_modules") || File.symlink
 abort "Patched JSON is required" if Gem::Version.new(JSON::VERSION) < Gem::Version.new("2.19.9")
 abort "Obsolete default JSON remains" if Gem::Specification.find_all_by_name("json").any? do |spec|
   spec.default_gem? && spec.version < Gem::Version.new("2.19.9")
+end
+
+exr = File.expand_path("fixtures/openexr/stripes.exr", __dir__)
+# A separate process proves the fixture decodes without weakening the application's boundary.
+capture!(Gem.ruby, "-rvips", "-e", <<~RUBY, exr)
+  Vips.cache_set_max(0)
+  image = Vips::Image.new_from_file(ARGV.fetch(0))
+  abort "Invalid EXR control" unless [image.width, image.height] == [100, 50] && image.avg.finite?
+RUBY
+require "active_storage/vips"
+Vips.cache_set_max(0)
+flags = Vips.vips_operation_get_flags(Vips::Operation.new("openexrload").ptr)
+abort "OpenEXR loader is not blocked" unless flags & 32 == 32
+begin
+  Vips::Image.openexrload(exr).avg
+  abort "Direct OpenEXR decoding remains available"
+rescue Vips::Error => error
+  abort "Unexpected OpenEXR refusal" unless error.message.include?("blocked")
+end
+begin
+  Vips::Image.new_from_file(exr).avg
+  abort "Automatic OpenEXR decoding remains available"
+rescue Vips::Error => error
+  abort "Unexpected automatic loader refusal" unless error.message.include?("not a known file format")
+end
+begin
+  ImageProcessing::Vips.source(exr).resize_to_fill(72, 72).call
+  abort "OpenEXR thumbnail processing remains available"
+rescue Vips::Error => error
+  abort "Unexpected thumbnail refusal" unless error.message.include?("not a known file format")
 end
 
 manifests = %w[manifest.json manifest-assets.json].map do |name|
@@ -78,4 +107,4 @@ Dir.mktmpdir("miru-runtime-check") do |directory|
   end
 end
 
-puts "Runtime image verified: patched JSON, compiled assets, PDF worker, logo resizing and Unicode PDF"
+puts "Runtime image verified: patched JSON, Active Storage OpenEXR boundary, compiled assets, PDF worker, logo resizing and Unicode PDF"

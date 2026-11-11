@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.12] - 2026-11-11
+
+### Changed
+
+- Verify the existing image-upload decoder safeguard during CI and runtime-image builds while retaining supported logo thumbnails and invoice PDF checks.
+
 ## [3.6.10] - 2026-11-11
 
 ### Fixed
