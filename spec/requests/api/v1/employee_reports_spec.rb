@@ -45,6 +45,24 @@ RSpec.describe "Employee reports and settings", type: :request do
     expect(EmployeeReport.exists?(report.id)).to be(false)
   end
 
+  [
+    ["America/New_York", "2026-07-01T00:30:00Z", "2026-06"],
+    ["Asia/Kolkata", "2026-06-30T20:00:00Z", "2026-07"],
+    ["(GMT+05:30) Mumbai", "2026-06-30T20:00:00Z", "2026-07"]
+  ].each do |timezone, instant, month|
+    it "defaults to the company month for #{timezone} across the UTC month boundary" do
+      company.update!(timezone:)
+      Time.use_zone("UTC") do
+        travel_to(Time.iso8601(instant)) do
+          get "/api/v1/employee_reports"
+
+          expect(response).to have_http_status(:ok)
+          expect(response.parsed_body).to include("company_id" => company.id, "current_month" => month)
+        end
+      end
+    end
+  end
+
   it "rejects stale company identity, unlisted/duplicate/malformed columns and empty names" do
     save_report(company_id: nil)
     expect(response).to have_http_status(:conflict)

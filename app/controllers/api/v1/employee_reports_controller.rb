@@ -2,7 +2,9 @@
 
 class Api::V1::EmployeeReportsController < Api::V1::EmployeeRecordAdminController
   def index
-    render json: { company_id: current_company.id, employee_reports: reports.order(:id).map { |report| details(report) },
+    render json: { company_id: current_company.id,
+      current_month: current_company.resolved_time_zone.today.strftime("%Y-%m"),
+      employee_reports: reports.order(:id).map { |report| details(report) },
       columns: EmployeeReports::Columns.metadata, presets: EmployeeReports::Columns::PRESETS }
   end
 

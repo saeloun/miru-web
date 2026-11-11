@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.10] - 2026-11-11
+
+### Fixed
+
+- Default employee report months to the company timezone and retain the selected month when report definitions change.
+
 ## [3.6.9] - 2026-11-11
 
 ### Fixed

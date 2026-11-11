@@ -255,6 +255,55 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     expect(@console_errors).to be_empty
   end
 
+  it "defaults to the company month and preserves the chosen month through report changes" do
+    company.update!(timezone: "America/New_York")
+    report = company.employee_reports.create!(name: "Synthetic month report", columns: %w[name email])
+
+    travel_to(Time.utc(2026, 7, 1, 0, 30)) do
+      with_forgery_protection do
+        open_records(admin)
+        expect(page).to have_field("Report month", with: "2026-06")
+        page.current_window.resize_to(1440, 1000)
+        capture_records("employee-report-company-month-desktop.png")
+        page.current_window.resize_to(375, 900)
+        expect_mobile_fit
+        capture_records("employee-report-company-month-mobile.png")
+        page.current_window.resize_to(1440, 1000)
+
+        # Cuprite's text setter does not support native month inputs.
+        page.execute_script(<<~JS, find_field("Report month"))
+          const input = arguments[0];
+          Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(input, "2026-05");
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        JS
+        expect(page).to have_field("Report month", with: "2026-05")
+
+        click_button "Edit Synthetic month report"
+        fill_in "Report name", with: "Synthetic renamed report"
+        click_button "Save report changes"
+        expect(page).to have_text("Report definition saved.")
+        expect(page).to have_field("Report month", with: "2026-05")
+
+        fill_in "Report name", with: "Synthetic temporary report"
+        check "Employee name"
+        click_button "Save report definition"
+        expect(page).to have_button("Delete Synthetic temporary report")
+        expect(page).to have_field("Report month", with: "2026-05")
+
+        click_button "Delete Synthetic temporary report"
+        expect(page).not_to have_button("Delete Synthetic temporary report")
+        expect(page).to have_field("Report month", with: "2026-05")
+
+        fill_in "Report month", with: ""
+        click_button "Delete Synthetic renamed report"
+        expect(page).not_to have_button("Delete Synthetic renamed report")
+        expect(page).to have_field("Report month", with: "")
+        expect(EmployeeReport.exists?(report.id)).to be(false)
+        expect(@console_errors).to be_empty
+      end
+    end
+  end
+
   it "edits a saved report in place and downloads the changed columns on desktop and mobile" do
     report = company.employee_reports.create!(name: "Synthetic Directory", columns: %w[name email])
     release_update = Queue.new
