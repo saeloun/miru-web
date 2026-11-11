@@ -42,17 +42,18 @@ class Payroll::ConsultantInvoiceDelivery
   end
 
   def self.blob_bytes(blob, descriptor)
+    byte_size = descriptor["byte_size"] if descriptor.is_a?(Hash)
     unless blob && !blob.service.public? && descriptor.is_a?(Hash) &&
-        descriptor["byte_size"].is_a?(Integer) && descriptor["byte_size"].between?(1, 5.megabytes) &&
-        descriptor["sha256"].is_a?(String) && descriptor["sha256"].match?(/\A[0-9a-f]{64}\z/) && blob.byte_size == descriptor["byte_size"]
+        byte_size.is_a?(Integer) && byte_size.between?(1, 5.megabytes) &&
+        descriptor["sha256"].is_a?(String) && descriptor["sha256"].match?(/\A[0-9a-f]{64}\z/) && blob.byte_size == byte_size
       raise Payroll::Workflow::Conflict, "Private invoice PDF is unavailable"
     end
     bytes = +"".b
     blob.download do |chunk|
       bytes << chunk
-      raise Payroll::Workflow::Conflict, "Invoice PDF length changed" if bytes.bytesize > descriptor["byte_size"]
+      raise Payroll::Workflow::Conflict, "Invoice PDF length changed" if bytes.bytesize > byte_size
     end
-    unless bytes.bytesize == descriptor["byte_size"] && Digest::SHA256.hexdigest(bytes) == descriptor["sha256"]
+    unless bytes.bytesize == byte_size && Digest::SHA256.hexdigest(bytes) == descriptor["sha256"]
       raise Payroll::Workflow::Conflict, "Invoice PDF bytes changed"
     end
     bytes
@@ -191,7 +192,21 @@ class Payroll::ConsultantInvoiceDelivery
         return
       end
       message.raise_delivery_errors = true
-      return unless locked do
+      return unless ready_for_transport?(message)
+
+      begin
+        mail.deliver_now
+      rescue Postmark::InactiveRecipientError
+        record_outcome(state: "failed", error_code: "transport_rejected")
+      rescue StandardError
+        record_outcome(state: "uncertain", error_code: "transport_unknown")
+      else
+        record_outcome(state: "sent", sent_at: Time.current, error_code: nil)
+      end
+    end
+
+    def ready_for_transport?(message)
+      locked do
         next false unless claimed?
         if stale_sending?
           @delivery.update!(state: "failed", claim_token: nil, error_code: "claim_expired")
@@ -206,16 +221,6 @@ class Payroll::ConsultantInvoiceDelivery
         end
         @delivery.update!(started_at: Time.current)
         true
-      end
-
-      begin
-        mail.deliver_now
-      rescue Postmark::InactiveRecipientError
-        record_outcome(state: "failed", error_code: "transport_rejected")
-      rescue StandardError
-        record_outcome(state: "uncertain", error_code: "transport_unknown")
-      else
-        record_outcome(state: "sent", sent_at: Time.current, error_code: nil)
       end
     end
 

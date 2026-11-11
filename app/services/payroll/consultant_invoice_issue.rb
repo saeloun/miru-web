@@ -44,34 +44,41 @@ class Payroll::ConsultantInvoiceIssue
       candidate = claim
       return candidate unless candidate.is_a?(Hash)
 
-      staged = nil
-      begin
-        employment = @run.company.employments.find(@employment_id)
-        Payroll::BillingIdentity.new(employment).frozen_binding!(candidate.fetch("billing_receipt"), verify_evidence: true)
-        verify_original!(@preparation.original_blob, candidate.fetch("original")) if candidate["mode"] == "existing"
-        bytes = Payroll::ConsultantInvoicePdf.new(snapshot: candidate, kind: candidate["mode"] == "existing" ? "paid_settlement" : "invoice").render
-        raise "Invalid rendered PDF" unless bytes.start_with?("%PDF-") && bytes.bytesize.between?(1, 5.megabytes)
-
-        staged = ActiveStorage::Blob.create_and_upload!(io: StringIO.new(bytes), filename: "consultant-paid.pdf", content_type: "application/pdf")
-        raise "Private invoice storage is required" if staged.service.public?
-
-        candidate["pdf"] = { "sha256" => Digest::SHA256.hexdigest(bytes), "byte_size" => bytes.bytesize }
-        verify_original!(staged, candidate.fetch("pdf"))
-        result = finish(candidate, staged)
-        return result unless result == :date_changed
-      rescue StandardError => error
-        fail_claim(error.is_a?(ActiveRecord::RecordNotUnique) ? "number_conflict" : "render_unavailable", state: "failed")
-        Rails.logger.warn({ event: "consultant_invoice_unavailable", run_id: @run.id, preparation_id: @preparation&.id, error_class: error.class.name }.to_json)
-        return @preparation&.reload
-      ensure
-        staged&.purge unless staged.nil? || PayrollConsultantInvoice.exists?(pdf_blob_id: staged.id)
-      end
+      result = render_and_finish(candidate)
+      return result unless result == :date_changed
     end
     fail_claim("issue_date_changed")
     @preparation&.reload
   end
 
   private
+
+    def render_and_finish(candidate)
+      staged = nil
+      bytes = render_pdf(candidate)
+      staged = ActiveStorage::Blob.create_and_upload!(io: StringIO.new(bytes), filename: "consultant-paid.pdf", content_type: "application/pdf")
+      raise "Private invoice storage is required" if staged.service.public?
+
+      candidate["pdf"] = { "sha256" => Digest::SHA256.hexdigest(bytes), "byte_size" => bytes.bytesize }
+      verify_original!(staged, candidate.fetch("pdf"))
+      finish(candidate, staged)
+    rescue StandardError => error
+      fail_claim(error.is_a?(ActiveRecord::RecordNotUnique) ? "number_conflict" : "render_unavailable", state: "failed")
+      Rails.logger.warn({ event: "consultant_invoice_unavailable", run_id: @run.id, preparation_id: @preparation&.id, error_class: error.class.name }.to_json)
+      @preparation&.reload
+    ensure
+      staged&.purge unless staged.nil? || PayrollConsultantInvoice.exists?(pdf_blob_id: staged.id)
+    end
+
+    def render_pdf(candidate)
+      employment = @run.company.employments.find(@employment_id)
+      Payroll::BillingIdentity.new(employment).frozen_binding!(candidate.fetch("billing_receipt"), verify_evidence: true)
+      verify_original!(@preparation.original_blob, candidate.fetch("original")) if candidate["mode"] == "existing"
+      bytes = Payroll::ConsultantInvoicePdf.new(snapshot: candidate, kind: candidate["mode"] == "existing" ? "paid_settlement" : "invoice").render
+      raise "Invalid rendered PDF" unless bytes.start_with?("%PDF-") && bytes.bytesize.between?(1, 5.megabytes)
+
+      bytes
+    end
 
     def invoices
       PayrollConsultantInvoice.where(company_id: @run.company_id, payroll_run: @run, employment_id: @employment_id)
@@ -88,19 +95,19 @@ class Payroll::ConsultantInvoiceIssue
         employment = @run.company.employments.find(@employment_id)
         employment.with_lock do
           preparation = PayrollInvoicePreparation.heads.where(company_id: @run.company_id, payroll_run: @run, employment:).lock.first
-          yield employment, preparation, group, legs, handoff
+          yield employment, preparation, { group:, legs:, handoff: }
         end
       end
     end
 
     def claim
-      locked do |employment, preparation, group, legs, handoff|
+      locked do |employment, preparation, sources|
         @preparation = preparation
         next unless preparation
         next preparation if preparation.state == "failed" || preparation.state == "generating" && preparation.started_at && preparation.started_at > STALE_AFTER.ago
 
         begin
-          snapshot = snapshot!(employment, preparation, group, legs, handoff)
+          snapshot = snapshot!(employment, preparation, **sources)
           if snapshot["mode"] == "generate"
             consent = Payroll::InvoiceAuthorization.new(employment).receipt
             raise Blocked, "consent_required" unless consent
@@ -117,9 +124,9 @@ class Payroll::ConsultantInvoiceIssue
     end
 
     def finish(candidate, staged)
-      locked do |employment, current, group, legs, handoff|
+      locked do |employment, current, sources|
         raise Blocked, "preparation_changed" unless current&.id == @preparation.id && current.claim_token == @claim_token
-        fresh = snapshot!(employment, current, group, legs, handoff)
+        fresh = snapshot!(employment, current, **sources)
         raise Blocked, "settlement_changed" unless source_digest(fresh) == source_digest(candidate)
         if candidate["mode"] == "generate"
           consent = Payroll::InvoiceAuthorization.new(employment).receipt
@@ -132,62 +139,85 @@ class Payroll::ConsultantInvoiceIssue
         raise Blocked, "number_conflict" if PayrollConsultantInvoice.exists?(company_id: @run.company_id, issuer_id: employment.user_id,
           financial_year: candidate["financial_year"], number_digest: number_digest(candidate))
 
-        invoice = invoices.create!(payroll_revision: current.payroll_revision, preparation: current, issuer_id: employment.user_id,
-          authorization_id: candidate["authorization_id"], payroll_payment_group_id: candidate["payment_group_id"],
-          payroll_india_handoff_id: candidate["india_handoff_id"], pdf_blob: staged, original_blob: current.original_blob,
-          snapshot: candidate, mode: candidate["mode"], financial_year: candidate["financial_year"], number_digest: number_digest(candidate), issued_on: candidate["issued_on"])
-        invoice.payroll_consultant_invoice_deliveries.create!(attempt_number: 1)
-        current.update!(state: "completed", claim_token: nil, started_at: nil, error_code: nil)
-        invoice
+        create_invoice!(employment, current, candidate, staged)
       rescue Blocked => error
         fail_claim(error.message)
         @preparation.reload
       end
     end
 
-    def snapshot!(employment, preparation, group, legs, handoff)
-      raise Blocked, "payroll_disabled" unless Payroll::Entitlement.enabled?(@run.company_id)
-      raise Blocked, "subject_unavailable" unless Employment.kept.exists?(id: employment.id, company_id: @run.company_id, user_id: employment.user_id) && User.kept.exists?(id: employment.user_id)
-      raise Blocked, "preparation_review_required" unless preparation.reviewed?
-      raise Blocked, "accounts_destination_review_required" unless preparation.facts["accounts_destination_confirmed"] == true && preparation.facts["accounts_email"].is_a?(String) && preparation.facts["accounts_email"].present?
-      raise Blocked, "reviewer_unavailable" unless Payroll::ConsultantInvoicePreparation.new(@run, actor: preparation.actor).reviewer?(employment)
-      revision = preparation.payroll_revision
-      raise Blocked, "revision_changed" unless self.class.revision_intact?(@run, revision) && revision.digest == preparation.facts["revision_digest"]
+    def create_invoice!(employment, current, candidate, staged)
+      invoice = invoices.create!(payroll_revision: current.payroll_revision, preparation: current, issuer_id: employment.user_id,
+        authorization_id: candidate["authorization_id"], payroll_payment_group_id: candidate["payment_group_id"],
+        payroll_india_handoff_id: candidate["india_handoff_id"], pdf_blob: staged, original_blob: current.original_blob,
+        snapshot: candidate, mode: candidate["mode"], financial_year: candidate["financial_year"], number_digest: number_digest(candidate), issued_on: candidate["issued_on"])
+      invoice.payroll_consultant_invoice_deliveries.create!(attempt_number: 1)
+      current.update!(state: "completed", claim_token: nil, started_at: nil, error_code: nil)
+      invoice
+    end
 
-      line = revision.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
-      raise Blocked, "revision_changed" unless line && Payroll::IndiaHandoff.line_digest(line) == preparation.facts["line_digest"]
-      binding = preparation.facts["billing_identity"]
+    def snapshot!(employment, preparation, group:, legs:, handoff:)
+      facts = reviewed_preparation_facts!(employment, preparation)
+      revision = preparation.payroll_revision
+      line = reviewed_line!(employment, revision, facts)
+      binding = facts["billing_identity"]
       billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding)
-      if preparation.facts["mode"] == "generate" && !Payroll::ConsultantInvoicePreparation.generation_supported?(billing)
+      if facts["mode"] == "generate" && !Payroll::ConsultantInvoicePreparation.generation_supported?(billing)
         raise Blocked, "unsupported_generated_document"
       end
       terms = employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id"))
-      raise Blocked, "contracting_entity_changed" unless preparation.facts.dig("billed_entity", "name") == terms.legal_entity_name
+      raise Blocked, "contracting_entity_changed" unless facts.dig("billed_entity", "name") == terms.legal_entity_name
       open_legs = legs.select { |leg| leg.released_at.nil? }
+      settlements, source = settlement_facts!(employment, group, open_legs, handoff, line)
+      date = issue_date!(facts)
+      facts.slice(*Payroll::ConsultantInvoicePreparation::FIELDS).merge(source).merge(
+        "version" => 1, "status" => "Paid", "issued_on" => date.iso8601, "accounts_email" => facts.fetch("accounts_email"),
+        "document_on" => Time.current.in_time_zone("Asia/Kolkata").to_date.iso8601, "preparation_id" => preparation.id,
+        "revision_id" => revision.id, "revision_digest" => revision.digest, "billing_receipt" => binding,
+        "supplemental_billing" => facts.fetch("supplemental_billing", false), "consultant" => billing,
+        "service_from" => line.dig("preparation", "service_fee_review", "context", "service_from") || @run.period.iso8601,
+        "service_to" => line.dig("preparation", "service_fee_review", "context", "service_to") || @run.period.end_of_month.iso8601,
+        "currency" => line.fetch("currency"), "amounts" => line.fetch("amounts"), "extras" => line.fetch("extras"),
+        "reimbursements" => line.fetch("reimbursements"), "deductions" => line.fetch("deductions"), "settlements" => settlements,
+        "original" => facts["original"], "company_bank_costs" => open_legs.map { |leg| { "instruction_id" => leg.id, "currency" => "USD", "fee_minor" => leg.fee_minor, "charge_type" => leg.charge_type } })
+    rescue Payroll::Workflow::Conflict, ActiveRecord::RecordNotFound, KeyError
+      raise Blocked, "frozen_source_unavailable", cause: nil
+    end
+
+    def reviewed_preparation_facts!(employment, preparation)
+      raise Blocked, "payroll_disabled" unless Payroll::Entitlement.enabled?(@run.company_id)
+      raise Blocked, "subject_unavailable" unless Employment.kept.exists?(id: employment.id, company_id: @run.company_id, user_id: employment.user_id) && User.kept.exists?(id: employment.user_id)
+      raise Blocked, "preparation_review_required" unless preparation.reviewed?
+      facts = preparation.facts
+      raise Blocked, "accounts_destination_review_required" unless facts["accounts_destination_confirmed"] == true && facts["accounts_email"].is_a?(String) && facts["accounts_email"].present?
+      raise Blocked, "reviewer_unavailable" unless Payroll::ConsultantInvoicePreparation.new(@run, actor: preparation.actor).reviewer?(employment)
+      facts
+    end
+
+    def reviewed_line!(employment, revision, facts)
+      raise Blocked, "revision_changed" unless self.class.revision_intact?(@run, revision) && revision.digest == facts["revision_digest"]
+      line = revision.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
+      raise Blocked, "revision_changed" unless line && Payroll::IndiaHandoff.line_digest(line) == facts["line_digest"]
+      line
+    end
+
+    def settlement_facts!(employment, group, open_legs, handoff, line)
       raise Blocked, "ambiguous_settlement" if handoff && open_legs.any?
       raise Blocked, "waiting_credit" if PayrollPtoRecovery.heads.exists?(payroll_run: @run, employment:, kind: "returned_review")
-      settlements, source = if handoff
+      if handoff
         india_facts!(handoff, line)
       elsif group && open_legs.any?
         mercury_facts!(group, open_legs, line)
       else
         raise Blocked, "waiting_credit"
       end
-      date = preparation.facts["mode"] == "generate" ? Time.current.in_time_zone("Asia/Kolkata").to_date : Date.iso8601(preparation.facts.fetch("original_date"))
+    end
+
+    def issue_date!(facts)
+      date = facts["mode"] == "generate" ? Time.current.in_time_zone("Asia/Kolkata").to_date : Date.iso8601(facts.fetch("original_date"))
       raise Blocked, "original_date_in_future" if date > Time.current.in_time_zone("Asia/Kolkata").to_date
-      raise Blocked, "numbering_review_required" unless preparation.facts["financial_year"] == Payroll::ConsultantInvoicePreparation.financial_year(date)
-      preparation.facts.slice(*Payroll::ConsultantInvoicePreparation::FIELDS).merge(source).merge(
-        "version" => 1, "status" => "Paid", "issued_on" => date.iso8601, "accounts_email" => preparation.facts.fetch("accounts_email"),
-        "document_on" => Time.current.in_time_zone("Asia/Kolkata").to_date.iso8601, "preparation_id" => preparation.id,
-        "revision_id" => revision.id, "revision_digest" => revision.digest, "billing_receipt" => binding,
-        "supplemental_billing" => preparation.facts.fetch("supplemental_billing", false), "consultant" => billing,
-        "service_from" => line.dig("preparation", "service_fee_review", "context", "service_from") || @run.period.iso8601,
-        "service_to" => line.dig("preparation", "service_fee_review", "context", "service_to") || @run.period.end_of_month.iso8601,
-        "currency" => line.fetch("currency"), "amounts" => line.fetch("amounts"), "extras" => line.fetch("extras"),
-        "reimbursements" => line.fetch("reimbursements"), "deductions" => line.fetch("deductions"), "settlements" => settlements,
-        "original" => preparation.facts["original"], "company_bank_costs" => open_legs.map { |leg| { "instruction_id" => leg.id, "currency" => "USD", "fee_minor" => leg.fee_minor, "charge_type" => leg.charge_type } })
-    rescue Payroll::Workflow::Conflict, ActiveRecord::RecordNotFound, KeyError
-      raise Blocked, "frozen_source_unavailable", cause: nil
+      raise Blocked, "numbering_review_required" unless facts["financial_year"] == Payroll::ConsultantInvoicePreparation.financial_year(date)
+      date
     end
 
     def mercury_facts!(group, legs, line)

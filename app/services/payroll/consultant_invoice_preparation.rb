@@ -49,70 +49,106 @@ class Payroll::ConsultantInvoicePreparation
     command = self.class.digest([facts, expected_revision_digest, expected_preparation_id.to_s, descriptor, reviewed])
     staged = nil
     begin
-      @run.with_lock do
-        employment = @run.company.employments.kept.find(employment_id)
-        employment.with_lock do
-          authorize!(employment, reviewed:, mode: facts["mode"])
-          existing = replay(preparations(employment), idempotency_key, command)
-          return existing if existing
-          ensure_unissued!(employment)
-          head = preparations(employment).heads.first
-          raise Payroll::Workflow::Conflict, "Invoice preparation changed" unless head&.id.to_s == expected_preparation_id.to_s
-        end
-      end
+      existing = check_command!(employment_id, facts, reviewed, expected_preparation_id, idempotency_key, command)
+      return existing if existing
       staged = upload(original_pdf) if original_pdf
       verify_blob!(staged, descriptor) if staged
-      @run.with_lock do
-        employment = @run.company.employments.kept.find(employment_id)
-        group, legs, handoff = lock_settlement_sources(employment)
-        employment.with_lock do
-          authorize!(employment, reviewed:, mode: facts["mode"])
-          scope = preparations(employment)
-          existing = replay(scope, idempotency_key, command)
-          return existing if existing
-          ensure_unissued!(employment)
-          head = scope.heads.first
-          raise Payroll::Workflow::Conflict, "Invoice preparation changed" unless head&.id.to_s == expected_preparation_id.to_s
-          revision = @run.current_revision
-          raise Payroll::Workflow::Conflict, "Reviewed payroll revision changed" unless revision&.digest == expected_revision_digest
-          validate_facts!(facts, reviewed:)
-          line = revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
-          currently_approved = Payroll::Workflow.new(@run).status == "approved"
-          historical_credit = !currently_approved && line && Payroll::ConsultantInvoiceIssue.new(@run, employment_id: employment.id).credited_source_for_review?(revision:, line:, group:, legs:, handoff:)
-          unless line && Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision) && (currently_approved || historical_credit)
-            raise Payroll::Workflow::Conflict, "An approved consultant revision or intact confirmed historical credit is required"
-          end
-          invalid! unless facts.dig("billed_entity", "name") == employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name
-          reserve_number!(employment, facts) if reviewed
-          binding = line.dig("preparation", "billing_identity")
-          supplemental = binding.nil? && reviewed
-          if supplemental
-            binding = facts["supplemental_billing_binding"]
-            invalid! unless binding && Payroll::BillingIdentity.new(employment).valid_binding?(binding)
-          elsif facts.key?("supplemental_billing_binding")
-            invalid!
-          end
-          if reviewed
-            billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding)
-            if facts["mode"] == "generate" && !self.class.generation_supported?(billing)
-              raise Payroll::ConsultantReview::InvalidInput, "Use an existing invoice: Miru does not generate documents for this GST billing status"
-            end
-          end
-          blob = staged || (facts["mode"] == "existing" && head&.original_blob)
-          invalid! if facts["mode"] == "existing" && (!blob || blob.service.public?)
-          frozen = facts.merge("revision_digest" => revision.digest, "line_digest" => Payroll::IndiaHandoff.line_digest(line),
-            "billing_identity" => binding, "supplemental_billing" => supplemental, "original" => descriptor || head&.facts&.fetch("original", nil))
-          frozen["accounts_email"] = ACCOUNTS_EMAIL if reviewed
-          scope.create!(company: @run.company, payroll_revision: revision, actor: @actor, previous_preparation: head,
-            facts: frozen, reviewed:, original_blob: blob, command_digest: command, idempotency_key:)
-        end
-      end
+      store_preparation!(employment_id:, facts:, reviewed:, expected_revision_digest:, expected_preparation_id:, idempotency_key:, command:, descriptor:, staged:)
     ensure
       staged&.purge unless staged.nil? || PayrollInvoicePreparation.exists?(original_blob_id: staged.id)
     end
   end
 
   private
+
+    def check_command!(employment_id, facts, reviewed, expected_preparation_id, idempotency_key, command)
+      @run.with_lock do
+        employment = @run.company.employments.kept.find(employment_id)
+        employment.with_lock do
+          authorize!(employment, reviewed:, mode: facts["mode"])
+          scope = preparations(employment)
+          existing = replay(scope, idempotency_key, command)
+          return existing if existing
+          ensure_unissued!(employment)
+          check_head!(scope, expected_preparation_id)
+          nil
+        end
+      end
+    end
+
+    def store_preparation!(employment_id:, facts:, reviewed:, expected_revision_digest:, expected_preparation_id:, idempotency_key:, command:, descriptor:, staged:)
+      @run.with_lock do
+        employment = @run.company.employments.kept.find(employment_id)
+        sources = lock_settlement_sources(employment)
+        employment.with_lock do
+          authorize!(employment, reviewed:, mode: facts["mode"])
+          scope = preparations(employment)
+          existing = replay(scope, idempotency_key, command)
+          return existing if existing
+          ensure_unissued!(employment)
+          head = check_head!(scope, expected_preparation_id)
+          revision, line = reviewed_source!(employment, facts, reviewed, expected_revision_digest, sources)
+          binding, supplemental = billing_binding!(employment, facts, line, reviewed)
+          blob = original_blob!(facts["mode"], staged, head)
+          frozen = bound_facts(facts, revision, line, binding, supplemental, reviewed, original: descriptor || head&.facts&.fetch("original", nil))
+          scope.create!(company: @run.company, payroll_revision: revision, actor: @actor, previous_preparation: head,
+            facts: frozen, reviewed:, original_blob: blob, command_digest: command, idempotency_key:)
+        end
+      end
+    end
+
+    def check_head!(scope, expected_preparation_id)
+      head = scope.heads.first
+      raise Payroll::Workflow::Conflict, "Invoice preparation changed" unless head&.id.to_s == expected_preparation_id.to_s
+      head
+    end
+
+    def bound_facts(facts, revision, line, binding, supplemental, reviewed, original:)
+      frozen = facts.merge("revision_digest" => revision.digest, "line_digest" => Payroll::IndiaHandoff.line_digest(line),
+        "billing_identity" => binding, "supplemental_billing" => supplemental, "original" => original)
+      frozen["accounts_email"] = ACCOUNTS_EMAIL if reviewed
+      frozen
+    end
+
+    def reviewed_source!(employment, facts, reviewed, expected_revision_digest, sources)
+      revision = @run.current_revision
+      raise Payroll::Workflow::Conflict, "Reviewed payroll revision changed" unless revision&.digest == expected_revision_digest
+      validate_facts!(facts, reviewed:)
+      line = revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
+      currently_approved = Payroll::Workflow.new(@run).status == "approved"
+      group, legs, handoff = sources
+      historical_credit = !currently_approved && line && Payroll::ConsultantInvoiceIssue.new(@run, employment_id: employment.id).credited_source_for_review?(revision:, line:, group:, legs:, handoff:)
+      unless line && Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision) && (currently_approved || historical_credit)
+        raise Payroll::Workflow::Conflict, "An approved consultant revision or intact confirmed historical credit is required"
+      end
+      invalid! unless facts.dig("billed_entity", "name") == employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name
+      reserve_number!(employment, facts) if reviewed
+      [revision, line]
+    end
+
+    def billing_binding!(employment, facts, line, reviewed)
+      binding = line.dig("preparation", "billing_identity")
+      supplemental = binding.nil? && reviewed
+      if supplemental
+        binding = facts["supplemental_billing_binding"]
+        invalid! unless binding && Payroll::BillingIdentity.new(employment).valid_binding?(binding)
+      elsif facts.key?("supplemental_billing_binding")
+        invalid!
+      end
+      if reviewed
+        billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding)
+        if facts["mode"] == "generate" && !self.class.generation_supported?(billing)
+          raise Payroll::ConsultantReview::InvalidInput, "Use an existing invoice: Miru does not generate documents for this GST billing status"
+        end
+      end
+      [binding, supplemental]
+    end
+
+    def original_blob!(mode, staged, head)
+      blob = staged || (mode == "existing" && head&.original_blob)
+      invalid! if mode == "existing" && (!blob || blob.service.public?)
+      blob
+    end
 
     def preparations(employment)
       PayrollInvoicePreparation.where(company_id: @run.company_id, payroll_run: @run, employment:)
@@ -172,14 +208,23 @@ class Payroll::ConsultantInvoicePreparation
       invalid! unless [true, false].include?(facts["accounts_destination_confirmed"]) && (!reviewed || facts["accounts_destination_confirmed"] == true)
       invalid! if extra.include?("supplemental_billing_binding") && (!reviewed || !facts["supplemental_billing_binding"].is_a?(Hash))
       invalid! unless %w[generate existing].include?(facts["mode"])
-      entity = facts["billed_entity"]
-      invalid! unless entity.is_a?(Hash) && entity.keys.sort == ENTITY_FIELDS.sort && entity.values.all? { |value| value.is_a?(String) && value.length <= 1000 && !value.match?(/[\x00-\x1f\x7f]/) }
-      invalid! unless %w[name address country].all? { |key| entity[key].present? } && EmployeeRecord.supported_country?(entity["country"]) && (entity["tax_identifier"].present? || entity["tax_reason"].present?)
+      validate_entity!(facts["billed_entity"])
       invalid! unless facts["document_kind"] == "consultant_invoice" && facts["treatment"] == "manual_reviewed" &&
         facts["treatment_reason"].is_a?(String) && facts["treatment_reason"].length.between?(1, 1000) &&
         facts["existing_invoice_considered"] == true && facts["tax_lines"] == []
       invalid! unless facts["number"].is_a?(String) && facts["number"].match?(/\A[A-Za-z0-9][A-Za-z0-9\/-]{0,63}\z/) &&
         facts["series"].is_a?(String) && (facts["mode"] == "existing" && facts["series"].empty? || facts["series"].match?(/\A[A-Za-z0-9][A-Za-z0-9\/-]{0,31}\z/))
+      validate_timing!(facts)
+    rescue Date::Error, TypeError
+      invalid!
+    end
+
+    def validate_entity!(entity)
+      invalid! unless entity.is_a?(Hash) && entity.keys.sort == ENTITY_FIELDS.sort && entity.values.all? { |value| value.is_a?(String) && value.length <= 1000 && !value.match?(/[\x00-\x1f\x7f]/) }
+      invalid! unless %w[name address country].all? { |key| entity[key].present? } && EmployeeRecord.supported_country?(entity["country"]) && (entity["tax_identifier"].present? || entity["tax_reason"].present?)
+    end
+
+    def validate_timing!(facts)
       if facts["mode"] == "generate"
         invalid! unless facts["timing"] == "post_credit_supported" && facts["financial_year"] == self.class.financial_year
       else
@@ -189,8 +234,6 @@ class Payroll::ConsultantInvoicePreparation
         end
         invalid! unless facts["original_date"].match?(/\A\d{4}-\d{2}-\d{2}\z/) && facts["financial_year"] == self.class.financial_year(date) && facts["timing"] == "existing_invoice"
       end
-    rescue Date::Error, TypeError
-      invalid!
     end
 
     def pdf_descriptor(upload)
