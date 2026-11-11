@@ -3685,3 +3685,36 @@ index 0000000..1280a62
 +  await new Promise((resolve) => server.close(resolve));
 +  fs.rmSync(scratch, { recursive: true, force: true });
 +}
+diff --git a/apps/remix/app/root.tsx b/apps/remix/app/root.tsx
+index b7f1caf..780976d 100644
+--- a/apps/remix/app/root.tsx
++++ b/apps/remix/app/root.tsx
+@@ -117,7 +117,7 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
+ 
+   const [theme] = useTheme();
+ 
+-  const basePath = data.basePath ?? '';
++  const basePath = data.basePath ?? import.meta.env.BASE_URL.replace(/\/$/, '');
+ 
+   // Recipient routes (signing pages) put `documenso-branded` on <body> so the
+   // <style> block from `RecipientBranding` applies to BOTH the main tree and
+@@ -170,6 +170,19 @@ export function LayoutContent({ children }: { children: React.ReactNode }) {
+           </div>
+         )} */}
+ 
++        {/* Keep the source notice clear of full-height layouts and fixed signing controls. */}
++        <div className="relative z-10 flex w-full justify-center border-border border-b bg-background px-4 text-muted-foreground text-xs">
++          <a
++            href={`${basePath}/source`}
++            lang="en"
++            target="_blank"
++            rel="noopener noreferrer"
++            className="inline-flex min-h-11 items-center rounded-sm underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
++          >
++            Corresponding source
++          </a>
++        </div>
++
+         <NuqsAdapter>
+           <SessionProvider initialSession={session}>
+             <TooltipProvider>
