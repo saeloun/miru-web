@@ -16,4 +16,24 @@ RSpec.describe SalarySlipMailer do
     end
     expect(mail.attachments.none? { |attachment| attachment.mime_type == "application/pdf" }).to be(true)
   end
+
+  it "renders fallback branding for a missing logo object without removing its metadata" do
+    company = create(:company, :with_logo)
+    blob = company.logo.blob
+    blob.service.delete(blob.key)
+    expect(blob.service.exist?(blob.key)).to be(false)
+    slip = SalarySlip.new(pay_month: "2026-09-01")
+    allow(slip).to receive(:company).and_return(company)
+    mail = described_class.with(slip:, recipient: "employee@example.test").published
+
+    body = mail.html_part.body.decoded
+
+    expect(body).to include("email-brand-logo logo-light-mode", "/salary-slips?company_id=#{company.id}")
+    expect(body).not_to include('class="email-company-logo"')
+    expect(mail.attachments["MiruLogoDarkWithText.png"]).to be_present
+    expect(mail.attachments.none? { |attachment| attachment.mime_type == "application/pdf" }).to be(true)
+    expect(company.reload.logo).to be_attached
+    expect(company.logo.blob.id).to eq(blob.id)
+    expect(ActiveStorage::Blob.exists?(blob.id)).to be(true)
+  end
 end

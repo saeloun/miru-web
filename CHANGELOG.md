@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.17] - 2026-11-12
+
+### Fixed
+
+- Render salary-slip and invoice emails with fallback branding when an optional company logo file is unavailable.
+
 ## [3.6.14] - 2026-11-11
 
 ### Fixed

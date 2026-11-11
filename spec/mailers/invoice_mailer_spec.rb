@@ -136,5 +136,25 @@ RSpec.describe InvoiceMailer, type: :mailer do
       expect(mail.subject).to eq(subject)
       expect(mail.to).to eq(recipients)
     end
+
+    context "when the optional company logo object is missing" do
+      let(:company) { create :company, :with_logo }
+
+      it "renders fallback branding and keeps the PDF and attachment metadata" do
+        blob = company.logo.blob
+        blob.service.delete(blob.key)
+        expect(blob.service.exist?(blob.key)).to be(false)
+
+        body = mail.html_part.body.decoded
+
+        expect(body).to include("email-brand-logo logo-light-mode")
+        expect(body).not_to include('class="email-company-logo"')
+        expect(mail.attachments["MiruLogoDarkWithText.png"]).to be_present
+        expect(mail.attachments["#{invoice.invoice_number}.pdf"].body.decoded).to eq("%PDF-1.4 preview")
+        expect(company.reload.logo).to be_attached
+        expect(company.logo.blob.id).to eq(blob.id)
+        expect(ActiveStorage::Blob.exists?(blob.id)).to be(true)
+      end
+    end
   end
 end
