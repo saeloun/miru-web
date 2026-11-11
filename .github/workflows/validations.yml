@@ -102,7 +102,10 @@ jobs:
         run: bundle exec rubocop
 
       - name: Install document PDF and image tools
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y poppler-utils qpdf libvips42t64
+        timeout-minutes: 10
+        run: |
+          python3 -I scripts/ci/install_document_tools.py --self-check
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT python3 -I scripts/ci/install_document_tools.py
 
       - name: Run ESLint
         run: pnpm lint
@@ -203,7 +206,10 @@ jobs:
         run: PUPPETEER_SKIP_DOWNLOAD=true pnpm install --frozen-lockfile
 
       - name: Install document PDF and image tools
-        run: sudo apt-get update && sudo apt-get install --no-install-recommends -y poppler-utils qpdf libvips42t64
+        timeout-minutes: 10
+        run: |
+          python3 -I scripts/ci/install_document_tools.py --self-check
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT python3 -I scripts/ci/install_document_tools.py
 
       - name: Install mobile packages
         working-directory: apps/mobile
