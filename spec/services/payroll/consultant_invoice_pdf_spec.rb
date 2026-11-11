@@ -75,6 +75,31 @@ RSpec.describe "Real consultant invoice PDF" do
     end
   end
 
+  it "preserves exact paise when rendering large integer adjustment amounts" do
+    prepare_consultant_invoice
+    grant_invoice_consent
+    credited_invoice_leg
+    actual_renderer
+    invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
+    expect(invoice).to be_a(PayrollConsultantInvoice)
+    # Exercise the renderer's integer range without relaxing payment input limits.
+    snapshot = invoice.snapshot.deep_dup
+    snapshot["extras"] = [{ "code" => "other_earning", "amount_minor" => 8_999_999_993_749_999 }]
+    snapshot["deductions"] = [{ "code" => "other_deduction", "amount_minor" => 8_999_999_993_749_999 }]
+    snapshot["amounts"]["extras_minor"] = 8_999_999_993_749_999
+    snapshot["amounts"]["deductions_minor"] = 8_999_999_993_749_999
+    bytes = Payroll::ConsultantInvoicePdf.new(snapshot:, kind: "invoice").render
+    Tempfile.create(["synthetic-exact-paise", ".pdf"]) do |file|
+      file.binmode
+      file.write(bytes)
+      file.flush
+      text, status = Open3.capture2("pdftotext", file.path, "-", unsetenv_others: true)
+      expect(status).to be_success
+      expect(text.scan("89999999937499.99").size).to eq(2)
+      expect(text).not_to include("89999999937499.98")
+    end
+  end
+
   context "approved itemized financial amounts" do
     let(:claim) { create(:expense, company:, user: worker, amount: 5_000, currency: "INR", date: Date.new(2026, 11, 2), status: :approved, approved_at: 1.minute.ago) }
     let(:revision) do

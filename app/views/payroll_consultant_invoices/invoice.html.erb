@@ -5,7 +5,7 @@
   th, td { padding: 8px; border-bottom: 1px solid #d9dde3; text-align: left; vertical-align: top; }
   .amount { text-align: right; white-space: nowrap; }
 </style>
-<% money = ->(minor, currency = "INR") { "#{currency} #{format('%.2f', BigDecimal(minor.to_s) / 100)}" } %>
+<% money = ->(minor, currency = "INR") { "#{currency} #{number_with_precision(BigDecimal(minor.to_s) / 100, precision: 2, separator: '.', delimiter: '')}" } %>
 <h1><%= kind == "paid_settlement" ? "Paid settlement statement" : "Consultant invoice" %></h1>
 <% if kind == "paid_settlement" %>
   <p><strong>Paid</strong> · Statement generated: <%= snapshot.fetch("document_on") %> (Asia/Kolkata)</p>
