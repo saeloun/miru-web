@@ -10,16 +10,19 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
   VERSION = 20_261_103_090_000
   FIRST_PTO_VERSION = 20_261_108_200_000
   EMPLOYMENT_TENANT_INDEX_VERSION = 20_261_107_092_900
+  INVOICE_VERSIONS = [20_261_111_100_000, 20_261_111_110_000].freeze
+  INVOICE_TABLES = %w[payroll_invoice_preparations payroll_consultant_invoices payroll_consultant_invoice_deliveries].freeze
 
   before(:context) do
     @migration_context = ActiveRecord::Base.connection_pool.migration_context
     @original_versions = @migration_context.get_all_versions.sort
     @original_pto_schema = pto_schema_snapshot
+    @original_invoice_dependencies = invoice_dependencies_snapshot
     @rewound_versions = []
     DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata schema_migrations]
-    # Retain independent current PTO guards and their shared employment tenant index.
+    # Unwind invoice children before their historical parents; retain independent PTO guards.
     @original_versions.reverse_each do |version|
-      next unless version > VERSION && version < FIRST_PTO_VERSION
+      next unless (version > VERSION && version < FIRST_PTO_VERSION) || INVOICE_VERSIONS.include?(version)
       next if version == EMPLOYMENT_TENANT_INDEX_VERSION # Five current PTO foreign keys depend on this shared index.
 
       @migration_context.run(:down, version)
@@ -40,6 +43,7 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
     end
     expect(@migration_context.get_all_versions.sort).to eq(@original_versions)
     expect(pto_schema_snapshot).to eq(@original_pto_schema)
+    expect(invoice_dependencies_snapshot).to eq(@original_invoice_dependencies)
     expect([ConsultantPtoPolicy, PayrollPtoEntry, PayrollPtoAllocation, PayrollPtoRecovery, PayrollPtoNotification].map(&:count)).to eq([0] * 5)
     puts "Historical Mercury fixture restored #{@original_versions.size} versions; PTO #{@original_pto_schema[:functions].size} functions/#{@original_pto_schema[:triggers].size} triggers unchanged"
   end
@@ -109,16 +113,27 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
     }
   end
 
-  def snapshot
+  def snapshot(tables = TABLES)
     connection = ActiveRecord::Base.connection
-    TABLES.index_with do |table|
+    tables.index_with do |table|
       {
         rows: connection.select_rows("SELECT * FROM #{connection.quote_table_name(table)} ORDER BY id"),
         columns: connection.columns(table).map { |column| [column.name, column.sql_type, column.null, column.default] },
         indexes: connection.select_rows("SELECT indexname, indexdef FROM pg_indexes WHERE schemaname = current_schema() AND tablename = #{connection.quote(table)} ORDER BY indexname"),
+        index_metadata: connection.indexes(table).map { |index| [index.name, index.unique, index.columns, index.where.present?] }.sort_by(&:first),
         constraints: connection.select_rows("SELECT conname, pg_get_constraintdef(oid), convalidated FROM pg_constraint WHERE conrelid = #{connection.quote(table)}::regclass ORDER BY conname"),
-        triggers: connection.select_rows("SELECT tgname, pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = #{connection.quote(table)}::regclass AND NOT tgisinternal ORDER BY tgname")
+        triggers: connection.select_rows("SELECT tgname, pg_get_triggerdef(oid) FROM pg_trigger WHERE tgrelid = #{connection.quote(table)}::regclass AND NOT tgisinternal ORDER BY tgname"),
+        trigger_functions: connection.select_rows("SELECT t.tgname, pg_get_functiondef(t.tgfoid) FROM pg_trigger t WHERE t.tgrelid = #{connection.quote(table)}::regclass AND NOT t.tgisinternal ORDER BY t.tgname")
       }
+    end
+  end
+
+  def invoice_dependencies_snapshot
+    # schema.rb and migration-up deparse equivalent CHECK/index casts differently.
+    snapshot(INVOICE_TABLES).transform_values do |definition|
+      definition.slice(:rows, :columns, :index_metadata, :triggers, :trigger_functions).merge(
+        checks: definition.fetch(:constraints).filter_map { |name, sql, validated| [name, validated] if sql.start_with?("CHECK") },
+        foreign_keys: definition.fetch(:constraints).select { |_name, sql, _validated| sql.start_with?("FOREIGN KEY") })
     end
   end
 
