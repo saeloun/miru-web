@@ -6,6 +6,10 @@
 
 - Offer the signing provider's corresponding source across public, authenticated and embedded pages, including error pages and configured base paths.
 
+### Fixed
+
+- Keep signing-provider build caches separate when the configured base path changes.
+
 ## [3.6.10] - 2026-11-11
 
 ### Fixed

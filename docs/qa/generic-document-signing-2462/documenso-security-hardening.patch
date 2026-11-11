@@ -3533,10 +3533,18 @@ index 0000000..d238171
 +  );
 +}
 diff --git a/turbo.json b/turbo.json
-index b3b002d..811e0ee 100644
+index b3b002d..b93f2ac 100644
 --- a/turbo.json
 +++ b/turbo.json
-@@ -122,6 +122,7 @@
+@@ -43,6 +43,7 @@
+     "NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY",
+     "NEXTAUTH_SECRET",
+     "NEXT_PUBLIC_PROJECT",
++    "NEXT_PUBLIC_BASE_PATH",
+     "NEXT_PUBLIC_WEBAPP_URL",
+     "NEXT_PRIVATE_INTERNAL_WEBAPP_URL",
+     "NEXT_PUBLIC_POSTHOG_KEY",
+@@ -122,6 +123,7 @@
      "NEXT_PRIVATE_SMTP_APIKEY_USER",
      "NEXT_PRIVATE_SMTP_APIKEY",
      "NEXT_PRIVATE_SMTP_SECURE",

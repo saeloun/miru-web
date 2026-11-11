@@ -59,7 +59,7 @@ jobs:
           source = pathlib.Path("vendor-documenso")
           require(subprocess.check_output(["git", "-C", str(source), "rev-parse", "HEAD"], text=True).strip() == os.environ["UPSTREAM_SHA"])
           patches = {
-              "documenso-security-hardening.patch": "f01adabace061ea8362ab79446709c854a1643d05426f6c3256f9abb089ba5e9",
+              "documenso-security-hardening.patch": "b7a6450dae468e76708a45479e1660e1d1a0c9e6bc6d6b45a6c97dddeae89d3f",
               "documenso-signing-compatibility.patch": "3c1154411b0e0196e962932253f018700ad71fc3642e0bd4535f302def1cdd6f",
           }
           paths = [pathlib.Path("docs/qa/generic-document-signing-2462", name).resolve() for name in patches]
