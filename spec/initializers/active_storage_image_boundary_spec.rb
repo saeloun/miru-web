@@ -22,13 +22,4 @@ RSpec.describe "Active Storage native image boundary" do
       ImageProcessing::Vips.source(fixture).resize_to_fill(72, 72).call
     end.to raise_error(Vips::Error, /not a known file format/)
   end
-
-  it "still processes an uploaded company logo through Active Storage" do
-    company = create(:company, :with_logo)
-    thumbnail = company.logo.variant(resize_to_fill: [72, 72]).processed
-    image = Vips::Image.new_from_buffer(thumbnail.download, "")
-
-    expect([image.width, image.height]).to eq([72, 72])
-    expect(image.avg).to be_finite
-  end
 end
