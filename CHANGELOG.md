@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.16] - 2026-11-11
+
+### Fixed
+
+- Recover CI document-tool installation from archive DNS failures while enforcing package verification and restoring temporary host mappings.
+
 ## [3.6.14] - 2026-11-11
 
 ### Fixed
