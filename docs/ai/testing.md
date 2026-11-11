@@ -21,6 +21,7 @@ Recorded profile Save and insurance export checks: [synthetic QA evidence](../qa
 ## Ruby
 
 - For Ruby changes, run focused `rspec` files related to the touched code.
+- Native image checks require libvips (Ubuntu 24.04: `libvips42t64`). `spec/initializers/active_storage_image_boundary_spec.rb` and `scripts/ci/verify_runtime_image.rb` check the existing EXR boundary, company-logo variants, PNG/JPEG/WebP thumbnails and the Unicode invoice PDF. This verifies the existing framework safeguard; installed OpenEXR CVEs and unrelated XML/Chromium findings remain.
 
 ## Mailers
 
