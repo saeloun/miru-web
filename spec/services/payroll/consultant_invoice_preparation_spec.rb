@@ -81,6 +81,16 @@ RSpec.describe "Consultant invoice preparation" do
     expect(Payroll::ConsultantInvoicePreparation.number_digest(generated)).to eq(Payroll::ConsultantInvoicePreparation.number_digest(linked))
   end
 
+  it "accepts an exact original number without an internal series but still requires generated series" do
+    file = original
+    receipt = service.record!(expected_revision_digest: revision.digest, employment_id: employment.id,
+      facts: existing_facts.merge("series" => "", "number" => "INV-2026-0042"), expected_preparation_id: "", idempotency_key: "no-internal-series", original_pdf: file)
+    expect(Payroll::ConsultantInvoicePreparation.invoice_number(receipt.facts)).to eq("INV-2026-0042")
+    expect { prepare(facts.merge("series" => ""), key: "missing-generated-series", previous: receipt.id.to_s) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
+  ensure
+    file&.close
+  end
+
   it "refuses a payroll revision digest different from the facts the reviewer saw" do
     expect do
       service.record!(employment_id: employment.id, facts:, expected_preparation_id: "", idempotency_key: "revision", expected_revision_digest: "0" * 64)

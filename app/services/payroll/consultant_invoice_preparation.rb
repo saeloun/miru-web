@@ -60,6 +60,7 @@ class Payroll::ConsultantInvoicePreparation
       verify_blob!(staged, descriptor) if staged
       @run.with_lock do
         employment = @run.company.employments.kept.find(employment_id)
+        group, legs, handoff = lock_settlement_sources(employment)
         employment.with_lock do
           authorize!(employment, reviewed:, mode: facts["mode"])
           scope = preparations(employment)
@@ -72,7 +73,11 @@ class Payroll::ConsultantInvoicePreparation
           raise Payroll::Workflow::Conflict, "Reviewed payroll revision changed" unless revision&.digest == expected_revision_digest
           validate_facts!(facts, reviewed:)
           line = revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
-          raise Payroll::Workflow::Conflict, "An approved consultant revision is required" unless line && Payroll::Workflow.new(@run).status == "approved"
+          currently_approved = Payroll::Workflow.new(@run).status == "approved"
+          historical_credit = !currently_approved && line && Payroll::ConsultantInvoiceIssue.new(@run, employment_id: employment.id).credited_source_for_review?(revision:, line:, group:, legs:, handoff:)
+          unless line && Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision) && (currently_approved || historical_credit)
+            raise Payroll::Workflow::Conflict, "An approved consultant revision or intact confirmed historical credit is required"
+          end
           invalid! unless facts.dig("billed_entity", "name") == employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name
           reserve_number!(employment, facts) if reviewed
           binding = line.dig("preparation", "billing_identity")
@@ -102,6 +107,13 @@ class Payroll::ConsultantInvoicePreparation
 
     def preparations(employment)
       PayrollInvoicePreparation.where(company_id: @run.company_id, payroll_run: @run, employment:)
+    end
+
+    def lock_settlement_sources(employment)
+      group = PayrollPaymentGroup.where(company_id: @run.company_id, payroll_run: @run, employment:).lock.first
+      legs = group ? group.payroll_payment_instructions.order(:id).lock.to_a : []
+      handoff = PayrollIndiaHandoff.active.where(company_id: @run.company_id, payroll_run: @run, employment:).lock.first
+      [group, legs, handoff]
     end
 
     def replay(scope, key, command)
@@ -138,7 +150,7 @@ class Payroll::ConsultantInvoicePreparation
     end
 
     def configurer?(employment)
-      @actor && @actor.id != employment.user_id && User.kept.exists?(id: @actor.id, current_workspace_id: @run.company_id) &&
+      reviewer?(employment) || @actor && @actor.id != employment.user_id && User.kept.exists?(id: @actor.id, current_workspace_id: @run.company_id) &&
         @run.eligible_actor?(@actor, "accounts") && @actor.roles.where(resource: @run.company, name: %w[owner admin]).exists?
     end
 
@@ -156,7 +168,7 @@ class Payroll::ConsultantInvoicePreparation
         facts["treatment_reason"].is_a?(String) && facts["treatment_reason"].length.between?(1, 1000) &&
         facts["existing_invoice_considered"] == true && facts["tax_lines"] == []
       invalid! unless facts["number"].is_a?(String) && facts["number"].match?(/\A[A-Za-z0-9][A-Za-z0-9\/-]{0,63}\z/) &&
-        facts["series"].is_a?(String) && facts["series"].match?(/\A[A-Za-z0-9][A-Za-z0-9\/-]{0,31}\z/)
+        facts["series"].is_a?(String) && (facts["mode"] == "existing" && facts["series"].empty? || facts["series"].match?(/\A[A-Za-z0-9][A-Za-z0-9\/-]{0,31}\z/))
       if facts["mode"] == "generate"
         invalid! unless facts["timing"] == "post_credit_supported" && facts["financial_year"] == self.class.financial_year
       else

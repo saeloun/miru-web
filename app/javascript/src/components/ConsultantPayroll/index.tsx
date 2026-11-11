@@ -11,6 +11,7 @@ import { Textarea } from "../ui/textarea";
 import { Badge } from "../ui/badge";
 import { PtoFacts, PtoPanel, PtoReviewQueue } from "../Payroll/PtoPanel";
 import ServiceFeePanel from "../Payroll/ServiceFeePanel";
+import InvoiceRunSelector from "../Payroll/InvoiceRunSelector";
 import { label as payrollLabel } from "../Payroll/paymentLabels";
 import {
   Select,
@@ -289,6 +290,7 @@ const PayrollWorkspace = ({
           {t("consultantPayroll.configure")}
         </Button>
       </header>
+      <InvoiceRunSelector />
       <p className="rounded-lg border bg-muted/30 p-4 text-sm">
         {t("consultantPayroll.previewHelp")}
       </p>

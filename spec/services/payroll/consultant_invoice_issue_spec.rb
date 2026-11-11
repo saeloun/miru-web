@@ -131,6 +131,64 @@ RSpec.describe "Consultant paid invoice issuance" do
     expect(invoice.snapshot.fetch("billing_receipt")).to eq(binding)
   end
 
+  it "lets a fresh owner review an already credited historical run after its old approver leaves" do
+    grant_invoice_consent
+    credited_invoice_leg
+    owner.remove_role(:owner, company)
+    owner.update!(current_workspace: create(:company))
+    fresh_owner = create(:user, current_workspace: company)
+    create(:employment, company:, user: fresh_owner, joined_at: "2020-01-01", resigned_at: nil)
+    fresh_owner.add_role(:owner, company)
+    preparation = Payroll::ConsultantInvoicePreparation.new(run, actor: fresh_owner).record!(employment_id: employment.id, facts: invoice_facts,
+      expected_revision_digest: revision.digest, expected_preparation_id: "", idempotency_key: "fresh-historical-review")
+    expect(preparation).to be_reviewed
+    invoice = issuer.issue!
+    expect(invoice).to be_a(PayrollConsultantInvoice)
+    expect(invoice.payroll_revision_id).to eq(revision.id)
+    expect(invoice.snapshot.dig("amounts", "net_minor")).to eq(net_minor)
+  end
+
+  it "does not treat an unpaid historical revision as confirmed credit after an approver leaves" do
+    revision
+    owner.remove_role(:owner, company)
+    expect do
+      prepare_consultant_invoice
+    end.to raise_error(Payroll::Workflow::Conflict)
+    expect(PayrollInvoicePreparation.count).to eq(0)
+  end
+
+  it "rejects historical completion columns without the matching immutable credit events" do
+    leg = prepared_instruction(revision:)
+    leg.update!(credit_state: "credited", credited_minor: leg.entitlement_minor)
+    leg.payroll_payment_group.update!(fully_credited_at: Time.current)
+    owner.remove_role(:owner, company)
+    expect { prepare_consultant_invoice }.to raise_error(Payroll::Workflow::Conflict)
+    expect(PayrollInvoicePreparation.count).to eq(0)
+  end
+
+  ["one approval", "changed parent digest", "changed payload digest"].each do |defect|
+    it "rejects a credited historical source with #{defect}" do
+      credited_invoice_leg
+      owner.remove_role(:owner, company)
+      payload = revision.payroll_payload.deep_dup
+      payload.fetch("lines").first.fetch("amounts")["base_minor"] += 1 if defect == "changed payload digest"
+      retained = PayrollRevision.new(payroll_run: run, created_by: accounts, number: 2, parent_digest: defect == "changed parent digest" ? "0" * 64 : revision.digest,
+        idempotency_key: "invalid-historical-#{defect}", payroll_payload: payload,
+        digest: PayrollRevision.chain_digest(Payroll::Snapshot.new(run, revision.payroll_payload).digest, revision.digest, 2))
+      retained.save!(validate: false)
+      revision.payroll_approvals.to_a.take(defect == "one approval" ? 1 : 2).each do |approval|
+        copy = approval.dup
+        copy.payroll_revision = retained
+        copy.save!(validate: false)
+      end
+      expect do
+        Payroll::ConsultantInvoicePreparation.new(run, actor: accounts).record!(employment_id: employment.id, facts: invoice_facts,
+          expected_revision_digest: retained.digest, expected_preparation_id: "", idempotency_key: "invalid-historical-review")
+      end.to raise_error(Payroll::Workflow::Conflict)
+      expect(PayrollInvoicePreparation.count).to eq(0)
+    end
+  end
+
   it "blocks real credit reopened during rendering even if a completion timestamp is stale" do
     preparation = prepare_consultant_invoice
     grant_invoice_consent

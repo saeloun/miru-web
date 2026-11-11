@@ -8,6 +8,35 @@ class Payroll::ConsultantInvoiceIssue
     @run, @employment_id = run, employment_id
   end
 
+  def self.revision_intact?(run, revision)
+    return false unless revision && revision.payroll_run_id == run.id &&
+      PayrollRevision.chain_digest(Payroll::Snapshot.new(run, revision.payroll_payload).digest, revision.parent_digest, revision.number) == revision.digest
+    parent = revision.number == 1 ? nil : run.payroll_revisions.find_by(number: revision.number - 1)
+    return false unless revision.parent_digest == parent&.digest && (revision.number == 1 || parent)
+    approvals = revision.payroll_approvals.to_a
+    approvals.size == 2 && approvals.find { |entry| entry.stage == "accounts" }&.actor_id == run.accounts_reviewer_id &&
+      approvals.find { |entry| entry.stage == "final" }&.actor_id == run.final_reviewer_id && run.accounts_reviewer_id != run.final_reviewer_id
+  end
+
+  # Preparation may use historical approvals only for this exact credited source.
+  # The caller holds run → source/instruction locks before the employment lock.
+  def credited_source_for_review?(revision:, line:, group:, legs:, handoff:)
+    return false unless self.class.revision_intact?(@run, revision)
+    return false if PayrollPtoRecovery.heads.exists?(payroll_run: @run, employment_id: @employment_id, kind: "returned_review")
+    open_legs = legs.select { |leg| leg.released_at.nil? }
+    return false if handoff && open_legs.any?
+    if handoff
+      india_facts!(handoff, line)
+    elsif group && open_legs.any?
+      mercury_facts!(group, open_legs, line)
+    else
+      return false
+    end
+    true
+  rescue Blocked, KeyError, ActiveRecord::RecordNotFound
+    false
+  end
+
   def issue!
     raise ActiveRecord::ActiveRecordError, "Invoice issuance must run after commit" if ApplicationRecord.connection.transaction_open?
 
@@ -123,9 +152,7 @@ class Payroll::ConsultantInvoiceIssue
       raise Blocked, "accounts_destination_review_required" unless preparation.facts["accounts_destination_confirmed"] == true && preparation.facts["accounts_email"].is_a?(String) && preparation.facts["accounts_email"].present?
       raise Blocked, "reviewer_unavailable" unless Payroll::ConsultantInvoicePreparation.new(@run, actor: preparation.actor).reviewer?(employment)
       revision = preparation.payroll_revision
-      raise Blocked, "revision_changed" unless revision.payroll_run_id == @run.id && revision.digest == preparation.facts["revision_digest"] &&
-        PayrollRevision.chain_digest(Payroll::Snapshot.new(@run, revision.payroll_payload).digest, revision.parent_digest, revision.number) == revision.digest &&
-        revision.payroll_approvals.where(stage: %w[accounts final]).distinct.count(:stage) == 2
+      raise Blocked, "revision_changed" unless self.class.revision_intact?(@run, revision) && revision.digest == preparation.facts["revision_digest"]
 
       line = revision.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
       raise Blocked, "revision_changed" unless line && Payroll::IndiaHandoff.line_digest(line) == preparation.facts["line_digest"]
@@ -163,7 +190,7 @@ class Payroll::ConsultantInvoiceIssue
       raise Blocked, "waiting_credit" unless group.fully_credited_at && group.fully_credited? && group.entitlement_minor == line.dig("amounts", "net_minor")
       raise Blocked, "settlement_basis_changed" unless group.line_digest == PayrollPaymentGroup.line_digest(line) && legs.all? do |leg|
         approved = leg.payroll_revision.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == @employment_id.to_i }
-        leg.intact? && leg.company_id == @run.company_id && leg.employment_id == @employment_id.to_i &&
+        leg.intact? && self.class.revision_intact?(@run, leg.payroll_revision) && leg.company_id == @run.company_id && leg.employment_id == @employment_id.to_i &&
           leg.payroll_run_id == @run.id && approved && Payroll::MercuryRevisionGuard.same_line?(approved, line)
       end
       settlements = legs.map do |leg|
@@ -179,7 +206,8 @@ class Payroll::ConsultantInvoiceIssue
       credits = handoff.payroll_india_credits.order(:id).to_a
       raise Blocked, "waiting_credit" unless handoff.fully_credited_at && !handoff.released_at && handoff.credited_minor >= handoff.entitlement_minor &&
         credits.sum(&:amount_minor) == handoff.credited_minor
-      raise Blocked, "settlement_basis_changed" unless handoff.line_digest == Payroll::IndiaHandoff.line_digest(line) && handoff.entitlement_minor == line.dig("amounts", "net_minor")
+      raise Blocked, "settlement_basis_changed" unless self.class.revision_intact?(@run, handoff.payroll_revision) &&
+        handoff.report["revision_digest"] == handoff.payroll_revision.digest && handoff.line_digest == Payroll::IndiaHandoff.line_digest(line) && handoff.entitlement_minor == line.dig("amounts", "net_minor")
 
       [credits.map { |credit| { "id" => credit.id, "currency" => "INR", "credited_minor" => credit.amount_minor, "credited_on" => credit.credited_on.iso8601, "reference" => credit.reference } },
        { "india_handoff_id" => handoff.id, "fully_credited_at" => handoff.fully_credited_at.iso8601(6) }]
