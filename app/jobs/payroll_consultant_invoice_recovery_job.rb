@@ -45,7 +45,11 @@ class PayrollConsultantInvoiceRecoveryJob < ApplicationJob
           row.update!(next_attempt_at: RETRY_AFTER.from_now)
           [row.payroll_run_id, row.employment_id]
         else
-          row.update!(updated_at: Time.current)
+          if row.state == "sending"
+            row.update!(state: "uncertain", claim_token: nil, error_code: "interrupted")
+          else
+            row.update!(updated_at: Time.current)
+          end
           [row.id]
         end
       end

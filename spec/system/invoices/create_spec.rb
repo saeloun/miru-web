@@ -555,6 +555,8 @@ RSpec.describe "Invoice creation", type: :system, js: true do
 
           save_invoice
 
+          expect(page).to have_text("Invoice created successfully", wait: 10)
+
           invoice = Invoice.find_by!(invoice_number: "INV-#{base_currency}-001")
           expect(page).to have_current_path("/invoices/#{invoice.id}/edit", ignore_query: true, wait: 10)
           expect_invoice_editor_loaded

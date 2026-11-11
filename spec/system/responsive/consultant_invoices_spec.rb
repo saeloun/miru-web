@@ -65,8 +65,8 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
   end
 
   def capture(name)
-    return unless ENV["INVOICE_SHOTS"]
     expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+    return unless ENV["INVOICE_SHOTS"]
     directory = Rails.root.join(ENV.fetch("INVOICE_SHOTS"))
     FileUtils.mkdir_p(directory)
     area = page.evaluate_script("({x: window.scrollX, y: window.scrollY, width: window.innerWidth, height: window.innerHeight})")
@@ -87,6 +87,117 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
         File.write(output, JSON.pretty_generate(evidence) + "\n")
       end
     end
+  end
+
+  it "omits an inactive original PDF and reuses the same command after generation is unavailable" do
+    revision
+    commands = Queue.new
+    allow_any_instance_of(Payroll::ConsultantInvoicePreparation).to receive(:record!) do |_service, **input|
+      commands << { original: input[:original_pdf].present?, key: input.fetch(:idempotency_key) }
+      raise ActiveRecord::Encryption::Errors::Configuration, "Synthetic unavailable preparation"
+    end
+    open_invoices(accounts, 1440)
+    complete_facts(existing: true)
+    select "Generate in Miru", from: "Invoice choice"
+    fill_in "Reviewed issuer series", with: "SYN"
+    fill_in "Reviewed invoice number within series", with: "1"
+    press "Save unreviewed preparation"
+    expect(page).to have_text("Encryption keys are not configured on this server")
+    first = Timeout.timeout(10) { commands.pop }
+    Dir.mktmpdir("inactive-invoice-original") do |directory|
+      replacement = File.join(directory, "different-original.pdf")
+      File.binwrite(replacement, File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf")) + "\n% Synthetic replacement\n")
+      select "Link an existing invoice", from: "Invoice choice"
+      attach_file "Existing original PDF (up to 5 MiB)", replacement
+      select "Generate in Miru", from: "Invoice choice"
+      press "Save unreviewed preparation"
+      expect(page).to have_text("Encryption keys are not configured on this server")
+      second = Timeout.timeout(10) { commands.pop }
+      aggregate_failures do
+        expect(first.fetch(:original)).to be(false)
+        expect(second.fetch(:original)).to be(false)
+        expect(second.fetch(:key)).to eq(first.fetch(:key))
+      end
+    end
+    expect(PayrollInvoicePreparation.count).to eq(0)
+  end
+
+  it "retains another consultant's draft and file through a successful save but clears forms on a fresh refusal" do
+    revision
+    waiting, release = Queue.new, Queue.new
+    hold_refresh = false
+    binding_changed = false
+    destination_changed = false
+    allow_any_instance_of(Api::V1::PayrollConsultantInvoicesController).to receive(:index).and_wrap_original do |method|
+      if hold_refresh
+        waiting << true
+        Timeout.timeout(10) { release.pop }
+      end
+      result = method.call
+      body = JSON.parse(method.receiver.response.body)
+      body.fetch("consultant_invoices")["accounts_email"] = "synthetic-accounts@example.com" if destination_changed
+      # This read-only row isolates client drafts, not another financial command.
+      row = body.fetch("consultant_invoices").fetch("consultants").first.deep_dup
+      row.merge!("employment_id" => "synthetic-draft-consultant", "consultant_name" => "Synthetic Draft Consultant",
+        "preparation" => nil, "invoice" => nil)
+      row["supplemental_billing_binding"] = { "digest" => "synthetic-changed-binding" } if binding_changed
+      body.fetch("consultant_invoices").fetch("consultants") << row
+      method.receiver.response_body = JSON.generate(body)
+      result
+    end
+    open_invoices(accounts, 1440)
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      complete_facts(existing: true)
+      fill_in "Billed entity postal address", with: "2 Fictional Draft Street"
+      fill_in "Reviewed document treatment and timing reason", with: "Synthetic unsaved second review"
+    end
+    within(find("article", text: "Synthetic Consultant")) { complete_facts }
+    hold_refresh = true
+    within(find("article", text: "Synthetic Consultant")) { press "Save unreviewed preparation" }
+    Timeout.timeout(10) { waiting.pop }
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      expect(find_field("Billed entity postal address").value).to eq("2 Fictional Draft Street")
+      expect(find_field("Reviewed document treatment and timing reason").value).to eq("Synthetic unsaved second review")
+      expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+      expect(page).to have_button("Save unreviewed preparation", disabled: true)
+    end
+    hold_refresh = false
+    release << true
+    expect(page).to have_text("Unreviewed preparation")
+    expect(PayrollInvoicePreparation.sole.employment_id).to eq(employment.id)
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      expect(find_field("Billed entity postal address").value).to eq("2 Fictional Draft Street")
+      expect(find_field("Reviewed document treatment and timing reason").value).to eq("Synthetic unsaved second review")
+      expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+    end
+    binding_changed = true
+    press "Refresh invoice status"
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      expect(page).to have_select("Invoice choice", selected: "Choose after checking existing invoices")
+      expect(page).to have_no_field("Existing original PDF (up to 5 MiB)", disabled: :all)
+      select "Link an existing invoice", from: "Invoice choice"
+      expect(page).to have_field("Billed entity postal address", with: "")
+      expect(page).to have_field("Reviewed document treatment and timing reason", with: "")
+      expect(find_field("Existing original PDF (up to 5 MiB)").value).to eq("")
+      check "I reviewed and confirm this fixed accounts destination for this invoice."
+      expect(page).to have_button("Review preparation", disabled: false)
+    end
+    destination_changed = true
+    press "Refresh invoice status"
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      expect(page).to have_select("Invoice choice", selected: "Choose after checking existing invoices")
+      select "Link an existing invoice", from: "Invoice choice"
+      expect(page).to have_text("synthetic-accounts@example.com")
+      expect(find_field("I reviewed and confirm this fixed accounts destination for this invoice.")).not_to be_checked
+      expect(page).to have_button("Review preparation", disabled: true)
+    end
+    accounts.remove_role(:book_keeper, company)
+    press "Refresh invoice status"
+    expect(page).to have_css("[role='alert']")
+    expect(page).to have_no_field("Invoice choice", disabled: :all)
+    expect(page).to have_no_text("Synthetic Draft Consultant")
+  ensure
+    release << true if release
   end
 
   [1440, 375].each do |width|
@@ -315,6 +426,85 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     expect(attempt.reload.state).to eq("uncertain")
   end
 
+  it "keeps an in-flight action through a sibling save refresh but cancels it on navigation" do
+    preparation = prepare_consultant_invoice
+    grant_invoice_consent
+    credited_invoice_leg
+    invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
+    invoice.payroll_consultant_invoice_deliveries.sole.update!(state: "uncertain", error_code: "smtp_outcome_unknown")
+    save_waiting, save_release, action_waiting, action_release, action_finished, refreshed, terminal = Array.new(7) { Queue.new }
+    saved = false
+    # These authorized HTTP seams isolate client interleaving, not another
+    # financial preparation, delivery, or bank settlement.
+    allow_any_instance_of(Payroll::ConsultantInvoicePreparation).to receive(:record!) do
+      save_waiting << true
+      Timeout.timeout(10) { save_release.pop }
+      saved = true
+      preparation
+    end
+    allow_any_instance_of(Payroll::ConsultantInvoiceDelivery).to receive(:reconcile!) do
+      action_waiting << true
+      Timeout.timeout(10) { action_release.pop }
+      action_finished << true
+      raise Payroll::Workflow::Conflict, "Synthetic action conflict after refresh"
+    end
+    allow_any_instance_of(Api::V1::PayrollConsultantInvoicesController).to receive(:index).and_wrap_original do |method|
+      result = method.call
+      body = JSON.parse(method.receiver.response.body)
+      row = body.fetch("consultant_invoices").fetch("consultants").sole
+      action = row.deep_dup
+      action.merge!("employment_id" => "synthetic-action-consultant", "consultant_name" => "Synthetic Action Consultant", "preparation" => nil)
+      action.fetch("invoice").merge!("number" => "SYN/ACTION", "consultant_name" => "Synthetic action subject")
+      row["invoice"] = nil
+      body.fetch("consultant_invoices").fetch("consultants") << action
+      method.receiver.response_body = JSON.generate(body)
+      refreshed << true if saved
+      result
+    end
+    open_invoices(accounts, 1440)
+    request_id = nil
+    browser_page = page.driver.browser.page
+    browser_page.on("Network.requestWillBeSent") do |event|
+      request_id = event.fetch("requestId") if URI.parse(event.fetch("request").fetch("url")).path.end_with?("/reconcile_delivery")
+    end
+    %w[Network.loadingFinished Network.loadingFailed].each do |name|
+      browser_page.on(name) do |event|
+        terminal << { name:, canceled: event["canceled"] } if request_id && event["requestId"] == request_id
+      end
+    end
+    within(find("article", text: "Synthetic Consultant")) do
+      complete_facts
+      press "Save unreviewed preparation"
+    end
+    Timeout.timeout(10) { save_waiting.pop }
+    within(find("article", text: "Synthetic Action Consultant")) do
+      fill_in "Delivery reconciliation evidence", with: "Synthetic held response"
+      check "The previous worker is stopped and its delivery outcome has been checked."
+      press "Record confirmed non-delivery"
+    end
+    Timeout.timeout(10) { action_waiting.pop }
+    save_release << true
+    Timeout.timeout(10) { refreshed.pop }
+    expect(page).to have_no_text("Loading invoice preparation…")
+    action_release << true
+    Timeout.timeout(10) { action_finished.pop }
+    expect(Timeout.timeout(10) { terminal.pop }.fetch(:name)).to eq("Network.loadingFinished")
+    expect(page).to have_css("[role='alert']", text: "Synthetic action conflict after refresh", exact_text: true)
+    within(find("article", text: "Synthetic Action Consultant")) { press "Record confirmed non-delivery" }
+    Timeout.timeout(10) { action_waiting.pop }
+    page.execute_script("window.__invoiceNavigationProbe = true")
+    click_link "Payroll review", match: :first
+    expect(page).to have_no_css("[aria-label='Consultant invoices']")
+    expect(page.evaluate_script("window.__invoiceNavigationProbe")).to be(true)
+    action_release << true
+    Timeout.timeout(10) { action_finished.pop }
+    expect(Timeout.timeout(10) { terminal.pop }).to eq(name: "Network.loadingFailed", canceled: true)
+    expect(page).to have_no_text("Synthetic action conflict after refresh")
+  ensure
+    save_release << true if save_release
+    action_release << true if action_release
+  end
+
   it "removes old workspace history before a held new-workspace response and never saves an old download" do
     prepare_consultant_invoice
     grant_invoice_consent
@@ -323,7 +513,7 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     other = create(:company, name: "Synthetic Second Workspace")
     create(:employment, company: other, user: worker, joined_at: "2020-01-01", resigned_at: nil)
     worker.add_role(:employee, other)
-    own_waiting, own_release, pdf_waiting, pdf_release = Array.new(4) { Queue.new }
+    own_waiting, own_release, pdf_waiting, pdf_release, pdf_finished, pdf_terminal = Array.new(6) { Queue.new }
     allow_any_instance_of(Api::V1::ConsultantInvoicesController).to receive(:index).and_wrap_original do |method|
       if method.receiver.send(:current_user).current_workspace_id == other.id
         own_waiting << true
@@ -335,14 +525,41 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       result = method.call
       pdf_waiting << true
       Timeout.timeout(10) { pdf_release.pop }
+      pdf_finished << true
       result
     end
     sign_in worker
     @width = 1440
     visit "/settings/consultant-invoices"
     expect(page).to have_css("h3", text: "SYN/1", exact_text: true)
+    pdf_request_id = nil
+    expect(page.evaluate_script("document.body.textContent.includes(arguments[0])", other.name)).to be(false)
+    browser_page = page.driver.browser.page
+    browser_page.on("Network.requestWillBeSent") do |event|
+      path = URI.parse(event.fetch("request").fetch("url")).path
+      pdf_request_id = event.fetch("requestId") if path == "/api/v1/consultant_invoices/#{invoice.id}/download"
+    end
+    %w[Network.loadingFinished Network.loadingFailed].each do |name|
+      browser_page.on(name) do |event|
+        next unless pdf_request_id && event["requestId"] == pdf_request_id
+        pdf_terminal << { name:, canceled: event["canceled"] }
+      end
+    end
     Dir.mktmpdir("old-scope-invoice-download") do |directory|
       page.driver.browser.downloads.set_behavior(save_path: directory)
+      page.execute_script(<<~JS)
+        window.__invoiceBlobCalls = {urls: 0, clicks: 0};
+        window.__invoiceOriginalCreateURL = URL.createObjectURL;
+        window.__invoiceOriginalAnchorClick = HTMLAnchorElement.prototype.click;
+        URL.createObjectURL = function(...args) {
+          window.__invoiceBlobCalls.urls++;
+          return window.__invoiceOriginalCreateURL.apply(this, args);
+        };
+        HTMLAnchorElement.prototype.click = function(...args) {
+          if (this.href.startsWith('blob:')) window.__invoiceBlobCalls.clicks++;
+          return window.__invoiceOriginalAnchorClick.apply(this, args);
+        };
+      JS
       press "Download paid invoice"
       Timeout.timeout(10) { pdf_waiting.pop }
       worker.update!(current_workspace: other)
@@ -363,9 +580,14 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
         walk(start?.stateNode?.current || start);
         if (!found) throw new Error('Live user context was not found');
         window.__invoiceScopeLeaks = [];
-        window.__invoiceScopeObserver = new MutationObserver(() => {
-          const text = document.body.textContent;
-          if (text.includes(name) && text.includes('SYN/1')) window.__invoiceScopeLeaks.push('old invoice');
+        window.__invoiceScopeGateOpened = false;
+        window.__invoiceScopeObserver = new MutationObserver(records => {
+          if (!document.body.textContent.includes(name)) return;
+          window.__invoiceScopeGateOpened = true;
+          const stale = document.body.textContent.includes('SYN/1') || records.some(record =>
+            [...record.addedNodes].some(node => node.textContent?.includes('SYN/1')) ||
+            (record.type === 'characterData' && record.target.textContent?.includes('SYN/1')));
+          if (stale) window.__invoiceScopeLeaks.push('old invoice');
         });
         window.__invoiceScopeObserver.observe(root, {subtree: true, childList: true, characterData: true});
         const hook = found.memoizedState;
@@ -375,13 +597,24 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       expect(page).to have_text("Loading private invoice history…")
       expect(page).to have_no_text("SYN/1")
       expect(page).to have_no_text(invoice.snapshot.fetch("consultant").fetch("pan_number"))
+      expect(page.evaluate_script("window.__invoiceScopeGateOpened")).to be(true)
       expect(page.evaluate_script("window.__invoiceScopeLeaks")).to eq([])
       pdf_release << true
       own_release << true
+      Timeout.timeout(10) { pdf_finished.pop }
+      expect(Timeout.timeout(10) { pdf_terminal.pop }).to eq(name: "Network.loadingFailed", canceled: true)
+      # The old XHR was canceled; allow its promise reactions to
+      # run before checking that the guarded download never saved private bytes.
+      page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done));")
       expect(page).to have_text("No paid consultant invoices are available yet.")
+      expect(page.evaluate_script("window.__invoiceBlobCalls")).to eq("urls" => 0, "clicks" => 0)
       expect(Dir.children(directory)).to eq([])
       expect(page.evaluate_script("window.__invoiceScopeLeaks")).to eq([])
-      page.execute_script("window.__invoiceScopeObserver.disconnect()")
+      page.execute_script(<<~JS)
+        window.__invoiceScopeObserver.disconnect();
+        URL.createObjectURL = window.__invoiceOriginalCreateURL;
+        HTMLAnchorElement.prototype.click = window.__invoiceOriginalAnchorClick;
+      JS
     end
   ensure
     own_release << true if own_release

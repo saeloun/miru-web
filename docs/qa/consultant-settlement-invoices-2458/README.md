@@ -59,6 +59,18 @@ passed card/button parent and viewport bounds; the unaltered screenshots below
 contain no text/EXIF metadata. Final 3.6.15 TEST/development builds passed. This is
 local UI evidence; the preceding d1 hosted CI result predates this follow-up.
 
+The next review follow-up passed the entire 14-case invoice browser file with
+zero console errors. Saving one consultant retains another draft and selected
+file; the sibling draft is a read-only response fixture, not a second financial
+command. Changed billing bindings and fresh permission refusals reset private forms.
+Generated requests omit inactive PDFs without changing their retry key. Workspace
+checks inspect retained and added DOM content, prove the new-workspace observer
+ran, and require the old PDF request to be canceled without creating a download.
+Sibling refresh preserves an active action; navigation cancels it. The shared
+USD/EUR/INR creation family also passed three cases after awaiting save success.
+Recovery/delivery checks passed 21 examples, including uncertainty before a worker
+runs. These local results do not qualify a new hosted revision or real email.
+
 ## Images
 
 | File | SHA256 |
@@ -76,6 +88,7 @@ local UI evidence; the preceding d1 hosted CI result predates this follow-up.
 | [Leave review queue,375](pto-review-queue-375.png) | `872f9efc38b64688cea4363b77bf456a5eb8950be83e5bf102dbd25f17a06b00` |
 | [Approval waiting,1440](approval-waiting-1440.png) | `61eb43d7a0dcc4bf35d4a09d9e14ca51714ef5c2e8b9698b326a30283bdb333b` |
 | [Approval waiting,375](approval-waiting-375.png) | `7f4eb3cbfd71302c70434088d6b62568d5a87fac2253257f0a072e88cca71ecc` |
+| [Sibling draft retained,1440](otherdraft-retained-1440.png) | `eaa6aaf17eb8f15420a83e2546497c64120641479274970111ce4f3a9f5b2d74` |
 
 The current 375px linked screenshot is byte-identical to the prior capture, so it
 is stored once. All older captures remain unaltered.

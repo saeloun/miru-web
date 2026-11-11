@@ -123,8 +123,11 @@ RSpec.describe "Durable consultant invoice wakeups" do
     attempt = invoice.payroll_consultant_invoice_deliveries.sole
     attempt.update!(state: "sending", started_at: 20.minutes.ago, updated_at: 20.minutes.ago, claim_token: "stale-worker")
     clear_enqueued_jobs
-    perform_enqueued_jobs(only: PayrollConsultantInvoiceDeliveryJob) { PayrollConsultantInvoiceRecoveryJob.perform_now }
+    expect { PayrollConsultantInvoiceRecoveryJob.perform_now }.to have_enqueued_job(PayrollConsultantInvoiceDeliveryJob).with(attempt.id)
     expect(attempt.reload).to have_attributes(state: "uncertain", error_code: "interrupted", claim_token: nil)
+    expect(ActionMailer::Base.deliveries).to be_empty
+    perform_enqueued_jobs(only: PayrollConsultantInvoiceDeliveryJob)
+    expect(attempt.reload.state).to eq("uncertain")
     expect(ActionMailer::Base.deliveries).to be_empty
     clear_enqueued_jobs
     PayrollConsultantInvoiceRecoveryJob.perform_now

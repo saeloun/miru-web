@@ -83,6 +83,7 @@ type FormProps = {
   own?: boolean;
   issueDate?: string;
   supplementalBinding?: Record<string, string> | null;
+  disabled?: boolean;
   onSaved: () => void;
 };
 
@@ -131,7 +132,7 @@ export function InvoiceForm(props: FormProps) {
   }, []);
 
   const save = async (reviewed: boolean) => {
-    if (!form.current?.reportValidity() || busy) return;
+    if (props.disabled || busy || !form.current?.reportValidity()) return;
 
     if (mode === "generate" && !props.generationSupported) {
       return setError(reasons.unsupported_generated_document);
@@ -170,14 +171,15 @@ export function InvoiceForm(props: FormProps) {
       facts.supplemental_billing_binding = props.supplementalBinding;
     }
 
+    const originalPdf = mode === "existing" ? file : undefined;
     const signature = JSON.stringify([
       facts,
       reviewed,
       props.preparation?.id,
       props.revisionDigest,
-      file?.name,
-      file?.size,
-      file?.lastModified,
+      originalPdf?.name,
+      originalPdf?.size,
+      originalPdf?.lastModified,
     ]);
     if (pending.current?.signature !== signature) {
       pending.current = { signature, key: crypto.randomUUID() };
@@ -189,7 +191,7 @@ export function InvoiceForm(props: FormProps) {
       expected_revision_digest: props.revisionDigest,
       expected_preparation_id: props.preparation?.id || "",
       idempotency_key: pending.current.key,
-      original_pdf: file,
+      original_pdf: originalPdf,
     };
     setBusy(true);
     setError("");
@@ -476,7 +478,11 @@ export function InvoiceForm(props: FormProps) {
           )}
           <div className="flex flex-wrap gap-2">
             {(props.own || props.canConfigure) && (
-              <Button type="submit" variant="outline" disabled={busy}>
+              <Button
+                type="submit"
+                variant="outline"
+                disabled={busy || props.disabled}
+              >
                 {busy
                   ? "Saving…"
                   : props.own
@@ -487,7 +493,7 @@ export function InvoiceForm(props: FormProps) {
             {!props.own && props.canReview && (
               <Button
                 type="button"
-                disabled={busy || !destination}
+                disabled={busy || props.disabled || !destination}
                 onClick={() => void save(true)}
               >
                 Review preparation
@@ -661,6 +667,7 @@ function ScopedPayrollInvoices({
   runId: string;
 }) {
   const [data, setData] = useState<RunInvoices>();
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [refresh, setRefresh] = useState(0);
@@ -669,13 +676,21 @@ function ScopedPayrollInvoices({
   const scopeRef = useRef(scope);
   scopeRef.current = scope;
   const abort = useRef<AbortController | undefined>(undefined);
-  useLayoutEffect(() => () => abort.current?.abort(), []);
+  const writeAbort = useRef<AbortController | undefined>(undefined);
+  useLayoutEffect(
+    () => () => {
+      abort.current?.abort();
+      writeAbort.current?.abort();
+    },
+    []
+  );
+
   useEffect(() => {
     const controller = new AbortController();
     abort.current = controller;
     setError("");
     setNotice("");
-    setData(undefined);
+    setLoading(true);
     consultantInvoicesApi
       .run(companyId, runId, controller.signal)
       .then(response => {
@@ -684,7 +699,12 @@ function ScopedPayrollInvoices({
         }
       })
       .catch(failure => {
-        if (!axios.isCancel(failure) && !controller.signal.aborted) {
+        if (
+          !axios.isCancel(failure) &&
+          !controller.signal.aborted &&
+          scopeRef.current === scope
+        ) {
+          setData(undefined);
           const message = invoiceError(failure);
           if (
             axios.isAxiosError(failure) &&
@@ -696,14 +716,20 @@ function ScopedPayrollInvoices({
             setError(message);
           }
         }
+      })
+      .finally(() => {
+        if (!controller.signal.aborted && scopeRef.current === scope) {
+          setLoading(false);
+        }
       });
 
     return () => controller.abort();
   }, [scope, companyId, runId, refresh]);
 
   const act = async (operation: (signal: AbortSignal) => Promise<unknown>) => {
-    if (busy || !abort.current) return;
-    const controller = abort.current;
+    if (busy || loading || writeAbort.current) return;
+    const controller = new AbortController();
+    writeAbort.current = controller;
     setBusy(true);
     setError("");
     try {
@@ -712,11 +738,19 @@ function ScopedPayrollInvoices({
         setRefresh(value => value + 1);
       }
     } catch (failure) {
-      if (!axios.isCancel(failure) && !controller.signal.aborted) {
+      if (
+        !axios.isCancel(failure) &&
+        !controller.signal.aborted &&
+        scopeRef.current === scope
+      ) {
         setError(invoiceError(failure));
       }
     } finally {
-      if (scopeRef.current === scope) setBusy(false);
+      if (writeAbort.current === controller) writeAbort.current = undefined;
+
+      if (!controller.signal.aborted && scopeRef.current === scope) {
+        setBusy(false);
+      }
     }
   };
 
@@ -758,7 +792,7 @@ function ScopedPayrollInvoices({
           type="button"
           variant="outline"
           onClick={() => setRefresh(value => value + 1)}
-          disabled={busy}
+          disabled={busy || loading}
         >
           Refresh invoice status
         </Button>
@@ -777,7 +811,7 @@ function ScopedPayrollInvoices({
           {notice}
         </p>
       )}
-      {!data && !error && !notice && (
+      {loading && !error && !notice && (
         <p role="status">Loading invoice preparation…</p>
       )}
       {data?.consultants.length === 0 && (
@@ -799,7 +833,7 @@ function ScopedPayrollInvoices({
               {row.can_review && row.invoice.email?.state === "failed" && (
                 <Button
                   type="button"
-                  disabled={busy}
+                  disabled={busy || loading}
                   onClick={() =>
                     void act(signal =>
                       consultantInvoicesApi.delivery(
@@ -820,7 +854,7 @@ function ScopedPayrollInvoices({
                 <DeliveryReconciliation
                   key={`${row.invoice.id}:${row.invoice.email.id}`}
                   invoice={row.invoice}
-                  busy={busy}
+                  busy={busy || loading}
                   reconcile={(outcome, evidence) =>
                     act(signal =>
                       consultantInvoicesApi.delivery(
@@ -936,7 +970,9 @@ function ScopedPayrollInvoices({
                   <InvoiceForm
                     key={`${scope}:${row.employment_id}:${
                       row.preparation?.id || ""
-                    }:${data.revision_digest}:${row.generation_supported}`}
+                    }:${data.revision_digest}:${row.generation_supported}:${
+                      row.supplemental_billing_binding?.digest || ""
+                    }:${data.accounts_email}`}
                     companyId={companyId}
                     runId={runId}
                     employmentId={row.employment_id}
@@ -950,6 +986,7 @@ function ScopedPayrollInvoices({
                     canConfigure={row.can_configure}
                     generationSupported={row.generation_supported}
                     supplementalBinding={row.supplemental_billing_binding}
+                    disabled={busy || loading}
                     onSaved={() => setRefresh(value => value + 1)}
                   />
                 )}
@@ -959,7 +996,7 @@ function ScopedPayrollInvoices({
                   <Button
                     type="button"
                     variant="outline"
-                    disabled={busy}
+                    disabled={busy || loading}
                     onClick={() =>
                       void act(signal =>
                         consultantInvoicesApi.retryGeneration(
