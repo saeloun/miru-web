@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_11_100000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -1569,6 +1569,59 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
     t.check_constraint "(state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'uncertain'::character varying, 'skipped'::character varying]::text[])) AND ((state::text <> ALL (ARRAY['sending'::character varying, 'sent'::character varying, 'uncertain'::character varying]::text[])) OR attempted_at IS NOT NULL) AND (state::text <> 'sent'::text OR sent_at IS NOT NULL)", name: "bank_change_notice_states"
   end
 
+  create_table "payroll_consultant_invoice_deliveries", force: :cascade do |t|
+    t.bigint "payroll_consultant_invoice_id", null: false
+    t.integer "attempt_number", null: false
+    t.string "state", default: "queued", null: false
+    t.string "claim_token"
+    t.string "error_code"
+    t.datetime "started_at"
+    t.datetime "sent_at"
+    t.datetime "reviewed_at"
+    t.bigint "reviewed_by_id"
+    t.text "review_evidence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["payroll_consultant_invoice_id", "attempt_number"], name: "invoice_delivery_attempt", unique: true
+    t.index ["payroll_consultant_invoice_id"], name: "invoice_delivery_invoice"
+    t.index ["payroll_consultant_invoice_id"], name: "invoice_delivery_one_open", unique: true, where: "((state)::text = ANY ((ARRAY['queued'::character varying, 'sending'::character varying, 'uncertain'::character varying])::text[]))"
+    t.index ["reviewed_by_id"], name: "index_payroll_consultant_invoice_deliveries_on_reviewed_by_id"
+    t.check_constraint "attempt_number > 0 AND (state::text = ANY (ARRAY['queued'::character varying, 'sending'::character varying, 'sent'::character varying, 'failed'::character varying, 'uncertain'::character varying]::text[]))", name: "invoice_delivery_values"
+  end
+
+  create_table "payroll_consultant_invoices", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "preparation_id", null: false
+    t.bigint "issuer_id", null: false
+    t.bigint "authorization_id"
+    t.bigint "payroll_payment_group_id"
+    t.bigint "payroll_india_handoff_id"
+    t.bigint "pdf_blob_id", null: false
+    t.bigint "original_blob_id"
+    t.text "snapshot", null: false
+    t.string "financial_year", null: false
+    t.string "number_digest", null: false
+    t.string "mode", null: false
+    t.date "issued_on", null: false
+    t.datetime "created_at", null: false
+    t.index ["authorization_id"], name: "index_payroll_consultant_invoices_on_authorization_id"
+    t.index ["company_id", "issuer_id", "financial_year", "number_digest"], name: "consultant_invoice_issuer_number", unique: true
+    t.index ["company_id", "payroll_run_id", "employment_id"], name: "consultant_invoice_one_settlement", unique: true
+    t.index ["company_id"], name: "index_payroll_consultant_invoices_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_consultant_invoices_on_employment_id"
+    t.index ["issuer_id"], name: "index_payroll_consultant_invoices_on_issuer_id"
+    t.index ["original_blob_id"], name: "index_payroll_consultant_invoices_on_original_blob_id"
+    t.index ["payroll_india_handoff_id"], name: "index_payroll_consultant_invoices_on_payroll_india_handoff_id"
+    t.index ["payroll_payment_group_id"], name: "index_payroll_consultant_invoices_on_payroll_payment_group_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_consultant_invoices_on_payroll_revision_id"
+    t.index ["payroll_run_id"], name: "index_payroll_consultant_invoices_on_payroll_run_id"
+    t.index ["pdf_blob_id"], name: "index_payroll_consultant_invoices_on_pdf_blob_id"
+    t.check_constraint "num_nonnulls(payroll_payment_group_id, payroll_india_handoff_id) = 1 AND number_digest::text ~ '^[0-9a-f]{64}$'::text AND financial_year::text ~ '^[0-9]{4}-[0-9]{4}$'::text AND (mode::text = 'generate'::text AND authorization_id IS NOT NULL AND original_blob_id IS NULL OR mode::text = 'existing'::text AND authorization_id IS NULL AND original_blob_id IS NOT NULL)", name: "consultant_invoice_source"
+  end
+
   create_table "payroll_expense_reservations", force: :cascade do |t|
     t.bigint "company_id", null: false
     t.bigint "expense_id", null: false
@@ -1649,6 +1702,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
     t.index ["payroll_run_id", "employment_id"], name: "payroll_india_one_active_handoff", unique: true, where: "(released_at IS NULL)"
     t.index ["payroll_run_id"], name: "index_payroll_india_handoffs_on_payroll_run_id"
     t.check_constraint "entitlement_minor > 0 AND credited_minor >= 0", name: "payroll_india_handoff_amounts"
+  end
+
+  create_table "payroll_invoice_preparations", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_run_id", null: false
+    t.bigint "payroll_revision_id", null: false
+    t.bigint "employment_id", null: false
+    t.bigint "actor_id", null: false
+    t.bigint "previous_preparation_id"
+    t.bigint "original_blob_id"
+    t.boolean "reviewed", default: false, null: false
+    t.text "facts", null: false
+    t.string "command_digest", null: false
+    t.string "idempotency_key", null: false
+    t.string "state", default: "waiting_credit", null: false
+    t.string "claim_token"
+    t.string "error_code"
+    t.datetime "started_at"
+    t.datetime "next_attempt_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_payroll_invoice_preparations_on_actor_id"
+    t.index ["company_id", "payroll_run_id", "employment_id", "id"], name: "invoice_preparation_tenant_identity", unique: true
+    t.index ["company_id"], name: "index_payroll_invoice_preparations_on_company_id"
+    t.index ["employment_id"], name: "index_payroll_invoice_preparations_on_employment_id"
+    t.index ["original_blob_id"], name: "index_payroll_invoice_preparations_on_original_blob_id"
+    t.index ["payroll_revision_id"], name: "index_payroll_invoice_preparations_on_payroll_revision_id"
+    t.index ["payroll_run_id", "employment_id", "idempotency_key"], name: "invoice_preparation_command", unique: true
+    t.index ["payroll_run_id", "employment_id"], name: "invoice_preparation_root", unique: true, where: "(previous_preparation_id IS NULL)"
+    t.index ["payroll_run_id"], name: "index_payroll_invoice_preparations_on_payroll_run_id"
+    t.index ["previous_preparation_id"], name: "index_payroll_invoice_preparations_on_previous_preparation_id", unique: true
+    t.index ["state", "next_attempt_at"], name: "idx_on_state_next_attempt_at_cdad2bc193"
+    t.check_constraint "(state::text = ANY (ARRAY['waiting_credit'::character varying, 'blocked'::character varying, 'queued'::character varying, 'generating'::character varying, 'failed'::character varying, 'completed'::character varying]::text[])) AND command_digest::text ~ '^[0-9a-f]{64}$'::text AND length(idempotency_key::text) >= 1 AND length(idempotency_key::text) <= 128", name: "invoice_preparation_values"
   end
 
   create_table "payroll_mercury_connections", force: :cascade do |t|
@@ -2744,6 +2830,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
     t.index ["user_id"], name: "index_wise_accounts_on_user_id"
   end
 
+  add_foreign_key "payroll_consultant_invoice_deliveries", "payroll_consultant_invoices"
+  add_foreign_key "payroll_consultant_invoice_deliveries", "users", column: "reviewed_by_id"
+  add_foreign_key "payroll_consultant_invoices", "active_storage_blobs", column: "original_blob_id"
+  add_foreign_key "payroll_consultant_invoices", "active_storage_blobs", column: "pdf_blob_id"
+  add_foreign_key "payroll_consultant_invoices", "companies"
+  add_foreign_key "payroll_consultant_invoices", "consultant_invoice_authorizations", column: "authorization_id"
+  add_foreign_key "payroll_consultant_invoices", "employments"
+  add_foreign_key "payroll_consultant_invoices", "payroll_india_handoffs"
+  add_foreign_key "payroll_consultant_invoices", "payroll_invoice_preparations", column: ["company_id", "payroll_run_id", "employment_id", "preparation_id"], primary_key: ["company_id", "payroll_run_id", "employment_id", "id"], name: "consultant_invoice_preparation_tenant"
+  add_foreign_key "payroll_consultant_invoices", "payroll_payment_groups"
+  add_foreign_key "payroll_consultant_invoices", "payroll_revisions"
+  add_foreign_key "payroll_consultant_invoices", "payroll_runs"
+  add_foreign_key "payroll_consultant_invoices", "users", column: "issuer_id"
+  add_foreign_key "payroll_invoice_preparations", "active_storage_blobs", column: "original_blob_id"
+  add_foreign_key "payroll_invoice_preparations", "companies"
+  add_foreign_key "payroll_invoice_preparations", "employments"
+  add_foreign_key "payroll_invoice_preparations", "payroll_invoice_preparations", column: "previous_preparation_id"
+  add_foreign_key "payroll_invoice_preparations", "payroll_revisions"
+  add_foreign_key "payroll_invoice_preparations", "payroll_runs"
+  add_foreign_key "payroll_invoice_preparations", "users", column: "actor_id"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_keys", "agents"
@@ -3528,6 +3634,49 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_10_100000) do
   execute <<~SQL
     CREATE TRIGGER consultant_billing_review_valid BEFORE INSERT ON consultant_billing_reviews
     FOR EACH ROW EXECUTE FUNCTION public.validate_consultant_billing_review();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.protect_consultant_invoice()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    BEGIN RAISE EXCEPTION 'Consultant invoice is immutable'; END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_invoice_immutable BEFORE UPDATE OR DELETE ON payroll_consultant_invoices FOR EACH ROW EXECUTE FUNCTION public.protect_consultant_invoice();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.protect_invoice_preparation()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    BEGIN
+      IF TG_OP='DELETE' THEN RAISE EXCEPTION 'Invoice preparation is retained'; END IF;
+      IF (to_jsonb(NEW)-ARRAY['state','claim_token','error_code','started_at','next_attempt_at','updated_at']) <>
+         (to_jsonb(OLD)-ARRAY['state','claim_token','error_code','started_at','next_attempt_at','updated_at']) THEN
+        RAISE EXCEPTION 'Reviewed invoice preparation facts are immutable';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER invoice_preparation_immutable BEFORE UPDATE OR DELETE ON payroll_invoice_preparations FOR EACH ROW EXECUTE FUNCTION public.protect_invoice_preparation();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.protect_consultant_invoice_delivery()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    BEGIN
+      IF TG_OP='DELETE' OR NEW.payroll_consultant_invoice_id IS DISTINCT FROM OLD.payroll_consultant_invoice_id OR
+        NEW.attempt_number IS DISTINCT FROM OLD.attempt_number OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+        RAISE EXCEPTION 'Consultant invoice delivery identity is immutable';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER consultant_invoice_delivery_immutable BEFORE UPDATE OR DELETE ON payroll_consultant_invoice_deliveries FOR EACH ROW EXECUTE FUNCTION public.protect_consultant_invoice_delivery();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$
