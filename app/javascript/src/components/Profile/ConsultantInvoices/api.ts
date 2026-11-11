@@ -139,7 +139,12 @@ function preparationBody(
 export const consultantInvoicesApi = {
   runs: (companyId: string, page: number, signal: AbortSignal) =>
     http.get<{
-      runs: { id: string; period: string; can_review_others: boolean }[];
+      runs: {
+        id: string;
+        period: string;
+        can_configure: boolean;
+        can_review_others: boolean;
+      }[];
       page: number;
       has_more: boolean;
     }>("/payroll_consultant_invoice_runs", {

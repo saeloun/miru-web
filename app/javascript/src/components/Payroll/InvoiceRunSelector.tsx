@@ -8,7 +8,12 @@ import { consultantInvoicesApi } from "components/Profile/ConsultantInvoices/api
 import { invoiceError } from "./Invoices";
 
 type RunList = {
-  runs: { id: string; period: string; can_review_others: boolean }[];
+  runs: {
+    id: string;
+    period: string;
+    can_configure: boolean;
+    can_review_others: boolean;
+  }[];
   page: number;
   has_more: boolean;
 };
@@ -79,7 +84,10 @@ function ScopedInvoiceRunSelector({ companyId }: { companyId: string }) {
               className="text-sm font-medium text-primary underline"
               to={`/payroll/${run.id}/consultant-invoices`}
             >
-              Prepare consultant invoices · {run.period}
+              {run.can_configure
+                ? "Prepare consultant invoices"
+                : "View issued consultant invoices"}{" "}
+              · {run.period}
             </Link>
           </li>
         ))}

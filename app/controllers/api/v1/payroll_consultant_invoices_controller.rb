@@ -14,14 +14,18 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
     approved = PayrollRevision.joins(:payroll_approvals)
       .where("payroll_revisions.number=(SELECT MAX(r.number) FROM payroll_revisions r WHERE r.payroll_run_id=payroll_revisions.payroll_run_id)")
       .group("payroll_revisions.id").having("COUNT(DISTINCT payroll_approvals.stage)=2").select(:payroll_run_id)
-    scope = PayrollRun.where(company_id: payroll_workspace_id, id: approved)
+    company_runs = PayrollRun.where(company_id: payroll_workspace_id)
+    issued = PayrollConsultantInvoice.where(company_id: payroll_workspace_id).select(:payroll_run_id)
+    scope = company_runs.where(id: approved).or(company_runs.where(id: issued))
     admin = current_user.roles.where(resource: current_company, name: %w[owner admin]).exists?
     scope = scope.where(accounts_reviewer_id: current_user.id) unless admin
     pages = [(scope.count / 24.0).ceil, 1].max
     page = [invoice_id!(params[:page] || "1"), pages].min
     rows = scope.order(period: :desc, id: :desc).limit(24).offset((page - 1) * 24).filter_map do |run|
       next unless invoice_policy(run).index?
-      { id: run.id.to_s, period: run.period.strftime("%Y-%m"), can_configure: true,
+      approved_revision = Payroll::ConsultantInvoiceIssue.revision_intact?(run, run.current_revision)
+      next unless approved_revision || PayrollConsultantInvoice.exists?(company_id: payroll_workspace_id, payroll_run: run)
+      { id: run.id.to_s, period: run.period.strftime("%Y-%m"), can_configure: approved_revision,
         can_review_others: run.accounts_reviewer_id == current_user.id || current_user.roles.where(resource: current_company, name: "owner").exists? }
     end
     render json: { runs: rows, page:, has_more: page < pages }
@@ -30,24 +34,17 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
   def index
     authorize @run, :index?, policy_class: PayrollConsultantInvoicePolicy
     revision = @run.current_revision
-    rows = Array(revision&.payroll_payload&.fetch("lines", [])).filter_map do |line|
-      next unless line["pay_type"] == "consultant"
-      employment = @run.company.employments.kept.find_by(id: line["employment_id"])
-      next unless employment
-      context = invoice_context(@run, employment)
-      preparation = preparation_scope.heads.find_by(employment:)
-      invoice = invoice_scope.find_by(employment:)
-      binding = line.dig("preparation", "billing_identity")
-      binding ||= Payroll::BillingIdentity.new(employment).binding
-      billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding) if binding
-      { employment_id: employment.id.to_s, consultant_name: employment.user.full_name,
-        legal_entity_name: employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name,
-        billing_identity: billing, supplemental_billing_binding: line.dig("preparation", "billing_identity") ? nil : binding,
-        generation_supported: Payroll::ConsultantInvoicePreparation.generation_supported?(billing),
-        amounts: line.fetch("amounts").transform_values(&:to_s), preparation: preparation_details(preparation), invoice: invoice && invoice_details(invoice),
-        can_configure: invoice_policy(context).configure?, can_review: invoice_policy(context).review? }
+    approved_revision = Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision)
+    rows = if approved_revision
+      approved_rows(revision)
+    else
+      issued_snapshot_rows
     end
-    render json: { consultant_invoices: { company_id: @run.company_id.to_s, run_id: @run.id.to_s, revision_digest: revision&.digest,
+    if !approved_revision && rows.empty?
+      raise Payroll::Workflow::NotAuthorized, "Invoice preparation waits for payroll approval"
+    end
+
+    render json: { consultant_invoices: { company_id: @run.company_id.to_s, run_id: @run.id.to_s, revision_digest: approved_revision ? revision.digest : nil,
       accounts_email: Payroll::ConsultantInvoicePreparation::ACCOUNTS_EMAIL, issue_date: Time.current.in_time_zone("Asia/Kolkata").to_date.iso8601,
       financial_year: Payroll::ConsultantInvoicePreparation.financial_year, consultants: rows } }
   end
@@ -116,6 +113,38 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
   end
 
   private
+
+    def approved_rows(revision)
+      revision.payroll_payload.fetch("lines").filter_map do |line|
+        next unless line["pay_type"] == "consultant"
+        employment = @run.company.employments.kept.find_by(id: line["employment_id"])
+        next unless employment
+        context = invoice_context(@run, employment)
+        preparation = preparation_scope.heads.find_by(employment:)
+        invoice = invoice_scope.find_by(employment:)
+        binding = line.dig("preparation", "billing_identity")
+        binding ||= Payroll::BillingIdentity.new(employment).binding
+        billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding) if binding
+        { employment_id: employment.id.to_s, consultant_name: employment.user.full_name,
+          legal_entity_name: employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name,
+          billing_identity: billing, supplemental_billing_binding: line.dig("preparation", "billing_identity") ? nil : binding,
+          generation_supported: Payroll::ConsultantInvoicePreparation.generation_supported?(billing),
+          amounts: line.fetch("amounts").transform_values(&:to_s), preparation: preparation_details(preparation), invoice: invoice && invoice_details(invoice),
+          can_configure: invoice_policy(context).configure?, can_review: invoice_policy(context).review? }
+      end
+    end
+
+    def issued_snapshot_rows
+      invoice_scope.order(:id).filter_map do |invoice|
+        next unless Payroll::ConsultantInvoiceIssue.revision_intact?(@run, invoice.payroll_revision)
+
+        details = invoice_details(invoice)
+        { employment_id: invoice.employment_id.to_s, consultant_name: details.fetch(:consultant_name),
+          legal_entity_name: invoice.snapshot.dig("billed_entity", "name"), billing_identity: nil, supplemental_billing_binding: nil,
+          generation_supported: false, amounts: {}, preparation: nil, invoice: details,
+          can_configure: false, can_review: invoice_policy(invoice).review? }
+      end
+    end
 
     def invoice_run
       @run = PayrollRun.where(company_id: payroll_workspace_id).find(invoice_id!(params[:payroll_run_id]))

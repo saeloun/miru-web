@@ -192,6 +192,33 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     capture("admin-unreviewed")
   end
 
+  it "keeps a reopened run's issued document downloadable without exposing draft forms or billing facts" do
+    prepare_consultant_invoice
+    grant_invoice_consent
+    credited_invoice_leg
+    invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
+    draft = workflow.revise!(actor: accounts, payload: revision.payroll_payload.deep_dup, idempotency_key: "browser-issued-run-reopened", expected_digest: revision.digest)
+    expect(draft.payroll_approvals.count).to eq(0)
+    admin = create(:user, current_workspace: company)
+    create(:employment, company:, user: admin, joined_at: "2020-01-01", resigned_at: nil)
+    admin.add_role(:admin, company)
+    sign_in admin
+    @width = 375
+    page.current_window.resize_to(375, 1000)
+    visit "/consultant-payroll"
+    link = find_link("View issued consultant invoices · 2026-11")
+    page.scroll_to(link, align: :center)
+    link.click
+    expect(page).to have_current_path("/payroll/#{run.id}/consultant-invoices")
+    expect(page).to have_css("h3", text: "SYN/1", exact_text: true)
+    expect(page).to have_no_field("Invoice choice", disabled: :all)
+    expect(page).to have_no_text("Approved consultant billing identity")
+    expect(page).to have_no_text("AAAPC1234D")
+    expect(page).to have_no_button("Review preparation")
+    capture("reopened-issued-history")
+    download_exact("Download paid invoice", invoice.pdf_blob.download)
+  end
+
   it "keeps stopped-worker evidence separate for two uncertain invoice cards and resets a changed attempt" do
     prepare_consultant_invoice
     grant_invoice_consent

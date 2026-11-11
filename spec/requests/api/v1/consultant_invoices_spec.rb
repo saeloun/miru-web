@@ -25,6 +25,82 @@ RSpec.describe "Private consultant invoice API", type: :request do
       expected_preparation_id: "", idempotency_key: "http-review", reviewed: true }
   end
 
+  def unassigned_invoice_admin
+    actor = create(:user, current_workspace: company)
+    create(:employment, company:, user: actor, joined_at: "2020-01-01", resigned_at: nil)
+    actor.add_role(:admin, company)
+    actor
+  end
+
+  it "does not expose a never-approved draft through a direct invoice index URL" do
+    draft = workflow.revise!(actor: accounts, payload: synthetic_payload, idempotency_key: "private-first-draft", expected_digest: nil)
+    expect(draft.payroll_approvals.count).to eq(0)
+    sign_in unassigned_invoice_admin
+    get manager_path, params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.parsed_body.fetch("errors")).to include("waits for payroll approval")
+    expect(response.body).not_to include("6250000", "AAAPC1234D", "Synthetic Road", draft.digest)
+  end
+
+  it "does not expose a new unapproved head after an approved run is actually reopened" do
+    approved = revision
+    draft = workflow.revise!(actor: accounts, payload: approved.payroll_payload.deep_dup, idempotency_key: "private-reopened-draft", expected_digest: approved.digest)
+    expect(run.current_revision.id).to eq(draft.id)
+    expect(draft.payroll_approvals.count).to eq(0)
+    sign_in unassigned_invoice_admin
+    get manager_path, params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("6250000", "AAAPC1234D", "Synthetic Road", draft.digest)
+  end
+
+  it "rejects a tampered head even when both original approval rows are present" do
+    approved = revision
+    payload = approved.payroll_payload.deep_dup
+    payload.fetch("lines").sole.fetch("amounts")["net_minor"] = 7_711_223
+    tampered = PayrollRevision.new(payroll_run: run, created_by: accounts, number: 2, parent_digest: approved.digest,
+      payroll_payload: payload, digest: "0" * 64, idempotency_key: "synthetic-tampered-head")
+    tampered.save!(validate: false)
+    approved.payroll_approvals.each do |approval|
+      copy = approval.dup
+      copy.payroll_revision = tampered
+      copy.save!(validate: false)
+    end
+    sign_in unassigned_invoice_admin
+    get manager_path, params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include("7711223", "AAAPC1234D", "Synthetic Road", tampered.digest)
+  end
+
+  it "retains only trusted issued snapshot rows and private downloads after actual reopening" do
+    invoice = issued_invoice
+    old_revision = revision
+    draft = workflow.revise!(actor: accounts, payload: old_revision.payroll_payload.deep_dup, idempotency_key: "issued-run-reopened", expected_digest: old_revision.digest)
+    expect(draft.payroll_approvals.count).to eq(0)
+    admin = unassigned_invoice_admin
+    [owner, accounts, admin].each do |actor|
+      sign_in actor
+      get "/api/v1/payroll_consultant_invoice_runs", params: { company_id: company.id }
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.fetch("runs").sole).to include("id" => run.id.to_s, "can_configure" => false)
+      get manager_path, params: { company_id: company.id }
+      expect(response).to have_http_status(:ok)
+      data = response.parsed_body.fetch("consultant_invoices")
+      expect(data.fetch("revision_digest")).to be_nil
+      row = data.fetch("consultants").sole
+      expect(row).to include("employment_id" => employment.id.to_s, "preparation" => nil, "billing_identity" => nil,
+        "amounts" => {}, "can_configure" => false, "generation_supported" => false)
+      expect(row.fetch("invoice")).to include("id" => invoice.id.to_s, "number" => "SYN/1", "status" => "Paid")
+      expect(response.body).not_to include("AAAPC1234D", "Synthetic Road", draft.digest)
+      get "#{manager_path}/#{invoice.id}/download", params: { company_id: company.id, kind: "paid" }
+      expect(response).to have_http_status(:ok)
+      expect(response.body.b).to eq(invoice.pdf_blob.download)
+    end
+    admin.remove_role(:admin, company)
+    sign_in admin
+    get manager_path, params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+  end
+
   context "with reviewed registered billing facts" do
     let(:billing_identity_ready) { false }
     before { review_synthetic_billing_identity(employment:, reviewer: owner, gst_scheme: "composition") }
