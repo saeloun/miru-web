@@ -14,6 +14,16 @@ rtk mise exec -- pnpm --dir apps/mobile audit
 CI runs these checks in the security-audit job. Brakeman was already present; it is
 upgraded to 8.1.0. Keep its warnings visible and fix actionable findings.
 
+The GitHub-hosted Linux CI document-tool installer bounds total HTTPS lookup time and APT execution.
+If an Ubuntu archive lookup fails, it resolves only the three fixed archive hosts
+through [Cloudflare's HTTPS resolver](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/),
+whose hostname must still resolve, and removes its temporary host mappings after installation.
+Host-file edit failures attempt to restore the prior bytes; persistent I/O failures
+can prevent restoration and fail the job. APT signature checks, all required tools
+and the downstream test stages remain enforced. Its offline parser, deadline and
+cleanup checks run with `python3 scripts/ci/install_document_tools.py --self-check`;
+a complete Ubuntu CI run is required in addition to these checks.
+
 ## Runtimes and package compatibility
 
 The Debian trixie image explicitly installs `libopenexr-3-1-30`. Its final runtime
