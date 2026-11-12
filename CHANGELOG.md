@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.6.15] - 2026-11-11
+## [3.6.18] - 2026-11-12
 
 ### Added
 
@@ -12,6 +12,12 @@
 - Show an approval wait as a neutral status while retaining alerts for permission errors.
 - Keep leave review controls stable while payroll loads, retain the selected report date and wrap long consultant names on mobile.
 - Use a neutral PDF title when a document has none, keeping rendered content out of PDF metadata.
+
+## [3.6.17] - 2026-11-12
+
+### Fixed
+
+- Render salary-slip and invoice emails with fallback branding when an optional company logo file is unavailable.
 
 ## [3.6.14] - 2026-11-11
 
