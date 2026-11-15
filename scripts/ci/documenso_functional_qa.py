@@ -349,6 +349,34 @@ def unix_admission_paths(listeners):
     return {address for _, address, _ in listeners}
 
 
+RUNNER_STORAGE_SOCKETS = {
+    "multipathd.socket": ("@/org/kernel/linux/storage/multipathd", "multipathd.service"),
+    "iscsid.socket": ("@ISCSIADM_ABSTRACT_NAMESPACE", "iscsid.service"),
+    "iscsiuio.socket": ("@ISCSID_UIP_ABSTRACT_NAMESPACE", "iscsiuio.service"),
+}
+
+
+def runner_storage_units(listeners, unit_listens, mapped_devices, iscsi_sessions):
+    abstract = [(address, kind) for _, address, kind in listeners if not address.startswith("/")]
+    if not abstract:
+        return []
+    require(not mapped_devices and not iscsi_sessions, "Runner storage is in use")
+    units = set()
+    for address, kind in abstract:
+        matches = [(unit, service) for unit, (expected, service) in RUNNER_STORAGE_SOCKETS.items() if address == expected and kind == 1]
+        require(len(matches) == 1, "Unreviewed runner storage socket")
+        unit, service = matches[0]
+        lines = unit_listens.get(unit, "").splitlines()
+        require(all("=" in line for line in lines))
+        properties = unique_object(line.split("=", 1) for line in lines if not line.startswith("Listen="))
+        require(properties.get("Id") == unit and properties.get("Accept") == "no" and properties.get("Triggers") == service,
+                "Runner storage unit identity does not match")
+        fields = [line.removeprefix("Listen=").split() for line in lines if line.startswith("Listen=")]
+        require(all(len(entry) == 2 for entry in fields) and [address, "(Stream)"] in fields, "Runner socket unit does not match")
+        units.add((unit, service))
+    return [name for pair in sorted(units) for name in pair]
+
+
 def unix_isolated(listeners, baseline, owned_inodes):
     require(all((inode, address, kind) in baseline or inode in owned_inodes for inode, address, kind in listeners), "Unreviewed Unix listener appeared")
 
@@ -1513,6 +1541,24 @@ def self_check():
         listeners = unix_listeners(filesystem)
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
+        storage = [(900, "@/org/kernel/linux/storage/multipathd", 1), (901, "@ISCSIADM_ABSTRACT_NAMESPACE", 1)]
+        unit_listens = {"multipathd.socket": "Id=multipathd.socket\nAccept=no\nTriggers=multipathd.service\nListen=@/org/kernel/linux/storage/multipathd (Stream)\nListen=/run/multipathd.socket (Stream)",
+                        "iscsid.socket": "Id=iscsid.socket\nAccept=no\nTriggers=iscsid.service\nListen=@ISCSIADM_ABSTRACT_NAMESPACE (Stream)"}
+        assert runner_storage_units(storage, unit_listens, False, False) == ["iscsid.socket", "iscsid.service", "multipathd.socket", "multipathd.service"]
+        assert runner_storage_units(listeners, {}, True, True) == []
+        for args in ((storage, unit_listens, True, False), (storage, unit_listens, False, True),
+                     (storage + [(903, "@unknown", 1)], unit_listens, False, False), (storage, {}, False, False),
+                     *((storage, {**unit_listens, "iscsid.socket": unit_listens["iscsid.socket"].replace(old, new)}, False, False)
+                       for old, new in (("(Stream)", "(Datagram)"), ("NAMESPACE (", "NAMESPACE_suffix ("),
+                                        ("Accept=no", "Accept=yes"), ("Id=iscsid.socket", "Id=other.socket"),
+                                        ("Triggers=iscsid.service", "Triggers=other.service"), ("Accept=no", "Accept=no\nAccept=no"))),
+                     ([(900, "relative", 1)], {}, False, False), ([(900, "@ISCSIADM_ABSTRACT_NAMESPACE", 2)], unit_listens, False, False)):
+            try:
+                runner_storage_units(*args)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unsafe runner storage preparation admitted")
         abstract = unix_listeners((header + "0: 00000001 00000000 00010000 0001 01 903 @foreign-relay\n").encode())
         for rejected in (lambda: unix_admission_paths(abstract), lambda: unix_isolated(abstract, set(listeners), set()),
                          lambda: unix_isolated([(904, "/run/new-relay", 1)], set(listeners), set())):

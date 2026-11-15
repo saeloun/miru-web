@@ -238,6 +238,40 @@ jobs:
       - name: Check adapter without starting services
         run: python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py --self-check
 
+      - name: Prepare unused runner storage sockets and check Unix isolation
+        timeout-minutes: 2
+        run: |
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT python3 -I - <<'PY'
+          import importlib.util, json, os, pathlib, sys
+          path = pathlib.Path("qa-adapter/scripts/ci/documenso_functional_qa.py").resolve()
+          spec = importlib.util.spec_from_file_location("qa_socket_admission", path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          module.require(sys.platform == "linux" and os.geteuid() == 0 and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("CI") == "true" and os.environ.get("RUNNER_OS") == "Linux" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
+          module.require(pathlib.Path("/sys/block").is_dir() and pathlib.Path("/sys/class").is_dir())
+          def storage_state():
+              devices = list(pathlib.Path("/sys/block").iterdir())
+              try:
+                  sessions = list(pathlib.Path("/sys/class/iscsi_session").iterdir())
+              except FileNotFoundError:
+                  sessions = []
+              return any(device.name.startswith("dm-") for device in devices), bool(sessions)
+          listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
+          unit_listens = {unit: module.checked(["systemctl", "show", "--property=Id,Listen,Accept,Triggers", unit], timeout=10).decode()
+                          for unit, (address, _) in module.RUNNER_STORAGE_SOCKETS.items()
+                          if any(actual == address for _, actual, _ in listeners)}
+          units = module.runner_storage_units(listeners, unit_listens, *storage_state())
+          if units:
+              module.require(not module.checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=10).strip(), "Runner has pending systemd jobs")
+              module.checked(["systemctl", "mask", "--runtime", "--now", *units], timeout=30)
+              module.require(not any(storage_state()), "Runner storage became active")
+              for unit in units:
+                  module.require(module.checked(["systemctl", "show", "--property=LoadState", "--value", unit], timeout=10).strip() == b"masked")
+                  module.require(module.checked(["systemctl", "show", "--property=ActiveState", "--value", unit], timeout=10).strip() == b"inactive")
+          module.unix_admission_paths(module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2)))
+          print(json.dumps({"stopped_unused_storage_units": units, "unix_admission_passed": True}))
+          PY
+
       - name: Setup exact application Ruby
         uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
         with:
@@ -273,40 +307,6 @@ jobs:
           sudo install -m 0644 "$RUNNER_TEMP/brave-browser.sources" /etc/apt/sources.list.d/brave-browser-release.sources
           sudo timeout 120 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 -o APT::Update::Error-Mode=any update
           sudo timeout 300 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 install --no-install-recommends -y poppler-utils qpdf libvips42t64 brave-browser iproute2 iptables acl
-
-      - name: Check runtime Unix listener admission before downloads
-        run: |
-          sudo python3 -I - <<'PY'
-          import importlib.util, json, os, pathlib, re
-          path = pathlib.Path("qa-adapter/scripts/ci/documenso_functional_qa.py").resolve()
-          spec = importlib.util.spec_from_file_location("qa_socket_admission", path)
-          module = importlib.util.module_from_spec(spec)
-          spec.loader.exec_module(module)
-          listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
-          allowed = {"multipathd", "systemd", "systemd-udevd", "dbus-daemon", "snapd", "containerd", "dockerd", "Xvfb"}
-          owners = {inode: set() for inode, address, _ in listeners if not address.startswith("/")}
-          for process in pathlib.Path("/proc").iterdir():
-              if not process.name.isdecimal():
-                  continue
-              try:
-                  label = pathlib.Path(os.readlink(process / "exe")).name
-                  label = label if label in allowed else "other"
-                  for descriptor in (process / "fd").iterdir():
-                      try:
-                          match = re.fullmatch(r"socket:\[(\d+)\]", os.readlink(descriptor))
-                          if match and int(match[1]) in owners:
-                              owners[int(match[1])].add(label)
-                      except OSError:
-                          continue
-              except OSError:
-                  continue
-          print(json.dumps({"abstract": sum(address.startswith("@") for _, address, _ in listeners),
-                            "other_relative": sum(not address.startswith(("/", "@")) for _, address, _ in listeners),
-                            "known_multipathd": any(address == "@/org/kernel/linux/storage/multipathd" for _, address, _ in listeners),
-                            "owner_classes": [{"kind": kind, "owners": sorted(owners[inode] or {"other"})}
-                                              for inode, address, kind in listeners if not address.startswith("/")]}), flush=True)
-          module.unix_admission_paths(listeners)
-          PY
 
       - name: Download only the fixed image and source artifacts
         timeout-minutes: 10
