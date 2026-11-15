@@ -282,6 +282,7 @@ jobs:
           node-version-file: qa-public-miru/.node-version
 
       - name: Setup application pnpm
+        id: setup_pnpm
         uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
         with:
           package_json_file: qa-public-miru/package.json
@@ -332,7 +333,7 @@ jobs:
             --artifact "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip" \
             --source "$RUNNER_TEMP/documenso-inputs/source" \
             --ruby "$(command -v ruby)" --bundle "$(command -v bundle)" \
-            --node "$(command -v node)" --pnpm "$(command -v pnpm)" \
+            --node "$(command -v node)" --pnpm "${{ steps.setup_pnpm.outputs.dest }}/node_modules/pnpm/bin/pnpm.cjs" \
             --brave /usr/bin/brave-browser
 
       - name: Remove only this QA operation's services and access
