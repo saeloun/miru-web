@@ -77,6 +77,19 @@ def require(value, message="Functional QA admission refused"):
         raise RuntimeError(message)
 
 
+def report_failure(error):
+    allowed = (RuntimeError, AssertionError, OSError, FileNotFoundError, PermissionError, TimeoutError, ValueError, TypeError, KeyError,
+               subprocess.CalledProcessError, subprocess.TimeoutExpired, json.JSONDecodeError, zipfile.BadZipFile, tarfile.TarError)
+    kind = type(error).__name__ if type(error) in allowed else "Exception"
+    line = 0
+    frame = error.__traceback__
+    while frame is not None:
+        if frame.tb_frame.f_code.co_filename == __file__ and frame.tb_frame.f_code is not require.__code__:
+            line = frame.tb_lineno
+        frame = frame.tb_next
+    print(f"Functional QA refused or failed ({kind}, adapter_line={line}); only sanitized evidence may be uploaded", file=sys.stderr)
+
+
 def unique_object(pairs):
     result = {}
     for key, value in pairs:
@@ -1364,6 +1377,24 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import patch
+        def diagnostic(error):
+            output = io.StringIO()
+            with patch.object(sys, "stderr", output):
+                report_failure(error)
+            return output.getvalue()
+        foreign = compile("raise RuntimeError('SYNTHETIC_SECRET https://private.invalid/token')", "/foreign/SYNTHETIC_SECRET/documenso_functional_qa.py", "exec")
+        try:
+            expected_line = sys._getframe().f_lineno + 1
+            exec(foreign)
+        except RuntimeError as error:
+            assert diagnostic(error) == f"Functional QA refused or failed (RuntimeError, adapter_line={expected_line}); only sanitized evidence may be uploaded\n"
+        try:
+            expected_line = sys._getframe().f_lineno + 1
+            require(False, "SYNTHETIC_SECRET")
+        except RuntimeError as error:
+            assert diagnostic(error) == f"Functional QA refused or failed (RuntimeError, adapter_line={expected_line}); only sanitized evidence may be uploaded\n"
+        private_error = type("SYNTHETIC_SECRET_CLASS", (Exception,), {})
+        assert diagnostic(private_error("SYNTHETIC_SECRET")) == "Functional QA refused or failed (Exception, adapter_line=0); only sanitized evidence may be uploaded\n"
         runner, workspace = root / "runner", root / "workspace"
         binaries = root / "bin"
         binaries.mkdir()
@@ -1655,5 +1686,5 @@ if __name__ == "__main__":
     try:
         raise SystemExit(main())
     except Exception as error:
-        print(f"Functional QA refused or failed ({type(error).__name__}); only sanitized evidence may be uploaded", file=sys.stderr)
+        report_failure(error)
         raise SystemExit(1)
