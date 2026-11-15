@@ -70,6 +70,15 @@ BASE_ENV = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8", "HOME": 
 TCP_RELAYS = {"pg": ("database", 5432), "smtp": ("mailpit", 1025), "provider": ("proxy", 8080), "mailpit": ("proxy", 8081)}
 SOCKET_ACTIVATE = Path("/usr/bin/systemd-socket-activate")
 SOCKET_PROXY = Path("/usr/lib/systemd/systemd-socket-proxyd")
+COMMAND_LABELS = {"schema", "assets", "functional"}
+COMMAND_FAILURE_MARKERS = {
+    "pg": (b"PG::ConnectionBad", b"PG::UnableToSend", b"ActiveRecord::ConnectionNotEstablished", b"ActiveRecord::DatabaseConnectionError", b"ActiveRecord::NoDatabaseError"),
+    "bundler": (b"Bundler::GemNotFound", b"Bundler::GemfileNotFound", b"Bundler::GemfileError", b"Bundler::VersionConflict", b"Bundler::ProductionError"),
+    "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
+    "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
+    "rspec": (b"RSpec::Expectations::ExpectationNotMetError", b"Failure/Error:", b"Failed examples:"),
+}
+COMMAND_FAILURE_CATEGORIES = set(COMMAND_FAILURE_MARKERS) | {"unclassified", "unavailable"}
 FORBIDDEN_FLAGS = ("no-sandbox", "disable-setuid-sandbox", "disable-web-security", "disable-site-isolation", "ignore-certificate-errors", "single-process", "no-zygote", "--proxy-server", "--host-resolver-rules")
 RELAY_SOCKETS = ("/run/dbus/system_bus_socket", "/run/systemd/resolve/io.systemd.Resolve", "/run/nscd/socket", "/var/run/nscd/socket", "/run/nslcd/socket", "/run/avahi-daemon/socket", "/run/systemd/machine/io.systemd.Machine", "/run/samba/winbindd/pipe", "/var/lib/samba/winbindd_privileged/pipe")
 _cancel_depth = 0
@@ -132,6 +141,29 @@ def private(path, value, uid=None):
             os.fchown(output.fileno(), os.geteuid(), pwd.getpwuid(uid).pw_gid)
             os.fchmod(output.fileno(), 0o640)
         output.write(data)
+
+
+def command_failure_category(path):
+    try:
+        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+        with os.fdopen(descriptor, "rb") as stream:
+            info = os.fstat(stream.fileno())
+            require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and stat.S_IMODE(info.st_mode) == 0o600 and info.st_nlink == 1)
+            stream.seek(max(0, info.st_size - 65536))
+            tail = stream.read(65536)
+    except (OSError, RuntimeError, ValueError):
+        return "unavailable"
+    for category, markers in COMMAND_FAILURE_MARKERS.items():
+        if any(marker in tail for marker in markers):
+            return category
+    return "unclassified"
+
+
+def validate_command_failure(value):
+    require(isinstance(value, dict) and set(value) == {"label", "returncode", "category"})
+    require(isinstance(value["label"], str) and value["label"] in COMMAND_LABELS)
+    require(type(value["returncode"]) is int and -64 <= value["returncode"] <= 255 and value["returncode"] != 0)
+    require(isinstance(value["category"], str) and value["category"] in COMMAND_FAILURE_CATEGORIES)
 
 
 def checked(command, *, input=None, timeout=30, env=None, cwd=None):
@@ -785,6 +817,8 @@ for port in (2375,2376):
                 process = subprocess.Popen(prefix + command, cwd=cwd,
                                            env=(self.runtime_env if runtime else BASE_ENV) if env is None else env,
                                            stdin=subprocess.DEVNULL, stdout=stream, stderr=stream, start_new_session=True)
+            if name in COMMAND_LABELS:
+                process._qa_label = name
             self.handles.append(process)
             identity = process_identity(process.pid)
             require(identity is not None)
@@ -811,6 +845,15 @@ for port in (2375,2376):
             self.tick()
             require(time.monotonic() < until, "Owned command deadline reached")
             time.sleep(.2)
+        label = getattr(process, "_qa_label", None)
+        if process.returncode and isinstance(label, str) and label in COMMAND_LABELS:
+            failure = {"label": label, "returncode": process.returncode, "category": command_failure_category(self.setup / "private-logs" / (label + ".log"))}
+            validate_command_failure(failure)
+            self.state["failed_command"] = failure
+            try:
+                self.save()
+            except OSError:
+                pass
         require(process.returncode == 0, "Owned command failed")
 
     def prepare_user(self):
@@ -1483,6 +1526,13 @@ print('ready')
         receipt["transport"] = {"release_id": RELEASE_ID, "tag": QA_TAG, "image_asset_id": IMAGE_ASSET_ID,
                                 "manifest_asset_id": MANIFEST_ASSET_ID, "manifest_sha256": TRANSPORT_MANIFEST_SHA,
                                 "verified": self.state.get("artifact_verified", False)}
+        if "failed_command" in self.state:
+            try:
+                validate_command_failure(self.state["failed_command"])
+            except RuntimeError:
+                receipt["evidence_rejections"].append("invalid_command_failure")
+            else:
+                receipt["failed_command"] = dict(self.state["failed_command"])
         private(self.output / "lifecycle.first", json.dumps(receipt))
         os.replace(self.output / "lifecycle.first", self.output / "lifecycle.json")
         runtime_safe = "uid" in self.state and self.state.get("cleanup_complete") and self.state.get("runtime_processes_stopped") and not uid_processes(self.state["uid"])
@@ -1696,6 +1746,59 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import Mock, patch
+        failure_fixture = Lifecycle(argparse.Namespace(work=root / "failed-wait"))
+        (failure_fixture.setup / "private-logs").mkdir(parents=True)
+        failure_log = failure_fixture.setup / "private-logs/schema.log"
+        private(failure_log, b"PRIVATE_DIAGNOSTIC_MARKER PG::ConnectionBad: private details")
+        original_fstat = os.fstat
+        def root_owned_log(descriptor):
+            metadata = list(original_fstat(descriptor))
+            metadata[4] = 0
+            return os.stat_result(metadata)
+        with patch.object(os, "fstat", side_effect=root_owned_log):
+            for category, markers in COMMAND_FAILURE_MARKERS.items():
+                failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
+                assert command_failure_category(failure_log) == category
+            failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
+            assert command_failure_category(failure_log) == "bundler"
+            failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER unknown error")
+            assert command_failure_category(failure_log) == "unclassified"
+        for index, value in ((0, stat.S_IFREG | 0o640), (0, stat.S_IFDIR | 0o600), (3, 2), (4, 1)):
+            metadata = list(failure_log.stat())
+            metadata[4] = 0
+            metadata[index] = value
+            with patch.object(os, "fstat", return_value=os.stat_result(metadata)):
+                assert command_failure_category(failure_log) == "unavailable"
+        log_link = root / "log-link"
+        log_link.symlink_to(failure_log)
+        assert command_failure_category(log_link) == command_failure_category(root / "missing-log") == "unavailable"
+        failure_fixture.save = Mock()
+        failure_fixture.wait(argparse.Namespace(poll=lambda: 0, returncode=0, _qa_label="schema"), 1)
+        assert "failed_command" not in failure_fixture.state
+        failure_fixture.save.assert_not_called()
+        failure_log.write_bytes(b"PG::ConnectionBad: PRIVATE_DIAGNOSTIC_MARKER")
+        with patch.object(os, "fstat", side_effect=root_owned_log):
+            try:
+                failure_fixture.wait(argparse.Namespace(poll=lambda: 1, returncode=1, _qa_label="schema"), 1)
+            except RuntimeError as error:
+                assert str(error) == "Owned command failed"
+            else:
+                raise AssertionError("Failed command accepted")
+        failed_command = {"label": "schema", "returncode": 1, "category": "pg"}
+        assert failure_fixture.state["failed_command"] == failed_command
+        failure_fixture.save.assert_called_once()
+        invalid_failures = [None, [], {**failed_command, "private": "PRIVATE_DIAGNOSTIC_MARKER"}]
+        invalid_failures.extend({**failed_command, key: value} for key, value in (
+            ("label", "PRIVATE_DIAGNOSTIC_MARKER"), ("label", []), ("returncode", True), ("returncode", 0),
+            ("returncode", 256), ("returncode", -65), ("returncode", "PRIVATE_DIAGNOSTIC_MARKER"),
+            ("category", "PRIVATE_DIAGNOSTIC_MARKER"), ("category", [])))
+        for invalid in invalid_failures:
+            try:
+                validate_command_failure(invalid)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unlisted command diagnostic accepted")
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
         network = {"id": "1" * 64, "name": network_name, "driver": "bridge", "internal": True, "ipv6": False, "project": project, "operation": operation,
@@ -2080,6 +2183,21 @@ def self_check():
         fake.state["runtime_processes_stopped"] = False
         assert not fake.export_evidence(False) and not (fake.output / "share-client.png").exists()
         assert read_json(fake.output / "lifecycle.json")["evidence_rejections"] == ["runtime_cleanup_incomplete"]
+        fake.op = root / "diagnostic-operation"
+        (fake.op / "output").mkdir(parents=True)
+        fake.state.update(runtime_processes_stopped=True, failed_command=failed_command)
+        fake.output = fake.work / "diagnostic"
+        with patch.dict(globals(), uid_processes=lambda uid: []):
+            assert fake.export_evidence(False)
+            diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
+            assert json.loads(diagnostic)["failed_command"] == failed_command and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic
+            for number, invalid in enumerate(invalid_failures):
+                fake.output = fake.work / ("invalid-diagnostic-" + str(number))
+                fake.state["failed_command"] = invalid
+                assert not fake.export_evidence(False)
+                diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
+                assert "failed_command" not in json.loads(diagnostic) and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic
+                assert json.loads(diagnostic)["evidence_rejections"] == ["invalid_command_failure"]
         header = "Num RefCount Protocol Flags Type St Inode Path\n"
         filesystem = (header + "0: 00000001 00000000 00010000 0001 01 900 /run/snapd.socket\n" +
                       "1: 00000001 00000000 00000000 0002 01 901 /run/journal-socket\n" +
