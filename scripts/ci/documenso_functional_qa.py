@@ -462,6 +462,14 @@ def local_json(url):
         return json.loads(response.read(65537), object_pairs_hook=unique_object)
 
 
+def provider_healthy(health):
+    if not isinstance(health, dict) or health.get("status") != "ok":
+        return False
+    checks = health.get("checks")
+    return isinstance(checks, dict) and all(isinstance(checks.get(name), dict) and checks[name].get("status") == "ok"
+                                            for name in ("database", "certificate"))
+
+
 def port_range(raw):
     values = raw.split()
     require(len(values) == 2 and all(value.isdigit() for value in values))
@@ -1190,7 +1198,7 @@ server {{listen 8081; location / {{proxy_pass http://mailpit:8025; proxy_set_hea
             self.tick()
             try:
                 health = local_json(f"http://127.0.0.1:{self.ports['provider']}/api/health")
-                require(health.get("status") == "ok" and health.get("database") == "ok" and health.get("certificate") == "ok")
+                require(provider_healthy(health))
                 samples.append(time.monotonic())
             except Exception:
                 samples.clear()
@@ -1590,6 +1598,14 @@ def parse_args(argv):
 
 def self_check():
     require(__debug__, "Assertions required")
+    healthy = {"status": "ok", "timestamp": "2026-11-16T00:00:00.000Z", "checks": {"database": {"status": "ok"}, "certificate": {"status": "ok"}}}
+    assert provider_healthy(healthy)
+    for invalid in (None, [], "ok", {}, {"status": "ok", "database": "ok", "certificate": "ok"},
+                    {**healthy, "status": "warning"}, {**healthy, "checks": None}, {**healthy, "checks": []},
+                    *({**healthy, "checks": {**healthy["checks"], name: value}} for name in ("database", "certificate")
+                      for value in (None, "ok", {}, {"status": "warning"}, {"status": "error"})),
+                    *({**healthy, "checks": {name: {"status": "ok"}}} for name in ("database", "certificate"))):
+        assert not provider_healthy(invalid)
     with tempfile.TemporaryDirectory() as directory:
         root = Path(directory)
         path = root / "safe.json"
