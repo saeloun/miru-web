@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.19] - 2026-11-15
+
+### Security
+
+- Update MessagePack and Puma to patched versions.
+
 ## [3.6.17] - 2026-11-12
 
 ### Fixed
