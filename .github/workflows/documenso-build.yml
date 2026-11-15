@@ -218,6 +218,8 @@ jobs:
     if: github.event_name == 'workflow_dispatch' && inputs.functional_qa
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    env:
+      MIRU_QA_WORK: /var/tmp/miru-documenso-live-${{ github.run_id }}-${{ github.run_attempt }}
     permissions:
       contents: read
       actions: read
@@ -308,7 +310,7 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
-          mkdir -m 700 "$RUNNER_TEMP/documenso-inputs" "$RUNNER_TEMP/documenso-inputs/source" "$RUNNER_TEMP/miru-documenso-live"
+          mkdir -m 700 "$RUNNER_TEMP/documenso-inputs" "$RUNNER_TEMP/documenso-inputs/source" "$MIRU_QA_WORK"
           timeout 30 gh api repos/saeloun/miru-web/releases/446291311 > "$RUNNER_TEMP/documenso-inputs/release-metadata.json"
           timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024163 > "$RUNNER_TEMP/documenso-inputs/image-asset-metadata.json"
           timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024161 > "$RUNNER_TEMP/documenso-inputs/manifest-asset-metadata.json"
@@ -323,9 +325,9 @@ jobs:
         timeout-minutes: 30
         run: |
           set -euo pipefail
-          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
             --app "$GITHUB_WORKSPACE/qa-public-miru" \
-            --work "$RUNNER_TEMP/miru-documenso-live" \
+            --work "$MIRU_QA_WORK" \
             --artifact "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip" \
             --source "$RUNNER_TEMP/documenso-inputs/source" \
             --ruby "$(command -v ruby)" --bundle "$(command -v bundle)" \
@@ -336,14 +338,14 @@ jobs:
         if: always()
         timeout-minutes: 3
         run: |
-          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
-            --cleanup --work "$RUNNER_TEMP/miru-documenso-live"
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
+            --cleanup --work "$MIRU_QA_WORK"
 
       - name: Retain sanitized signing evidence only
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: documenso-functional-qa-${{ github.run_id }}-${{ github.run_attempt }}
-          path: ${{ runner.temp }}/miru-documenso-live/evidence/
+          path: ${{ env.MIRU_QA_WORK }}/evidence/
           if-no-files-found: error
           retention-days: 1

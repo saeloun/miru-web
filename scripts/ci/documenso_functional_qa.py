@@ -102,11 +102,13 @@ def read_json(path, limit=1024 * 1024):
     return json.loads(read_regular(path, limit), object_pairs_hook=unique_object)
 
 
-def read_regular(path, limit):
+def read_regular(path, limit, *, private_journal=False):
     descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     with os.fdopen(descriptor, "rb") as stream:
         info = os.fstat(stream.fileno())
         require(stat.S_ISREG(info.st_mode) and info.st_size <= limit)
+        if private_journal:
+            require(info.st_uid == 0 and stat.S_IMODE(info.st_mode) == 0o600 and info.st_nlink == 1, "Untrusted cleanup journal refused")
         data = stream.read(limit + 1)
         require(len(data) <= limit)
         return data
@@ -131,6 +133,96 @@ def private(path, value, uid=None):
 def checked(command, *, input=None, timeout=30, env=None, cwd=None):
     return subprocess.run(command, input=input, capture_output=True, check=True, timeout=timeout,
                           env=BASE_ENV if env is None else env, cwd=cwd).stdout
+
+
+def source_git(app):
+    return ["git", "-c", "safe.directory=" + str(app), "-c", "core.fsmonitor=false", "-c", "core.hooksPath=/dev/null", "-c", "protocol.allow=never", "-C", str(app)]
+
+
+GIT_ENV = {**BASE_ENV, "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_NO_LAZY_FETCH": "1", "GIT_NO_REPLACE_OBJECTS": "1", "GIT_OPTIONAL_LOCKS": "0"}
+
+
+def stage_source(app, destination):
+    records = checked([*source_git(app), "ls-tree", "-rz", HEAD], env=GIT_ENV).split(b"\0")
+    require(records.pop() == b"" and 0 < len(records) <= 10000)
+    entries = []
+    for record in records:
+        metadata, raw_path = record.split(b"\t", 1)
+        mode, kind, oid = metadata.split(b" ")
+        path = PurePosixPath(os.fsdecode(raw_path))
+        require(mode in (b"100644", b"100755") and kind == b"blob" and re.fullmatch(rb"[0-9a-f]{40}", oid))
+        require(path.parts and not path.is_absolute() and not {"..", ".git"}.intersection(path.parts) and str(path) == os.fsdecode(raw_path) and b"\\" not in raw_path)
+        entries.append((mode, oid, path))
+    require(len({path for _, _, path in entries}) == len(entries))
+    destination.mkdir(mode=0o700)
+    with tempfile.TemporaryFile() as requests:
+        requests.write(b"".join(oid + b"\n" for _, oid, _ in entries))
+        requests.seek(0)
+        process = timer = None
+        try:
+            with defer_cancellation():
+                process = subprocess.Popen([*source_git(app), "cat-file", "--batch"], stdin=requests, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, env=GIT_ENV)
+                timer = threading.Timer(30, process.kill)
+                timer.start()
+            total = 0
+            for mode, oid, path in entries:
+                raw_header = process.stdout.readline(128)
+                header = raw_header.split()
+                require(len(header) == 3 and header[:2] == [oid, b"blob"] and re.fullmatch(rb"0|[1-9][0-9]*", header[2]))
+                require(raw_header == oid + b" blob " + header[2] + b"\n")
+                size = int(header[2])
+                total += size
+                require(size <= 16 * 1024**2 and total <= 128 * 1024**2)
+                data = process.stdout.read(size)
+                require(len(data) == size and process.stdout.read(1) == b"\n")
+                require(hashlib.sha1(b"blob " + str(size).encode() + b"\0" + data).hexdigest().encode() == oid)
+                target = destination / path
+                private(target, data)
+                target.chmod(0o755 if mode == b"100755" else 0o644)
+            require(process.stdout.read(1) == b"" and process.wait(timeout=5) == 0)
+        finally:
+            with defer_cancellation():
+                if timer is not None:
+                    timer.cancel()
+                try:
+                    if process is not None:
+                        if process.poll() is None:
+                            process.kill()
+                        process.wait(timeout=5)
+                finally:
+                    if process is not None:
+                        process.stdout.close()
+                    if timer is not None and timer.ident is not None:
+                        timer.join(timeout=5)
+                        require(not timer.is_alive(), "Source reader timer did not stop")
+
+
+def contained_links(root):
+    root = root.resolve(strict=True)
+    for directory, directories, files in os.walk(root, followlinks=False):
+        for name in directories + files:
+            path = Path(directory) / name
+            if path.is_symlink():
+                require(path.resolve().is_relative_to(root), "Staged dependency symlink escapes its root")
+
+
+def stage_inputs(app, pnpm, destination):
+    staged_app, staged_pnpm = destination / "app", destination / "pnpm"
+    stage_source(app, staged_app)
+    for name in ("node_modules", "vendor/bundle"):
+        source = app / name
+        require(source.is_dir() and not source.is_symlink())
+        shutil.copytree(source, staged_app / name, symlinks=True)
+    contained_links(staged_app)
+    executable = pnpm.resolve(strict=True)
+    package = executable.parent.parent
+    require(executable == package / "bin/pnpm.cjs" and read_json(package / "package.json").get("name") == "pnpm")
+    shutil.copytree(package, staged_pnpm, symlinks=True)
+    require((staged_pnpm / "bin/pnpm.cjs").is_file() and not (staged_pnpm / "bin/pnpm.cjs").is_symlink())
+    cli = staged_pnpm / "bin/pnpm"
+    cli.symlink_to("pnpm.cjs")
+    contained_links(staged_pnpm)
+    return staged_app, cli
 
 
 def selected_config(raw):
@@ -622,7 +714,7 @@ class Lifecycle:
             pass
         else:
             raise RuntimeError("Operation user already exists")
-        self.state.update(username=username, user_absent_before_create=True, operation_root=str(self.op), setup_root=str(self.setup), app_root=str(self.args.app), project=self.state["operation"])
+        self.state.update(username=username, user_absent_before_create=True, operation_root=str(self.op), setup_root=str(self.setup), app_root=str(self.op / "app"), project=self.state["operation"])
         self.save()
         checked(["useradd", "--system", "--user-group", "--no-create-home", "--home-dir", str(self.op / "home"), "--shell", "/usr/sbin/nologin", username])
         user = pwd.getpwnam(username)
@@ -643,10 +735,15 @@ class Lifecycle:
             path = self.op / "browsers" / role
             path.mkdir(mode=0o700)
             os.chown(path, self.uid, self.gid)
-        # Only the separately checked out public app needs writable build/test files.
-        for directory, directories, files in os.walk(self.args.app, followlinks=False):
-            for path in [Path(directory), *(Path(directory) / name for name in directories + files)]:
-                os.chown(path, self.uid, self.gid, follow_symlinks=False)
+        self.args.app, self.args.pnpm = stage_inputs(self.args.app, self.args.pnpm, self.op)
+        self.spec = self.op / "documenso_live_provider_spec.rb"
+        fixture = read_regular(Path(__file__).with_name(self.spec.name), 1024**2)
+        private(self.spec, fixture, self.uid)
+        require(digest(self.spec) == hashlib.sha256(fixture).hexdigest())
+        for tree in (self.args.app, self.op / "pnpm"):
+            for directory, directories, files in os.walk(tree, followlinks=False):
+                for path in [Path(directory), *(Path(directory) / name for name in directories + files)]:
+                    os.chown(path, self.uid, self.gid, follow_symlinks=False)
         self.protect_relays()
         authority_probe = r'''import errno,os,socket,subprocess
 assert os.getuid()!=0 and not os.getgroups()
@@ -673,7 +770,7 @@ for port in (2375,2376):
   s.close()
 '''
         checked(self.runtime_prefix() + ["python3", "-I", "-c", authority_probe])
-        paths = [self.args.app / "Gemfile", Path(__file__).with_name("documenso_live_provider_spec.rb"), self.args.ruby, self.args.bundle, self.args.node, self.args.pnpm, self.args.brave]
+        paths = [self.args.app / "Gemfile", self.spec, self.args.ruby, self.args.bundle, self.args.node, self.args.pnpm, self.args.brave]
         access = "import json,os,sys;print(json.dumps([os.access(p,os.R_OK) and (i<2 or os.access(p,os.X_OK)) for i,p in enumerate(sys.argv[1:])]))"
         inaccessible = required_access_failures(checked(self.runtime_prefix() + ["python3", "-I", "-c", access, *map(str, paths)]))
         if inaccessible:
@@ -974,6 +1071,7 @@ console.log(JSON.stringify({uid:1001,no_default_route:true,internal_dns:true,out
         private(self.op / "queue.yml", "test:\n  dispatchers:\n    - polling_interval: 0.1\n      batch_size: 100\n  workers:\n    - queues: '*'\n      threads: 2\n      processes: 1\n      polling_interval: 0.1\n", self.uid)
         paths = list(dict.fromkeys(str(path.parent) for path in (self.args.ruby, self.args.bundle, self.args.node, self.args.pnpm)))
         self.runtime_env = {**BASE_ENV, "PATH": ":".join(paths + BASE_ENV["PATH"].split(":")), "HOME": str(self.op / "home"), "TMPDIR": str(self.op / "tmp"), "CI": "true", "RAILS_ENV": "test", "DATABASE_URL": self.db_url, "BUNDLE_GEMFILE": str(self.args.app / "Gemfile"), "DISABLE_BOOTSNAP": "1", "SKIP_VITE_TEST_BUILD": "1", "VITE_RUBY_AUTO_BUILD": "false", "RUBYOPT": "-r" + str(self.op / "runtime_preload.rb"), "SOLID_QUEUE_CONFIG": str(self.op / "queue.yml"), "DOCUMENSO_ORIGIN": config["provider_origin"], "DOCUMENSO_SEAL_SHA256": self.state["public_seal_sha256"], "DOCUMENSO_LIVE_APP": str(self.args.app), "DOCUMENSO_LIVE_QA_CONFIG": str(self.op / "qa-config.json"), "EMAIL_DELIVERY_METHOD": "smtp", "MIRU_PAYROLL_ENABLED": "false", "SECRET_KEY_BASE": secrets.token_hex(64)}
+        self.runtime_env.update(BUNDLE_PATH=str(self.args.app / "vendor/bundle"), BUNDLE_FROZEN="1", BUNDLE_APP_CONFIG=str(self.op / "home/.bundle"))
         self.wait(self.start([str(self.args.bundle), "exec", str(self.args.ruby), str(self.args.app / "bin/rails"), "db:schema:load"], "schema", runtime=True, cwd=self.args.app), 180)
         self.wait(self.start(["timeout", "180", str(self.args.app / "bin/vite"), "build"], "assets", runtime=True, cwd=self.args.app), 190)
         worker_gate = r'''import json,os,pathlib,stat,sys,time
@@ -994,9 +1092,8 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
         config["admission_sha256"] = digest(self.op / "admission.json")
         private(self.op / "qa-config.new", json.dumps(config), self.uid)
         os.replace(self.op / "qa-config.new", self.op / "qa-config.json")
-        spec = Path(__file__).resolve().with_name("documenso_live_provider_spec.rb")
-        require(spec.is_file())
-        self.wait(self.start([str(self.args.bundle), "exec", "rspec", str(spec), "--format", "progress"], "functional", runtime=True, cwd=self.args.app), max(1, 1500 - int(time.monotonic() - self.started)))
+        require(self.spec.is_file())
+        self.wait(self.start([str(self.args.bundle), "exec", "rspec", str(self.spec), "--format", "progress"], "functional", runtime=True, cwd=self.args.app), max(1, 1500 - int(time.monotonic() - self.started)))
 
     def start_browsers(self, config):
         package = checked(["dpkg-query", "-W", "-f", "${Package} ${Status} ${Version}\n", "brave-browser"]).decode()
@@ -1179,13 +1276,13 @@ print('ready')
         if self.state.get("uid_isolated") and not runtime_remaining:
             try:
                 app = Path(self.state["app_root"])
-                require(app == Path(os.environ["GITHUB_WORKSPACE"]) / "qa-public-miru" and not app.is_symlink())
+                require(app == self.op / "app" and not app.is_symlink())
                 for directory, directories, files in os.walk(app, followlinks=False):
                     for path in [Path(directory), *(Path(directory) / name for name in directories + files)]:
                         if path.lstat().st_uid == self.state["uid"]:
                             os.chown(path, self.state["setup_uid"], self.state["setup_gid"], follow_symlinks=False)
             except Exception:
-                errors.append("checkout_ownership_cleanup")
+                errors.append("staged_app_ownership_cleanup")
         if self.state.get("username") and not runtime_remaining:
             try:
                 user = pwd.getpwnam(self.state["username"])
@@ -1324,7 +1421,9 @@ def parse_args(argv):
     args = parser.parse_args(argv)
     if not args.self_check:
         require(args.work is not None and args.work.is_absolute() and not args.work.is_symlink())
-        require(args.work == Path(os.environ["RUNNER_TEMP"]) / "miru-documenso-live")
+        run, attempt = os.environ.get("GITHUB_RUN_ID", ""), os.environ.get("GITHUB_RUN_ATTEMPT", "")
+        require(all(re.fullmatch(r"[1-9][0-9]{0,19}", value) for value in (run, attempt)))
+        require(args.work == Path(f"/var/tmp/miru-documenso-live-{run}-{attempt}"))
         if not args.cleanup:
             require(all(getattr(args, name) is not None and getattr(args, name).is_absolute() for name in ("app", "artifact", "source", "ruby", "bundle", "node", "pnpm", "brave")))
             require(args.app == Path(os.environ["GITHUB_WORKSPACE"]) / "qa-public-miru" and not args.app.is_symlink())
@@ -1426,6 +1525,24 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import Mock, patch
+        journal = root / "state.json"
+        private(journal, b'{"schema_version":1}')
+        for uid, mode, nlink in ((0, 0o600, 1), (1, 0o600, 1), (0, 0o640, 1), (0, 0o600, 2)):
+            metadata = list(journal.stat())
+            metadata[0], metadata[3], metadata[4] = stat.S_IFREG | mode, nlink, uid
+            with patch.object(os, "fstat", return_value=os.stat_result(metadata)):
+                try:
+                    data = read_regular(journal, 1024, private_journal=True)
+                except RuntimeError:
+                    assert (uid, mode, nlink) != (0, 0o600, 1)
+                else:
+                    assert (uid, mode, nlink) == (0, 0o600, 1) and data == b'{"schema_version":1}'
+        try:
+            read_regular(link, 1024, private_journal=True)
+        except OSError:
+            pass
+        else:
+            raise AssertionError("Cleanup journal symlink followed")
         def diagnostic(error):
             output = io.StringIO()
             with patch.object(sys, "stderr", output):
@@ -1453,7 +1570,8 @@ def self_check():
         runner, workspace = root / "runner", root / "workspace"
         binaries = root / "bin"
         binaries.mkdir()
-        argv = ["--app", str(workspace / "qa-public-miru"), "--work", str(runner / "miru-documenso-live"),
+        work = Path("/var/tmp/miru-documenso-live-123-2")
+        argv = ["--app", str(workspace / "qa-public-miru"), "--work", str(work),
                 "--artifact", str(runner / "documenso-inputs" / IMAGE_ASSET_NAME),
                 "--source", str(runner / "documenso-inputs/source")]
         for name in ("ruby", "bundle", "node", "pnpm", "brave"):
@@ -1461,8 +1579,24 @@ def self_check():
             binary.write_bytes(b"synthetic parser fixture; never executed")
             binary.chmod(0o700)
             argv.extend(("--" + name, str(binary)))
-        with patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "GITHUB_WORKSPACE": str(workspace)}, clear=True):
+        with patch.dict(os.environ, {"RUNNER_TEMP": str(runner), "GITHUB_WORKSPACE": str(workspace), "GITHUB_RUN_ID": "123", "GITHUB_RUN_ATTEMPT": "2"}, clear=True):
             assert parse_args(argv).artifact == runner / "documenso-inputs" / IMAGE_ASSET_NAME
+            assert parse_args(["--cleanup", "--work", str(work)]).work == work
+            for wrong_work in ("/var/tmp/miru-documenso-live-124-2", "/var/tmp/miru-documenso-live-123-3", str(runner / "miru-documenso-live")):
+                try:
+                    parse_args(["--cleanup", "--work", wrong_work])
+                except RuntimeError:
+                    pass
+                else:
+                    raise AssertionError("Work path from another run accepted")
+            for invalid_id in ("", "../123", "123\n", "0"):
+                with patch.dict(os.environ, {"GITHUB_RUN_ID": invalid_id}):
+                    try:
+                        parse_args(["--cleanup", "--work", str(work)])
+                    except RuntimeError:
+                        pass
+                    else:
+                        raise AssertionError("Invalid run identity accepted")
             old_name = list(argv)
             old_name[old_name.index("--artifact") + 1] = str(runner / "documenso-inputs/provider.complete.zip")
             try:
@@ -1471,6 +1605,78 @@ def self_check():
                 pass
             else:
                 raise AssertionError("Historical transport filename accepted")
+        source = root / "public-source"
+        source.mkdir()
+        fixture_env = {**GIT_ENV, "GIT_AUTHOR_NAME": "Synthetic", "GIT_AUTHOR_EMAIL": "qa@miru-qa.invalid", "GIT_COMMITTER_NAME": "Synthetic", "GIT_COMMITTER_EMAIL": "qa@miru-qa.invalid"}
+        checked(["git", "-c", "init.templateDir=", "init", str(source)], env=fixture_env)
+        public = {"Gemfile": b"# $Format:%H$\r\n", "bin/run": b"#!/bin/sh\nexit 0\n", ".gitignore": b"private-marker\nnode_modules/\nvendor/\n", ".gitattributes": b"Gemfile export-subst filter=blocked\n"}
+        for name, data in public.items():
+            private(source / name, data)
+            (source / name).chmod(0o755 if name == "bin/run" else 0o644)
+        checked([*source_git(source), "add", "."], env=fixture_env)
+        checked([*source_git(source), "-c", "core.hooksPath=/dev/null", "commit", "-m", "Synthetic public source"], env=fixture_env)
+        fixture_head = checked([*source_git(source), "rev-parse", "HEAD"], env=fixture_env).decode().strip()
+        real_popen, real_timer_start, real_timer_join = subprocess.Popen, threading.Timer.start, threading.Timer.join
+        for cancellation in (False, True):
+            children, timers = [], []
+            def tracked_popen(*args, **kwargs):
+                child = real_popen(*args, **kwargs)
+                children.append(child)
+                return child
+            def interrupted_timer_start(timer):
+                timers.append(timer)
+                if not cancellation:
+                    raise RuntimeError("Synthetic timer start failure")
+                real_timer_start(timer)
+                interrupted(signal.SIGTERM, None)
+            def started_timer_join(timer, *args, **kwargs):
+                assert timer.ident is not None, "Unstarted timer joined"
+                return real_timer_join(timer, *args, **kwargs)
+            with patch.dict(globals(), HEAD=fixture_head), patch.object(subprocess, "Popen", side_effect=tracked_popen), patch.object(threading.Timer, "start", new=interrupted_timer_start), patch.object(threading.Timer, "join", new=started_timer_join):
+                try:
+                    stage_source(source, root / ("canceled-source" if cancellation else "failed-timer-source"))
+                except (RuntimeError, SystemExit) as error:
+                    assert (isinstance(error, SystemExit) and error.code == 128 + signal.SIGTERM) if cancellation else str(error) == "Synthetic timer start failure"
+                else:
+                    raise AssertionError("Source reader fault was ignored")
+            assert len(children) == 2 and all(child.returncode is not None and child.stdout.closed for child in children)
+            assert len(timers) == 1 and not timers[0].is_alive()
+        for key, value in (("filter.blocked.clean", "false"), ("filter.blocked.smudge", "false"), ("filter.blocked.required", "true")):
+            checked([*source_git(source), "config", key, value], env=fixture_env)
+        private(source / "private-marker", b"private fixture; must never be copied")
+        private(source / "node_modules/package/index.js", b"public node fixture")
+        (source / "node_modules/linked").symlink_to("package", target_is_directory=True)
+        private(source / "vendor/bundle/gems/fixture.rb", b"public gem fixture")
+        pnpm = root / "public-pnpm"
+        private(pnpm / "package.json", b'{"name":"pnpm"}')
+        private(pnpm / "bin/pnpm.cjs", b"#!/usr/bin/env node\nrequire('../dist/main.cjs')\n")
+        (pnpm / "bin/pnpm.cjs").chmod(0o755)
+        private(pnpm / "dist/main.cjs", b"public pnpm fixture")
+        pnpm_shim = root / "pnpm-shim"
+        pnpm_shim.symlink_to(pnpm / "bin/pnpm.cjs")
+        original = {name: ((source / name).read_bytes(), stat.S_IMODE((source / name).stat().st_mode), (source / name).stat().st_uid) for name in public}
+        staged = root / "staged-inputs"
+        staged.mkdir()
+        with patch.dict(globals(), HEAD=fixture_head):
+            staged_app, staged_cli = stage_inputs(source, pnpm_shim, staged)
+        assert {str(path.relative_to(staged_app)) for path in staged_app.rglob("*") if path.is_file() and not path.is_symlink()} == set(public) | {"node_modules/package/index.js", "vendor/bundle/gems/fixture.rb"}
+        assert not (staged_app / ".git").exists() and not (staged_app / "private-marker").exists()
+        assert all((staged_app / name).read_bytes() == data for name, data in public.items())
+        assert stat.S_IMODE((staged_app / "bin/run").stat().st_mode) == 0o755
+        assert (staged_app / "node_modules/linked").is_symlink()
+        assert staged_cli == staged / "pnpm/bin/pnpm" and staged_cli.is_symlink() and staged_cli.read_bytes() == (pnpm / "bin/pnpm.cjs").read_bytes()
+        assert (staged / "pnpm/dist/main.cjs").read_bytes() == (pnpm / "dist/main.cjs").read_bytes()
+        assert original == {name: ((source / name).read_bytes(), stat.S_IMODE((source / name).stat().st_mode), (source / name).stat().st_uid) for name in public}
+        escape = staged_app / "node_modules/escape"
+        escape.symlink_to(source / "private-marker")
+        with patch.object(Path, "read_bytes", side_effect=AssertionError("Escaping link was read")):
+            try:
+                contained_links(staged_app)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Escaping dependency symlink accepted")
+        escape.unlink()
         transport = root / "transport"
         transport.mkdir()
         admission = b'''{
@@ -1703,9 +1909,9 @@ def main(argv=None):
         shield_cleanup()
         signal.signal(signal.SIGALRM, lambda *_: sys.exit(142))
         signal.setitimer(signal.ITIMER_REAL, 175)
-        if not lifecycle.state_path.exists():
+        if not lifecycle.state_path.exists() and not lifecycle.state_path.is_symlink():
             return 0
-        state = read_json(lifecycle.state_path)
+        state = json.loads(read_regular(lifecycle.state_path, 1024**2, private_journal=True), object_pairs_hook=unique_object)
         require(state.get("schema_version") == 1 and re.fullmatch(r"miru-live-[0-9a-f]{16}", state.get("operation", "")))
         lifecycle.state = state
         lifecycle.op = Path(state["operation_root"])
@@ -1719,19 +1925,22 @@ def main(argv=None):
             os.chmod(args.work, 0o700)
         return 0 if cleaned else 1
     require(args.work.is_dir() and stat.S_IMODE(args.work.stat().st_mode) == 0o700)
-    git = ["git", "-c", "safe.directory=" + str(args.app), "-C", str(args.app)]
-    require(checked([*git, "rev-parse", "HEAD"]).decode().strip() == HEAD)
-    require(checked([*git, "rev-parse", "HEAD^{tree}"]).decode().strip() == TREE)
-    require(not checked([*git, "status", "--porcelain"]).strip())
+    git = source_git(args.app)
+    require(checked([*git, "rev-parse", "HEAD"], env=GIT_ENV).decode().strip() == HEAD)
+    require(checked([*git, "rev-parse", "HEAD^{tree}"], env=GIT_ENV).decode().strip() == TREE)
+    require(not checked([*git, "status", "--porcelain"], env=GIT_ENV).strip())
     handlers = {sig: signal.signal(sig, interrupted) for sig in (signal.SIGTERM, signal.SIGINT, signal.SIGALRM)}
     signal.setitimer(signal.ITIMER_REAL, max(.1, 1490 - (time.monotonic() - lifecycle.started)))
     passed = False
     cleaned = False
     evidence_ok = False
     try:
+        docker_root = Path(json.loads(lifecycle.docker("info", "--format", '{"root":{{json .DockerRootDir}}}'))["root"])
+        capacity(args.work, docker_root)
+        mount_options = checked(["findmnt", "--noheadings", "--output", "OPTIONS", "--target", str(args.work)]).decode().strip().split(",")
+        require(mount_options != [""] and "noexec" not in mount_options, "QA work filesystem must allow native dependencies")
         lifecycle.prepare_user()
         lifecycle.save()
-        docker_root = Path(json.loads(lifecycle.docker("info", "--format", '{"root":{{json .DockerRootDir}}}'))["root"])
         version = lifecycle.docker("version", "--format", "{{.Server.Version}}").decode().strip()
         require(engine_supported(version), "Docker Engine26+ required for internal-network DNS isolation")
         lifecycle.state["engine_version"] = version
