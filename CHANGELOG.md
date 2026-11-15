@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.6.18] - 2026-11-12
+## [3.6.21] - 2026-11-15
 
 ### Added
 
@@ -12,6 +12,18 @@
 - Show an approval wait as a neutral status while retaining alerts for permission errors.
 - Keep leave review controls stable while payroll loads, retain the selected report date and wrap long consultant names on mobile.
 - Use a neutral PDF title when a document has none, keeping rendered content out of PDF metadata.
+
+## [3.6.20] - 2026-11-15
+
+### Fixed
+
+- Keep employee profiles accessible when a previous PAN or contract attachment is missing.
+
+## [3.6.19] - 2026-11-15
+
+### Security
+
+- Update MessagePack and Puma to patched versions.
 
 ## [3.6.17] - 2026-11-12
 
