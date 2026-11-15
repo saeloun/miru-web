@@ -277,15 +277,34 @@ jobs:
       - name: Check runtime Unix listener admission before downloads
         run: |
           sudo python3 -I - <<'PY'
-          import importlib.util, json, pathlib
+          import importlib.util, json, os, pathlib, re
           path = pathlib.Path("qa-adapter/scripts/ci/documenso_functional_qa.py").resolve()
           spec = importlib.util.spec_from_file_location("qa_socket_admission", path)
           module = importlib.util.module_from_spec(spec)
           spec.loader.exec_module(module)
           listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
+          allowed = {"multipathd", "systemd", "systemd-udevd", "dbus-daemon", "snapd", "containerd", "dockerd", "Xvfb"}
+          owners = {inode: set() for inode, address, _ in listeners if not address.startswith("/")}
+          for process in pathlib.Path("/proc").iterdir():
+              if not process.name.isdecimal():
+                  continue
+              try:
+                  label = pathlib.Path(os.readlink(process / "exe")).name
+                  label = label if label in allowed else "other"
+                  for descriptor in (process / "fd").iterdir():
+                      try:
+                          match = re.fullmatch(r"socket:\[(\d+)\]", os.readlink(descriptor))
+                          if match and int(match[1]) in owners:
+                              owners[int(match[1])].add(label)
+                      except OSError:
+                          continue
+              except OSError:
+                  continue
           print(json.dumps({"abstract": sum(address.startswith("@") for _, address, _ in listeners),
                             "other_relative": sum(not address.startswith(("/", "@")) for _, address, _ in listeners),
-                            "known_multipathd": any(address == "@/org/kernel/linux/storage/multipathd" for _, address, _ in listeners)}), flush=True)
+                            "known_multipathd": any(address == "@/org/kernel/linux/storage/multipathd" for _, address, _ in listeners),
+                            "owner_classes": [{"kind": kind, "owners": sorted(owners[inode] or {"other"})}
+                                              for inode, address, kind in listeners if not address.startswith("/")]}), flush=True)
           module.unix_admission_paths(listeners)
           PY
 
