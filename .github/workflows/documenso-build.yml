@@ -2,12 +2,19 @@ name: Documenso AMD64 build verification
 
 on:
   workflow_dispatch:
+    inputs:
+      functional_qa:
+        description: Test the reviewed existing signing image without rebuilding it
+        type: boolean
+        default: false
   pull_request:
     branches: [develop]
     paths:
       - .github/workflows/documenso-build.yml
       - docs/qa/generic-document-signing-2462/documenso-security-hardening.patch
       - docs/qa/generic-document-signing-2462/documenso-signing-compatibility.patch
+      - scripts/ci/documenso_functional_qa.py
+      - scripts/ci/documenso_live_provider_spec.rb
 
 permissions:
   contents: read
@@ -25,6 +32,7 @@ env:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_dispatch' || !inputs.functional_qa
     runs-on: ubuntu-24.04
     timeout-minutes: 90
     steps:
@@ -204,4 +212,111 @@ jobs:
           path: ${{ runner.temp }}/documenso-artifact/
           if-no-files-found: error
           compression-level: 0
+          retention-days: 1
+
+  functional-qa:
+    if: github.event_name == 'workflow_dispatch' && inputs.functional_qa
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout reviewed QA adapter
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          path: qa-adapter
+          persist-credentials: false
+
+      - name: Checkout exact public application under test
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: 4aa6ff5744267b1942bbf614fac322c8c1184bf7
+          path: qa-public-miru
+          persist-credentials: false
+
+      - name: Check adapter without starting services
+        run: python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py --self-check
+
+      - name: Setup exact application Ruby
+        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        with:
+          ruby-version: '4.0.9'
+          working-directory: qa-public-miru
+          bundler-cache: true
+          bundler: latest
+
+      - name: Setup application Node
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: qa-public-miru/.node-version
+
+      - name: Setup application pnpm
+        uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5
+        with:
+          package_json_file: qa-public-miru/package.json
+          run_install: false
+
+      - name: Install frozen application packages
+        working-directory: qa-public-miru
+        env:
+          PUPPETEER_SKIP_DOWNLOAD: 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Install native PDF tools and official Brave package
+        timeout-minutes: 10
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --max-time 30 https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg -o "$RUNNER_TEMP/brave-keyring.gpg"
+          curl --fail --silent --show-error --max-time 30 https://brave-browser-apt-release.s3.brave.com/brave-browser.sources -o "$RUNNER_TEMP/brave-browser.sources"
+          sudo install -m 0644 "$RUNNER_TEMP/brave-keyring.gpg" /usr/share/keyrings/brave-browser-archive-keyring.gpg
+          sudo install -m 0644 "$RUNNER_TEMP/brave-browser.sources" /etc/apt/sources.list.d/brave-browser-release.sources
+          sudo timeout 120 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 -o APT::Update::Error-Mode=any update
+          sudo timeout 300 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 install --no-install-recommends -y poppler-utils qpdf libvips42t64 brave-browser iproute2 iptables acl
+
+      - name: Download only the fixed image and source artifacts
+        timeout-minutes: 10
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -m 700 "$RUNNER_TEMP/documenso-inputs" "$RUNNER_TEMP/documenso-inputs/source" "$RUNNER_TEMP/miru-documenso-live"
+          timeout 30 gh api repos/saeloun/miru-web/releases/446291311 > "$RUNNER_TEMP/documenso-inputs/release-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024163 > "$RUNNER_TEMP/documenso-inputs/image-asset-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024161 > "$RUNNER_TEMP/documenso-inputs/manifest-asset-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/git/ref/tags/documenso-qa-4aa6ff574-20261116 > "$RUNNER_TEMP/documenso-inputs/tag-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/actions/runs/42946388869/attempts/1 > "$RUNNER_TEMP/documenso-inputs/run-metadata.json"
+          timeout 300 gh api repos/saeloun/miru-web/releases/assets/752024163 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024161 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/IMAGE-TRANSPORT-ADMISSION-20261116.json"
+          timeout 120 gh release download documenso-source-4aa6ff574 --repo saeloun/miru-web --dir "$RUNNER_TEMP/documenso-inputs/source" \
+            --pattern documenso-8707e33-source-4aa6ff574-amd64.tar.gz --pattern SHA256SUMS --pattern SOURCE-ADMISSION.md
+
+      - name: Exercise the real signing lifecycle with local-only traffic
+        timeout-minutes: 30
+        run: |
+          set -euo pipefail
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
+            --app "$GITHUB_WORKSPACE/qa-public-miru" \
+            --work "$RUNNER_TEMP/miru-documenso-live" \
+            --artifact "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip" \
+            --source "$RUNNER_TEMP/documenso-inputs/source" \
+            --ruby "$(command -v ruby)" --bundle "$(command -v bundle)" \
+            --node "$(command -v node)" --pnpm "$(command -v pnpm)" \
+            --brave /usr/bin/brave-browser
+
+      - name: Remove only this QA operation's services and access
+        if: always()
+        timeout-minutes: 3
+        run: |
+          sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
+            --cleanup --work "$RUNNER_TEMP/miru-documenso-live"
+
+      - name: Retain sanitized signing evidence only
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: documenso-functional-qa-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/miru-documenso-live/evidence/
+          if-no-files-found: error
           retention-days: 1
