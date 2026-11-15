@@ -367,6 +367,13 @@ def runner_storage_state():
     return multipath_maps, bool(sessions)
 
 
+def required_access_failures(raw):
+    flags = json.loads(raw)
+    labels = ("gemfile", "spec", "ruby", "bundle", "node", "pnpm", "brave")
+    require(isinstance(flags, list) and len(flags) == len(labels) and all(type(flag) is bool for flag in flags))
+    return [label for label, accessible in zip(labels, flags) if not accessible]
+
+
 def runner_storage_units(listeners, unit_listens, multipath_maps, iscsi_sessions):
     abstract = [(address, kind) for _, address, kind in listeners if not address.startswith("/")]
     if not abstract:
@@ -667,8 +674,11 @@ for port in (2375,2376):
 '''
         checked(self.runtime_prefix() + ["python3", "-I", "-c", authority_probe])
         paths = [self.args.app / "Gemfile", Path(__file__).with_name("documenso_live_provider_spec.rb"), self.args.ruby, self.args.bundle, self.args.node, self.args.pnpm, self.args.brave]
-        access = "import os,sys;assert all(os.access(p,os.R_OK) for p in sys.argv[1:]);assert all(os.access(p,os.X_OK) for p in sys.argv[3:])"
-        checked(self.runtime_prefix() + ["python3", "-I", "-c", access, *map(str, paths)])
+        access = "import json,os,sys;print(json.dumps([os.access(p,os.R_OK) and (i<2 or os.access(p,os.X_OK)) for i,p in enumerate(sys.argv[1:])]))"
+        inaccessible = required_access_failures(checked(self.runtime_prefix() + ["python3", "-I", "-c", access, *map(str, paths)]))
+        if inaccessible:
+            print(json.dumps({"runtime_inaccessible": inaccessible}), flush=True)
+        require(not inaccessible, "Runtime cannot access required files")
         self.save()
 
     def protect_relays(self):
@@ -1558,6 +1568,15 @@ def self_check():
         listeners = unix_listeners(filesystem)
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
+        assert required_access_failures(json.dumps([True] * 7)) == []
+        assert required_access_failures(json.dumps([True, False, True, True, True, False, True])) == ["spec", "pnpm"]
+        for malformed in ([True] * 6, [True] * 8, [True] * 6 + [1], [True] * 6 + ["SYNTHETIC_SECRET"], {"SYNTHETIC_SECRET": True}):
+            try:
+                required_access_failures(json.dumps(malformed))
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unreviewed runtime access flags accepted")
         block, sessions = root / "storage-block", root / "storage-sessions"
         block.mkdir()
         sessions.mkdir()
