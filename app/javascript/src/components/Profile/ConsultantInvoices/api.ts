@@ -250,10 +250,12 @@ export const consultantInvoicesApi = {
     ),
 };
 
-export function saveInvoicePdf(bytes: Blob, filename: string) {
-  const url = URL.createObjectURL(
-    new Blob([bytes], { type: "application/pdf" })
-  );
+export function saveInvoicePdf(
+  bytes: Blob,
+  filename: string,
+  contentType = "application/pdf"
+) {
+  const url = URL.createObjectURL(new Blob([bytes], { type: contentType }));
   const link = document.createElement("a");
   link.href = url;
   link.download = filename;

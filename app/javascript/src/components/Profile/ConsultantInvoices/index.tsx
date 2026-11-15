@@ -1,6 +1,7 @@
 /* global AbortController */
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import axios from "axios";
+import RemittanceDocuments from "components/Payroll/RemittanceDocuments";
 import { useUserContext } from "context/UserContext";
 import { Button } from "components/ui/button";
 import {
@@ -119,6 +120,7 @@ function ScopedConsultantInvoices() {
         Paid invoices and original documents remain available after
         authorization withdrawal or exit while this identity is retained.
       </p>
+      <RemittanceDocuments />
       {error && (
         <p role="alert" className="text-sm text-destructive">
           {error}
@@ -134,6 +136,7 @@ function ScopedConsultantInvoices() {
         <InvoiceCard
           key={invoice.id}
           invoice={invoice}
+          showRemittance={false}
           download={kind => void download(invoice, kind)}
         />
       ))}

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_12_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
@@ -2032,6 +2032,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
     t.check_constraint "amount_minor >= 0 AND (kind::text = ANY (ARRAY['reserved'::character varying, 'released'::character varying, 'settled'::character varying, 'returned_review'::character varying]::text[]))", name: "pto_recovery_event_values"
   end
 
+  create_table "payroll_remittance_documents", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "payroll_payment_instruction_id", null: false
+    t.bigint "uploader_id", null: false
+    t.bigint "previous_document_id"
+    t.bigint "blob_id", null: false
+    t.string "document_kind", null: false
+    t.string "idempotency_key", limit: 100, null: false
+    t.string "command_digest", limit: 64, null: false
+    t.text "details", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["blob_id"], name: "index_payroll_remittance_documents_on_blob_id"
+    t.index ["company_id", "uploader_id", "idempotency_key"], name: "remittance_command_once", unique: true
+    t.index ["company_id"], name: "index_payroll_remittance_documents_on_company_id"
+    t.index ["payroll_payment_instruction_id", "document_kind"], name: "remittance_first_document", unique: true, where: "(previous_document_id IS NULL)"
+    t.index ["payroll_payment_instruction_id"], name: "remittance_payment_leg"
+    t.index ["previous_document_id"], name: "index_payroll_remittance_documents_on_previous_document_id", unique: true
+    t.index ["uploader_id"], name: "index_payroll_remittance_documents_on_uploader_id"
+    t.check_constraint "command_digest::text ~ '^[a-f0-9]{64}$'::text AND length(idempotency_key::text) > 0", name: "remittance_command_identity"
+    t.check_constraint "document_kind::text = ANY (ARRAY['firc'::character varying::text, 'fira'::character varying::text, 'inward_remittance_advice'::character varying::text])", name: "remittance_document_kind"
+  end
+
   create_table "payroll_revisions", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "created_by_id", null: false
@@ -3115,6 +3138,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
   add_foreign_key "payroll_pto_recoveries", "payroll_revisions"
   add_foreign_key "payroll_pto_recoveries", "payroll_runs"
   add_foreign_key "payroll_pto_recoveries", "users", column: "actor_id"
+  add_foreign_key "payroll_remittance_documents", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "payroll_remittance_documents", "companies"
+  add_foreign_key "payroll_remittance_documents", "payroll_payment_instructions"
+  add_foreign_key "payroll_remittance_documents", "payroll_remittance_documents", column: "previous_document_id"
+  add_foreign_key "payroll_remittance_documents", "users", column: "uploader_id"
   add_foreign_key "payroll_revisions", "payroll_runs"
   add_foreign_key "payroll_revisions", "users", column: "created_by_id"
   add_foreign_key "payroll_runs", "companies"
@@ -3495,6 +3523,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
     FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
   SQL
   execute <<~SQL
+    CREATE TRIGGER payroll_remittance_documents_immutable BEFORE UPDATE OR DELETE ON payroll_remittance_documents
+    FOR EACH ROW EXECUTE FUNCTION protect_payroll_review_history();
+  SQL
+  execute <<~SQL
     CREATE OR REPLACE FUNCTION public.validate_consultant_service_fee_review()
      RETURNS trigger
      LANGUAGE plpgsql
@@ -3693,6 +3725,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_11_110000) do
   SQL
   execute <<~SQL
     CREATE TRIGGER consultant_invoice_delivery_immutable BEFORE UPDATE OR DELETE ON payroll_consultant_invoice_deliveries FOR EACH ROW EXECUTE FUNCTION public.protect_consultant_invoice_delivery();
+  SQL
+  execute <<~SQL
+    CREATE OR REPLACE FUNCTION public.validate_payroll_remittance_document()
+     RETURNS trigger
+     LANGUAGE plpgsql
+    AS $function$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM payroll_payment_instructions p WHERE p.id = NEW.payroll_payment_instruction_id AND p.company_id = NEW.company_id) THEN
+        RAISE EXCEPTION 'Remittance payment identity mismatch';
+      END IF;
+      IF NEW.previous_document_id IS NOT NULL AND NOT EXISTS (
+        SELECT 1 FROM payroll_remittance_documents d WHERE d.id = NEW.previous_document_id AND
+        d.company_id = NEW.company_id AND d.payroll_payment_instruction_id = NEW.payroll_payment_instruction_id AND d.document_kind = NEW.document_kind
+      ) THEN
+        RAISE EXCEPTION 'Remittance correction identity mismatch';
+      END IF;
+      RETURN NEW;
+    END; $function$
+  SQL
+  execute <<~SQL
+    CREATE TRIGGER remittance_document_identity BEFORE INSERT ON payroll_remittance_documents FOR EACH ROW EXECUTE FUNCTION validate_payroll_remittance_document();
   SQL
   execute <<~SQL
     CREATE OR REPLACE FUNCTION protect_payroll_india_handoff() RETURNS trigger LANGUAGE plpgsql AS $$
