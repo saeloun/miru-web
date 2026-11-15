@@ -274,6 +274,21 @@ jobs:
           sudo timeout 120 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 -o APT::Update::Error-Mode=any update
           sudo timeout 300 apt-get -o Acquire::http::Timeout=15 -o Acquire::https::Timeout=15 install --no-install-recommends -y poppler-utils qpdf libvips42t64 brave-browser iproute2 iptables acl
 
+      - name: Check runtime Unix listener admission before downloads
+        run: |
+          sudo python3 -I - <<'PY'
+          import importlib.util, json, pathlib
+          path = pathlib.Path("qa-adapter/scripts/ci/documenso_functional_qa.py").resolve()
+          spec = importlib.util.spec_from_file_location("qa_socket_admission", path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
+          print(json.dumps({"abstract": sum(address.startswith("@") for _, address, _ in listeners),
+                            "other_relative": sum(not address.startswith(("/", "@")) for _, address, _ in listeners),
+                            "known_multipathd": any(address == "@/org/kernel/linux/storage/multipathd" for _, address, _ in listeners)}), flush=True)
+          module.unix_admission_paths(listeners)
+          PY
+
       - name: Download only the fixed image and source artifacts
         timeout-minutes: 10
         env:
