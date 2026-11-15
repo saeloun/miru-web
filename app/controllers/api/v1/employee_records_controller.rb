@@ -176,6 +176,8 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     end
 
     def document_details(document)
+      return unless document.file.attached?
+
       { id: document.id, kind: document.kind, filename: document.file.filename.to_s,
         content_type: document.file.blob.content_type, byte_size: document.file.blob.byte_size,
         uploaded_by_id: document.uploaded_by_id, created_at: document.created_at.iso8601 }

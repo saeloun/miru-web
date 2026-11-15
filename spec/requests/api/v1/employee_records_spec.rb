@@ -407,6 +407,26 @@ RSpec.describe "Employee records", type: :request do
     expect(document.audits.where(action: "download")).to be_empty
   end
 
+  it "keeps profiles readable when a retained document has lost its attachment" do
+    upload_document
+    missing = EmployeeDocument.last
+    missing.file.purge
+    upload_document
+    pan = EmployeeDocument.last
+    upload_document(kind: "contract")
+    contract = EmployeeDocument.last
+
+    sign_in employee
+    get "/api/v1/employee_records"
+
+    expect(response).to have_http_status(:ok)
+    documents = response.parsed_body.fetch("employee_record").fetch("documents")
+    expect(documents.fetch("pan").pluck("id")).to eq([pan.id])
+    expect(documents.fetch("contract").pluck("id")).to eq([contract.id])
+    expect(EmployeeDocument.exists?(missing.id)).to be(true)
+    expect(missing.audits).to exist
+  end
+
   it "rejects disguised, oversized, public, unknown-kind and blob-identifier uploads" do
     upload_document(kind: "unknown")
     expect(response).to have_http_status(422)
