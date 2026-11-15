@@ -623,7 +623,7 @@ GEM
     protocol-websocket (0.20.2)
       protocol-http (~> 0.2)
     public_suffix (7.0.5)
-    puma (7.2.1)
+    puma (7.2.2)
       nio4r (~> 2.0)
     pundit (2.3.2)
       activesupport (>= 3.0.0)
