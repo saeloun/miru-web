@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.22] - 2026-11-16
+
+### Fixed
+
+- Stop birthday and work-anniversary reminders for events after an employee leaves, while retaining events on their final day.
+
 ## [3.6.20] - 2026-11-15
 
 ### Fixed
