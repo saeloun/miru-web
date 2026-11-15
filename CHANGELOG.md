@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.20] - 2026-11-15
+
+### Fixed
+
+- Keep employee profiles accessible when a previous PAN or contract attachment is missing.
+
 ## [3.6.19] - 2026-11-15
 
 ### Security
