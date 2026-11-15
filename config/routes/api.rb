@@ -70,6 +70,11 @@ namespace :api, defaults: { format: "json" } do
     resources :india_tax_estimates, only: [:index, :create]
     get "consultant_payroll", to: "consultant_payroll#index"
     resource :consultant_invoice_authorization, only: [:show, :create], controller: "consultant_invoice_authorizations"
+    get "payroll_consultant_invoice_runs", to: "payroll_consultant_invoices#runs"
+    resources :consultant_invoices, only: [:index, :create] do
+      member { get :download }
+      collection { get "preparations/:preparation_id/original", action: :preparation_original }
+    end
     resource :consultant_billing_identity, only: [:show, :create], controller: "consultant_billing_identities" do
       post :reviews, action: :review
       get "submissions/:submission_id/evidence/:kind", action: :download
@@ -438,6 +443,18 @@ namespace :api, defaults: { format: "json" } do
     end
 
     resources :payroll_runs, only: [:index, :show, :create] do
+      resources :consultant_invoices, only: [:index], controller: "payroll_consultant_invoices" do
+        collection do
+          post :preparations
+          post :retry_generation
+          get "preparations/:preparation_id/original", action: :preparation_original
+        end
+        member do
+          get :download
+          post :retry_delivery
+          post :reconcile_delivery
+        end
+      end
       resources :profile_completion_requests, only: [:create], controller: "payroll_profile_completion_requests"
       member do
         get :preflight

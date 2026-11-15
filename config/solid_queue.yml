@@ -45,6 +45,9 @@ default: &default
         payroll_india_delivery_recovery:
           class: PayrollIndiaRecoveryJob
           schedule: '*/5 * * * *'
+        payroll_consultant_invoice_recovery:
+          class: PayrollConsultantInvoiceRecoveryJob
+          schedule: '*/5 * * * *'
         payroll_pto_review:
           class: PayrollPtoReviewJob
           schedule: '11 * * * *'
@@ -140,6 +143,9 @@ production:
           schedule: '*/5 * * * *'
         payroll_india_delivery_recovery:
           class: PayrollIndiaRecoveryJob
+          schedule: '*/5 * * * *'
+        payroll_consultant_invoice_recovery:
+          class: PayrollConsultantInvoiceRecoveryJob
           schedule: '*/5 * * * *'
         payroll_pto_review:
           class: PayrollPtoReviewJob

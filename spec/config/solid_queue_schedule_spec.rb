@@ -113,6 +113,13 @@ RSpec.describe "Solid Queue schedule" do
     end
   end
 
+  it "recovers consultant invoice generation and delivery every five minutes in both schedules" do
+    %w[default production].each do |environment|
+      task = config.dig(environment, "dispatchers", 0, "recurring_tasks", "payroll_consultant_invoice_recovery")
+      expect(task).to include("class" => "PayrollConsultantInvoiceRecoveryJob", "schedule" => "*/5 * * * *")
+    end
+  end
+
   it "keeps Mercury bank polling and Razorpay payment reconciliation in both schedules" do
     %w[default production].each do |environment|
       tasks = config.dig(environment, "dispatchers", 0, "recurring_tasks")

@@ -84,6 +84,8 @@ module PdfGeneration
         html_data_url = "data:text/html;charset=utf-8," + ERB::Util.url_encode(html_content)
         browser.go_to(html_data_url)
         browser.network.wait_for_idle
+        # Chromium otherwise embeds the full data URL in PDF title metadata.
+        browser.evaluate("document.title.trim() || (document.title = 'Miru document')")
       end
 
       def pdf_options

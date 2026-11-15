@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "timeout"
 
 RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
   let(:company) { create(:company, base_currency: "INR", timezone: "Asia/Kolkata") }
@@ -277,6 +278,105 @@ RSpec.describe "Approved payroll PTO decisions", type: :system, js: true do
         page.save_screenshot("/tmp/miru-pto-yearend-exit-reviewed-20261108.png")
       end
     end
+  end
+
+  it "keeps the review date locked while a real leave report is pending and loads an explicitly selected next date" do
+    entered = Queue.new
+    release = Queue.new
+    dates = []
+    sign_in admin
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      click_button "PTO and decisions #{consultant.full_name}"
+      within("[role='dialog']") { configure_opening("-40") }
+      find_button("Close").send_keys(:escape)
+      expect(page).not_to have_css("[role='dialog']")
+      allow(Payroll::PtoReport).to receive(:new).and_wrap_original do |constructor, *args, **kwargs|
+        report = constructor.call(*args, **kwargs)
+        allow(report).to receive(:call).and_wrap_original do |original|
+          facts = original.call
+          dates << facts.fetch(:as_of)
+          if dates.one?
+            entered << true
+            Timeout.timeout(5) { release.pop }
+          end
+          facts
+        end
+        report
+      end
+      fill_in "Leave review as of", with: "2026-09-30"
+      click_button "Load leave review queue"
+      Timeout.timeout(5) { entered.pop }
+      expect(page.evaluate_script("document.getElementById('pto-review-date').disabled")).to be(true)
+      release << true
+      expect(page).to have_button("Load leave review queue", disabled: false)
+      expect(page).to have_field("Leave review as of", with: "2026-09-30", disabled: false)
+      within("[aria-label='Leave year-end and exit review']") { expect(page).to have_text("Negative balance: 40.0 h") }
+      fill_in "Leave review as of", with: "2026-10-18"
+      within("[aria-label='Leave year-end and exit review']") { expect(page).not_to have_text("Negative balance: 40.0 h") }
+      click_button "Load leave review queue"
+      within("[aria-label='Leave year-end and exit review']") do
+        expect(page).to have_text("Negative balance: 40.0 h")
+        click_button "Review leave case #{consultant.full_name}"
+      end
+      within("[role='dialog']") { expect(page).to have_text("2026-10") }
+      expect(dates).to eq(%w[2026-09-30 2026-10-18])
+      expect(page).not_to have_css("[role='alert']")
+    end
+  ensure
+    release << true
+  end
+
+  it "keeps the leave queue stationary when a real payroll archive arrives and submits its normal report" do
+    entered = Queue.new
+    release = Queue.new
+    held = false
+    consultant.update!(first_name: "Armand", last_name: "Stoltenberg")
+    sign_in admin
+    with_forgery_protection do
+      visit "/consultant-payroll"
+      click_button "PTO and decisions #{consultant.full_name}"
+      within("[role='dialog']") { configure_opening("-40") }
+      find_button("Close").send_keys(:escape)
+      employment.update!(resigned_at: Date.new(2026, 9, 30))
+      travel_to(Time.utc(2027, 3, 31, 12))
+      sign_in admin
+      allow(Payroll::ConsultantReview).to receive(:period).and_wrap_original do |original, *args, **kwargs|
+        period = original.call(*args, **kwargs)
+        unless held
+          held = true
+          entered << true
+          Timeout.timeout(5) { release.pop }
+        end
+        period
+      end
+      visit "/consultant-payroll"
+      Timeout.timeout(5) { entered.pop }
+      expect(page).to have_css("[role='status']", text: "Loading")
+      fill_in "Leave review as of", with: "2027-03-31"
+      top = page.evaluate_script("document.getElementById('pto-review-date').form.querySelector('button').getBoundingClientRect().top")
+      release << true
+      expect(page).to have_text("No configured consultants are active in this period.")
+      expect(page.evaluate_script("document.getElementById('pto-review-date').form.querySelector('button').getBoundingClientRect().top")).to eq(top)
+      click_button "Load leave review queue"
+      within("[aria-label='Leave year-end and exit review']") { expect(page).to have_text("Negative balance: 40.0 h") }
+      expect(page).not_to have_css("[role='alert']")
+      [1440, 375].each do |width|
+        page.current_window.resize_to(width, 1000)
+        page.evaluate_async_script("const done = arguments[0]; requestAnimationFrame(() => requestAnimationFrame(done));")
+        expect(page.evaluate_script("document.documentElement.scrollWidth <= window.innerWidth + 1")).to be(true)
+        page.save_screenshot("/tmp/miru-pto-review-queue-#{width}-20261111.png", full: true)
+        bounds = page.evaluate_script(<<~JS)
+          (() => { const button = document.querySelector('[aria-label="Leave year-end and exit review"] article button');
+            const r = button.getBoundingClientRect(); const parent = button.parentElement.getBoundingClientRect();
+            return {left:r.left,right:r.right,parentLeft:parent.left,parentRight:parent.right}; })()
+        JS
+        expect(bounds.fetch("left")).to be >= bounds.fetch("parentLeft")
+        expect(bounds.fetch("right")).to be <= [bounds.fetch("parentRight"), width].min
+      end
+    end
+  ensure
+    release << true
   end
 
   it "uses the approved partial unpaid quantity in the existing reimbursement preview without a manual override" do
