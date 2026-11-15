@@ -249,22 +249,15 @@ jobs:
           spec.loader.exec_module(module)
           module.require(sys.platform == "linux" and os.geteuid() == 0 and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("CI") == "true" and os.environ.get("RUNNER_OS") == "Linux" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
           module.require(pathlib.Path("/sys/block").is_dir() and pathlib.Path("/sys/class").is_dir())
-          def storage_state():
-              devices = list(pathlib.Path("/sys/block").iterdir())
-              try:
-                  sessions = list(pathlib.Path("/sys/class/iscsi_session").iterdir())
-              except FileNotFoundError:
-                  sessions = []
-              return any(device.name.startswith("dm-") for device in devices), bool(sessions)
           listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
           unit_listens = {unit: module.checked(["systemctl", "show", "--property=Id,Listen,Accept,Triggers", unit], timeout=10).decode()
                           for unit, (address, _) in module.RUNNER_STORAGE_SOCKETS.items()
                           if any(actual == address for _, actual, _ in listeners)}
-          units = module.runner_storage_units(listeners, unit_listens, *storage_state())
+          units = module.runner_storage_units(listeners, unit_listens, *module.runner_storage_state())
           if units:
               module.require(not module.checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=10).strip(), "Runner has pending systemd jobs")
               module.checked(["systemctl", "mask", "--runtime", "--now", *units], timeout=30)
-              module.require(not any(storage_state()), "Runner storage became active")
+              module.require(not any(module.runner_storage_state()), "Runner storage became active")
               for unit in units:
                   module.require(module.checked(["systemctl", "show", "--property=LoadState", "--value", unit], timeout=10).strip() == b"masked")
                   module.require(module.checked(["systemctl", "show", "--property=ActiveState", "--value", unit], timeout=10).strip() == b"inactive")

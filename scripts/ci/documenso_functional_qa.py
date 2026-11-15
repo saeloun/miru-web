@@ -356,11 +356,22 @@ RUNNER_STORAGE_SOCKETS = {
 }
 
 
-def runner_storage_units(listeners, unit_listens, mapped_devices, iscsi_sessions):
+def runner_storage_state():
+    devices = list(Path("/sys/block").iterdir())
+    try:
+        sessions = list(Path("/sys/class/iscsi_session").iterdir())
+    except FileNotFoundError:
+        sessions = []
+    # Other mapper targets can back the runner's root disk without using multipathd.
+    multipath_maps = bool(checked(["dmsetup", "ls", "--target", "multipath"]).strip()) if any(device.name.startswith("dm-") for device in devices) else False
+    return multipath_maps, bool(sessions)
+
+
+def runner_storage_units(listeners, unit_listens, multipath_maps, iscsi_sessions):
     abstract = [(address, kind) for _, address, kind in listeners if not address.startswith("/")]
     if not abstract:
         return []
-    require(not mapped_devices and not iscsi_sessions, "Runner storage is in use")
+    require(not multipath_maps and not iscsi_sessions, "Runner storage is in use")
     units = set()
     for address, kind in abstract:
         matches = [(unit, service) for unit, (expected, service) in RUNNER_STORAGE_SOCKETS.items() if address == expected and kind == 1]
@@ -1404,7 +1415,7 @@ def self_check():
         entries = acl_entries(b"user::rw-\nuser:901:---\ngroup::rw-\nmask::rw-\nother::rw-\n")
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
-        from unittest.mock import patch
+        from unittest.mock import Mock, patch
         def diagnostic(error):
             output = io.StringIO()
             with patch.object(sys, "stderr", output):
@@ -1541,6 +1552,30 @@ def self_check():
         listeners = unix_listeners(filesystem)
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
+        block, sessions = root / "storage-block", root / "storage-sessions"
+        block.mkdir()
+        sessions.mkdir()
+        paths = {"/sys/block": block, "/sys/class/iscsi_session": sessions}
+        with patch.dict(globals(), {"Path": paths.__getitem__}):
+            with patch.dict(globals(), {"checked": Mock(side_effect=AssertionError("Unexpected storage command"))}):
+                assert runner_storage_state() == (False, False)
+            (block / "dm-0").mkdir()
+            for output, expected in ((b"", False), (b"mpath-synthetic (253:0)\n", True), (b"No devices found\n", True)):
+                def device_query(command, output=output):
+                    assert command == ["dmsetup", "ls", "--target", "multipath"]
+                    return output
+                with patch.dict(globals(), {"checked": device_query}):
+                    assert runner_storage_state() == (expected, False)
+                    (sessions / "session1").mkdir()
+                    assert runner_storage_state() == (expected, True)
+                    (sessions / "session1").rmdir()
+            with patch.dict(globals(), {"checked": Mock(side_effect=subprocess.CalledProcessError(1, "dmsetup"))}):
+                try:
+                    runner_storage_state()
+                except subprocess.CalledProcessError:
+                    pass
+                else:
+                    raise AssertionError("Storage query failure accepted")
         storage = [(900, "@/org/kernel/linux/storage/multipathd", 1), (901, "@ISCSIADM_ABSTRACT_NAMESPACE", 1)]
         unit_listens = {"multipathd.socket": "Id=multipathd.socket\nAccept=no\nTriggers=multipathd.service\nListen=@/org/kernel/linux/storage/multipathd (Stream)\nListen=/run/multipathd.socket (Stream)",
                         "iscsid.socket": "Id=iscsid.socket\nAccept=no\nTriggers=iscsid.service\nListen=@ISCSIADM_ABSTRACT_NAMESPACE (Stream)"}
