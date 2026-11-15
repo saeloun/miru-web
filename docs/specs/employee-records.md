@@ -20,7 +20,7 @@ execute payments, calculate salary, or certify statutory filings.
 | Customizable saved reports | Admin saves a named selection of permitted columns and generates a private CSV for a selected month. Include insurance and salary presets. Save report definitions, not sensitive export snapshots. |
 | Insurance fields | Reports include DOB, family, joining date, employee ID, designation and phone. |
 | Salary fields | Reports include bank, recorded time off, working days, current salary and reimbursements. Define every time/expense field against existing sources; never invent balances or treat a pending expense as reimbursed. |
-| Advance reminders | Company admin explicitly opts in; send active admins a reminder seven calendar days before active employees' birthdays and completed-year work anniversaries in company timezone. No year of birth in mail. Feb 29 uses Feb 28 in non-leap years. Record deliveries to avoid ordinary repeat-job duplicates. |
+| Advance reminders | Company admin explicitly opts in; send admins active on the send day a reminder seven calendar days before active employees' birthdays and completed-year work anniversaries in company timezone. Exclude events after a known final employment date; include events on that date. No year of birth in mail. Feb 29 uses Feb 28 in non-leap years. Record deliveries to avoid ordinary repeat-job duplicates. |
 
 ## Security and scope
 
