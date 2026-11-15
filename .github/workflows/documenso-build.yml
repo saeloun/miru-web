@@ -251,6 +251,7 @@ jobs:
           spec.loader.exec_module(module)
           module.require(sys.platform == "linux" and os.geteuid() == 0 and os.environ.get("GITHUB_ACTIONS") == "true" and os.environ.get("CI") == "true" and os.environ.get("RUNNER_OS") == "Linux" and os.environ.get("RUNNER_ENVIRONMENT") == "github-hosted")
           module.require(pathlib.Path("/sys/block").is_dir() and pathlib.Path("/sys/class").is_dir())
+          module.wait_runner_jobs()
           listeners = module.unix_listeners(module.read_regular(pathlib.Path("/proc/net/unix"), 2 * 1024**2))
           unit_listens = {unit: module.checked(["systemctl", "show", "--property=Id,Listen,Accept,Triggers", unit], timeout=10).decode()
                           for unit, (address, _) in module.RUNNER_STORAGE_SOCKETS.items()

@@ -459,6 +459,13 @@ def runner_storage_state():
     return multipath_maps, bool(sessions)
 
 
+def wait_runner_jobs():
+    until = time.monotonic() + 30
+    while checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=5).strip():
+        require(time.monotonic() < until, "Runner has pending systemd jobs")
+        time.sleep(.2)
+
+
 def required_access_failures(raw):
     flags = json.loads(raw)
     labels = ("gemfile", "spec", "ruby", "bundle", "node", "pnpm", "brave")
@@ -1774,6 +1781,19 @@ def self_check():
         listeners = unix_listeners(filesystem)
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
+        jobs = Mock(side_effect=[b"pending startup job\n", b""])
+        with patch.dict(globals(), checked=jobs), patch.object(time, "sleep") as sleep:
+            wait_runner_jobs()
+            assert jobs.call_count == 2
+            sleep.assert_called_once_with(.2)
+        with patch.dict(globals(), checked=Mock(return_value=b"pending startup job\n")), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(time, "sleep") as sleep:
+            try:
+                wait_runner_jobs()
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unsettled runner accepted")
+            sleep.assert_not_called()
         assert required_access_failures(json.dumps([True] * 7)) == []
         assert required_access_failures(json.dumps([True, False, True, True, True, False, True])) == ["spec", "pnpm"]
         for malformed in ([True] * 6, [True] * 8, [True] * 6 + [1], [True] * 6 + ["SYNTHETIC_SECRET"], {"SYNTHETIC_SECRET": True}):
