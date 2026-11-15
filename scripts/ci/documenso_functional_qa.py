@@ -84,7 +84,7 @@ def report_failure(error):
     line = 0
     frame = error.__traceback__
     while frame is not None:
-        if frame.tb_frame.f_code.co_filename == __file__ and frame.tb_frame.f_code is not require.__code__:
+        if frame.tb_frame.f_code.co_filename == __file__ and frame.tb_frame.f_code not in (require.__code__, checked.__code__):
             line = frame.tb_lineno
         frame = frame.tb_next
     print(f"Functional QA refused or failed ({kind}, adapter_line={line}); only sanitized evidence may be uploaded", file=sys.stderr)
@@ -1434,6 +1434,12 @@ def self_check():
             assert diagnostic(error) == f"Functional QA refused or failed (RuntimeError, adapter_line={expected_line}); only sanitized evidence may be uploaded\n"
         private_error = type("SYNTHETIC_SECRET_CLASS", (Exception,), {})
         assert diagnostic(private_error("SYNTHETIC_SECRET")) == "Functional QA refused or failed (Exception, adapter_line=0); only sanitized evidence may be uploaded\n"
+        with patch.object(subprocess, "run", side_effect=subprocess.CalledProcessError(1, ["SYNTHETIC_SECRET_COMMAND"])):
+            try:
+                expected_line = sys._getframe().f_lineno + 1
+                checked(["SYNTHETIC_SECRET_COMMAND"])
+            except subprocess.CalledProcessError as error:
+                assert diagnostic(error) == f"Functional QA refused or failed (CalledProcessError, adapter_line={expected_line}); only sanitized evidence may be uploaded\n"
         runner, workspace = root / "runner", root / "workspace"
         binaries = root / "bin"
         binaries.mkdir()
