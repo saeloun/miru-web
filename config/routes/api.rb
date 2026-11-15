@@ -71,6 +71,9 @@ namespace :api, defaults: { format: "json" } do
     get "consultant_payroll", to: "consultant_payroll#index"
     resource :consultant_invoice_authorization, only: [:show, :create], controller: "consultant_invoice_authorizations"
     get "payroll_consultant_invoice_runs", to: "payroll_consultant_invoices#runs"
+    resources :remittance_documents, only: [:index, :create] do
+      member { get :download }
+    end
     resources :consultant_invoices, only: [:index, :create] do
       member { get :download }
       collection { get "preparations/:preparation_id/original", action: :preparation_original }

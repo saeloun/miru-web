@@ -10,7 +10,7 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
   VERSION = 20_261_103_090_000
   FIRST_PTO_VERSION = 20_261_108_200_000
   EMPLOYMENT_TENANT_INDEX_VERSION = 20_261_107_092_900
-  INVOICE_VERSIONS = [20_261_111_100_000, 20_261_111_110_000].freeze
+  DOCUMENT_VERSIONS = [20_261_111_100_000, 20_261_111_110_000, 20_261_112_010_000].freeze
   INVOICE_TABLES = %w[payroll_invoice_preparations payroll_consultant_invoices payroll_consultant_invoice_deliveries].freeze
   # Exact schema-load/migration-up deparse pairs: only text-array casts and associative AND grouping differ.
   INVOICE_DEPARSE_EQUIVALENTS = {
@@ -29,9 +29,9 @@ RSpec.describe "Historical Mercury DDL rollback with current PTO guards" do
     @original_invoice_dependencies = invoice_dependencies_snapshot
     @rewound_versions = []
     DatabaseCleaner.clean_with :truncation, except: %w[ar_internal_metadata schema_migrations]
-    # Unwind invoice children before their historical parents; retain independent PTO guards.
+    # Unwind document children before their historical parents; retain independent PTO guards.
     @original_versions.reverse_each do |version|
-      next unless (version > VERSION && version < FIRST_PTO_VERSION) || INVOICE_VERSIONS.include?(version)
+      next unless (version > VERSION && version < FIRST_PTO_VERSION) || DOCUMENT_VERSIONS.include?(version)
       next if version == EMPLOYMENT_TENANT_INDEX_VERSION # Five current PTO foreign keys depend on this shared index.
 
       @migration_context.run(:down, version)
