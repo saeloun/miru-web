@@ -8,6 +8,7 @@ import gzip
 import grp
 import hashlib
 import io
+import ipaddress
 from itertools import chain
 import json
 import os
@@ -66,6 +67,9 @@ SCREENSHOTS |= {f"screenshots/{kind}-{packet}-{width}.png" for kind in ("placeme
 SCREENSHOTS |= {"share-client.png", "share-consultant.png"}
 HEX = re.compile(r"[0-9a-f]{64}\Z")
 BASE_ENV = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8", "HOME": "/nonexistent"}
+TCP_RELAYS = {"pg": ("database", 5432), "smtp": ("mailpit", 1025), "provider": ("proxy", 8080), "mailpit": ("proxy", 8081)}
+SOCKET_ACTIVATE = Path("/usr/bin/systemd-socket-activate")
+SOCKET_PROXY = Path("/usr/lib/systemd/systemd-socket-proxyd")
 FORBIDDEN_FLAGS = ("no-sandbox", "disable-setuid-sandbox", "disable-web-security", "disable-site-isolation", "ignore-certificate-errors", "single-process", "no-zygote", "--proxy-server", "--host-resolver-rules")
 RELAY_SOCKETS = ("/run/dbus/system_bus_socket", "/run/systemd/resolve/io.systemd.Resolve", "/run/nscd/socket", "/var/run/nscd/socket", "/run/nslcd/socket", "/run/avahi-daemon/socket", "/run/systemd/machine/io.systemd.Machine", "/run/samba/winbindd/pipe", "/var/lib/samba/winbindd_privileged/pipe")
 _cancel_depth = 0
@@ -367,11 +371,71 @@ def capacity(path, docker_root):
 
 def process_identity(pid):
     root = Path("/proc") / str(pid)
-    if not root.exists():
+    try:
+        fields = (root / "stat").read_text().rsplit(")", 1)[1].split()
+        uid = int(next(line.split()[1] for line in (root / "status").read_text().splitlines() if line.startswith("Uid:")))
+    except (FileNotFoundError, ProcessLookupError):
         return None
-    fields = (root / "stat").read_text().rsplit(")", 1)[1].split()
-    uid = int(next(line.split()[1] for line in (root / "status").read_text().splitlines() if line.startswith("Uid:")))
     return {"pid": pid, "start": fields[19], "uid": uid}
+
+
+def principal_prefix(uid, gid):
+    return ["setpriv", "--reuid", str(uid), "--regid", str(gid), "--clear-groups", "--no-new-privs", "--inh-caps=-all", "--ambient-caps=-all", "--bounding-set=-all"]
+
+
+def endpoint_snapshot(rows, network, project, operation, expected=None):
+    name = project + "_qa_internal"
+    require(network["name"] == name and HEX.fullmatch(network["id"]) and network["driver"] == "bridge")
+    require(network["internal"] is True and network["ipv6"] is False and network["operation"] == operation and network["project"] == project)
+    require(network["ipam"]["Driver"] == "default" and len(network["ipam"]["Config"]) == 1)
+    config = network["ipam"]["Config"][0]
+    subnet = ipaddress.ip_network(config["Subnet"])
+    require(subnet.version == 4 and any(subnet.subnet_of(ipaddress.ip_network(prefix)) for prefix in ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16")))
+    if config.get("Gateway"):
+        require(ipaddress.ip_address(config["Gateway"]) in subnet)
+    require(len(rows) == 4 and {row["service"] for row in rows} == {"database", "documenso", "mailpit", "proxy"})
+    require(set(network["containers"]) == {row["id"] for row in rows} and len(network["containers"]) == 4)
+    endpoints = {}
+    for row in rows:
+        require(HEX.fullmatch(row["id"]) and set(row["networks"]) == {name})
+        endpoint = row["networks"][name]
+        record = network["containers"][row["id"]]
+        address = ipaddress.ip_address(endpoint["IPAddress"])
+        require(address.version == 4 and address in subnet and address not in (subnet.network_address, subnet.broadcast_address))
+        require(str(address) != config.get("Gateway") and endpoint["IPPrefixLen"] == subnet.prefixlen)
+        require(endpoint["NetworkID"] == network["id"] and HEX.fullmatch(endpoint["EndpointID"]) and record["EndpointID"] == endpoint["EndpointID"])
+        require(record["IPv4Address"] == str(address) + "/" + str(subnet.prefixlen) and not record["IPv6Address"] and not endpoint["GlobalIPv6Address"])
+        require(record["Name"] == row["name"].removeprefix("/"))
+        endpoints[row["service"]] = {"container": row["id"], "endpoint": endpoint["EndpointID"], "address": str(address), "name": record["Name"]}
+    require(len({row["address"] for row in endpoints.values()}) == 4)
+    snapshot = {"network": network["id"], "subnet": str(subnet), "gateway": config.get("Gateway", ""), "endpoints": endpoints}
+    require(expected is None or snapshot == expected, "Owned network endpoints changed")
+    return snapshot
+
+
+def tcp_relay_command(name, port, snapshot):
+    service, target_port = TCP_RELAYS[name]
+    require(type(port) is int and 1024 <= port <= 65535)
+    address = ipaddress.ip_address(snapshot["endpoints"][service]["address"])
+    require(address.version == 4 and address in ipaddress.ip_network(snapshot["subnet"]))
+    return [str(SOCKET_ACTIVATE), "--listen=127.0.0.1:" + str(port), str(SOCKET_PROXY), "--connections-max=32", f"{address}:{target_port}"]
+
+
+def tcp_listener(raw, port, pid):
+    lines = raw.decode().splitlines()
+    require(len(lines) == 1, "Owned TCP listener missing or duplicated")
+    fields = lines[0].split(maxsplit=5)
+    require(len(fields) == 6 and fields[0] == "LISTEN" and fields[1].isdigit() and fields[2].isdigit())
+    require(fields[3] == f"127.0.0.1:{port}" and fields[4] == "0.0.0.0:*")
+    owner = re.fullmatch(r'users:\(\("[^"\\\r\n]+",pid=([1-9][0-9]*),fd=([0-9]+)\)\)', fields[5])
+    require(owner is not None and int(owner[1]) == pid, "TCP listener ownership changed")
+
+
+def relay_principal(raw, uid, gid):
+    rows = dict(line.split(":", 1) for line in raw.decode().splitlines() if ":" in line)
+    require(uid != 0 and rows["Uid"].split() == [str(uid)] * 4 and rows["Gid"].split() == [str(gid)] * 4)
+    require(not rows["Groups"].split() and rows["NoNewPrivs"].strip() == "1")
+    require(all(int(rows[key].strip(), 16) == 0 for key in ("CapInh", "CapPrm", "CapEff", "CapBnd", "CapAmb")), "TCP relay retained authority")
 
 
 def uid_processes(uid):
@@ -670,20 +734,54 @@ class Lifecycle:
         return checked(["docker", *args], timeout=timeout, env={**BASE_ENV, "HOME": str(self.setup)})
 
     def runtime_prefix(self):
-        return ["setpriv", "--reuid", str(self.uid), "--regid", str(self.gid), "--clear-groups", "--no-new-privs", "--inh-caps=-all", "--ambient-caps=-all", "--bounding-set=-all"]
+        return principal_prefix(self.uid, self.gid)
 
-    def start(self, command, name, runtime=False, env=None, cwd=None):
+    def check_authority(self, uid, gid):
+        probe = r'''import errno,os,socket,subprocess,sys
+assert os.getuid()==int(sys.argv[1])!=0 and os.getgid()==int(sys.argv[2]) and not os.getgroups()
+assert subprocess.run(['sudo','-n','-l'],capture_output=True,timeout=5).returncode!=0
+for endpoint in ('/var/run/docker.sock','/run/containerd/containerd.sock'):
+ s=socket.socket(socket.AF_UNIX);s.settimeout(1)
+ try:
+  s.connect(endpoint)
+ except OSError as e:
+  assert e.errno in (errno.EACCES,errno.ENOENT,errno.ECONNREFUSED),e.errno
+ else:
+  raise AssertionError('Container API available to principal')
+ finally:
+  s.close()
+for port in (2375,2376):
+ s=socket.socket();s.settimeout(1)
+ try:
+  s.connect(('127.0.0.1',port))
+ except OSError as e:
+  assert e.errno==errno.ECONNREFUSED,e.errno
+ else:
+  raise AssertionError('Container TCP API available to principal')
+ finally:
+  s.close()
+'''
+        checked(principal_prefix(uid, gid) + ["python3", "-I", "-c", probe, str(uid), str(gid)], timeout=15)
+
+    def start(self, command, name, runtime=False, env=None, cwd=None, setup_user=False):
+        require(not (runtime and setup_user), "Ambiguous process principal")
+        uid = self.state["setup_uid"] if setup_user else self.uid if runtime else 0
+        gid = self.gid
+        if setup_user:
+            require(uid not in (0, self.uid) and gid == self.state["gid"] and gid != self.state["setup_gid"] and env is None, "TCP relay requires setup UID and the fresh QA group")
+        prefix = principal_prefix(uid, gid) if runtime or setup_user else []
         log = self.setup / "private-logs" / (name + ".log")
         fd = os.open(log, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with defer_cancellation():
             with os.fdopen(fd, "wb") as stream:
-                process = subprocess.Popen((self.runtime_prefix() if runtime else []) + command, cwd=cwd,
+                process = subprocess.Popen(prefix + command, cwd=cwd,
                                            env=(self.runtime_env if runtime else BASE_ENV) if env is None else env,
                                            stdin=subprocess.DEVNULL, stdout=stream, stderr=stream, start_new_session=True)
             self.handles.append(process)
             identity = process_identity(process.pid)
             require(identity is not None)
-            identity["uid"] = self.uid if runtime else 0
+            require(identity["uid"] in (0, uid))
+            identity["uid"] = uid
             self.state["processes"].append(identity)
             self.save()
         return process
@@ -696,6 +794,7 @@ class Lifecycle:
             if self.runtime_env is not None:
                 self.check_relays()
             self.inspect_containers(running=True)
+            self.inspect_tcp_relays()
             self.last_sample = time.monotonic()
 
     def wait(self, process, seconds):
@@ -752,31 +851,7 @@ class Lifecycle:
                 for path in [Path(directory), *(Path(directory) / name for name in directories + files)]:
                     os.chown(path, self.uid, self.gid, follow_symlinks=False)
         self.protect_relays()
-        authority_probe = r'''import errno,os,socket,subprocess
-assert os.getuid()!=0 and not os.getgroups()
-assert subprocess.run(['sudo','-n','-l'],capture_output=True).returncode!=0
-for endpoint in ('/var/run/docker.sock','/run/containerd/containerd.sock'):
- s=socket.socket(socket.AF_UNIX)
- try:
-  s.connect(endpoint)
- except OSError as e:
-  assert e.errno in (errno.EACCES,errno.ENOENT,errno.ECONNREFUSED),e.errno
- else:
-  raise AssertionError('Container API available to runtime')
- finally:
-  s.close()
-for port in (2375,2376):
- s=socket.socket();s.settimeout(1)
- try:
-  s.connect(('127.0.0.1',port))
- except OSError as e:
-  assert e.errno==errno.ECONNREFUSED,e.errno
- else:
-  raise AssertionError('Container TCP API available to runtime')
- finally:
-  s.close()
-'''
-        checked(self.runtime_prefix() + ["python3", "-I", "-c", authority_probe])
+        self.check_authority(self.uid, self.gid)
         paths = [self.args.app / "Gemfile", self.spec, self.args.ruby, self.args.bundle, self.args.node, self.args.pnpm, self.args.brave]
         access = "import json,os,sys;print(json.dumps([os.access(p,os.R_OK) and (i<2 or os.access(p,os.X_OK)) for i,p in enumerate(sys.argv[1:])]))"
         inaccessible = required_access_failures(checked(self.runtime_prefix() + ["python3", "-I", "-c", access, *map(str, paths)]))
@@ -986,15 +1061,14 @@ server {{listen 8081; location / {{proxy_pass http://mailpit:8025; proxy_set_hea
         def service(image, memory, cpu, pids, user):
             return {"image": image, "platform": "linux/amd64", "pull_policy": "never", "mem_limit": f"{memory}m", "memswap_limit": f"{memory}m", "cpus": cpu, "pids_limit": pids, "user": user, "read_only": True, "cap_drop": ["ALL"], "security_opt": ["no-new-privileges:true"], "restart": "no", "networks": ["qa_internal"], "dns": ["127.0.0.1"], "logging": {"driver": "none"}, "labels": {"so.miru.qa.operation": self.state["operation"]}, "tmpfs": ["/tmp:rw,nosuid,nodev,noexec,mode=1777,size=128m"]}
         pg = service(IMAGES["database"][0], 512, .5, 128, "70:70")
-        pg.update(env_file=[str(self.setup / "database.env")], volumes=[str(self.setup / "pgdata") + ":/var/lib/postgresql/data", str(self.setup / "init") + ":/docker-entrypoint-initdb.d:ro"], ports=[f"127.0.0.1:{self.ports['pg']}:5432"], healthcheck={"test": ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'], "interval": "2s", "timeout": "2s", "retries": 60})
+        pg.update(env_file=[str(self.setup / "database.env")], volumes=[str(self.setup / "pgdata") + ":/var/lib/postgresql/data", str(self.setup / "init") + ":/docker-entrypoint-initdb.d:ro"], healthcheck={"test": ["CMD-SHELL", 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"'], "interval": "2s", "timeout": "2s", "retries": 60})
         pg["tmpfs"].append("/var/run/postgresql:rw,nosuid,nodev,uid=70,gid=70,mode=0775,size=16m")
         provider = service(provider_image, 1536, 1, 256, "1001:1001")
         provider.update(env_file=[str(self.setup / "provider.env")], environment={"PORT": "3000", "NEXT_PUBLIC_WEBAPP_URL": f"http://127.0.0.1:{self.ports['provider']}", "NEXT_PRIVATE_INTERNAL_WEBAPP_URL": "http://documenso:3000", "NEXT_PUBLIC_UPLOAD_TRANSPORT": "database", "NEXT_PRIVATE_JOBS_PROVIDER": "local", "NEXT_PRIVATE_SMTP_TRANSPORT": "smtp-auth", "NEXT_PRIVATE_SMTP_HOST": "mailpit", "NEXT_PRIVATE_SMTP_PORT": "1025", "NEXT_PRIVATE_SMTP_SECURE": "false", "NEXT_PRIVATE_SMTP_FROM_NAME": "Miru Synthetic QA ONLY", "NEXT_PRIVATE_SMTP_FROM_ADDRESS": "noreply@miru-qa.invalid", "NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH": "/opt/documenso/cert.p12"}, volumes=[str(self.setup / "seal/cert.p12") + ":/opt/documenso/cert.p12:ro"], depends_on={"database": {"condition": "service_healthy"}, "mailpit": {"condition": "service_started"}})
         provider["tmpfs"].append("/app/apps/web/.next/cache:rw,nosuid,nodev,uid=1001,gid=1001,mode=0700,size=128m")
         mail = service(IMAGES["mailpit"][0], 128, .25, 64, "1000:1000")
-        mail["ports"] = [f"127.0.0.1:{self.ports['smtp']}:1025"]
         proxy_service = service(IMAGES["proxy"][0], 64, .25, 32, "101:101")
-        proxy_service.update(entrypoint=["nginx", "-g", "daemon off;"], depends_on=["documenso", "mailpit"], ports=[f"127.0.0.1:{self.ports['provider']}:8080", f"127.0.0.1:{self.ports['mailpit']}:8081"], volumes=[str(self.setup / "proxy.conf") + ":/etc/nginx/nginx.conf:ro", str(site) + ":/qa-source:ro"])
+        proxy_service.update(entrypoint=["nginx", "-g", "daemon off;"], depends_on=["documenso", "mailpit"], volumes=[str(self.setup / "proxy.conf") + ":/etc/nginx/nginx.conf:ro", str(site) + ":/qa-source:ro"])
         config = {"name": self.state["project"], "services": {"database": pg, "documenso": provider, "mailpit": mail, "proxy": proxy_service}, "networks": {"qa_internal": {"internal": True, "enable_ipv6": False, "labels": {"so.miru.qa.operation": self.state["operation"]}}}}
         private(self.setup / "compose.json", json.dumps(config))
         self.state["expected_images"] = {"documenso": CONFIG_SHA, **{name: row[1] for name, row in IMAGES.items()}}
@@ -1007,7 +1081,7 @@ server {{listen 8081; location / {{proxy_pass http://mailpit:8025; proxy_set_hea
     def inspect_containers(self, running=False):
         ids = self.docker("container", "ls", "-aq", "--no-trunc", "--filter", "label=com.docker.compose.project=" + self.state["project"], "--filter", "label=so.miru.qa.operation=" + self.state["operation"]).decode().split()
         require(all(HEX.fullmatch(cid) for cid in ids))
-        template = '{"id":{{json .Id}},"image":{{json .Image}},"project":{{json (index .Config.Labels "com.docker.compose.project")}},"operation":{{json (index .Config.Labels "so.miru.qa.operation")}},"service":{{json (index .Config.Labels "com.docker.compose.service")}},"running":{{json .State.Running}},"oom":{{json .State.OOMKilled}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"privileged":{{json .HostConfig.Privileged}},"dns":{{json .HostConfig.Dns}},"memory":{{json .HostConfig.Memory}},"swap":{{json .HostConfig.MemorySwap}},"pids":{{json .HostConfig.PidsLimit}},"cpus":{{json .HostConfig.NanoCpus}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"user":{{json .Config.User}},"binds":{{json .HostConfig.Binds}},"ports":{{json .NetworkSettings.Ports}},"networks":{{json .NetworkSettings.Networks}}}'
+        template = '{"id":{{json .Id}},"name":{{json .Name}},"image":{{json .Image}},"project":{{json (index .Config.Labels "com.docker.compose.project")}},"operation":{{json (index .Config.Labels "so.miru.qa.operation")}},"service":{{json (index .Config.Labels "com.docker.compose.service")}},"running":{{json .State.Running}},"oom":{{json .State.OOMKilled}},"readonly":{{json .HostConfig.ReadonlyRootfs}},"privileged":{{json .HostConfig.Privileged}},"dns":{{json .HostConfig.Dns}},"memory":{{json .HostConfig.Memory}},"swap":{{json .HostConfig.MemorySwap}},"pids":{{json .HostConfig.PidsLimit}},"cpus":{{json .HostConfig.NanoCpus}},"caps":{{json .HostConfig.CapDrop}},"security":{{json .HostConfig.SecurityOpt}},"user":{{json .Config.User}},"binds":{{json .HostConfig.Binds}},"bindings":{{json .HostConfig.PortBindings}},"ports":{{json .NetworkSettings.Ports}},"networks":{{json .NetworkSettings.Networks}}}'
         rows = [json.loads(self.docker("container", "inspect", cid, "--format", template)) for cid in ids]
         contracts = {"database": (512, 500000000, 128, "70:70"), "documenso": (1536, 1000000000, 256, "1001:1001"), "mailpit": (128, 250000000, 64, "1000:1000"), "proxy": (64, 250000000, 32, "101:101")}
         compose = read_json(self.setup / "compose.json")
@@ -1020,24 +1094,94 @@ server {{listen 8081; location / {{proxy_pass http://mailpit:8025; proxy_set_hea
             require(row["caps"] == ["ALL"] and row["security"] == ["no-new-privileges:true"])
             expected_binds = [value if value.count(":") == 2 else value + ":rw" for value in compose["services"][row["service"]].get("volumes", [])]
             require(sorted(row["binds"] or []) == sorted(expected_binds))
-            expected_ports = {"database": {"5432/tcp": self.ports["pg"]}, "documenso": {}, "mailpit": {"1025/tcp": self.ports["smtp"]}, "proxy": {"8080/tcp": self.ports["provider"], "8081/tcp": self.ports["mailpit"]}}[row["service"]]
             published = {port: values for port, values in (row["ports"] or {}).items() if values}
-            require(published == {port: [{"HostIp": "127.0.0.1", "HostPort": str(host)}] for port, host in expected_ports.items()})
+            require(not row["bindings"] and not published, "Container port publication refused")
             require(set(row["networks"]) == {self.state["project"] + "_qa_internal"})
             if running:
                 require(row["running"], "Owned container exited")
         if self.state["containers"]:
             require(set(ids) == set(self.state["containers"]), "Owned container set changed")
         require(len(rows) == 4 and len({row["service"] for row in rows}) == 4)
+        network = json.loads(self.docker("network", "inspect", self.state["project"] + "_qa_internal", "--format", '{"id":{{json .Id}},"name":{{json .Name}},"driver":{{json .Driver}},"internal":{{json .Internal}},"ipv6":{{json .EnableIPv6}},"operation":{{json (index .Labels "so.miru.qa.operation")}},"project":{{json (index .Labels "com.docker.compose.project")}},"ipam":{{json .IPAM}},"containers":{{json .Containers}}}'))
+        snapshot = endpoint_snapshot(rows, network, self.state["project"], self.state["operation"], self.state.get("endpoint_snapshot"))
+        if "endpoint_snapshot" not in self.state:
+            self.state.update(endpoint_snapshot=snapshot, containers=ids)
+            self.save()
         return rows
+
+    def relay_listener_output(self, port):
+        return checked(["ss", "-H", "-ltnp", "(", "sport", "=", ":" + str(port), ")"], timeout=5)
+
+    def inspect_tcp_relay(self, relay):
+        identity = relay["identity"]
+        require(process_identity(identity["pid"]) == identity, "Owned TCP relay exited or changed principal")
+        root = Path("/proc") / str(identity["pid"])
+        require((root / "exe").resolve() == SOCKET_PROXY, "TCP relay executable changed")
+        relay_principal(read_regular(root / "status", 65536), self.state["setup_uid"], self.state["gid"])
+        expected_argv = tcp_relay_command(relay["name"], relay["port"], self.state["endpoint_snapshot"])[2:]
+        require(read_regular(root / "cmdline", 4096) == b"\0".join(os.fsencode(value) for value in expected_argv) + b"\0", "TCP relay destination argv changed")
+        tcp_listener(self.relay_listener_output(relay["port"]), relay["port"], identity["pid"])
+
+    def inspect_tcp_relays(self):
+        require(len(self.state.get("tcp_relays", [])) == 4 and {relay["name"] for relay in self.state["tcp_relays"]} == set(TCP_RELAYS))
+        for relay in self.state["tcp_relays"]:
+            self.inspect_tcp_relay(relay)
+
+    def require_stopped_tcp_relays(self):
+        relays = self.state.get("tcp_relays", [])
+        for relay in relays:
+            require(relay["name"] in TCP_RELAYS and type(relay["port"]) is int and 1024 <= relay["port"] <= 65535)
+            identity = relay["identity"]
+            if identity is not None:
+                require(identity in self.state["processes"] and identity["uid"] == self.state["setup_uid"])
+        until = time.monotonic() + 5
+        while True:
+            remaining = False
+            for relay in relays:
+                identity = relay["identity"]
+                actual = process_identity(identity["pid"]) if identity is not None else None
+                remaining |= actual is not None and actual["start"] == identity["start"]
+                remaining |= bool(self.relay_listener_output(relay["port"]).strip())
+            if not remaining:
+                return
+            require(time.monotonic() < until, "TCP relay process or listener remains; foreign processes are preserved")
+            time.sleep(.1)
+
+    def start_tcp_relays(self):
+        self.check_authority(self.state["setup_uid"], self.gid)
+        for binary in (SOCKET_ACTIVATE, SOCKET_PROXY):
+            info = binary.lstat()
+            require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and not info.st_mode & 0o022 and os.access(binary, os.X_OK), "Trusted systemd relay binary required")
+        for name in TCP_RELAYS:
+            port = self.ports[name]
+            relay = {"name": name, "port": port, "identity": None}
+            self.state.setdefault("tcp_relays", []).append(relay)
+            self.save()
+            with defer_cancellation():
+                process = self.start(tcp_relay_command(name, port, self.state["endpoint_snapshot"]), "tcp-relay-" + name, setup_user=True)
+                relay["identity"] = dict(self.state["processes"][-1])
+                self.save()
+            until = time.monotonic() + 10
+            while True:
+                require(process.poll() is None, "Owned TCP relay failed to start")
+                raw = self.relay_listener_output(port)
+                if raw.strip():
+                    tcp_listener(raw, port, process.pid)
+                    break
+                require(time.monotonic() < until, "Owned TCP relay listener deadline reached")
+                time.sleep(.1)
+            probe = "import socket,sys; socket.create_connection(('127.0.0.1',int(sys.argv[1])),2).close()"
+            checked(self.runtime_prefix() + ["python3", "-I", "-c", probe, str(port)], timeout=5)
+            while (Path("/proc") / str(process.pid) / "exe").resolve() != SOCKET_PROXY:
+                require(process.poll() is None and time.monotonic() < until, "Owned TCP relay activation failed")
+                time.sleep(.1)
+            self.inspect_tcp_relay(relay)
 
     def start_services(self):
         process = self.start(self.compose_command("up", "-d", "--pull", "never"), "compose-up")
         self.wait(process, 180)
-        rows = self.inspect_containers(running=True)
-        self.state["containers"] = [row["id"] for row in rows]
-        network = json.loads(self.docker("network", "inspect", self.state["project"] + "_qa_internal", "--format", '{"internal":{{json .Internal}},"operation":{{json (index .Labels "so.miru.qa.operation")}}}'))
-        require(network == {"internal": True, "operation": self.state["operation"]})
+        self.inspect_containers(running=True)
+        self.start_tcp_relays()
         self.monitor = True
         self.save()
         samples = []
@@ -1207,6 +1351,10 @@ print('ready')
             runtime_remaining = uid_processes(self.state["uid"])
             if runtime_remaining:
                 errors.append("runtime_process_cleanup")
+        try:
+            self.require_stopped_tcp_relays()
+        except Exception:
+            errors.append("tcp_relay_cleanup")
         for row in ([] if runtime_remaining else reversed(self.state.get("relay_acls", []))):
             if row.get("restored") is True:
                 continue
@@ -1532,6 +1680,148 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import Mock, patch
+        project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
+        network_name = project + "_qa_internal"
+        network = {"id": "1" * 64, "name": network_name, "driver": "bridge", "internal": True, "ipv6": False, "project": project, "operation": operation,
+                   "ipam": {"Driver": "default", "Config": [{"Subnet": "172.22.0.0/16", "Gateway": "172.22.0.1"}]}, "containers": {}}
+        rows = []
+        for number, service in enumerate(("database", "documenso", "mailpit", "proxy"), 2):
+            cid, eid, address = f"{number:064x}", f"{number + 4:064x}", f"172.22.0.{number}"
+            name = project + "-" + service + "-1"
+            rows.append({"id": cid, "name": "/" + name, "service": service, "networks": {network_name: {"NetworkID": network["id"], "EndpointID": eid, "IPAddress": address, "IPPrefixLen": 16, "GlobalIPv6Address": ""}}})
+            network["containers"][cid] = {"Name": name, "EndpointID": eid, "IPv4Address": address + "/16", "IPv6Address": ""}
+        snapshot = endpoint_snapshot(rows, network, project, operation)
+        assert endpoint_snapshot(rows, network, project, operation, snapshot) == snapshot
+        invalid_networks = [{**network, key: value} for key, value in (("driver", "host"), ("internal", False), ("ipv6", True), ("operation", "foreign"), ("project", "foreign"), ("id", "2" * 64))]
+        invalid_networks.extend(({**network, "containers": {**network["containers"], "f" * 64: {}}},
+                                 {**network, "ipam": {"Driver": "default", "Config": [{"Subnet": "203.0.113.0/24"}]}},
+                                 {**network, "containers": {cid: row for cid, row in network["containers"].items() if cid != rows[0]["id"]}}))
+        for invalid in invalid_networks:
+            try:
+                endpoint_snapshot(rows, invalid, project, operation)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unowned or noninternal relay network accepted")
+        for fault in ("network", "endpoint", "membership", "duplicate", "drift"):
+            changed_rows, changed_network = json.loads(json.dumps(rows)), json.loads(json.dumps(network))
+            endpoint = changed_rows[0]["networks"][network_name]
+            record = changed_network["containers"][changed_rows[0]["id"]]
+            if fault == "network":
+                endpoint["NetworkID"] = "f" * 64
+            elif fault == "endpoint":
+                record["EndpointID"] = "f" * 64
+            elif fault == "membership":
+                changed_rows[0]["networks"]["foreign"] = dict(endpoint)
+            else:
+                endpoint["IPAddress"] = rows[1]["networks"][network_name]["IPAddress"] if fault == "duplicate" else "172.22.0.50"
+                record["IPv4Address"] = endpoint["IPAddress"] + "/16"
+            try:
+                endpoint_snapshot(changed_rows, changed_network, project, operation, snapshot if fault == "drift" else None)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Changed relay endpoint accepted")
+        for number, (key, service, target) in enumerate((("pg", "database", 5432), ("smtp", "mailpit", 1025), ("provider", "proxy", 8080), ("mailpit", "proxy", 8081))):
+            assert tcp_relay_command(key, 20000 + number, snapshot) == [str(SOCKET_ACTIVATE), f"--listen=127.0.0.1:{20000 + number}", str(SOCKET_PROXY), "--connections-max=32", snapshot["endpoints"][service]["address"] + ":" + str(target)]
+        listener = b'LISTEN 0 4096 127.0.0.1:20000 0.0.0.0:* users:(("systemd-socket-",pid=456,fd=3))\n'
+        tcp_listener(listener, 20000, 456)
+        for bad in (b"", listener * 2, listener.replace(b"127.0.0.1:20000", b"0.0.0.0:20000"), listener.replace(b"127.0.0.1:20000", b"[::1]:20000"), listener.replace(b"pid=456", b"pid=457")):
+            try:
+                tcp_listener(bad, 20000, 456)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unowned or wildcard relay listener accepted")
+        principal = b"Uid:\t1001 1001 1001 1001\nGid:\t1002 1002 1002 1002\nGroups:\nNoNewPrivs:\t1\n" + b"".join(key + b":\t0000000000000000\n" for key in (b"CapInh", b"CapPrm", b"CapEff", b"CapBnd", b"CapAmb"))
+        relay_principal(principal, 1001, 1002)
+        invalid_principals = [principal.replace(b"1001", b"0"), principal.replace(b"1002", b"0"), principal.replace(b"Groups:\n", b"Groups:\t0\n"), principal.replace(b"NoNewPrivs:\t1", b"NoNewPrivs:\t0")]
+        invalid_principals.extend(principal.replace(key + b":\t0000000000000000", key + b":\t0000000000000001") for key in (b"CapInh", b"CapPrm", b"CapEff", b"CapBnd", b"CapAmb"))
+        for bad in invalid_principals:
+            try:
+                relay_principal(bad, 1001, 1002)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Privileged TCP relay accepted")
+        relay_fixture = Lifecycle(argparse.Namespace(work=root / "relay-fixture"))
+        relay_fixture.state.update(setup_uid=1001, setup_gid=1002, gid=902, endpoint_snapshot=snapshot)
+        relay_fixture.uid, relay_fixture.gid = 902, 902
+        relay_fixture.setup.mkdir(parents=True)
+        (relay_fixture.setup / "private-logs").mkdir()
+        relay_fixture.save = Mock()
+        child = Mock(pid=456)
+        with patch.object(subprocess, "Popen", return_value=child) as spawn, patch.dict(globals(), process_identity=Mock(return_value={"pid": 456, "start": "123", "uid": 0})):
+            relay_fixture.start(["synthetic-never-executed"], "setup-principal", setup_user=True)
+            assert spawn.call_args.args[0] == principal_prefix(1001, 902) + ["synthetic-never-executed"]
+            assert spawn.call_args.kwargs["env"] == BASE_ENV
+        identity = relay_fixture.state["processes"][-1]
+        assert identity == {"pid": 456, "start": "123", "uid": 1001}
+        try:
+            relay_fixture.start([], "ambiguous", runtime=True, setup_user=True)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError("Ambiguous relay principal accepted")
+        with patch.dict(globals(), checked=Mock(return_value=b"")):
+            relay_fixture.check_authority(1001, 902)
+            command = checked.call_args.args[0]
+            assert command[:len(principal_prefix(1001, 902))] == principal_prefix(1001, 902) and command[-2:] == ["1001", "902"]
+            authority_probe = command[command.index("-c") + 1]
+        with patch.object(subprocess, "Popen", return_value=Mock(pid=457)), patch.dict(globals(), process_identity=Mock(return_value={"pid": 457, "start": "124", "uid": 777})):
+            try:
+                relay_fixture.start(["synthetic-never-executed"], "wrong-observed-principal", setup_user=True)
+            except RuntimeError:
+                assert relay_fixture.state["processes"] == [identity]
+            else:
+                raise AssertionError("Unexpected live relay UID accepted")
+        for exposed in (None, "sudo", "unix", "tcp"):
+            sockets = [Mock() for _ in range(4)]
+            for number, stream in enumerate(sockets):
+                stream.connect.side_effect = None if (exposed == "unix" and number == 0) or (exposed == "tcp" and number == 2) else OSError(errno.EACCES if number < 2 else errno.ECONNREFUSED, "synthetic denial")
+            with patch.object(os, "getuid", return_value=1001), patch.object(os, "getgid", return_value=902), patch.object(os, "getgroups", return_value=[]), patch.object(sys, "argv", ["probe", "1001", "902"]), patch.object(subprocess, "run", return_value=Mock(returncode=0 if exposed == "sudo" else 1)), patch.object(socket, "socket", side_effect=sockets):
+                try:
+                    exec(compile(authority_probe, "synthetic-authority-probe", "exec"), {})
+                except AssertionError:
+                    assert exposed is not None
+                else:
+                    assert exposed is None
+                    assert [stream.connect.call_args.args[0] for stream in sockets] == ["/var/run/docker.sock", "/run/containerd/containerd.sock", ("127.0.0.1", 2375), ("127.0.0.1", 2376)]
+        with patch.object(relay_fixture, "check_authority", side_effect=subprocess.CalledProcessError(1, ["synthetic-authority-probe"])) as authority, patch.object(Path, "lstat", side_effect=AssertionError("Relay started before authority admission")):
+            try:
+                relay_fixture.start_tcp_relays()
+            except subprocess.CalledProcessError:
+                authority.assert_called_once_with(1001, 902)
+            else:
+                raise AssertionError("Exposed relay principal admitted")
+        relay_fixture.state["tcp_relays"] = [{"name": "pg", "port": 20000, "identity": identity}]
+        relay = relay_fixture.state["tcp_relays"][0]
+        relay_fixture.relay_listener_output = Mock(return_value=listener)
+        expected_cmdline = b"\0".join(os.fsencode(value) for value in tcp_relay_command("pg", 20000, snapshot)[2:]) + b"\0"
+        for cmdline, refused in ((expected_cmdline, False), (expected_cmdline.replace(b":5432", b":3000"), True), (expected_cmdline + b"extra\0", True), (expected_cmdline[:-1], True)):
+            with patch.dict(globals(), process_identity=Mock(return_value=identity), read_regular=Mock(side_effect=[principal.replace(b"1002", b"902"), cmdline])), patch.object(Path, "resolve", return_value=SOCKET_PROXY):
+                try:
+                    relay_fixture.inspect_tcp_relay(relay)
+                except RuntimeError:
+                    assert refused
+                else:
+                    assert not refused
+        relay_fixture.handles = []
+        for actual, output, refused in ((None, b"", False), (identity, b"", True), (None, listener.replace(b"pid=456", b"pid=457"), True)):
+            relay_fixture.relay_listener_output = Mock(return_value=output)
+            with patch.dict(globals(), process_identity=Mock(return_value=actual)), patch.object(os, "killpg", side_effect=AssertionError("Foreign relay was killed")), patch.object(time, "monotonic", side_effect=[0, 6]), patch.object(time, "sleep", side_effect=AssertionError("Unbounded cleanup wait")):
+                try:
+                    relay_fixture.require_stopped_tcp_relays()
+                except RuntimeError:
+                    assert refused
+                else:
+                    assert not refused
+        relay_fixture.relay_listener_output = Mock(side_effect=[listener, b"", b""])
+        with patch.dict(globals(), process_identity=Mock(side_effect=[identity, identity, None])), patch.object(time, "monotonic", side_effect=[0, 1, 2]), patch.object(time, "sleep") as sleep:
+            relay_fixture.require_stopped_tcp_relays()
+            assert sleep.call_count == 2 and not relay_fixture.handles
+        with patch.object(Path, "read_text", side_effect=["456 (synthetic) " + " ".join(["S"] + ["0"] * 18 + ["123"]), FileNotFoundError("Synthetic process exited")]):
+            assert process_identity(456) is None
         journal = root / "state.json"
         private(journal, b'{"schema_version":1}')
         for uid, mode, nlink in ((0, 0o600, 1), (1, 0o600, 1), (0, 0o640, 1), (0, 0o600, 2)):
