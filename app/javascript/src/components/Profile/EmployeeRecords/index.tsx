@@ -449,7 +449,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
                 {record.can_manage && (
                   <fieldset className="grid gap-4 sm:grid-cols-2">
                     <legend className="mb-3 font-medium">
-                      {text("salary")}
+                      {text("salarySettings")}
                     </legend>
                     {salaryFields
                       .filter(key => key !== "salary_frequency")

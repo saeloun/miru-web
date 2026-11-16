@@ -114,6 +114,7 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
         expect(page).not_to have_css("dd", text: "2000.00", exact_text: true)
       end
       click_button "Edit employee records"
+      expect(page).to have_css("legend", text: "Salary settings", exact_text: true)
       expect(page).to have_field("Salary amount", with: "2000.00")
       capture_records("employee-records-scheduled-salary.png")
       expect(@console_errors).to be_empty
