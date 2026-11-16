@@ -158,6 +158,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     # Display labels must not reinterpret stored bank country or currency declarations.
     def details(employment)
       user = employment.user
+      record = employment.employee_record || employment.build_employee_record
       documents = employment.employee_documents.includes(file_attachment: :blob).order(created_at: :desc, id: :desc)
       {
         company_id: current_company.id, can_manage: policy(EmployeeRecord).manage?,
@@ -167,7 +168,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
             address.slice(:id, :address_type, :address_line_1, :address_line_2, :city, :state, :country, :pin)
           end),
         employment: employment.slice(:id, :employee_id, :designation, :employment_type, :joined_at, :resigned_at),
-        private_details: (employment.employee_record || employment.build_employee_record).details_with_defaults,
+        private_details: record.details_with_defaults, current_salary: record.current_salary,
         bank_countries: ISO3166::Country.all.sort_by(&:common_name).to_h { |country| [country.alpha2, country.common_name] },
         documents: EmployeeDocument::KINDS.index_with do |kind|
           documents.filter_map { |document| document_details(document) if document.kind == kind }

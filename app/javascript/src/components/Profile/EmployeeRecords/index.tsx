@@ -521,7 +521,7 @@ const Records = ({ companyId, companyName, userId, self }) => {
             <dl className="grid gap-4 tabular-nums sm:grid-cols-2">
               {salaryFields.map(key => (
                 <Fact key={key} label={text(key)}>
-                  {record.private_details[key]}
+                  {record.current_salary?.[key]}
                 </Fact>
               ))}
             </dl>

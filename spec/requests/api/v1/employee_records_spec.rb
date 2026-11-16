@@ -71,6 +71,82 @@ RSpec.describe "Employee records", type: :request do
     expect(record.reload.private_details).to include("bank_account_number" => nil, "salary_amount" => "123.45")
   end
 
+  context "current salary" do
+    let(:salary) do
+      { salary_amount: "1000.00", salary_currency: "INR", salary_frequency: "monthly", salary_effective_on: "2026-11-01" }
+    end
+
+    it "keeps future configured terms editable and changes the displayed salary on the company's effective day" do
+      company.update!(timezone: "America/New_York")
+      future_salary = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-16")
+
+      travel_to(Time.utc(2026, 11, 16, 4, 30)) do
+        update_record(salary)
+        update_record(future_salary)
+        expect(response).to have_http_status(:ok)
+        result = response.parsed_body.fetch("employee_record")
+        expect(result.fetch("private_details")).to include(future_salary.stringify_keys)
+        expect(result.fetch("current_salary")).to eq(salary.stringify_keys)
+
+        sign_in employee
+        expect do
+          get "/api/v1/employee_records"
+        end.not_to change(CompensationVersion, :count)
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+      end
+
+      travel_to(Time.utc(2026, 11, 16, 5)) do
+        get "/api/v1/employee_records"
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(future_salary.stringify_keys)
+      end
+    end
+
+    it "returns blank current salary when the first configured salary is future dated" do
+      update_record(salary.merge(salary_effective_on: Date.current.next_month.iso8601))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(EmployeeRecord::SALARY_KEYS.index_with(nil))
+    end
+
+    it "uses the newest correction when multiple versions share the current effective date" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        update_record(salary)
+        correction = salary.merge(salary_amount: "1500.00").stringify_keys
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: correction)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(correction)
+        expect(response.parsed_body.dig("employee_record", "private_details", "salary_amount")).to eq("1000.00")
+      end
+    end
+
+    it "reads existing compensation terms even when no private record has been saved" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+        expect(employment.reload.employee_record).to be_nil
+      end
+    end
+
+    [nil, "2026-11-01"].each do |effective_on|
+      it "preserves legacy configured salary without versions for effective date #{effective_on.inspect}" do
+        travel_to(Time.utc(2026, 11, 15, 12)) do
+          configured = salary.merge(salary_effective_on: effective_on)
+          update_record(configured)
+          employment.compensation_versions.delete_all
+
+          get "/api/v1/employee_records", params: { user_id: employee.id }
+
+          expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(configured.stringify_keys)
+        end
+      end
+    end
+  end
+
   context "bank account confirmation" do
     %i[admin employee].each do |actor|
       it "allows #{actor} to save explicit India and USD bank declarations" do

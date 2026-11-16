@@ -39,6 +39,16 @@ class EmployeeRecord < ApplicationRecord
     DETAIL_KEYS.index_with(nil).merge("family_members" => []).merge(private_details)
   end
 
+  def current_salary
+    configured = details_with_defaults.slice(*SALARY_KEYS)
+    effective_on = self.class.iso_date?(configured["salary_effective_on"])
+    today = Time.current.in_time_zone(company.resolved_time_zone).to_date
+    details = configured if !effective_on || effective_on <= today
+    version = employment.compensation_versions.where(effective_on: ..today).order(effective_on: :desc, id: :desc).first
+    details = version.salary_details if version && (!effective_on || !details || version.effective_on >= effective_on)
+    SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
+  end
+
   private
 
     # Equivalent empty bank values must not invalidate the payroll source version.

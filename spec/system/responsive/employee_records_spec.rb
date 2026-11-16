@@ -100,6 +100,26 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     end
   end
 
+  it "shows the effective salary while keeping a scheduled raise editable" do
+    salary = { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly",
+      "salary_effective_on" => Date.current.prev_month.beginning_of_month.iso8601 }
+    record = employment.create_employee_record!(private_details: salary)
+    record.update!(private_details: salary.merge("salary_amount" => "2000.00",
+      "salary_effective_on" => Date.current.next_month.beginning_of_month.iso8601))
+
+    with_forgery_protection do
+      open_records(admin)
+      within find("section", text: "Current salary") do
+        expect(page).to have_css("dd", text: "1000.00", exact_text: true)
+        expect(page).not_to have_css("dd", text: "2000.00", exact_text: true)
+      end
+      click_button "Edit employee records"
+      expect(page).to have_field("Salary amount", with: "2000.00")
+      capture_records("employee-records-scheduled-salary.png")
+      expect(@console_errors).to be_empty
+    end
+  end
+
   [1400, 390].each do |width|
     it "confirms bank changes, clears canceled confirmation and keeps account numbers masked at #{width}px" do
       company.update!(name: "Synthetic bank QA")
