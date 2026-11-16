@@ -70,10 +70,11 @@ BASE_ENV = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8", "HOME": 
 TCP_RELAYS = {"pg": ("database", 5432), "smtp": ("mailpit", 1025), "provider": ("proxy", 8080), "mailpit": ("proxy", 8081)}
 SOCKET_ACTIVATE = Path("/usr/bin/systemd-socket-activate")
 SOCKET_PROXY = Path("/usr/lib/systemd/systemd-socket-proxyd")
-COMMAND_LABELS = {"schema", "assets", "functional"}
+COMMAND_LABELS = {"schema", "assets", "functional", "brave-miru", "brave-provider", "brave-signer"}
 COMMAND_FAILURE_MARKERS = {
     "pg": (b"PG::ConnectionBad", b"PG::UnableToSend", b"ActiveRecord::ConnectionNotEstablished", b"ActiveRecord::DatabaseConnectionError", b"ActiveRecord::NoDatabaseError"),
     "bundler": (b"Bundler::GemNotFound", b"Bundler::GemfileNotFound", b"Bundler::GemfileError", b"Bundler::VersionConflict", b"Bundler::ProductionError"),
+    "sandbox": (b"No usable sandbox!", b"The setuid sandbox is not running as root", b"Failed to move to new namespace:"),
     "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
     "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
     "rspec": (b"RSpec::Expectations::ExpectationNotMetError", b"Failure/Error:", b"Failed examples:"),
@@ -1320,6 +1321,8 @@ print('ready')
 '''
             while True:
                 self.tick()
+                if process.poll() is not None:
+                    self.wait(process, 0)
                 require(process.poll() is None and time.monotonic() < until, "Normal Brave sandbox startup failed")
                 try:
                     checked(self.runtime_prefix() + ["python3", "-I", "-c", discover, str(port)], timeout=5)
@@ -1761,6 +1764,9 @@ def self_check():
             for category, markers in COMMAND_FAILURE_MARKERS.items():
                 failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
                 assert command_failure_category(failure_log) == category
+            for marker in COMMAND_FAILURE_MARKERS["sandbox"]:
+                failure_log.write_bytes(marker + b": Permission denied PRIVATE_DIAGNOSTIC_MARKER")
+                assert command_failure_category(failure_log) == "sandbox"
             failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
             assert command_failure_category(failure_log) == "bundler"
             failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER unknown error")
@@ -1801,6 +1807,35 @@ def self_check():
                 pass
             else:
                 raise AssertionError("Unlisted command diagnostic accepted")
+        for label in ("brave-miru", "brave-provider", "brave-signer"):
+            validate_command_failure({"label": label, "returncode": -5, "category": "sandbox"})
+        browser_fixture = Lifecycle(argparse.Namespace(work=root / "browser-failure", brave=Path("/usr/bin/brave-browser")))
+        (browser_fixture.setup / "private-logs").mkdir(parents=True)
+        private(browser_fixture.setup / "private-logs/brave-miru.log", b"No usable sandbox! PRIVATE_DIAGNOSTIC_MARKER")
+        browser_fixture.ports = {"cdp-" + role: 20100 + number for number, role in enumerate(("miru", "provider", "signer"))}
+        browser_fixture.start = Mock(return_value=argparse.Namespace(poll=lambda: -5, returncode=-5, _qa_label="brave-miru"))
+        browser_fixture.tick, browser_fixture.save = Mock(), Mock()
+        with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log):
+            try:
+                browser_fixture.start_browsers({"browsers": []})
+            except RuntimeError as error:
+                assert str(error) == "Owned command failed"
+            else:
+                raise AssertionError("Early Brave failure accepted")
+        assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": -5, "category": "sandbox"}
+        browser_fixture.start.assert_called_once()
+        browser_fixture.state.pop("failed_command")
+        browser_fixture.save.reset_mock()
+        browser_fixture.start.return_value = argparse.Namespace(poll=lambda: None, returncode=None, _qa_label="brave-miru")
+        with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(time, "monotonic", side_effect=[0, 21]):
+            try:
+                browser_fixture.start_browsers({"browsers": []})
+            except RuntimeError as error:
+                assert str(error) == "Normal Brave sandbox startup failed"
+            else:
+                raise AssertionError("Brave CDP deadline relaxed")
+        assert "failed_command" not in browser_fixture.state
+        browser_fixture.save.assert_not_called()
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
         network = {"id": "1" * 64, "name": network_name, "driver": "bridge", "internal": True, "ipv6": False, "project": project, "operation": operation,
