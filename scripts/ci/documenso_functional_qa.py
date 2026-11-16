@@ -953,6 +953,7 @@ for port in (2375,2376):
             path = self.op / name
             path.mkdir(mode=0o700)
             os.chown(path, self.uid, self.gid)
+        (self.work / "t").symlink_to(self.op / "tmp", target_is_directory=True)
         (self.op / "browsers").mkdir(mode=0o711)
         for role in ("miru", "provider", "signer"):
             path = self.op / "browsers" / role
@@ -1406,6 +1407,22 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
         require(self.spec.is_file())
         self.wait(self.start([str(self.args.bundle), "exec", "rspec", str(self.spec), "--format", "progress"], "functional", runtime=True, cwd=self.args.app), max(1, 1500 - int(time.monotonic() - self.started)))
 
+    def browser_tmp(self):
+        alias, target = self.work / "t", self.op / "tmp"
+        info = alias.lstat()
+        require(stat.S_ISLNK(info.st_mode) and info.st_uid == 0 and alias.readlink() == target, "Owned browser temporary alias required")
+        info = target.lstat()
+        require(stat.S_ISDIR(info.st_mode) and info.st_uid == self.state["uid"] and stat.S_IMODE(info.st_mode) == 0o700, "Private browser temporary directory required")
+        require(len(os.fsencode(alias / "org.chromium.Chromium.XXXXXX/SingletonSocket")) < 108, "Browser Unix socket pathname budget exceeded")
+        return alias
+
+    def remove_browser_tmp(self):
+        alias = self.work / "t"
+        if alias.exists() or alias.is_symlink():
+            info = alias.lstat()
+            require(stat.S_ISLNK(info.st_mode) and info.st_uid == 0 and alias.readlink() == self.op / "tmp", "Foreign browser temporary alias refused")
+            alias.unlink()
+
     def start_browsers(self, config):
         package = checked(["dpkg-query", "-W", "-f", "${Package} ${Status} ${Version}\n", "brave-browser"]).decode()
         require(package.startswith("brave-browser install ok installed "))
@@ -1419,7 +1436,7 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
             flags = ["--headless=new", "--no-startup-window", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-sync", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=" + str(port), "--user-data-dir=" + str(profile)]
             require(not any(bad in flag for bad in FORBIDDEN_FLAGS for flag in flags))
             # Brave's shell wrapper forks and masks child failure with `|| true`.
-            process = self.start([*profile_prefix, str(BRAVE_BINARY), *flags], "brave-" + role, runtime=True)
+            process = self.start([*profile_prefix, str(BRAVE_BINARY), *flags], "brave-" + role, runtime=True, env={**self.runtime_env, "TMPDIR": str(self.browser_tmp())})
             until = time.monotonic() + 20
             discover = r'''import json,sys,urllib.request
 port=int(sys.argv[1]);assert 0<port<65536
@@ -1629,6 +1646,10 @@ print('ready')
                 pass
             except Exception:
                 errors.append("user_cleanup")
+        try:
+            self.remove_browser_tmp()
+        except Exception:
+            errors.append("browser_tmp_cleanup")
         self.state["cleanup_errors"] = errors
         self.state["runtime_processes_stopped"] = bool(self.state.get("uid_isolated") and not runtime_remaining)
         self.state["cleanup_complete"] = not errors
@@ -2031,7 +2052,54 @@ def self_check():
                         pass
                     else:
                         raise AssertionError("Untrusted browser executable accepted")
+        tmp_fixture = Lifecycle(argparse.Namespace(work=Path("/var/tmp/miru-documenso-live-43804810438-1")))
+        tmp_fixture.state["uid"] = 902
+        link_info = os.stat_result((stat.S_IFLNK | 0o777, 0, 0, 1, 0, 0, 1, 0, 0, 0))
+        tmp_info = os.stat_result((stat.S_IFDIR | 0o700, 0, 0, 1, 902, 902, 1, 0, 0, 0))
+        for alias_metadata, directory_metadata, destination, accepted in ((link_info, tmp_info, tmp_fixture.op / "tmp", True), (launcher_info, tmp_info, tmp_fixture.op / "tmp", False), (os.stat_result((*link_info[:4], 902, *link_info[5:])), tmp_info, tmp_fixture.op / "tmp", False), (link_info, tmp_info, Path("/tmp/foreign"), False), (link_info, os.stat_result((*tmp_info[:4], 0, *tmp_info[5:])), tmp_fixture.op / "tmp", False), (link_info, os.stat_result((stat.S_IFDIR | 0o755, *tmp_info[1:])), tmp_fixture.op / "tmp", False), (link_info, link_info, tmp_fixture.op / "tmp", False)):
+            with patch.object(Path, "lstat", side_effect=[alias_metadata, directory_metadata]), patch.object(Path, "readlink", return_value=destination):
+                try:
+                    alias = tmp_fixture.browser_tmp()
+                except RuntimeError:
+                    assert not accepted
+                else:
+                    assert accepted and alias == tmp_fixture.work / "t"
+                    assert len(os.fsencode(tmp_fixture.op / "tmp/org.chromium.Chromium.XXXXXX/SingletonSocket")) == 118
+                    assert len(os.fsencode(alias / "org.chromium.Chromium.XXXXXX/SingletonSocket")) < 108
+        long_tmp = Lifecycle(argparse.Namespace(work=Path("/var/tmp/" + "x" * 80)))
+        long_tmp.state["uid"] = 902
+        with patch.object(Path, "lstat", side_effect=[link_info, tmp_info]), patch.object(Path, "readlink", return_value=long_tmp.op / "tmp"):
+            try:
+                long_tmp.browser_tmp()
+            except RuntimeError as error:
+                assert str(error) == "Browser Unix socket pathname budget exceeded"
+            else:
+                raise AssertionError("Oversized browser socket pathname accepted")
+        alias = root / "t"
+        foreign = root / "foreign-tmp"
+        private(foreign, b"private marker")
+        original_lstat = Path.lstat
+        def root_alias_metadata(path):
+            return link_info if path == alias else original_lstat(path)
+        tmp_fixture.work = root
+        alias.symlink_to(foreign)
+        with patch.object(Path, "lstat", root_alias_metadata):
+            try:
+                tmp_fixture.remove_browser_tmp()
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Foreign temporary alias removed")
+            assert alias.is_symlink() and foreign.read_bytes() == b"private marker"
+        alias.unlink()
+        alias.symlink_to(tmp_fixture.op / "tmp")
+        with patch.object(Path, "lstat", root_alias_metadata):
+            tmp_fixture.remove_browser_tmp()
+        assert not alias.is_symlink() and foreign.read_bytes() == b"private marker"
+        tmp_fixture.remove_browser_tmp()
         browser_fixture = Lifecycle(argparse.Namespace(work=root / "browser-failure", brave=Path("/usr/bin/brave-browser")))
+        browser_fixture.runtime_env = dict(BASE_ENV)
+        browser_fixture.browser_tmp = Mock(return_value=browser_fixture.work / "t")
         (browser_fixture.setup / "private-logs").mkdir(parents=True)
         private(browser_fixture.setup / "private-logs/brave-miru.log", b"No usable sandbox! PRIVATE_DIAGNOSTIC_MARKER")
         browser_fixture.ports = {"cdp-" + role: 20100 + number for number, role in enumerate(("miru", "provider", "signer"))}
@@ -2083,7 +2151,7 @@ def self_check():
                 else:
                     assert accepted and len(config["browsers"]) == 3
             for call in browser_fixture.start.call_args_list:
-                assert call.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/opt/brave.com/brave/brave"] and call.args[1] in BROWSER_LABELS and call.kwargs == {"runtime": True}
+                assert call.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/opt/brave.com/brave/brave"] and call.args[1] in BROWSER_LABELS and call.kwargs == {"runtime": True, "env": {**BASE_ENV, "TMPDIR": str(browser_fixture.work / "t")}}
             assert accepted or not config["browsers"]
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
