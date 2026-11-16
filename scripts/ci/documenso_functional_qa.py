@@ -511,6 +511,13 @@ def port_range(raw):
     return first, last
 
 
+def loopback_reply_rule(family, ports):
+    require(type(family) is int and family in (4, 6))
+    require(isinstance(ports, (list, tuple)) and 0 < len(ports) <= 15 and all(type(port) is int and 1024 <= port <= 65535 for port in ports))
+    loopback = "127.0.0.1/32" if family == 4 else "::1/128"
+    return ["-o", "lo", "-p", "tcp", "-s", loopback, "-d", loopback, "-m", "multiport", "--sports", ",".join(map(str, ports)), "-m", "conntrack", "--ctstate", "ESTABLISHED", "--ctdir", "REPLY", "-j", "ACCEPT"]
+
+
 def free_port(used, ephemeral, address="127.0.0.1"):
     for port in chain(range(20000, 65536), range(1024, 20000)):
         if port in used or ephemeral[0] <= port <= ephemeral[1]:
@@ -1006,6 +1013,7 @@ for port in (2375,2376):
             for protocol in ("tcp", "udp"):
                 checked([tool, "-w", "5", "-A", chain, "-p", protocol, "--dport", "53", "-j", "REJECT", "--reject-with", "icmp-admin-prohibited" if family == 4 else "icmp6-adm-prohibited"])
             ports = sorted(set(self.ports.values()) | {targets[0][1]}) if family == 4 else [targets[1][1]]
+            checked([tool, "-w", "5", "-A", chain, *loopback_reply_rule(family, ports)])
             checked([tool, "-w", "5", "-A", chain, "-o", "lo", "-p", "tcp", "-d", "127.0.0.1/32" if family == 4 else "::1/128", "-m", "multiport", "--dports", ",".join(map(str, ports)), "-j", "ACCEPT"])
             checked([tool, "-w", "5", "-A", chain, "-j", "REJECT", "--reject-with", "icmp-admin-prohibited" if family == 4 else "icmp6-adm-prohibited"])
             checked([tool, "-w", "5", "-I", "OUTPUT", "1", "-m", "owner", "--uid-owner", str(self.uid), "-j", chain])
@@ -1030,11 +1038,51 @@ for port in (2375,2376):
             require(after > before, "UDP DNS deny counter did not advance")
             checked(["setpriv", "--reuid", str(self.state["setup_uid"]), "--regid", str(self.state["setup_gid"]), "--clear-groups", "python3", "-I", "-c", udp_probe, host])
             counters.append(after - before)
+        self.qualify_loopback_reply()
         self.state["network_qualified"] = True
         self.state["deny_counter_increments"] = counters
         self.network_targets = targets
         private(self.op / "network-proof.json", json.dumps({"allowed": targets[:2], "denied": targets[2:]}), self.uid)
         self.save()
+
+    def qualify_loopback_reply(self):
+        port = self.ports["cdp-miru"]
+        ready = self.op / "control/loopback-reply-ready"
+        server = r'''import os,socket,sys
+assert os.getuid()==int(sys.argv[3])
+with socket.socket() as listener:
+ listener.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+ listener.bind(('127.0.0.1',int(sys.argv[1])));listener.listen(1);listener.settimeout(5)
+ fd=os.open(sys.argv[2]+'.tmp',os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+ os.write(fd,b'ready');os.close(fd)
+ os.replace(sys.argv[2]+'.tmp',sys.argv[2])
+ connection,_=listener.accept()
+ with connection:
+  connection.settimeout(5)
+  with connection.makefile('rb') as incoming:
+   assert incoming.read(8)==b'qa-probe'
+   connection.sendall(b'qa-reply')
+   # Let the client close first so the browser port is immediately reusable.
+   assert incoming.read(1)==b''
+'''
+        client = "import os,socket,sys;assert os.getuid()==int(sys.argv[2]);\nwith socket.create_connection(('127.0.0.1',int(sys.argv[1])),timeout=2) as connection:\n connection.sendall(b'qa-probe')\n with connection.makefile('rb') as incoming:assert incoming.read(8)==b'qa-reply'"
+        process = None
+        try:
+            process = self.start(["python3", "-I", "-c", server, str(port), str(ready), str(self.uid)], "loopback-reply-probe", runtime=True, env=BASE_ENV)
+            until = time.monotonic() + 5
+            while not ready.exists():
+                self.tick()
+                require(process.poll() is None and time.monotonic() < until, "Owned loopback reply probe failed")
+                time.sleep(.1)
+            require(read_regular(ready, 5) == b"ready")
+            checked(self.runtime_prefix() + ["python3", "-I", "-c", client, str(port), str(self.uid)], timeout=5, env=BASE_ENV)
+            self.wait(process, 5)
+        finally:
+            with defer_cancellation():
+                if process is not None and process.poll() is None:
+                    process.kill()
+                    process.wait(timeout=5)
+                ready.unlink(missing_ok=True)
 
     @staticmethod
     def accept_probe(listener):
@@ -1751,6 +1799,50 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import Mock, patch
+        for family, address in ((4, "127.0.0.1/32"), (6, "::1/128")):
+            assert loopback_reply_rule(family, [20000, 20003]) == ["-o", "lo", "-p", "tcp", "-s", address, "-d", address, "-m", "multiport", "--sports", "20000,20003", "-m", "conntrack", "--ctstate", "ESTABLISHED", "--ctdir", "REPLY", "-j", "ACCEPT"]
+        for family, ports in ((0, [20000]), (4.0, [20000]), (4, []), (4, [53]), (4, ["20000"]), (4, ["0.0.0.0/0"]), (6, ["::/0"]), (4, list(range(20000, 20016)))):
+            try:
+                loopback_reply_rule(family, ports)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unscoped loopback reply rule accepted")
+        reply_fixture = Lifecycle(argparse.Namespace(work=root / "bidirectional-probe"))
+        (reply_fixture.op / "control").mkdir(parents=True)
+        reply_fixture.uid, reply_fixture.gid = os.getuid(), os.getgid()
+        reply_fixture.ports = {"cdp-miru": 20000}
+        reply_fixture.tick = Mock()
+        ready = reply_fixture.op / "control/loopback-reply-ready"
+        for failed in (False, True):
+            process = Mock()
+            process.poll.return_value = None if failed else 0
+            def start_reply_probe(command, name, **options):
+                assert name == "loopback-reply-probe" and options == {"runtime": True, "env": BASE_ENV}
+                assert command[-3:] == ["20000", str(ready), str(reply_fixture.uid)]
+                compile(command[3], "loopback-reply-server", "exec")
+                private(ready, b"ready")
+                return process
+            reply_fixture.start = Mock(side_effect=start_reply_probe)
+            reply_fixture.wait = Mock()
+            client_probe = Mock(side_effect=subprocess.CalledProcessError(1, ["synthetic-client"]) if failed else None, return_value=b"")
+            with patch.dict(globals(), checked=client_probe):
+                try:
+                    reply_fixture.qualify_loopback_reply()
+                except subprocess.CalledProcessError:
+                    assert failed
+                else:
+                    assert not failed
+            assert not ready.exists() and client_probe.call_args.kwargs == {"timeout": 5, "env": BASE_ENV}
+            assert client_probe.call_args.args[0][:len(reply_fixture.runtime_prefix())] == reply_fixture.runtime_prefix()
+            compile(client_probe.call_args.args[0][len(reply_fixture.runtime_prefix()) + 3], "loopback-reply-client", "exec")
+            if failed:
+                process.kill.assert_called_once()
+                process.wait.assert_called_once_with(timeout=5)
+                reply_fixture.wait.assert_not_called()
+            else:
+                reply_fixture.wait.assert_called_once_with(process, 5)
+                process.kill.assert_not_called()
         failure_fixture = Lifecycle(argparse.Namespace(work=root / "failed-wait"))
         (failure_fixture.setup / "private-logs").mkdir(parents=True)
         failure_log = failure_fixture.setup / "private-logs/schema.log"
