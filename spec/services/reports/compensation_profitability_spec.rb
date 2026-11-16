@@ -227,6 +227,18 @@ RSpec.describe Reports::CompensationProfitability do
     expect(row[:flags]).to include("missing_compensation")
   end
 
+  it "does not infer a historical salary start from an observed legacy undated salary" do
+    travel_to(Time.utc(2026, 7, 1, 12)) do
+      record.update!(private_details: record.private_details.merge("salary_effective_on" => nil))
+      employment.compensation_versions.delete_all
+      record.update!(private_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-16"))
+
+      result = row(period: "custom", from: "2026-07-01", to: "2026-07-15")
+      expect(result[:compensation_cost]).to be_nil
+      expect(result[:flags]).to include("missing_compensation")
+    end
+  end
+
   it "retains employee salary before a transition into dated consultant compensation" do
     enable_synthetic_payroll(company.id)
     employment.consultant_compensations.create!(effective_on: "2026-08-01", monthly_fee: "6200.00", hours_per_day: "8.00",

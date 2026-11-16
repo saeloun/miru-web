@@ -82,7 +82,7 @@ class EmployeeRecord < ApplicationRecord
         employment.compensation_versions.reset
       end
 
-      # Preserve the previous effective salary before the mutable private record replaces it.
+      # Observe undated legacy terms from today; never invent an earlier salary start.
       [previous, private_details].each_with_index do |details, index|
         next if index.zero? && replaced_pending
 
@@ -90,7 +90,8 @@ class EmployeeRecord < ApplicationRecord
         next if salary.empty?
 
         explicit_date = self.class.iso_date?(salary["salary_effective_on"])
-        next if index.zero? && !explicit_date
+        next if index.zero? && !explicit_date && (salary.values.all?(&:blank?) ||
+          employment.compensation_versions.active.where(effective_on: ..today).exists?)
 
         effective_on = explicit_date || today
         next if index.zero? && employment.compensation_versions.active.exists?(effective_on:)

@@ -108,4 +108,49 @@ RSpec.describe EmployeeRecord, "salary history" do
       expect(record.current_salary.fetch("salary_amount")).to eq("1000.00")
     end
   end
+
+  [false, true].each do |future_history|
+    it "preserves a legacy undated salary as observed today with future-only history #{future_history}" do
+      company.update!(timezone: "America/New_York")
+      legacy = salary.merge("salary_effective_on" => nil)
+      future = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-20")
+      travel_to(Time.utc(2026, 11, 16, 4, 30)) do
+        record.update!(private_details: legacy)
+        employment.compensation_versions.delete_all
+        if future_history
+          employment.compensation_versions.create!(effective_on: "2026-11-25",
+            salary_details: salary.merge("salary_amount" => "2500.00", "salary_effective_on" => "2026-11-25"))
+        end
+        expect(record.current_salary).to eq(legacy)
+
+        record.update!(private_details: future)
+
+        expect(record.current_salary).to eq(legacy)
+        observed = employment.compensation_versions.find_by!(effective_on: "2026-11-15")
+        expect(observed.salary_details).to eq(legacy)
+        expect(employment.compensation_versions.minimum(:effective_on)).to eq(Date.new(2026, 11, 15))
+      end
+
+      travel_to(Time.utc(2026, 11, 20, 4, 59)) do
+        expect(record.current_salary).to eq(legacy)
+      end
+      travel_to(Time.utc(2026, 11, 20, 5)) do
+        expect(record.current_salary).to eq(future)
+      end
+    end
+  end
+
+  it "preserves existing eligible history instead of snapshotting conflicting undated configured values" do
+    travel_to(Time.utc(2026, 11, 15, 12)) do
+      record.update!(private_details: salary.merge("salary_amount" => "123.00", "salary_effective_on" => nil))
+      employment.compensation_versions.delete_all
+      correction = salary.merge("salary_amount" => "1500.00")
+      employment.compensation_versions.create!(effective_on: "2026-11-01", salary_details: correction)
+      expect(record.current_salary).to eq(correction)
+
+      record.update!(private_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-20"))
+
+      expect(record.current_salary).to eq(correction)
+    end
+  end
 end
