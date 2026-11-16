@@ -80,6 +80,12 @@ COMMAND_FAILURE_MARKERS = {
     "sandbox_unusable": (b"No usable sandbox!",),
     "sandbox_setuid": (b"The setuid sandbox is not running as root",),
     "sandbox_namespace": (b"Failed to move to new namespace:",),
+    "chromium_icu_fatal": (b"FATAL:base/i18n/icu_util.cc:",),
+    "chromium_base_fatal": (b"FATAL:base/",),
+    "chromium_sandbox_fatal": (b"FATAL:sandbox/",),
+    "chromium_zygote_fatal": (b"FATAL:content/browser/zygote_host/",),
+    "chromium_crashpad_fatal": (b"FATAL:components/crash/core/app/",),
+    "chromium_profile_fatal": (b"FATAL:chrome/browser/profiles/",),
     "browser_cdp": (b"DevTools listening on ws://",),
     "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
     "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
@@ -1937,17 +1943,22 @@ def self_check():
             metadata = list(original_fstat(descriptor))
             metadata[4] = 0
             return os.stat_result(metadata)
+        chromium_failures = []
         with patch.object(os, "fstat", side_effect=root_owned_log):
+            for category, marker in (("chromium_icu_fatal", b"FATAL:base/i18n/icu_util.cc:"), ("chromium_base_fatal", b"FATAL:base/files/file.cc:"), ("chromium_sandbox_fatal", b"FATAL:sandbox/linux/services/credentials.cc:"), ("chromium_zygote_fatal", b"FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:"), ("chromium_crashpad_fatal", b"FATAL:components/crash/core/app/crashpad_linux.cc:"), ("chromium_profile_fatal", b"FATAL:chrome/browser/profiles/profile_manager.cc:")):
+                failure_log.write_bytes(b"No such file or directory\n[1:2:1116/030000.000000:" + marker + b"123] PRIVATE_DIAGNOSTIC_MARKER ws://private/path Permission denied")
+                assert command_failure_category(failure_log) == category
+                chromium_failures.append({"label": "brave-miru", "returncode": -6, "category": category})
             for category, markers in COMMAND_FAILURE_MARKERS.items():
                 failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
                 assert command_failure_category(failure_log) == category
             for category in ("sandbox_unusable", "sandbox_setuid", "sandbox_namespace"):
                 marker = COMMAND_FAILURE_MARKERS[category][0]
-                failure_log.write_bytes(marker + b": Permission denied DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER")
+                failure_log.write_bytes(b"[1:FATAL:sandbox/policy/linux/sandbox_linux.cc:123] " + marker + b": Permission denied DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER")
                 assert command_failure_category(failure_log) == category
             failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
             assert command_failure_category(failure_log) == "bundler"
-            failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER unknown error")
+            failure_log.write_bytes(b"[1:FATAL:unknown/PRIVATE_DIAGNOSTIC_MARKER.cc:123] ws://private/path")
             assert command_failure_category(failure_log) == "unclassified"
         for index, value in ((0, stat.S_IFREG | 0o640), (0, stat.S_IFDIR | 0o600), (3, 2), (4, 1)):
             metadata = list(failure_log.stat())
@@ -2454,12 +2465,12 @@ def self_check():
         (fake.op / "output").mkdir(parents=True)
         fake.state.update(runtime_processes_stopped=True, failed_command=failed_command)
         with patch.dict(globals(), uid_processes=lambda uid: []):
-            for number, valid_failure in enumerate([failed_command, *browser_deadline_failures]):
+            for number, valid_failure in enumerate([failed_command, *browser_deadline_failures, *chromium_failures]):
                 fake.output = fake.work / ("diagnostic-" + str(number))
                 fake.state["failed_command"] = valid_failure
                 assert fake.export_evidence(False)
                 diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
-                assert json.loads(diagnostic)["failed_command"] == valid_failure and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic and b"ws://" not in diagnostic
+                assert json.loads(diagnostic)["failed_command"] == valid_failure and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic and b"ws://" not in diagnostic and b"FATAL:" not in diagnostic
             for number, invalid in enumerate(invalid_failures):
                 fake.output = fake.work / ("invalid-diagnostic-" + str(number))
                 fake.state["failed_command"] = invalid
