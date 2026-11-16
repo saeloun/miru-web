@@ -647,10 +647,11 @@ def wait_runner_jobs():
     until = time.monotonic() + 30
     while pending := checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=5).strip():
         if time.monotonic() >= until:
-            print(json.dumps({"runner_pending_jobs": runner_jobs_diagnostic(pending)}), flush=True)
+            message = "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission."
+            print(json.dumps({"runner_pending_jobs": runner_jobs_diagnostic(pending), "next_action": message}), flush=True)
             ordering = checked(["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"], timeout=5)
             print(json.dumps({"runner_job_ordering": runner_jobs_diagnostic(ordering)}), flush=True)
-            require(False, "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission.")
+            require(False, message)
         time.sleep(.2)
 
 
@@ -2584,6 +2585,7 @@ def self_check():
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
         pending = b"123 synthetic.service start waiting\n"
+        guidance = "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission."
         ordering = pending + "  └─ waiting for job 124 (other.target/start)\n  └─ blocking job 125 (last.service/stop)\n".encode()
         jobs = Mock(side_effect=[pending, b""])
         output = io.StringIO()
@@ -2599,13 +2601,13 @@ def self_check():
             try:
                 wait_runner_jobs()
             except RuntimeError as error:
-                assert str(error) == "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission."
+                assert str(error) == guidance
             else:
                 raise AssertionError("Unsettled runner accepted")
             sleep.assert_not_called()
         evidence = [json.loads(line) for line in output.getvalue().splitlines()]
         assert evidence == [
-            {"runner_pending_jobs": {"rows": ["123 synthetic.service start waiting"], "truncated": False, "unparsed": False}},
+            {"runner_pending_jobs": {"rows": ["123 synthetic.service start waiting"], "truncated": False, "unparsed": False}, "next_action": guidance},
             {"runner_job_ordering": {"rows": ["123 synthetic.service start waiting", "waiting for job 124 (other.target/start)", "blocking job 125 (last.service/stop)"], "truncated": False, "unparsed": False}},
         ], "Pending runner diagnostics missing"
         assert jobs.call_count == 2 and jobs.call_args.args[0] == ["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"] and jobs.call_args.kwargs == {"timeout": 5}
@@ -2637,6 +2639,8 @@ def self_check():
             with patch.object(sys, "stderr", failure):
                 report_failure(command_error)
             assert "SYNTHETIC_SECRET" not in output.getvalue() + failure.getvalue()
+            if len(results) == 2:
+                assert json.loads(output.getvalue()).get("next_action") == guidance, "Snapshot failure missing recovery guidance"
         assert required_access_failures(json.dumps([True] * 7)) == []
         assert required_access_failures(json.dumps([True, False, True, True, True, False, True])) == ["spec", "pnpm"]
         for malformed in ([True] * 6, [True] * 8, [True] * 6 + [1], [True] * 6 + ["SYNTHETIC_SECRET"], {"SYNTHETIC_SECRET": True}):
