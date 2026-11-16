@@ -1075,6 +1075,8 @@ for port in (2375,2376):
         os.chown(self.setup / "pgdata", 70, 70)
         (self.setup / "init").mkdir(mode=0o755)
         sql = f"CREATE ROLE qa_provider LOGIN PASSWORD '{provider_pass}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;\nCREATE DATABASE provider_qa OWNER qa_provider;\nCREATE ROLE qa_miru LOGIN PASSWORD '{miru_pass}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION;\nCREATE DATABASE {db} OWNER qa_miru;\n"
+        # Install the superuser-only extension before loading the schema as qa_miru.
+        sql += f"\\connect {db}\nCREATE EXTENSION IF NOT EXISTS pg_stat_statements;\n"
         private(self.setup / "init/001.sql", sql)
         os.chmod(self.setup / "init/001.sql", 0o644)
         private(self.setup / "database.env", f"POSTGRES_USER=qa_bootstrap\nPOSTGRES_PASSWORD={bootstrap}\nPOSTGRES_DB=bootstrap_qa\n")
