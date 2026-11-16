@@ -625,10 +625,32 @@ def runner_storage_state():
     return multipath_maps, bool(sessions)
 
 
+def runner_jobs_diagnostic(raw):
+    lines = raw[:4096].decode("utf-8", errors="replace").splitlines()
+    if len(raw) > 4096 and raw[4095:4096] != b"\n":
+        lines = lines[:-1]
+    result = {"rows": [], "truncated": len(raw) > 4096 or len(lines) > 32, "unparsed": False}
+    unit = r"(?:[A-Za-z0-9_.:@-]|\\x[0-9a-fA-F]{2}){1,255}"
+    operation = r"(?:start|verify-active|stop|reload|restart|try-restart|reload-or-start|nop)"
+    for line in lines[:32]:
+        row = " ".join(line.split())
+        if re.fullmatch(rf"[0-9]{{1,10}} {unit} {operation} (?:waiting|running)", row):
+            result["rows"].append(row)
+        elif match := re.fullmatch(rf"[^A-Za-z0-9]*(waiting for|blocking) job ([0-9]{{1,10}}) \(({unit})/({operation})\)", row):
+            result["rows"].append(f"{match[1]} job {match[2]} ({match[3]}/{match[4]})")
+        elif row:
+            result["unparsed"] = True
+    return result
+
+
 def wait_runner_jobs():
     until = time.monotonic() + 30
-    while checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=5).strip():
-        require(time.monotonic() < until, "Runner has pending systemd jobs")
+    while pending := checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=5).strip():
+        if time.monotonic() >= until:
+            print(json.dumps({"runner_pending_jobs": runner_jobs_diagnostic(pending)}), flush=True)
+            ordering = checked(["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"], timeout=5)
+            print(json.dumps({"runner_job_ordering": runner_jobs_diagnostic(ordering)}), flush=True)
+            require(False, "Runner has pending systemd jobs")
         time.sleep(.2)
 
 
@@ -2561,19 +2583,60 @@ def self_check():
         listeners = unix_listeners(filesystem)
         assert listeners == [(900, "/run/snapd.socket", 1), (901, "/run/journal-socket", 2)]
         assert unix_admission_paths(listeners) == {"/run/snapd.socket", "/run/journal-socket"}
-        jobs = Mock(side_effect=[b"pending startup job\n", b""])
-        with patch.dict(globals(), checked=jobs), patch.object(time, "sleep") as sleep:
+        pending = b"123 synthetic.service start waiting\n"
+        ordering = pending + "  └─ waiting for job 124 (other.target/start)\n  └─ blocking job 125 (last.service/stop)\n".encode()
+        jobs = Mock(side_effect=[pending, b""])
+        output = io.StringIO()
+        with patch.dict(globals(), checked=jobs), patch.object(time, "sleep") as sleep, patch.object(sys, "stdout", output):
             wait_runner_jobs()
             assert jobs.call_count == 2
+            assert all(call.args[0] == ["systemctl", "list-jobs", "--no-legend", "--no-pager"] and call.kwargs == {"timeout": 5} for call in jobs.call_args_list)
             sleep.assert_called_once_with(.2)
-        with patch.dict(globals(), checked=Mock(return_value=b"pending startup job\n")), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(time, "sleep") as sleep:
+        assert not output.getvalue()
+        jobs = Mock(side_effect=[pending, ordering])
+        output = io.StringIO()
+        with patch.dict(globals(), checked=jobs), patch.object(time, "monotonic", side_effect=[0, 30]), patch.object(time, "sleep") as sleep, patch.object(sys, "stdout", output):
             try:
                 wait_runner_jobs()
-            except RuntimeError:
-                pass
+            except RuntimeError as error:
+                assert str(error) == "Runner has pending systemd jobs"
             else:
                 raise AssertionError("Unsettled runner accepted")
             sleep.assert_not_called()
+        evidence = [json.loads(line) for line in output.getvalue().splitlines()]
+        assert evidence == [
+            {"runner_pending_jobs": {"rows": ["123 synthetic.service start waiting"], "truncated": False, "unparsed": False}},
+            {"runner_job_ordering": {"rows": ["123 synthetic.service start waiting", "waiting for job 124 (other.target/start)", "blocking job 125 (last.service/stop)"], "truncated": False, "unparsed": False}},
+        ], "Pending runner diagnostics missing"
+        assert jobs.call_count == 2 and jobs.call_args.args[0] == ["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"] and jobs.call_args.kwargs == {"timeout": 5}
+        for raw in (b"SYNTHETIC_SECRET https://private.invalid/token\n" + pending, b"123 bad\x1b[31m.service start waiting\n", pending * 1000):
+            output = io.StringIO()
+            with patch.dict(globals(), checked=Mock(side_effect=[pending, raw])), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(sys, "stdout", output):
+                try:
+                    wait_runner_jobs()
+                except RuntimeError:
+                    pass
+                else:
+                    raise AssertionError("Unsettled runner accepted")
+            text = output.getvalue()
+            evidence = json.loads(text.splitlines()[1])["runner_job_ordering"]
+            assert len(evidence["rows"]) <= 32 and len(text.encode()) < 16384
+            assert evidence["truncated"] if len(raw) > 4096 else evidence["unparsed"]
+            assert "SYNTHETIC_SECRET" not in text and "\\u001b" not in text and "https://" not in text
+        for results in ([subprocess.CalledProcessError(1, ["systemctl"], output=b"SYNTHETIC_SECRET", stderr=b"SYNTHETIC_SECRET")],
+                        [pending, subprocess.CalledProcessError(1, ["systemctl"], output=b"SYNTHETIC_SECRET", stderr=b"SYNTHETIC_SECRET")]):
+            output = io.StringIO()
+            with patch.dict(globals(), checked=Mock(side_effect=results)), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(sys, "stdout", output):
+                try:
+                    wait_runner_jobs()
+                except subprocess.CalledProcessError as error:
+                    command_error = error
+                else:
+                    raise AssertionError("Runner job command failure accepted")
+            failure = io.StringIO()
+            with patch.object(sys, "stderr", failure):
+                report_failure(command_error)
+            assert "SYNTHETIC_SECRET" not in output.getvalue() + failure.getvalue()
         assert required_access_failures(json.dumps([True] * 7)) == []
         assert required_access_failures(json.dumps([True, False, True, True, True, False, True])) == ["spec", "pnpm"]
         for malformed in ([True] * 6, [True] * 8, [True] * 6 + [1], [True] * 6 + ["SYNTHETIC_SECRET"], {"SYNTHETIC_SECRET": True}):
