@@ -208,6 +208,25 @@ RSpec.describe Reports::CompensationProfitability do
     expect(row[:compensation_cost]).to eq(6200.to_d)
   end
 
+  it "resolves the same complete backdated correction for salary display and compensation costs" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "9300.00",
+      "salary_frequency" => nil, "salary_effective_on" => "2026-07-16"))
+    correction = record.private_details.merge("salary_amount" => "6200.00", "salary_frequency" => "monthly", "salary_effective_on" => "2026-07-01")
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: correction)
+
+    expect(row[:compensation_cost]).to eq(6200.to_d)
+    expect(record.current_salary).to eq(correction)
+  end
+
+  it "keeps incomplete latest terms visible and flags missing compensation without a later correction" do
+    configured = record.private_details.merge("salary_frequency" => nil, "salary_effective_on" => "2026-07-01")
+    record.update!(private_details: configured)
+
+    expect(record.current_salary).to eq(configured)
+    expect(row[:compensation_cost]).to be_nil
+    expect(row[:flags]).to include("missing_compensation")
+  end
+
   it "retains employee salary before a transition into dated consultant compensation" do
     enable_synthetic_payroll(company.id)
     employment.consultant_compensations.create!(effective_on: "2026-08-01", monthly_fee: "6200.00", hours_per_day: "8.00",

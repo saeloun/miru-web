@@ -45,9 +45,8 @@ class EmployeeRecord < ApplicationRecord
     configured = details_with_defaults.slice(*SALARY_KEYS)
     effective_on = self.class.iso_date?(configured["salary_effective_on"])
     today = Time.current.in_time_zone(company.resolved_time_zone).to_date
-    details = configured if !effective_on || effective_on <= today
-    version = employment.compensation_versions.active.where(effective_on: ..today).order(effective_on: :desc, id: :desc).first
-    details = version.salary_details if version && (!effective_on || !details || version.effective_on >= effective_on)
+    details = CompensationVersion.terms_for(employment).reverse.find { |date, _id, _details| date <= today }&.last
+    details ||= configured unless effective_on
     SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
   end
 
@@ -80,6 +79,7 @@ class EmployeeRecord < ApplicationRecord
         @superseded_compensation_version_ids = versions.order(:id).pluck(:id)
         now = Time.current
         versions.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
+        employment.compensation_versions.reset
       end
 
       # Preserve the previous effective salary before the mutable private record replaces it.

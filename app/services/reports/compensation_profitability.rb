@@ -224,22 +224,7 @@ module Reports
 
       def compensation_terms(employment)
         @compensation_terms ||= {}
-        @compensation_terms[employment.id] ||= begin
-          employee = employment.compensation_versions.reject(&:superseded_at)
-            .map { |version| [version.effective_on, version.id, version.salary_details] }
-          # Existing encrypted salaries remain usable; do not invent history before their explicit effective date.
-          if (details = employment.employee_record&.private_details)
-            date = EmployeeRecord.iso_date?(details["salary_effective_on"])
-            employee << [date, 0, details.slice(*EmployeeRecord::SALARY_KEYS)] if date
-          end
-          # A dated correction resolves incomplete versions recorded after its effective date.
-          employee.reject! do |date, id, details|
-            !valid_employee_salary?(details) && employee.any? do |later_date, later_id, later_details|
-              later_id > id && later_date <= date && valid_employee_salary?(later_details)
-            end
-          end
-          employee.sort_by { |date, id, _details| [date, id] }
-        end
+        @compensation_terms[employment.id] ||= CompensationVersion.terms_for(employment)
       end
 
       def compensation_at(employment, date)
@@ -253,18 +238,12 @@ module Reports
         return unless version
 
         details = version.last
-        return unless valid_employee_salary?(details)
+        return unless CompensationVersion.complete_salary?(details)
 
         monthly = details["salary_amount"].to_d
         monthly /= 12 if details["salary_frequency"] == "annual"
         annual = details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12
         { monthly:, annual:, currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
-      end
-
-      def valid_employee_salary?(details)
-        EmployeeRecord.iso_date?(details["salary_effective_on"]) &&
-          details["salary_amount"].to_s.match?(EmployeeRecord::AMOUNT_FORMAT) && details["salary_amount"].to_d.positive? &&
-          EmployeeRecord.supported_currency?(details["salary_currency"]) && %w[monthly annual].include?(details["salary_frequency"])
       end
 
       def schedule(employment, terms, flags)

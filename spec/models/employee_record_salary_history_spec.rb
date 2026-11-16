@@ -95,4 +95,17 @@ RSpec.describe EmployeeRecord, "salary history" do
       expect(record.superseded_compensation_version_ids).to eq([])
     end
   end
+
+  it "refreshes loaded terms after canceling a pending schedule" do
+    travel_to(Time.utc(2026, 11, 5, 12)) do
+      record.update!(private_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10"))
+      expect(record.current_salary.fetch("salary_amount")).to eq("1000.00")
+
+      record.update!(private_details: salary)
+    end
+
+    travel_to(Time.utc(2026, 11, 11, 12)) do
+      expect(record.current_salary.fetch("salary_amount")).to eq("1000.00")
+    end
+  end
 end

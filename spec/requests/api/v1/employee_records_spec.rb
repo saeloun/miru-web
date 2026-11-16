@@ -166,6 +166,21 @@ RSpec.describe "Employee records", type: :request do
       end
     end
 
+    it "uses a complete backdated correction instead of a later incomplete salary" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        configured = salary.merge(salary_amount: "2000.00", salary_frequency: nil, salary_effective_on: "2026-11-10")
+        update_record(configured)
+        correction = salary.merge(salary_amount: "1500.00", salary_effective_on: "2026-11-05").stringify_keys
+        employment.compensation_versions.create!(effective_on: "2026-11-05", salary_details: correction)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        result = response.parsed_body.fetch("employee_record")
+        expect(result.fetch("current_salary")).to eq(correction)
+        expect(result.fetch("private_details")).to include(configured.stringify_keys)
+      end
+    end
+
     it "reads existing compensation terms even when no private record has been saved" do
       travel_to(Time.utc(2026, 11, 15, 12)) do
         employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys)
