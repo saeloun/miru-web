@@ -71,6 +71,7 @@ TCP_RELAYS = {"pg": ("database", 5432), "smtp": ("mailpit", 1025), "provider": (
 SOCKET_ACTIVATE = Path("/usr/bin/systemd-socket-activate")
 SOCKET_PROXY = Path("/usr/lib/systemd/systemd-socket-proxyd")
 BRAVE_PROFILE_SHA = "eebe51af71198110e28a5257155e49ab3f605123a0801cf31ceda5d605d39e38"
+BRAVE_BINARY = Path("/opt/brave.com/brave/brave")
 BROWSER_LABELS = {"brave-miru", "brave-provider", "brave-signer"}
 COMMAND_LABELS = {"schema", "assets", "functional"} | BROWSER_LABELS
 COMMAND_FAILURE_MARKERS = {
@@ -204,10 +205,10 @@ def browser_admission():
 
 def browser_profile_prefix(admission):
     require(admission["policies"].get("distribution") == {"exists": True, "uid": 0, "mode": 0o644, "sha256": BRAVE_PROFILE_SHA} and admission["loaded_profiles"].get("brave") is True, "Trusted distribution Brave profile required")
-    binary = Path("/usr/bin/aa-exec")
-    info = binary.lstat()
-    require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and not info.st_mode & 0o022 and os.access(binary, os.X_OK), "Trusted AppArmor launcher required")
-    return [str(binary), "-p", "brave", "--"]
+    for binary in (Path("/usr/bin/aa-exec"), BRAVE_BINARY):
+        info = binary.lstat()
+        require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and not info.st_mode & 0o022 and os.access(binary, os.X_OK), "Trusted browser executable required")
+    return ["/usr/bin/aa-exec", "-p", "brave", "--"]
 
 
 def checked(command, *, input=None, timeout=30, env=None, cwd=None):
@@ -1407,7 +1408,8 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
             port = self.ports["cdp-" + role]
             flags = ["--headless=new", "--no-startup-window", "--no-first-run", "--no-default-browser-check", "--disable-background-networking", "--disable-sync", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=" + str(port), "--user-data-dir=" + str(profile)]
             require(not any(bad in flag for bad in FORBIDDEN_FLAGS for flag in flags))
-            process = self.start([*profile_prefix, str(self.args.brave), *flags], "brave-" + role, runtime=True)
+            # Brave's shell wrapper forks and masks child failure with `|| true`.
+            process = self.start([*profile_prefix, str(BRAVE_BINARY), *flags], "brave-" + role, runtime=True)
             until = time.monotonic() + 20
             discover = r'''import json,sys,urllib.request
 port=int(sys.argv[1]);assert 0<port<65536
@@ -1430,7 +1432,7 @@ print('ready')
                     time.sleep(.1)
             argv = Path(f"/proc/{process.pid}/cmdline").read_bytes().decode().split("\0")[:-1]
             require(process_identity(process.pid)["uid"] == self.uid and not any(bad in value for value in argv for bad in FORBIDDEN_FLAGS))
-            require(Path(f"/proc/{process.pid}/exe").resolve() == Path("/opt/brave.com/brave/brave") and read_regular(Path(f"/proc/{process.pid}/attr/current"), 128).strip() == b"brave (unconfined)", "Live Brave distribution profile required")
+            require(Path(f"/proc/{process.pid}/exe").resolve() == BRAVE_BINARY and read_regular(Path(f"/proc/{process.pid}/attr/current"), 128).strip() == b"brave (unconfined)", "Live Brave distribution profile required")
             require("--user-data-dir=" + str(profile) in argv)
             config["browsers"].append({"role": role, "cdp_url": f"http://127.0.0.1:{port}", "pid": process.pid, "profile_dir": str(profile), "argv": argv})
 
@@ -2002,13 +2004,14 @@ def self_check():
                 else:
                     raise AssertionError("Untrusted Brave profile accepted")
         for metadata, executable in ((FileNotFoundError(), True), (os.stat_result((stat.S_IFLNK | 0o755, 0, 0, 1, 0, 0, 1, 0, 0, 0)), True), (os.stat_result((stat.S_IFREG | 0o755, 0, 0, 1, 1001, 0, 1, 0, 0, 0)), True), (os.stat_result((stat.S_IFREG | 0o777, 0, 0, 1, 0, 0, 1, 0, 0, 0)), True), (launcher_info, False)):
-            with patch.object(Path, "lstat", side_effect=metadata if isinstance(metadata, OSError) else None, return_value=metadata), patch.object(os, "access", return_value=executable):
-                try:
-                    browser_profile_prefix(admission)
-                except (OSError, RuntimeError):
-                    pass
-                else:
-                    raise AssertionError("Untrusted AppArmor launcher accepted")
+            for vendor in (False, True):
+                with patch.object(Path, "lstat", side_effect=[launcher_info, metadata] if vendor else [metadata]), patch.object(os, "access", side_effect=[True, executable] if vendor else [executable]):
+                    try:
+                        browser_profile_prefix(admission)
+                    except (OSError, RuntimeError):
+                        pass
+                    else:
+                        raise AssertionError("Untrusted browser executable accepted")
         browser_fixture = Lifecycle(argparse.Namespace(work=root / "browser-failure", brave=Path("/usr/bin/brave-browser")))
         (browser_fixture.setup / "private-logs").mkdir(parents=True)
         private(browser_fixture.setup / "private-logs/brave-miru.log", b"No usable sandbox! PRIVATE_DIAGNOSTIC_MARKER")
@@ -2025,7 +2028,7 @@ def self_check():
         assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": -5, "category": "sandbox_unusable"}
         printed.assert_called_once_with(json.dumps({"browser_admission": admission}), flush=True)
         browser_fixture.start.assert_called_once()
-        assert browser_fixture.start.call_args.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/usr/bin/brave-browser"]
+        assert browser_fixture.start.call_args.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/opt/brave.com/brave/brave"]
         browser_deadline_failures = []
         (browser_fixture.setup / "private-logs/brave-miru.log").write_bytes(b"DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER/path")
         for code in (0, None):
@@ -2061,7 +2064,7 @@ def self_check():
                 else:
                     assert accepted and len(config["browsers"]) == 3
             for call in browser_fixture.start.call_args_list:
-                assert call.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/usr/bin/brave-browser"] and call.args[1] in BROWSER_LABELS and call.kwargs == {"runtime": True}
+                assert call.args[0][:5] == ["/usr/bin/aa-exec", "-p", "brave", "--", "/opt/brave.com/brave/brave"] and call.args[1] in BROWSER_LABELS and call.kwargs == {"runtime": True}
             assert accepted or not config["browsers"]
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
