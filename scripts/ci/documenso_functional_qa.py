@@ -70,11 +70,13 @@ BASE_ENV = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LANG": "C.UTF-8", "HOME": 
 TCP_RELAYS = {"pg": ("database", 5432), "smtp": ("mailpit", 1025), "provider": ("proxy", 8080), "mailpit": ("proxy", 8081)}
 SOCKET_ACTIVATE = Path("/usr/bin/systemd-socket-activate")
 SOCKET_PROXY = Path("/usr/lib/systemd/systemd-socket-proxyd")
-COMMAND_LABELS = {"schema", "assets", "functional", "brave-miru", "brave-provider", "brave-signer"}
+BROWSER_LABELS = {"brave-miru", "brave-provider", "brave-signer"}
+COMMAND_LABELS = {"schema", "assets", "functional"} | BROWSER_LABELS
 COMMAND_FAILURE_MARKERS = {
     "pg": (b"PG::ConnectionBad", b"PG::UnableToSend", b"ActiveRecord::ConnectionNotEstablished", b"ActiveRecord::DatabaseConnectionError", b"ActiveRecord::NoDatabaseError"),
     "bundler": (b"Bundler::GemNotFound", b"Bundler::GemfileNotFound", b"Bundler::GemfileError", b"Bundler::VersionConflict", b"Bundler::ProductionError"),
     "sandbox": (b"No usable sandbox!", b"The setuid sandbox is not running as root", b"Failed to move to new namespace:"),
+    "browser_cdp": (b"DevTools listening on ws://",),
     "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
     "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
     "rspec": (b"RSpec::Expectations::ExpectationNotMetError", b"Failure/Error:", b"Failed examples:"),
@@ -163,7 +165,8 @@ def command_failure_category(path):
 def validate_command_failure(value):
     require(isinstance(value, dict) and set(value) == {"label", "returncode", "category"})
     require(isinstance(value["label"], str) and value["label"] in COMMAND_LABELS)
-    require(type(value["returncode"]) is int and -64 <= value["returncode"] <= 255 and value["returncode"] != 0)
+    code, browser = value["returncode"], value["label"] in BROWSER_LABELS
+    require((code is None and browser) or (type(code) is int and -64 <= code <= 255 and (code != 0 or browser)))
     require(isinstance(value["category"], str) and value["category"] in COMMAND_FAILURE_CATEGORIES)
 
 
@@ -847,21 +850,25 @@ for port in (2375,2376):
             self.inspect_tcp_relays()
             self.last_sample = time.monotonic()
 
-    def wait(self, process, seconds):
-        until = time.monotonic() + seconds
-        while process.poll() is None:
-            self.tick()
-            require(time.monotonic() < until, "Owned command deadline reached")
-            time.sleep(.2)
+    def record_command_failure(self, process, returncode):
         label = getattr(process, "_qa_label", None)
-        if process.returncode and isinstance(label, str) and label in COMMAND_LABELS:
-            failure = {"label": label, "returncode": process.returncode, "category": command_failure_category(self.setup / "private-logs" / (label + ".log"))}
+        if isinstance(label, str) and label in COMMAND_LABELS:
+            failure = {"label": label, "returncode": returncode, "category": command_failure_category(self.setup / "private-logs" / (label + ".log"))}
             validate_command_failure(failure)
             self.state["failed_command"] = failure
             try:
                 self.save()
             except OSError:
                 pass
+
+    def wait(self, process, seconds):
+        until = time.monotonic() + seconds
+        while process.poll() is None:
+            self.tick()
+            require(time.monotonic() < until, "Owned command deadline reached")
+            time.sleep(.2)
+        if process.returncode:
+            self.record_command_failure(process, process.returncode)
         require(process.returncode == 0, "Owned command failed")
 
     def prepare_user(self):
@@ -1369,9 +1376,10 @@ print('ready')
 '''
             while True:
                 self.tick()
-                if process.poll() is not None:
-                    self.wait(process, 0)
-                require(process.poll() is None and time.monotonic() < until, "Normal Brave sandbox startup failed")
+                returncode = process.poll()
+                if returncode is not None or time.monotonic() >= until:
+                    self.record_command_failure(process, returncode)
+                    require(False, "Normal Brave sandbox startup failed")
                 try:
                     checked(self.runtime_prefix() + ["python3", "-I", "-c", discover, str(port)], timeout=5)
                     break
@@ -1857,7 +1865,7 @@ def self_check():
                 failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
                 assert command_failure_category(failure_log) == category
             for marker in COMMAND_FAILURE_MARKERS["sandbox"]:
-                failure_log.write_bytes(marker + b": Permission denied PRIVATE_DIAGNOSTIC_MARKER")
+                failure_log.write_bytes(marker + b": Permission denied DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER")
                 assert command_failure_category(failure_log) == "sandbox"
             failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
             assert command_failure_category(failure_log) == "bundler"
@@ -1889,9 +1897,11 @@ def self_check():
         failure_fixture.save.assert_called_once()
         invalid_failures = [None, [], {**failed_command, "private": "PRIVATE_DIAGNOSTIC_MARKER"}]
         invalid_failures.extend({**failed_command, key: value} for key, value in (
-            ("label", "PRIVATE_DIAGNOSTIC_MARKER"), ("label", []), ("returncode", True), ("returncode", 0),
+            ("label", "PRIVATE_DIAGNOSTIC_MARKER"), ("label", []), ("returncode", True),
             ("returncode", 256), ("returncode", -65), ("returncode", "PRIVATE_DIAGNOSTIC_MARKER"),
             ("category", "PRIVATE_DIAGNOSTIC_MARKER"), ("category", [])))
+        invalid_failures.extend({**failed_command, "label": label, "returncode": code} for label in COMMAND_LABELS - BROWSER_LABELS for code in (0, None))
+        invalid_failures.append({"label": "brave-miru", "returncode": True, "category": "browser_cdp"})
         for invalid in invalid_failures:
             try:
                 validate_command_failure(invalid)
@@ -1899,8 +1909,9 @@ def self_check():
                 pass
             else:
                 raise AssertionError("Unlisted command diagnostic accepted")
-        for label in ("brave-miru", "brave-provider", "brave-signer"):
-            validate_command_failure({"label": label, "returncode": -5, "category": "sandbox"})
+        for label in BROWSER_LABELS:
+            for code in (-5, 0, None):
+                validate_command_failure({"label": label, "returncode": code, "category": "sandbox"})
         browser_fixture = Lifecycle(argparse.Namespace(work=root / "browser-failure", brave=Path("/usr/bin/brave-browser")))
         (browser_fixture.setup / "private-logs").mkdir(parents=True)
         private(browser_fixture.setup / "private-logs/brave-miru.log", b"No usable sandbox! PRIVATE_DIAGNOSTIC_MARKER")
@@ -1911,23 +1922,29 @@ def self_check():
             try:
                 browser_fixture.start_browsers({"browsers": []})
             except RuntimeError as error:
-                assert str(error) == "Owned command failed"
+                assert str(error) == "Normal Brave sandbox startup failed"
             else:
                 raise AssertionError("Early Brave failure accepted")
         assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": -5, "category": "sandbox"}
         browser_fixture.start.assert_called_once()
-        browser_fixture.state.pop("failed_command")
-        browser_fixture.save.reset_mock()
-        browser_fixture.start.return_value = argparse.Namespace(poll=lambda: None, returncode=None, _qa_label="brave-miru")
-        with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(time, "monotonic", side_effect=[0, 21]):
-            try:
-                browser_fixture.start_browsers({"browsers": []})
-            except RuntimeError as error:
-                assert str(error) == "Normal Brave sandbox startup failed"
-            else:
-                raise AssertionError("Brave CDP deadline relaxed")
-        assert "failed_command" not in browser_fixture.state
-        browser_fixture.save.assert_not_called()
+        browser_deadline_failures = []
+        (browser_fixture.setup / "private-logs/brave-miru.log").write_bytes(b"DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER/path")
+        for code in (0, None):
+            browser_fixture.state.pop("failed_command")
+            browser_fixture.save.reset_mock()
+            browser = argparse.Namespace(poll=Mock(return_value=code), returncode=77, _qa_label="brave-miru")
+            browser_fixture.start.return_value = browser
+            with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log), patch.object(time, "monotonic", side_effect=[0, 21]):
+                try:
+                    browser_fixture.start_browsers({"browsers": []})
+                except RuntimeError as error:
+                    assert str(error) == "Normal Brave sandbox startup failed"
+                else:
+                    raise AssertionError("Brave CDP deadline relaxed")
+            assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": code, "category": "browser_cdp"}
+            browser.poll.assert_called_once_with()
+            browser_fixture.save.assert_called_once_with()
+            browser_deadline_failures.append(dict(browser_fixture.state["failed_command"]))
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
         network = {"id": "1" * 64, "name": network_name, "driver": "bridge", "internal": True, "ipv6": False, "project": project, "operation": operation,
@@ -2315,11 +2332,13 @@ def self_check():
         fake.op = root / "diagnostic-operation"
         (fake.op / "output").mkdir(parents=True)
         fake.state.update(runtime_processes_stopped=True, failed_command=failed_command)
-        fake.output = fake.work / "diagnostic"
         with patch.dict(globals(), uid_processes=lambda uid: []):
-            assert fake.export_evidence(False)
-            diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
-            assert json.loads(diagnostic)["failed_command"] == failed_command and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic
+            for number, valid_failure in enumerate([failed_command, *browser_deadline_failures]):
+                fake.output = fake.work / ("diagnostic-" + str(number))
+                fake.state["failed_command"] = valid_failure
+                assert fake.export_evidence(False)
+                diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
+                assert json.loads(diagnostic)["failed_command"] == valid_failure and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic and b"ws://" not in diagnostic
             for number, invalid in enumerate(invalid_failures):
                 fake.output = fake.work / ("invalid-diagnostic-" + str(number))
                 fake.state["failed_command"] = invalid
