@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.24] - 2026-11-16
+
+### Fixed
+
+- Reject conflicting Mercury credit entries before they change balances or prematurely settle reimbursements. Exact retries still recover interrupted settlement.
+
 ## [3.6.22] - 2026-11-16
 
 ### Fixed
