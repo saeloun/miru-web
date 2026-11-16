@@ -88,6 +88,21 @@ RSpec.describe "Employee records", type: :request do
     event = Sentry.configuration.before_send_transaction.call(event, {})
     expect(event.spans.first.dig(:data, :params, "employee_record")).to eq("[FILTERED]")
     expect(event.spans.to_json).not_to include("000123456789", "123.45")
+
+    patch "/api/v1/employee_records", params: {
+      account_number: "000987654321", bank_account_number_confirmation: "000987654321",
+      salary: "987.65", salary_amount: "987.65", page: "2"
+    }, as: :json
+    expect(response).to have_http_status(:bad_request)
+    expect(Employment.find(employment.id).employee_record.private_details)
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    expect(span.to_hash.dig(:data, :params, "account_number")).to eq("000987654321")
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.dig(:data, :params)).to include(
+      "account_number" => "[FILTERED]", "bank_account_number_confirmation" => "[FILTERED]",
+      "salary" => "[FILTERED]", "salary_amount" => "[FILTERED]", "page" => "2")
+    expect(event.spans.to_json).not_to include("000987654321", "987.65")
   end
 
   it "redacts other private trace envelopes while preserving safe and non-parameter data" do
