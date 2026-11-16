@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.6.23] - 2026-11-16
+
+### Fixed
+
+- Keep private employee, tax and signing fields out of Sentry controller traces using the existing request privacy filters.
+
 ## [3.6.22] - 2026-11-16
 
 ### Fixed
