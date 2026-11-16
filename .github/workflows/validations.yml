@@ -238,6 +238,14 @@ jobs:
           spec/system/auth/two_factor_spec.rb spec/system/invoices spec/system/time_tracking/add_entry_spec.rb
           spec/system/profile/settings_spec.rb
 
+      - name: Preserve employee salary display screenshot
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: employee-salary-display
+          path: tmp/capybara/employee-records-scheduled-salary.png
+          if-no-files-found: warn
+
       - name: Upload browser failure screenshots
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
