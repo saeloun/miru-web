@@ -650,7 +650,7 @@ def wait_runner_jobs():
             print(json.dumps({"runner_pending_jobs": runner_jobs_diagnostic(pending)}), flush=True)
             ordering = checked(["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"], timeout=5)
             print(json.dumps({"runner_job_ordering": runner_jobs_diagnostic(ordering)}), flush=True)
-            require(False, "Runner has pending systemd jobs")
+            require(False, "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission.")
         time.sleep(.2)
 
 
@@ -2599,7 +2599,7 @@ def self_check():
             try:
                 wait_runner_jobs()
             except RuntimeError as error:
-                assert str(error) == "Runner has pending systemd jobs"
+                assert str(error) == "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission."
             else:
                 raise AssertionError("Unsettled runner accepted")
             sleep.assert_not_called()
