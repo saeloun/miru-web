@@ -86,6 +86,10 @@ COMMAND_FAILURE_MARKERS = {
     "chromium_zygote_fatal": (b"FATAL:content/browser/zygote_host/",),
     "chromium_crashpad_fatal": (b"FATAL:components/crash/core/app/",),
     "chromium_profile_fatal": (b"FATAL:chrome/browser/profiles/",),
+    "crashpad_spawn_fatal": (b":FATAL spawn_subprocess.cc:",),
+    "cxx_terminate": (b"libc++abi: terminating", b"terminate called after throwing an instance of '", b"terminate called without an active exception", b"terminate called recursively"),
+    "libc_fortify_abort": (b"*** stack smashing detected ***: terminated", b"*** buffer overflow detected ***: terminated"),
+    "native_fatal": (b":FATAL:", b":FATAL "),
     "browser_cdp": (b"DevTools listening on ws://",),
     "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
     "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
@@ -1949,6 +1953,10 @@ def self_check():
                 failure_log.write_bytes(b"No such file or directory\n[1:2:1116/030000.000000:" + marker + b"123] PRIVATE_DIAGNOSTIC_MARKER ws://private/path Permission denied")
                 assert command_failure_category(failure_log) == category
                 chromium_failures.append({"label": "brave-miru", "returncode": -6, "category": category})
+            for category, marker in (("crashpad_spawn_fatal", b"[1:2:20261116,030000.000000:FATAL spawn_subprocess.cc:123]"), ("cxx_terminate", b"libc++abi: terminating due to uncaught exception of type PRIVATE_DIAGNOSTIC_MARKER: private what()"), ("cxx_terminate", b"terminate called after throwing an instance of 'PRIVATE_DIAGNOSTIC_MARKER'"), ("libc_fortify_abort", b"*** buffer overflow detected ***: terminated"), ("native_fatal", b"[1:FATAL:unknown/PRIVATE_DIAGNOSTIC_MARKER.cc:123]"), ("native_fatal", b"[1:FATAL PRIVATE_DIAGNOSTIC_MARKER.cc:123]")):
+                failure_log.write_bytes(b"No such file or directory\n" + marker + b" ws://PRIVATE_DIAGNOSTIC_MARKER Permission denied")
+                assert command_failure_category(failure_log) == category
+                chromium_failures.append({"label": "brave-miru", "returncode": -6, "category": category})
             for category, markers in COMMAND_FAILURE_MARKERS.items():
                 failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
                 assert command_failure_category(failure_log) == category
@@ -1958,7 +1966,7 @@ def self_check():
                 assert command_failure_category(failure_log) == category
             failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
             assert command_failure_category(failure_log) == "bundler"
-            failure_log.write_bytes(b"[1:FATAL:unknown/PRIVATE_DIAGNOSTIC_MARKER.cc:123] ws://private/path")
+            failure_log.write_bytes(b"[1:ERROR:unknown/PRIVATE_DIAGNOSTIC_MARKER.cc:123] ws://private/path")
             assert command_failure_category(failure_log) == "unclassified"
         for index, value in ((0, stat.S_IFREG | 0o640), (0, stat.S_IFDIR | 0o600), (3, 2), (4, 1)):
             metadata = list(failure_log.stat())
@@ -2470,7 +2478,7 @@ def self_check():
                 fake.state["failed_command"] = valid_failure
                 assert fake.export_evidence(False)
                 diagnostic = read_regular(fake.output / "lifecycle.json", 65536)
-                assert json.loads(diagnostic)["failed_command"] == valid_failure and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic and b"ws://" not in diagnostic and b"FATAL:" not in diagnostic
+                assert json.loads(diagnostic)["failed_command"] == valid_failure and b"PRIVATE_DIAGNOSTIC_MARKER" not in diagnostic and b"ws://" not in diagnostic and b"FATAL:" not in diagnostic and b"FATAL " not in diagnostic
             for number, invalid in enumerate(invalid_failures):
                 fake.output = fake.work / ("invalid-diagnostic-" + str(number))
                 fake.state["failed_command"] = invalid
