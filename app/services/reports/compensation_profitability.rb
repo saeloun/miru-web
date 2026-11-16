@@ -225,7 +225,8 @@ module Reports
       def compensation_terms(employment)
         @compensation_terms ||= {}
         @compensation_terms[employment.id] ||= begin
-          employee = employment.compensation_versions.map { |version| [version.effective_on, version.id, version.salary_details] }
+          employee = employment.compensation_versions.reject(&:superseded_at)
+            .map { |version| [version.effective_on, version.id, version.salary_details] }
           # Existing encrypted salaries remain usable; do not invent history before their explicit effective date.
           if (details = employment.employee_record&.private_details)
             date = EmployeeRecord.iso_date?(details["salary_effective_on"])

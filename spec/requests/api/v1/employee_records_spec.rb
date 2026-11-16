@@ -108,6 +108,51 @@ RSpec.describe "Employee records", type: :request do
       expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(EmployeeRecord::SALARY_KEYS.index_with(nil))
     end
 
+    it "does not revive a canceled pending salary after its abandoned effective date" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        update_record(salary)
+        update_record(salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10"))
+        update_record(salary)
+      end
+
+      travel_to(Time.utc(2026, 11, 11, 12)) do
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+      end
+    end
+
+    it "audits the actor and superseded salary version IDs without private values" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        update_record(salary.merge(bank_name: "Synthetic private bank"))
+        pending = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10")
+        update_record(pending)
+        employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge(salary_amount: "2200.00").stringify_keys)
+        pending_ids = employment.compensation_versions.active.where(effective_on: "2026-11-10").order(:id).pluck(:id)
+
+        update_record(salary)
+
+        expect(response).to have_http_status(:ok)
+        audit = employment.reload.employee_record.audits.order(:id).last
+        expect(audit.user).to eq(admin)
+        expect(audit.associated).to eq(company)
+        expect(audit.audited_changes).to eq("superseded_compensation_version_ids" => pending_ids)
+
+        update_record(salary)
+        expect(employment.reload.employee_record.audits.order(:id).last.audited_changes).to eq({})
+      end
+    end
+
+    it "makes an undated salary edit current immediately on the company-local day" do
+      company.update!(timezone: "America/New_York")
+      travel_to(Time.utc(2026, 11, 16, 4, 30)) do
+        update_record(salary)
+        configured = salary.merge(salary_amount: "1500.00", salary_effective_on: nil)
+        update_record(configured)
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(configured.stringify_keys)
+      end
+    end
+
     it "uses the newest correction when multiple versions share the current effective date" do
       travel_to(Time.utc(2026, 11, 15, 12)) do
         update_record(salary)

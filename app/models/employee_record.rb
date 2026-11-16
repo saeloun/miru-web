@@ -8,12 +8,14 @@ class EmployeeRecord < ApplicationRecord
   FAMILY_KEYS = %w[name date_of_birth gender relationship].freeze
   AMOUNT_FORMAT = /\A\d{1,10}(?:\.\d{1,2})?\z/
 
+  attr_reader :superseded_compensation_version_ids
+
   belongs_to :employment
   has_one :company, through: :employment
   serialize :private_details, coder: JSON, type: Hash
   encrypts :private_details
   audited associated_with: :company, only: [:employment_id]
-  after_save :record_salary_version, if: :saved_change_to_private_details?
+  after_save :record_salary_version
   before_save :advance_payroll_version, if: :will_save_change_to_private_details?
   after_save :record_bank_change_notice, if: :saved_change_to_private_details?
 
@@ -44,7 +46,7 @@ class EmployeeRecord < ApplicationRecord
     effective_on = self.class.iso_date?(configured["salary_effective_on"])
     today = Time.current.in_time_zone(company.resolved_time_zone).to_date
     details = configured if !effective_on || effective_on <= today
-    version = employment.compensation_versions.where(effective_on: ..today).order(effective_on: :desc, id: :desc).first
+    version = employment.compensation_versions.active.where(effective_on: ..today).order(effective_on: :desc, id: :desc).first
     details = version.salary_details if version && (!effective_on || !details || version.effective_on >= effective_on)
     SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
   end
@@ -66,21 +68,34 @@ class EmployeeRecord < ApplicationRecord
     end
 
     def record_salary_version
+      @superseded_compensation_version_ids = []
       previous = private_details_before_last_save || {}
       return if previous.slice(*SALARY_KEYS) == private_details.slice(*SALARY_KEYS)
 
+      today = Time.current.in_time_zone(company.resolved_time_zone).to_date
+      previous_date = self.class.iso_date?(previous["salary_effective_on"])
+      replaced_pending = previous_date && previous_date > today
+      if replaced_pending
+        versions = employment.compensation_versions.active.where(effective_on: previous_date)
+        @superseded_compensation_version_ids = versions.order(:id).pluck(:id)
+        now = Time.current
+        versions.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
+      end
+
       # Preserve the previous effective salary before the mutable private record replaces it.
       [previous, private_details].each_with_index do |details, index|
+        next if index.zero? && replaced_pending
+
         salary = details.slice(*SALARY_KEYS)
         next if salary.empty?
 
         explicit_date = self.class.iso_date?(salary["salary_effective_on"])
         next if index.zero? && !explicit_date
 
-        effective_on = explicit_date || Date.current
-        next if index.zero? && employment.compensation_versions.exists?(effective_on:)
+        effective_on = explicit_date || today
+        next if index.zero? && employment.compensation_versions.active.exists?(effective_on:)
 
-        latest = employment.compensation_versions.order(:effective_on, :id).last
+        latest = employment.compensation_versions.active.order(:effective_on, :id).last
         next if latest&.salary_details == salary
 
         employment.compensation_versions.create!(effective_on:, salary_details: salary)

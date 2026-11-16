@@ -42,7 +42,11 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
       end
       record.private_details = record.private_details.merge(values)
       record.save!
-      record.audits.create!(action: "update", user: current_user, associated: current_company, audited_changes: {})
+      audit_changes = {}
+      if record.superseded_compensation_version_ids.any?
+        audit_changes["superseded_compensation_version_ids"] = record.superseded_compensation_version_ids
+      end
+      record.audits.create!(action: "update", user: current_user, associated: current_company, audited_changes: audit_changes)
     end
     render json: { employee_record: details(employment) }
   end

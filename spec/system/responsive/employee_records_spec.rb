@@ -109,7 +109,7 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
 
     with_forgery_protection do
       open_records(admin)
-      within find("section", text: "Current salary") do
+      within find("h2", text: "Current salary", exact_text: true).find(:xpath, "..") do
         expect(page).to have_css("dd", text: "1000.00", exact_text: true)
         expect(page).not_to have_css("dd", text: "2000.00", exact_text: true)
       end

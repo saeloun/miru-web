@@ -182,6 +182,16 @@ RSpec.describe Reports::CompensationProfitability do
     expect(row[:compensation_cost]).to eq(6200.to_d)
   end
 
+  it "excludes a canceled pending salary from historical compensation costs" do
+    original = record.private_details.dup
+    travel_to(Time.utc(2026, 7, 1, 12)) do
+      record.update!(private_details: original.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-16"))
+      record.update!(private_details: original)
+    end
+
+    expect(row[:compensation_cost]).to eq(3100.to_d)
+  end
+
   it "does not invent a salary effective date when the private record is incomplete" do
     record.update!(private_details: record.private_details.merge("salary_effective_on" => nil))
     result = row(period: "month", anchor: Date.current.iso8601)
