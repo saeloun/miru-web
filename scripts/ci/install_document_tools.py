@@ -454,7 +454,6 @@ def self_check_cancellation():
     from contextlib import redirect_stderr
     import io
     import select
-    import threading
     from unittest.mock import patch
 
     original_mask = signal.pthread_sigmask(signal.SIG_BLOCK, set())
@@ -573,37 +572,36 @@ def self_check_cancellation():
                                   "import signal,time;signal.signal(signal.SIGTERM,signal.SIG_IGN);"
                                   "print('ready',flush=True);time.sleep(30)"], start_new_session=True,
                                  stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
-        timers = []
         try:
             assert select.select([child.stdout], [], [], 2)[0] and child.stdout.readline() == b"ready\n"
+            real_wait, wait_calls, sent_signals = child.wait, 0, []
 
             def owned_spawn(*args, **kwargs):
                 if phase == "spawn":
                     signal.raise_signal(signal.SIGINT)
                 return child
 
+            def controlled_wait(*args, **kwargs):
+                nonlocal wait_calls
+                wait_calls += 1
+                if phase == "wait" and wait_calls in (1, 2):
+                    signum = signal.SIGINT if wait_calls == 1 else signal.SIGTERM
+                    sent_signals.append(signum)
+                    signal.raise_signal(signum)
+                return real_wait(*args, **kwargs)
+
             with cancellation_handlers(), patch.dict(globals(), APT_CLEANUP_TIMEOUT=0.06):
-                if phase == "wait":
-                    timers = [threading.Timer(delay, os.kill, args=(os.getpid(), sig))
-                              for delay, sig in ((0.02, signal.SIGINT), (0.04, signal.SIGTERM))]
-                for timer in timers:
-                    timer.start()
                 try:
-                    with patch.object(subprocess, "Popen", side_effect=owned_spawn):
+                    with patch.object(subprocess, "Popen", side_effect=owned_spawn), \
+                            patch.object(child, "wait", side_effect=controlled_wait):
                         apt(["update"], 2)
                 except SystemExit as error:
                     assert error.code == 130
                 else:
                     raise AssertionError("APT cancellation was lost")
-                finally:
-                    for timer in timers:
-                        timer.cancel()
-                        timer.join()
+                assert sent_signals == ([signal.SIGINT, signal.SIGTERM] if phase == "wait" else [])
                 assert child.poll() == -signal.SIGKILL
         finally:
-            for timer in timers:
-                timer.cancel()
-                timer.join()
             if child.poll() is None:
                 os.killpg(child.pid, signal.SIGKILL)
             child.wait(timeout=2)
