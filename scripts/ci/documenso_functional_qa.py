@@ -75,7 +75,9 @@ COMMAND_LABELS = {"schema", "assets", "functional"} | BROWSER_LABELS
 COMMAND_FAILURE_MARKERS = {
     "pg": (b"PG::ConnectionBad", b"PG::UnableToSend", b"ActiveRecord::ConnectionNotEstablished", b"ActiveRecord::DatabaseConnectionError", b"ActiveRecord::NoDatabaseError"),
     "bundler": (b"Bundler::GemNotFound", b"Bundler::GemfileNotFound", b"Bundler::GemfileError", b"Bundler::VersionConflict", b"Bundler::ProductionError"),
-    "sandbox": (b"No usable sandbox!", b"The setuid sandbox is not running as root", b"Failed to move to new namespace:"),
+    "sandbox_unusable": (b"No usable sandbox!",),
+    "sandbox_setuid": (b"The setuid sandbox is not running as root",),
+    "sandbox_namespace": (b"Failed to move to new namespace:",),
     "browser_cdp": (b"DevTools listening on ws://",),
     "permission": (b"Errno::EACCES", b"Errno::EPERM", b"Permission denied"),
     "missing_file_or_executable": (b"Errno::ENOENT", b"LoadError", b"command not found", b"No such file or directory"),
@@ -168,6 +170,35 @@ def validate_command_failure(value):
     code, browser = value["returncode"], value["label"] in BROWSER_LABELS
     require((code is None and browser) or (type(code) is int and -64 <= code <= 255 and (code != 0 or browser)))
     require(isinstance(value["category"], str) and value["category"] in COMMAND_FAILURE_CATEGORIES)
+
+
+def browser_admission():
+    result = {"sysctls": {}, "policies": {}}
+    for name, path, maximum in (("userns_clone", "kernel/unprivileged_userns_clone", 1), ("apparmor_userns", "kernel/apparmor_restrict_unprivileged_userns", 1), ("apparmor_unconfined", "kernel/apparmor_restrict_unprivileged_unconfined", 1), ("max_user_namespaces", "user/max_user_namespaces", 2**31 - 1)):
+        try:
+            raw = read_regular(Path("/proc/sys") / path, 32)
+            require(re.fullmatch(rb"[0-9]+\n?", raw) is not None and int(raw) <= maximum)
+            value = int(raw)
+        except (OSError, RuntimeError, ValueError):
+            value = None
+        result["sysctls"][name] = value
+    for name, path in (("distribution", "/etc/apparmor.d/brave"), ("vendor_installed", "/etc/apparmor.d/brave-browser-stable"), ("vendor_shipped", "/opt/brave.com/brave/apparmor.d/brave-browser-stable")):
+        value = {"exists": None}
+        try:
+            info = Path(path).lstat()
+            value = {"exists": True, "uid": info.st_uid, "mode": stat.S_IMODE(info.st_mode)}
+            value["sha256"] = hashlib.sha256(read_regular(Path(path), 65536)).hexdigest()
+        except FileNotFoundError:
+            value = {"exists": False}
+        except (OSError, RuntimeError, ValueError):
+            value["unavailable"] = True
+        result["policies"][name] = value
+    try:
+        profiles = read_regular(Path("/sys/kernel/security/apparmor/profiles"), 1024**2).splitlines()
+    except (OSError, RuntimeError, ValueError):
+        profiles = None
+    result["loaded_profiles"] = {name: any(line.startswith(name.encode() + b" (") for line in profiles) if profiles is not None else None for name in ("brave", "brave-browser", "brave-browser-stable")}
+    return result
 
 
 def checked(command, *, input=None, timeout=30, env=None, cwd=None):
@@ -1359,6 +1390,7 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
         package = checked(["dpkg-query", "-W", "-f", "${Package} ${Status} ${Version}\n", "brave-browser"]).decode()
         require(package.startswith("brave-browser install ok installed "))
         require(self.args.brave == Path("/usr/bin/brave-browser") and os.access(self.args.brave, os.X_OK))
+        print(json.dumps({"browser_admission": browser_admission()}), flush=True)
         for role in ("miru", "provider", "signer"):
             profile = self.op / "browsers" / role
             port = self.ports["cdp-" + role]
@@ -1807,6 +1839,37 @@ def self_check():
         assert entries["user", "901"] == "---" and entries["mask", ""] == entries["group", ""]
         # Validate and copy the same snapshot even if the path changes afterwards.
         from unittest.mock import Mock, patch
+        admission_root = root / "browser-admission"
+        sysctls = admission_root / "sysctls"
+        for path, value in (("kernel/unprivileged_userns_clone", b"1\n"), ("kernel/apparmor_restrict_unprivileged_userns", b"1\n"), ("kernel/apparmor_restrict_unprivileged_unconfined", b"0\n"), ("user/max_user_namespaces", b"12345\n")):
+            private(sysctls / path, value)
+        policy_paths = {"/etc/apparmor.d/brave": admission_root / "distribution", "/etc/apparmor.d/brave-browser-stable": admission_root / "vendor-installed", "/opt/brave.com/brave/apparmor.d/brave-browser-stable": admission_root / "vendor-shipped"}
+        for path in policy_paths.values():
+            private(path, b"PRIVATE_DIAGNOSTIC_MARKER policy")
+        profiles = admission_root / "profiles"
+        private(profiles, b"brave (unconfined)\nbrave-browser-stable (enforce)\nPRIVATE_DIAGNOSTIC_MARKER (enforce)\n")
+        admission_paths = {"/proc/sys": sysctls, "/sys/kernel/security/apparmor/profiles": profiles, **policy_paths}
+        with patch.dict(globals(), Path=admission_paths.__getitem__):
+            admission = browser_admission()
+            assert admission["sysctls"] == {"userns_clone": 1, "apparmor_userns": 1, "apparmor_unconfined": 0, "max_user_namespaces": 12345}
+            assert admission["loaded_profiles"] == {"brave": True, "brave-browser": False, "brave-browser-stable": True}
+            assert all(value == {"exists": True, "uid": os.getuid(), "mode": 0o600, "sha256": hashlib.sha256(b"PRIVATE_DIAGNOSTIC_MARKER policy").hexdigest()} for value in admission["policies"].values())
+            serialized = json.dumps(admission)
+            assert "PRIVATE_DIAGNOSTIC_MARKER" not in serialized and str(admission_root) not in serialized and "/etc/" not in serialized
+            for malformed in (b"2\n", b"-1\n", b"1\nPRIVATE_DIAGNOSTIC_MARKER", b"true"):
+                (sysctls / "kernel/unprivileged_userns_clone").write_bytes(malformed)
+                assert browser_admission()["sysctls"]["userns_clone"] is None
+            (sysctls / "user/max_user_namespaces").write_bytes(b"2147483648\n")
+            assert browser_admission()["sysctls"]["max_user_namespaces"] is None
+            policy_paths["/etc/apparmor.d/brave"].unlink()
+            assert browser_admission()["policies"]["distribution"] == {"exists": False}
+            policy_paths["/etc/apparmor.d/brave"].symlink_to(policy_paths["/etc/apparmor.d/brave-browser-stable"])
+            unavailable = browser_admission()["policies"]["distribution"]
+            assert unavailable["exists"] and unavailable["unavailable"] and "sha256" not in unavailable
+            profiles.unlink()
+            assert browser_admission()["loaded_profiles"] == {"brave": None, "brave-browser": None, "brave-browser-stable": None}
+            with patch.object(type(admission_root), "lstat", side_effect=PermissionError("PRIVATE_DIAGNOSTIC_MARKER")):
+                assert all(value == {"exists": None, "unavailable": True} for value in browser_admission()["policies"].values())
         for family, address in ((4, "127.0.0.1/32"), (6, "::1/128")):
             assert loopback_reply_rule(family, [20000, 20003]) == ["-o", "lo", "-p", "tcp", "-s", address, "-d", address, "-m", "multiport", "--sports", "20000,20003", "-m", "conntrack", "--ctstate", "ESTABLISHED", "--ctdir", "REPLY", "-j", "ACCEPT"]
         for family, ports in ((0, [20000]), (4.0, [20000]), (4, []), (4, [53]), (4, ["20000"]), (4, ["0.0.0.0/0"]), (6, ["::/0"]), (4, list(range(20000, 20016)))):
@@ -1864,9 +1927,10 @@ def self_check():
             for category, markers in COMMAND_FAILURE_MARKERS.items():
                 failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER " + markers[0])
                 assert command_failure_category(failure_log) == category
-            for marker in COMMAND_FAILURE_MARKERS["sandbox"]:
+            for category in ("sandbox_unusable", "sandbox_setuid", "sandbox_namespace"):
+                marker = COMMAND_FAILURE_MARKERS[category][0]
                 failure_log.write_bytes(marker + b": Permission denied DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER")
-                assert command_failure_category(failure_log) == "sandbox"
+                assert command_failure_category(failure_log) == category
             failure_log.write_bytes(b"PG::ConnectionBad" + b"x" * 65536 + b"\nBundler::GemNotFound: PRIVATE_DIAGNOSTIC_MARKER")
             assert command_failure_category(failure_log) == "bundler"
             failure_log.write_bytes(b"PRIVATE_DIAGNOSTIC_MARKER unknown error")
@@ -1911,21 +1975,22 @@ def self_check():
                 raise AssertionError("Unlisted command diagnostic accepted")
         for label in BROWSER_LABELS:
             for code in (-5, 0, None):
-                validate_command_failure({"label": label, "returncode": code, "category": "sandbox"})
+                validate_command_failure({"label": label, "returncode": code, "category": "sandbox_unusable"})
         browser_fixture = Lifecycle(argparse.Namespace(work=root / "browser-failure", brave=Path("/usr/bin/brave-browser")))
         (browser_fixture.setup / "private-logs").mkdir(parents=True)
         private(browser_fixture.setup / "private-logs/brave-miru.log", b"No usable sandbox! PRIVATE_DIAGNOSTIC_MARKER")
         browser_fixture.ports = {"cdp-" + role: 20100 + number for number, role in enumerate(("miru", "provider", "signer"))}
         browser_fixture.start = Mock(return_value=argparse.Namespace(poll=lambda: -5, returncode=-5, _qa_label="brave-miru"))
         browser_fixture.tick, browser_fixture.save = Mock(), Mock()
-        with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log):
+        with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n"), browser_admission=Mock(return_value=admission)), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log), patch("builtins.print") as printed:
             try:
                 browser_fixture.start_browsers({"browsers": []})
             except RuntimeError as error:
                 assert str(error) == "Normal Brave sandbox startup failed"
             else:
                 raise AssertionError("Early Brave failure accepted")
-        assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": -5, "category": "sandbox"}
+        assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": -5, "category": "sandbox_unusable"}
+        printed.assert_called_once_with(json.dumps({"browser_admission": admission}), flush=True)
         browser_fixture.start.assert_called_once()
         browser_deadline_failures = []
         (browser_fixture.setup / "private-logs/brave-miru.log").write_bytes(b"DevTools listening on ws://PRIVATE_DIAGNOSTIC_MARKER/path")
@@ -1934,7 +1999,7 @@ def self_check():
             browser_fixture.save.reset_mock()
             browser = argparse.Namespace(poll=Mock(return_value=code), returncode=77, _qa_label="brave-miru")
             browser_fixture.start.return_value = browser
-            with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n")), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log), patch.object(time, "monotonic", side_effect=[0, 21]):
+            with patch.dict(globals(), checked=Mock(return_value=b"brave-browser install ok installed synthetic\n"), browser_admission=Mock(return_value=admission)), patch.object(os, "access", return_value=True), patch.object(os, "fstat", side_effect=root_owned_log), patch.object(time, "monotonic", side_effect=[0, 21]), patch("builtins.print") as printed:
                 try:
                     browser_fixture.start_browsers({"browsers": []})
                 except RuntimeError as error:
@@ -1944,6 +2009,7 @@ def self_check():
             assert browser_fixture.state["failed_command"] == {"label": "brave-miru", "returncode": code, "category": "browser_cdp"}
             browser.poll.assert_called_once_with()
             browser_fixture.save.assert_called_once_with()
+            printed.assert_called_once_with(json.dumps({"browser_admission": admission}), flush=True)
             browser_deadline_failures.append(dict(browser_fixture.state["failed_command"]))
         project, operation = "miru-live-" + "a" * 16, "miru-live-" + "a" * 16
         network_name = project + "_qa_internal"
