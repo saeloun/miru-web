@@ -192,6 +192,47 @@ RSpec.describe "Employee records", type: :request do
       end
     end
 
+    [{}, EmployeeRecord::SALARY_KEYS.index_with(nil)].each do |empty_salary|
+      it "keeps independent salary history when #{empty_salary.empty? ? 'absent' : 'null'} settings are submitted as blanks" do
+        travel_to(Time.utc(2026, 11, 15, 12)) do
+          private_record = employment.create_employee_record!(private_details: empty_salary.merge("emergency_contact_name" => "Original synthetic contact"))
+          employment.compensation_versions.delete_all
+          independent = employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys)
+          payroll_version = private_record.payroll_version
+
+          update_record(EmployeeRecord::SALARY_KEYS.index_with("").merge("emergency_contact_name" => "Synthetic contact"))
+
+          expect(response).to have_http_status(:ok)
+          aggregate_failures do
+            expect(employment.compensation_versions.order(:id).pluck(:id)).to eq([independent.id])
+            expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+            expect(private_record.reload.payroll_version).to eq(payroll_version)
+          end
+        end
+      end
+    end
+
+    it "retains an intentional clearing of nonblank salary and flags missing financial terms" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        company.update!(plan_tier: "paid", compensation_proration: "calendar_days")
+        update_record(salary)
+        payroll_version = employment.reload.employee_record.payroll_version
+        blanks = EmployeeRecord::SALARY_KEYS.index_with("")
+
+        expect do
+          update_record(blanks)
+        end.to change(CompensationVersion, :count).by(1)
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(blanks)
+        expect(employment.reload.employee_record.payroll_version).to eq(payroll_version + 1)
+        report = Reports::CompensationProfitability.new(user: admin, company:,
+          filters: { period: "custom", from: "2026-11-15", to: "2026-11-15", currency: "INR" }).process
+        row = report.fetch(:people).find { |person| person[:person_id] == employee.id }
+        expect(row[:compensation_cost]).to be_nil
+        expect(row[:flags]).to include("missing_compensation")
+      end
+    end
+
     [nil, "2026-11-01"].each do |effective_on|
       it "preserves legacy configured salary without versions for effective date #{effective_on.inspect}" do
         travel_to(Time.utc(2026, 11, 15, 12)) do

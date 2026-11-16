@@ -69,7 +69,7 @@ class EmployeeRecord < ApplicationRecord
     def record_salary_version
       @superseded_compensation_version_ids = []
       previous = private_details_before_last_save || {}
-      return if previous.slice(*SALARY_KEYS) == private_details.slice(*SALARY_KEYS)
+      return if previous.values_at(*SALARY_KEYS).map(&:presence) == private_details.values_at(*SALARY_KEYS).map(&:presence)
 
       today = Time.current.in_time_zone(company.resolved_time_zone).to_date
       previous_date = self.class.iso_date?(previous["salary_effective_on"])

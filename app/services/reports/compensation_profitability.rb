@@ -140,7 +140,7 @@ module Reports
 
       def reportable_employment?(employment, from, to)
         roles = employment.user.roles.filter_map { |role| role.name if role.resource_type == "Company" && role.resource_id == @company.id }.uniq
-        return false if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.empty?
+        return false if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.all?(&:superseded_at)
         return false if employment.joined_at && employment.joined_at > to
         return false if employment.resigned_at && employment.resigned_at < from
 

@@ -98,6 +98,20 @@ RSpec.describe Reports::CompensationProfitability do
     expect(result[:available_people]).to eq([{ id: person.id, name: person.full_name }])
   end
 
+  it "excludes client-only people after their only compensation history is superseded" do
+    client_user = create(:user, current_workspace: company)
+    client_user.add_role(:client, company)
+    client_employment = create(:employment, company:, user: client_user, joined_at: "2026-01-01", resigned_at: nil)
+    version = client_employment.compensation_versions.create!(effective_on: "2026-01-01", salary_details: record.private_details)
+    expect(report[:available_people]).to include(hash_including(id: client_user.id))
+
+    version.update!(superseded_at: Time.current)
+
+    result = report
+    expect(result[:people]).not_to include(hash_including(person_id: client_user.id))
+    expect(result[:available_people]).not_to include(hash_including(id: client_user.id))
+  end
+
   it "matches filters against every employment while preserving the person's reconciliation warning" do
     profile.update!(department: "Engineering", primary_project: project)
     employment.update!(resigned_at: "2026-07-15")
