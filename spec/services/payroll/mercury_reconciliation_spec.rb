@@ -380,6 +380,42 @@ RSpec.describe Payroll::MercuryReconciliation do
     it "deduplicates a repeated credit entry" do
       credit(amount: "1000.00")
       expect(credit(amount: "1000.00").credited_minor).to eq(100_000)
+      expect(leg.payroll_payment_events.where(kind: "credit_recorded").count).to eq(1)
+    end
+
+    it "recovers group settlement when an identical credit is replayed" do
+      credit
+      PayrollPaymentGroup.where(id: leg.payroll_payment_group_id).update_all(fully_credited_at: nil)
+
+      expect(credit.credited_minor).to eq(6_250_000)
+      expect(leg.payroll_payment_events.where(kind: "credit_recorded").count).to eq(1)
+      expect(leg.payroll_payment_group.reload.fully_credited_at).to be_present
+    end
+
+    it "rejects a repeated credit reference with a different date" do
+      credit(amount: "1000.00")
+
+      expect do
+        service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "1000.00",
+          credited_on: company.resolved_time_zone.today.yesterday.iso8601, reference: "UTR123")
+      end.to raise_error(Payroll::Workflow::Conflict)
+
+      expect(leg.reload).to have_attributes(credited_minor: 100_000, credit_state: "partial")
+      expect(leg.payroll_payment_events.where(kind: "credit_recorded").count).to eq(1)
+      expect(leg.payroll_payment_group.reload.fully_credited_at).to be_nil
+    end
+
+    it "rejects replay when an older reference has conflicting credit history" do
+      credit(amount: "1000.00")
+      original = leg.payroll_payment_events.find_by!(kind: "credit_recorded")
+      leg.payroll_payment_events.create!(kind: "credit_recorded", actor: accounts,
+        data: original.data.merge("amount_minor" => 200_000))
+
+      expect { credit(amount: "1000.00") }.to raise_error(Payroll::Workflow::Conflict)
+
+      expect(leg.reload).to have_attributes(credited_minor: 100_000, credit_state: "partial")
+      expect(leg.payroll_payment_events.where(kind: "credit_recorded").count).to eq(2)
+      expect(leg.payroll_payment_group.reload.fully_credited_at).to be_nil
     end
 
     ["-1", "1.234", "abc", "0", ""].each do |amount|
