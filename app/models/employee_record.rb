@@ -74,32 +74,35 @@ class EmployeeRecord < ApplicationRecord
       today = Time.current.in_time_zone(company.resolved_time_zone).to_date
       previous_date = self.class.iso_date?(previous["salary_effective_on"])
       replaced_pending = previous_date && previous_date > today
+      versions = employment.compensation_versions
       if replaced_pending
-        versions = employment.compensation_versions.active.where(effective_on: previous_date)
-        @superseded_compensation_version_ids = versions.order(:id).pluck(:id)
+        pending = versions.active.where(effective_on: previous_date)
+        @superseded_compensation_version_ids = pending.order(:id).pluck(:id)
         now = Time.current
-        versions.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
-        employment.compensation_versions.reset
+        pending.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
+        versions.reset
       end
 
+      append_salary_versions(replaced_pending ? {} : previous, versions, today)
+    end
+
+    def append_salary_versions(previous, versions, today)
       # Observe undated legacy terms from today; never invent an earlier salary start.
       [previous, private_details].each_with_index do |details, index|
-        next if index.zero? && replaced_pending
-
         salary = details.slice(*SALARY_KEYS)
         next if salary.empty?
 
         explicit_date = self.class.iso_date?(salary["salary_effective_on"])
         next if index.zero? && !explicit_date && (salary.values.all?(&:blank?) ||
-          employment.compensation_versions.active.where(effective_on: ..today).exists?)
+          versions.active.where(effective_on: ..today).exists?)
 
         effective_on = explicit_date || today
-        next if index.zero? && employment.compensation_versions.active.exists?(effective_on:)
+        next if index.zero? && versions.active.exists?(effective_on:)
 
-        latest = employment.compensation_versions.active.order(:effective_on, :id).last
+        latest = versions.active.order(:effective_on, :id).last
         next if latest&.salary_details == salary
 
-        employment.compensation_versions.create!(effective_on:, salary_details: salary)
+        versions.create!(effective_on:, salary_details: salary)
       end
     end
 
