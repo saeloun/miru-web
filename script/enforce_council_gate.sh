@@ -69,13 +69,11 @@ CHECK_OUTPUT="$(
     required.each do |skill|
       matched = entries.find do |entry|
         next false unless entry["skill"] == skill
-        status = entry["status"].to_s.downcase
         commit = (entry["commit_full"] || entry["commit"]).to_s
         next false if commit.empty?
-        next false unless valid_statuses.include?(status)
         head_sha.start_with?(commit) || commit.start_with?(head_short)
       end
-      result[skill] = !matched.nil?
+      result[skill] = matched && valid_statuses.include?(matched["status"].to_s.downcase)
     end
 
     required.each { |skill| puts "#{skill}=#{result[skill] ? "ok" : "missing"}" }
