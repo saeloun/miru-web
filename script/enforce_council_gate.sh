@@ -73,7 +73,16 @@ CHECK_OUTPUT="$(
         next false if commit.empty?
         head_sha.start_with?(commit) || commit.start_with?(head_short)
       end
-      result[skill] = matched && valid_statuses.include?(matched["status"].to_s.downcase)
+      result[skill] = matched && (
+        valid_statuses.include?(matched["status"].to_s.downcase) ||
+        (skill == "plan-design-review" &&
+          matched["commit_full"] == head_sha &&
+          matched["status"] == "not_applicable" &&
+          matched["applicability"] == "no_ui_scope" &&
+          matched["applicability_complete"] == true &&
+          matched["ui_review_completed"] == false &&
+          matched["unresolved"].eql?(0))
+      )
     end
 
     required.each { |skill| puts "#{skill}=#{result[skill] ? "ok" : "missing"}" }
