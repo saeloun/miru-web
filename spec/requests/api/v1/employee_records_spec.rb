@@ -71,6 +71,69 @@ RSpec.describe "Employee records", type: :request do
     expect(record.reload.private_details).to include("bank_account_number" => nil, "salary_amount" => "123.45")
   end
 
+  it "redacts private employee parameters captured by the actual controller trace" do
+    transaction = Sentry::Transaction.new(name: "Employee trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::EmployeeRecordsController#update")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    update_record({ bank_account_number: "000123456789", salary_amount: "123.45" }, bank_account_number_confirmation: "000123456789")
+
+    expect(response).to have_http_status(:ok)
+    expect(span.to_hash.dig(:data, :params, "employee_record", "private_details"))
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.dig(:data, :params, "employee_record")).to eq("[FILTERED]")
+    expect(event.spans.to_json).not_to include("000123456789", "123.45")
+
+    patch "/api/v1/employee_records", params: {
+      account_number: "000987654321", bank_account_number_confirmation: "000987654321",
+      salary: "987.65", salary_amount: "987.65", page: "2"
+    }, as: :json
+    expect(response).to have_http_status(:bad_request)
+    expect(Employment.find(employment.id).employee_record.private_details)
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    expect(span.to_hash.dig(:data, :params, "account_number")).to eq("000987654321")
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.dig(:data, :params)).to include(
+      "account_number" => "[FILTERED]", "bank_account_number_confirmation" => "[FILTERED]",
+      "salary" => "[FILTERED]", "salary_amount" => "[FILTERED]", "page" => "2")
+    expect(event.spans.to_json).not_to include("000987654321", "987.65")
+  end
+
+  it "redacts other private trace envelopes while preserving safe and non-parameter data" do
+    transaction = Sentry::Transaction.new(name: "Private trace envelopes", sampled: true, hub: Sentry.get_current_hub)
+    envelopes = {
+      "Api::V1::TaxDeclarationsController#create" => { "tax_declaration" => { "claimed_amount" => "456.78", "notes" => "Private tax note" } },
+      "Api::V1::TaxDeclarationsController#review" => { "review" => { "decision" => "approve", "approved_amount" => "456.78", "reason" => "Private review reason" } },
+      "Api::V1::AgreementsController#create" => { "agreement" => { "body" => "Private agreement text" } },
+      "Api::V1::SignatureRequestsController#create" => { "signature_request" => { title: "Private signature title", recipients: [{ email: "private@example.test" }] }.to_json }
+    }
+    spans = envelopes.map do |description, params|
+      span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description:)
+      span.set_data(:params, params.merge("page" => "2"))
+      span.to_hash
+    end
+    unaffected = [{ description: "SQL", data: { query: "SELECT 1" } }, { description: "No data" },
+      { description: "Non-hash params", data: { params: "unchanged" } }]
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = spans + unaffected.deep_dup
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+
+    expect(event.spans[0].dig(:data, :params, "tax_declaration")).to eq("[FILTERED]")
+    expect(event.spans[1].dig(:data, :params, "review"))
+      .to eq("decision" => "approve", "approved_amount" => "[FILTERED]", "reason" => "[FILTERED]")
+    expect(event.spans[2].dig(:data, :params, "agreement")).to eq("[FILTERED]")
+    expect(event.spans[3].dig(:data, :params, "signature_request")).to eq("[FILTERED]")
+    expect(event.spans.first(4).map { |span| span.dig(:data, :params, "page") }).to eq(%w[2 2 2 2])
+    expect(event.spans.last(3)).to eq(unaffected)
+    expect(event.spans.to_json).not_to include("456.78", "Private tax note", "Private review reason", "Private agreement text", "Private signature title", "private@example.test")
+  end
+
   context "bank account confirmation" do
     %i[admin employee].each do |actor|
       it "allows #{actor} to save explicit India and USD bank declarations" do
