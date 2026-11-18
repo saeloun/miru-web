@@ -126,7 +126,7 @@ RSpec.describe "Employee records", type: :request do
         update_record(salary.merge(bank_name: "Synthetic private bank"))
         pending = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10")
         update_record(pending)
-        employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge(salary_amount: "2200.00").stringify_keys)
+        employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge(salary_amount: "2200.00").stringify_keys, reviewed_at: Time.current)
         pending_ids = employment.compensation_versions.active.where(effective_on: "2026-11-10").order(:id).pluck(:id)
 
         update_record(salary)
@@ -157,7 +157,7 @@ RSpec.describe "Employee records", type: :request do
       travel_to(Time.utc(2026, 11, 15, 12)) do
         update_record(salary)
         correction = salary.merge(salary_amount: "1500.00").stringify_keys
-        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: correction)
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: correction, reviewed_at: Time.current)
 
         get "/api/v1/employee_records", params: { user_id: employee.id }
 
@@ -171,7 +171,7 @@ RSpec.describe "Employee records", type: :request do
         configured = salary.merge(salary_amount: "2000.00", salary_frequency: nil, salary_effective_on: "2026-11-10")
         update_record(configured)
         correction = salary.merge(salary_amount: "1500.00", salary_effective_on: "2026-11-05").stringify_keys
-        employment.compensation_versions.create!(effective_on: "2026-11-05", salary_details: correction)
+        employment.compensation_versions.create!(effective_on: "2026-11-05", salary_details: correction, reviewed_at: Time.current)
 
         get "/api/v1/employee_records", params: { user_id: employee.id }
 
@@ -183,7 +183,7 @@ RSpec.describe "Employee records", type: :request do
 
     it "reads existing compensation terms even when no private record has been saved" do
       travel_to(Time.utc(2026, 11, 15, 12)) do
-        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys)
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys, reviewed_at: Time.current)
 
         get "/api/v1/employee_records", params: { user_id: employee.id }
 
@@ -197,7 +197,7 @@ RSpec.describe "Employee records", type: :request do
         travel_to(Time.utc(2026, 11, 15, 12)) do
           private_record = employment.create_employee_record!(private_details: empty_salary.merge("emergency_contact_name" => "Original synthetic contact"))
           employment.compensation_versions.delete_all
-          independent = employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys)
+          independent = employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys, reviewed_at: Time.current)
           payroll_version = private_record.payroll_version
 
           update_record(EmployeeRecord::SALARY_KEYS.index_with("").merge("emergency_contact_name" => "Synthetic contact"))

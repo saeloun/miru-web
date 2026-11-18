@@ -228,6 +228,8 @@ module Reports
       end
 
       def compensation_at(employment, date)
+        return if CompensationVersion.history_requires_review?(employment)
+
         consultants = employment.consultant_compensations.sort_by { |terms| [terms.effective_on, terms.id] }
         terms = consultants.reverse.find { |item| item.effective_on <= date }
         version = compensation_terms(employment).reverse.find { |effective, _id, _details| effective <= date }
@@ -263,6 +265,7 @@ module Reports
         results = { compensation_cost: zero, salary_inr: zero, salary_usd: zero,
           available_hours: zero, scheduled_days: 0, scheduled_hours: zero }
         flags << "missing_payroll_proration_policy" unless PRORATIONS.include?(@company.compensation_proration)
+        flags << "compensation_history_requires_review" if CompensationVersion.history_requires_review?(employment)
         holidays, leave = timeoff_for(employment, start, finish, flags)
         (start..finish).each do |date|
           terms = compensation_at(employment, date)

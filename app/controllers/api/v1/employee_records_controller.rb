@@ -173,6 +173,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
           end),
         employment: employment.slice(:id, :employee_id, :designation, :employment_type, :joined_at, :resigned_at),
         private_details: record.details_with_defaults, current_salary: record.current_salary,
+        compensation_history_requires_review: CompensationVersion.history_requires_review?(employment),
         bank_countries: ISO3166::Country.all.sort_by(&:common_name).to_h { |country| [country.alpha2, country.common_name] },
         documents: EmployeeDocument::KINDS.index_with do |kind|
           documents.filter_map { |document| document_details(document) if document.kind == kind }

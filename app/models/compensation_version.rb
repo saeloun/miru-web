@@ -8,11 +8,17 @@ class CompensationVersion < ApplicationRecord
   validates :effective_on, presence: true
   attr_readonly :employment_id, :effective_on, :salary_details
 
+  def self.history_requires_review?(employment)
+    employment.compensation_versions.any? { |version| version.superseded_at.nil? && version.reviewed_at.nil? }
+  end
+
   def self.terms_for(employment)
+    return [] if history_requires_review?(employment)
+
     terms = employment.compensation_versions.reject(&:superseded_at)
       .map { |version| [version.effective_on, version.id, version.salary_details] }
     # Existing encrypted salaries remain usable without inventing an effective date.
-    if (details = employment.employee_record&.private_details)
+    if employment.compensation_versions.empty? && (details = employment.employee_record&.private_details)
       date = EmployeeRecord.iso_date?(details["salary_effective_on"])
       terms << [date, 0, details.slice(*EmployeeRecord::SALARY_KEYS)] if date
     end

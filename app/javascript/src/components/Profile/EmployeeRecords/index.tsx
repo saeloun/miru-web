@@ -518,6 +518,19 @@ const Records = ({ companyId, companyName, userId, self }) => {
             <p className="text-sm text-muted-foreground">
               {text("salaryHelp")}
             </p>
+            {record.compensation_history_requires_review && (
+              <p className="text-sm text-muted-foreground" role="status">
+                {text("salaryHistoryNeedsReview")}
+                {record.can_manage && (
+                  <a
+                    className="ml-2 text-primary underline"
+                    href={`/employee-records/${record.employment.id}/salary-history?company_id=${record.company_id}`}
+                  >
+                    {text("reviewSalaryHistory")}
+                  </a>
+                )}
+              </p>
+            )}
             <dl className="grid gap-4 tabular-nums sm:grid-cols-2">
               {salaryFields.map(key => (
                 <Fact key={key} label={text(key)}>

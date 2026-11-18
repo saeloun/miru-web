@@ -10,6 +10,12 @@ module EmployeeReports
     end
 
     def value(key)
+      if EmployeeRecord::SALARY_KEYS.include?(key)
+        return "Administrator review required" if CompensationVersion.history_requires_review?(@employment)
+
+        @current_salary ||= (@employment.employee_record || @employment.build_employee_record).current_salary
+        return @current_salary[key]
+      end
       return private_details[key].is_a?(Array) ? private_details[key].to_json : private_details[key] if EmployeeRecord::DETAIL_KEYS.include?(key)
       return @employment.public_send(key) if %w[employee_id designation employment_type joined_at].include?(key)
       return @user.public_send(key) if %w[email date_of_birth phone personal_email_id].include?(key)

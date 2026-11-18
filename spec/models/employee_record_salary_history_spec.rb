@@ -55,9 +55,9 @@ RSpec.describe EmployeeRecord, "salary history" do
       pending = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10")
       record.update!(private_details: pending)
       matching = employment.compensation_versions.find_by!(effective_on: "2026-11-10")
-      correction = employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge("salary_amount" => "2200.00"))
+      correction = employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge("salary_amount" => "2200.00"), reviewed_at: Time.current)
       other_date = employment.compensation_versions.create!(effective_on: "2026-11-12",
-        salary_details: pending.merge("salary_amount" => "2300.00", "salary_effective_on" => "2026-11-12"))
+        salary_details: pending.merge("salary_amount" => "2300.00", "salary_effective_on" => "2026-11-12"), reviewed_at: Time.current)
       previously_superseded = employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending,
         superseded_at: 1.day.ago)
       previous_timestamp = previously_superseded.superseded_at
@@ -119,15 +119,19 @@ RSpec.describe EmployeeRecord, "salary history" do
         employment.compensation_versions.delete_all
         if future_history
           employment.compensation_versions.create!(effective_on: "2026-11-25",
-            salary_details: salary.merge("salary_amount" => "2500.00", "salary_effective_on" => "2026-11-25"))
+            salary_details: salary.merge("salary_amount" => "2500.00", "salary_effective_on" => "2026-11-25"), reviewed_at: Time.current)
         end
         expect(record.current_salary).to eq(legacy)
 
         record.update!(private_details: future)
 
-        expect(record.current_salary).to eq(legacy)
         observed = employment.compensation_versions.find_by!(effective_on: "2026-11-15")
         expect(observed.salary_details).to eq(legacy)
+        expect(observed.reviewed_at).to be_nil
+        expect(record.current_salary.values).to all(be_nil)
+        observed.update!(reviewed_at: Time.current)
+        employment.compensation_versions.reset
+        expect(record.current_salary).to eq(legacy)
         expect(employment.compensation_versions.minimum(:effective_on)).to eq(Date.new(2026, 11, 15))
       end
 
@@ -145,7 +149,7 @@ RSpec.describe EmployeeRecord, "salary history" do
       record.update!(private_details: salary.merge("salary_amount" => "123.00", "salary_effective_on" => nil))
       employment.compensation_versions.delete_all
       correction = salary.merge("salary_amount" => "1500.00")
-      employment.compensation_versions.create!(effective_on: "2026-11-01", salary_details: correction)
+      employment.compensation_versions.create!(effective_on: "2026-11-01", salary_details: correction, reviewed_at: Time.current)
       expect(record.current_salary).to eq(correction)
 
       record.update!(private_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-20"))

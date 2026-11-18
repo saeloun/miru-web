@@ -13,7 +13,9 @@ module EmployeeReports
       @month = Date.iso8601("#{month}-01")
       @report = report
       @company = report.company
-      @employments = employments.includes(:employee_record, user: :addresses).order(:id).limit(MAX_EMPLOYEES + 1).to_a
+      source = employments.includes(:employee_record, user: :addresses)
+      source = source.includes(:company, :compensation_versions) if (@report.columns & EmployeeRecord::SALARY_KEYS).any?
+      @employments = source.order(:id).limit(MAX_EMPLOYEES + 1).to_a
       raise ArgumentError, "Report exceeds #{MAX_EMPLOYEES} active employees" if @employments.size > MAX_EMPLOYEES
       @employment_ids = @employments.map(&:id).freeze
     end

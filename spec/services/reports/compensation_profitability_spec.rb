@@ -191,9 +191,22 @@ RSpec.describe Reports::CompensationProfitability do
 
   it "preserves manually corrected history when the mutable current salary is edited later" do
     employment.compensation_versions.create!(effective_on: "2026-01-01",
-      salary_details: record.private_details.merge("salary_amount" => "6200.00"))
+      salary_details: record.private_details.merge("salary_amount" => "6200.00"), reviewed_at: Time.current)
     record.update!(private_details: record.private_details.merge("salary_amount" => "9300.00", "salary_effective_on" => "2026-10-01"))
     expect(row[:compensation_cost]).to eq(6200.to_d)
+  end
+
+  it "withholds salary and financial costs until unknown legacy history is reviewed" do
+    legacy = employment.compensation_versions.create!(effective_on: "2026-07-01",
+      salary_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-01"))
+    result = row
+    expect(result).to include(compensation_cost: nil, salary_inr: nil, salary_usd: nil, annual_compensation: nil, margin: nil)
+    expect(result[:flags]).to include("compensation_history_requires_review")
+    expect(record.current_salary.values).to all(be_nil)
+    legacy.update!(reviewed_at: Time.current)
+    employment.compensation_versions.reset
+    expect(row[:compensation_cost]).to eq(6200.to_d)
+    expect(record.current_salary["salary_amount"]).to eq("6200.00")
   end
 
   it "excludes a canceled pending salary from historical compensation costs" do
@@ -226,7 +239,7 @@ RSpec.describe Reports::CompensationProfitability do
     record.update!(private_details: record.private_details.merge("salary_amount" => "9300.00",
       "salary_frequency" => nil, "salary_effective_on" => "2026-07-16"))
     correction = record.private_details.merge("salary_amount" => "6200.00", "salary_frequency" => "monthly", "salary_effective_on" => "2026-07-01")
-    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: correction)
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: correction, reviewed_at: Time.current)
 
     expect(row[:compensation_cost]).to eq(6200.to_d)
     expect(record.current_salary).to eq(correction)

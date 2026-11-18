@@ -59,3 +59,26 @@ editor starts confirmation blank and clears it on number changes, successful sav
 or cancellation. Failed saves retain the entered draft. Existing programmatic model
 imports and the spouse/split confirmation workflow are unchanged. Double entry does
 not establish bank ownership; recipient verification and payment readiness still apply.
+
+## Reviewing uncertain salary history
+
+Older salary versions may represent either valid history or replaced scheduled raises.
+Active versions without review metadata block current salary and compensation-cost
+results with `compensation_history_requires_review`; no amount is guessed. Salary
+settings remain editable. Entering a correction does not acknowledge unknown rows.
+CSV salary fields use the same current-salary reader, not the selected export month,
+and show `Administrator review required` while history is unresolved.
+
+Owners and admins can open `/employee-records/:employment_id/salary-history` from
+the profile or compensation report warning, including in free workspaces and for
+retained historical employments. Employees see the warning without admin history.
+Every unresolved version requires retain or mark-as-abandoned; already reviewed
+rows are read-only. Submission checks the workspace and full active-ID set under
+the employment lock. Decisions and actor/ID-only audit commit together, preserving
+encrypted salary bytes, dates and row IDs. No automatic backfill is performed.
+
+Apply both salary metadata migrations before activating the new readers and stop
+old writers during activation. Inventory/review production history before enabling
+affected financial calculations. Keep schema forward on code rollback; the review
+migration refuses to drop metadata once reviewed versions exist. Real browser QA
+and production review remain release prerequisites.

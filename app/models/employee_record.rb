@@ -42,11 +42,14 @@ class EmployeeRecord < ApplicationRecord
   end
 
   def current_salary
+    return SALARY_KEYS.index_with(nil) if CompensationVersion.history_requires_review?(employment)
+
     configured = details_with_defaults.slice(*SALARY_KEYS)
     effective_on = self.class.iso_date?(configured["salary_effective_on"])
-    today = Time.current.in_time_zone(company.resolved_time_zone).to_date
+    today = Time.current.in_time_zone(employment.company.resolved_time_zone).to_date
     details = CompensationVersion.terms_for(employment).reverse.find { |date, _id, _details| date <= today }&.last
-    details ||= configured unless effective_on
+    retired = employment.compensation_versions.any? { |version| version.superseded_at && version.salary_details == configured }
+    details ||= configured unless effective_on || retired
     SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
   end
 
@@ -76,7 +79,7 @@ class EmployeeRecord < ApplicationRecord
       replaced_pending = previous_date && previous_date > today
       versions = employment.compensation_versions
       if replaced_pending
-        pending = versions.active.where(effective_on: previous_date)
+        pending = versions.active.where(effective_on: previous_date).where.not(reviewed_at: nil)
         @superseded_compensation_version_ids = pending.order(:id).pluck(:id)
         now = Time.current
         pending.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
@@ -102,7 +105,7 @@ class EmployeeRecord < ApplicationRecord
         latest = versions.active.order(:effective_on, :id).last
         next if latest&.salary_details == salary
 
-        versions.create!(effective_on:, salary_details: salary)
+        versions.create!(effective_on:, salary_details: salary, reviewed_at: (Time.current unless index.zero?))
       end
     end
 
