@@ -164,6 +164,7 @@ module Reports
         flags = []
         flags << "missing_joining_date" unless employment.joined_at
         flags << "archived_employment_missing_exit_date" if employment.discarded_at && employment.resigned_at.nil?
+        flags << "compensation_history_requires_review" if CompensationVersion.history_requires_review?(employment)
         start = [from, employment.joined_at || from].max
         finish = [to, employment.resigned_at || to].min
         approved = approved_entries(employment, start, finish, flags)
@@ -244,8 +245,8 @@ module Reports
 
         monthly = details["salary_amount"].to_d
         monthly /= 12 if details["salary_frequency"] == "annual"
-        annual = details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12
-        { monthly:, annual:, currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
+        { monthly:, annual: details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12,
+          currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
       end
 
       def schedule(employment, terms, flags)
@@ -265,7 +266,6 @@ module Reports
         results = { compensation_cost: zero, salary_inr: zero, salary_usd: zero,
           available_hours: zero, scheduled_days: 0, scheduled_hours: zero }
         flags << "missing_payroll_proration_policy" unless PRORATIONS.include?(@company.compensation_proration)
-        flags << "compensation_history_requires_review" if CompensationVersion.history_requires_review?(employment)
         holidays, leave = timeoff_for(employment, start, finish, flags)
         (start..finish).each do |date|
           terms = compensation_at(employment, date)

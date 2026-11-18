@@ -134,7 +134,7 @@ RSpec.describe EmployeeReports::DownloadService do
     leave_type = create(:leave_type, leave: create(:leave, company:, year: 2026))
     staff = [employment] + 7.times.map { create(:employment, company:, resigned_at: nil, joined_at: Date.new(2020, 1, 1)) }
     staff.each do |member|
-      EmployeeRecord.create!(employment: member, private_details: { "salary_amount" => "100.00", "salary_currency" => "INR",
+      create(:employee_record, employment: member, private_details: { "salary_amount" => "100.00", "salary_currency" => "INR",
         "salary_frequency" => "monthly", "salary_effective_on" => "2026-10-01" })
       create(:timesheet_entry, project:, user: member.user, work_date: "2026-10-01", duration: 60)
       create(:timeoff_entry, user: member.user, leave_type:, leave_date: "2026-10-02", duration: 120)
@@ -143,6 +143,8 @@ RSpec.describe EmployeeReports::DownloadService do
       create(:expense, company:, user: member.user, amount: "5.67", currency: "INR", expense_type: :personal,
         status: :approved, approved_at: Time.utc(2026, 10, 2))
     end
+    stored = EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE employment_id = #{employment.id}")
+    expect(stored).not_to include("salary_amount", "100.00")
     holiday = create(:holiday, company:, year: 2026)
     create(:holiday_info, holiday:, date: "2026-10-02", category: :national)
     export = ->(members) { described_class.new(report:, month: "2026-10", employments: Employment.where(id: members.map(&:id))).process }
