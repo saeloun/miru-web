@@ -1,10 +1,16 @@
 # Changelog
 
-## [3.6.23] - 2026-11-16
+## [Unreleased]
 
 ### Fixed
 
 - Keep private employee, tax and signing fields out of Sentry controller traces using the existing request privacy filters.
+
+## [3.6.24] - 2026-11-16
+
+### Fixed
+
+- Reject conflicting Mercury credit entries before they change balances or prematurely settle reimbursements. Exact retries still recover interrupted settlement.
 
 ## [3.6.22] - 2026-11-16
 

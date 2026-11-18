@@ -229,6 +229,11 @@ Before you start, a server administrator needs to:
 6. **Record the credit (owner or accounts reviewer).** Enter the actual INR credited,
    the date and the bank reference. A lower credit stays **Partially credited** until
    accounts records a resolution, and it never changes what the consultant was owed.
+   On the selected transfer, repeating the exact reference is safe only when every
+   recorded entry with that reference has the same amount and date. This check
+   does not compare references across transfers. A different amount or date on
+   the selected transfer is rejected before balances or reimbursement settlement change.
+   An unchanged retry adds no credit and can recover interrupted settlement.
    When every transfer is credited, the reserved claims are marked paid.
 
 ### If the outcome is unknown
