@@ -39,8 +39,10 @@ HEAD_SHORT="$(git rev-parse --short HEAD)"
 
 if [[ "${1:-}" == "--pre-push" ]]; then
   while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
-    if [[ "$LOCAL_REF" != "(delete)" && "$LOCAL_SHA" != "$HEAD_SHA" ]]; then
-      echo "ERROR: Ref $LOCAL_REF pushes $LOCAL_SHA, but council reviews cover $HEAD_SHA (PUSH_HEAD_MISMATCH)." >&2
+    [[ "$LOCAL_REF" == "(delete)" ]] && continue
+    PUSHED_COMMIT="$(git rev-parse --verify "${LOCAL_SHA}^{commit}" 2>/dev/null)" || PUSHED_COMMIT=""
+    if [[ "$PUSHED_COMMIT" != "$HEAD_SHA" ]]; then
+      echo "ERROR: Ref $LOCAL_REF object $LOCAL_SHA does not resolve to reviewed commit $HEAD_SHA (PUSH_HEAD_MISMATCH)." >&2
       echo "Push the current branch with git push, or check out and review the intended branch before retrying." >&2
       exit 1
     fi

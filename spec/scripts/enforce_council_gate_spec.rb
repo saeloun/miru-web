@@ -25,6 +25,8 @@ RSpec.describe "enforce_council_gate.sh" do
           "rev-parse --show-toplevel") pwd ;;
           "rev-parse HEAD") echo #{head} ;;
           "rev-parse --short HEAD") echo #{head[0, 7]} ;;
+          "rev-parse --verify #{head}^{commit}"|"rev-parse --verify #{'c' * 40}^{commit}") echo #{head} ;;
+          "rev-parse --verify #{'b' * 40}^{commit}"|"rev-parse --verify #{'d' * 40}^{commit}") echo #{'b' * 40} ;;
           *) exit 1 ;;
         esac
       SH
@@ -115,11 +117,39 @@ RSpec.describe "enforce_council_gate.sh" do
   end
 
   it "checks every pushed update" do
+    matching = "refs/heads/branch #{head} refs/heads/branch #{'b' * 40}\n"
+    mismatching = "refs/heads/other #{'b' * 40} refs/heads/other #{'c' * 40}\n"
+    [matching + mismatching, mismatching + matching].each do |updates|
+      output, errors, status = run_gate(clean_reviews, updates:)
+
+      expect(status).not_to be_success, output + errors
+      expect(errors).to include("PUSH_HEAD_MISMATCH")
+    end
+  end
+
+  it "accepts multiple updates targeting the reviewed commit" do
     updates = "refs/heads/branch #{head} refs/heads/branch #{'b' * 40}\n" \
-      "refs/heads/other #{'b' * 40} refs/heads/other #{'c' * 40}\n"
+      "refs/tags/release #{'c' * 40} refs/tags/release #{'0' * 40}\n"
     output, errors, status = run_gate(clean_reviews, updates:)
 
-    expect(status).not_to be_success, output + errors
+    expect(status).to be_success, output + errors
+  end
+
+  it "accepts an annotated tag targeting the reviewed commit" do
+    output, errors, status = run_gate(clean_reviews,
+      updates: "refs/tags/release #{'c' * 40} refs/tags/release #{'0' * 40}\n")
+
+    expect(status).to be_success, output + errors
+  end
+
+  ["d" * 40, "e" * 40].each do |object|
+    it "rejects a tag targeting another commit or an unresolved object #{object}" do
+      output, errors, status = run_gate(clean_reviews,
+        updates: "refs/tags/release #{object} refs/tags/release #{'0' * 40}\n")
+
+      expect(status).not_to be_success, output + errors
+      expect(errors).to include("PUSH_HEAD_MISMATCH")
+    end
   end
 
   it "does not treat branch deletion as a pushed commit" do
