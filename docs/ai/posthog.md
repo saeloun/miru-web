@@ -109,6 +109,7 @@ and host `https://posthog.example.test`, run `node scripts/qa/posthog.test.mjs`.
 It uses Brave, intercepts analytics locally, and checks signup rendering, URL
 redaction, user/workspace identity, guest reset, disabled configuration and an
 unavailable analytics server. It inspects recorder payloads for masked inputs and
-text, stops replay on a sensitive SPA transition, and checks exclusion on actual
-HR and payroll routes. These are local SDK checks, not proof that a
+text and verifies replay stopping on a settings SPA transition in Brave. Separate
+unit assertions check the application's HR, payroll and team route exclusions.
+These are local SDK checks, not proof that a
 PostHog server ingested an event.
