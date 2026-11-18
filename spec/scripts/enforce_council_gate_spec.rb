@@ -5,7 +5,9 @@ require "fileutils"
 require "json"
 require "open3"
 require "rbconfig"
+require "shellwords"
 require "tmpdir"
+require "yaml"
 
 RSpec.describe "enforce_council_gate.sh" do
   let(:root) { File.expand_path("../..", __dir__) }
@@ -50,7 +52,12 @@ RSpec.describe "enforce_council_gate.sh" do
     environment = { "GSTACK_BIN" => @commands, "GSTACK_HOME" => @state,
                     "PATH" => [@commands, File.dirname(RbConfig.ruby), "/usr/bin", "/bin"].join(":") }
     arguments = ["/bin/bash", File.join(root, "script/enforce_council_gate.sh")]
-    arguments << "--pre-push" if updates
+    if updates
+      hook = YAML.safe_load_file(File.join(root, "lefthook.yml")).fetch("pre-push").fetch("commands").fetch("council-gate")
+      expect(hook.fetch("use_stdin")).to be(true)
+      command = Shellwords.split(hook.fetch("run"))
+      arguments = ["/bin/bash", File.join(root, command.first), *command.drop(1)]
+    end
     Open3.capture3(environment, *arguments, stdin_data: updates.to_s, chdir: @directory, unsetenv_others: true)
   end
 
