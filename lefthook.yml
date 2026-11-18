@@ -65,7 +65,8 @@ post-commit:
 pre-push:
   commands:
     council-gate:
-      run: script/enforce_council_gate.sh
+      run: script/enforce_council_gate.sh --pre-push
+      use_stdin: true
 
 # Install hooks on npm/pnpm install
 scripts:

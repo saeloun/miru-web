@@ -45,16 +45,18 @@ RSpec.describe "enforce_council_gate.sh" do
     required.map { |skill| review(skill, "clean") }
   end
 
-  def run_gate(rows)
+  def run_gate(rows, updates: nil)
     File.write(File.join(@state, "projects", "synthetic", "branch-reviews.jsonl"), rows.map(&:to_json).join("\n"))
     environment = { "GSTACK_BIN" => @commands, "GSTACK_HOME" => @state,
                     "PATH" => [@commands, File.dirname(RbConfig.ruby), "/usr/bin", "/bin"].join(":") }
-    Open3.capture3(environment, "/bin/bash", File.join(root, "script/enforce_council_gate.sh"),
-      chdir: @directory, unsetenv_others: true)
+    arguments = ["/bin/bash", File.join(root, "script/enforce_council_gate.sh")]
+    arguments << "--pre-push" if updates
+    Open3.capture3(environment, *arguments, stdin_data: updates.to_s, chdir: @directory, unsetenv_others: true)
   end
 
   it "accepts all required clean or clear reviews" do
     rows = required.zip(%w[clean clear CLEAN]).map { |skill, status| review(skill, status) }
+    rows.first[:commit_full] = head[0, 7]
     output, errors, status = run_gate(rows)
 
     expect(status).to be_success, output + errors
@@ -77,8 +79,46 @@ RSpec.describe "enforce_council_gate.sh" do
     expect(status).to be_success, output + errors
   end
 
-  it "ignores a newer review for another commit" do
-    output, errors, status = run_gate(clean_reviews + [review("plan-design-review", "issues_open", "b" * 40)])
+  ["b" * 40, "a" * 7 + "b" * 33].each do |other_commit|
+    it "ignores a newer review for another commit #{other_commit}" do
+      output, errors, status = run_gate(clean_reviews + [review("plan-design-review", "issues_open", other_commit)])
+
+      expect(status).to be_success, output + errors
+    end
+  end
+
+  it "does not accept another commit sharing HEAD's short prefix" do
+    rows = clean_reviews.drop(1) + [review("plan-eng-review", "clean", "a" * 7 + "b" * 33)]
+    output, errors, status = run_gate(rows)
+
+    expect(status).not_to be_success, output + errors
+  end
+
+  it "accepts a pre-push update of the checked-out commit" do
+    output, errors, status = run_gate(clean_reviews,
+      updates: "refs/heads/branch #{head} refs/heads/branch #{'b' * 40}\n")
+
+    expect(status).to be_success, output + errors
+  end
+
+  it "rejects a pre-push update of a different commit despite clean HEAD reviews" do
+    output, errors, status = run_gate(clean_reviews,
+      updates: "refs/heads/other #{'b' * 40} refs/heads/other #{'c' * 40}\n")
+
+    expect(status).not_to be_success, output + errors
+  end
+
+  it "checks every pushed update" do
+    updates = "refs/heads/branch #{head} refs/heads/branch #{'b' * 40}\n" \
+      "refs/heads/other #{'b' * 40} refs/heads/other #{'c' * 40}\n"
+    output, errors, status = run_gate(clean_reviews, updates:)
+
+    expect(status).not_to be_success, output + errors
+  end
+
+  it "does not treat branch deletion as a pushed commit" do
+    output, errors, status = run_gate(clean_reviews,
+      updates: "(delete) #{'0' * 40} refs/heads/old #{'b' * 40}\n")
 
     expect(status).to be_success, output + errors
   end
@@ -98,7 +138,8 @@ RSpec.describe "enforce_council_gate.sh" do
     end
 
     it "accepts only complete typed no-UI design applicability at the exact full HEAD" do
-      output, errors, status = run_gate(clean_reviews + [design_applicability])
+      rows = clean_reviews.reject { |row| row[:skill] == "plan-design-review" } + [design_applicability]
+      output, errors, status = run_gate(rows)
 
       expect(status).to be_success, output + errors
     end

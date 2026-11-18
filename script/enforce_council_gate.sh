@@ -37,6 +37,16 @@ REVIEW_LOG="$GSTACK_HOME/projects/$SLUG/$BRANCH-reviews.jsonl"
 HEAD_SHA="$(git rev-parse HEAD)"
 HEAD_SHORT="$(git rev-parse --short HEAD)"
 
+if [[ "${1:-}" == "--pre-push" ]]; then
+  while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
+    if [[ "$LOCAL_REF" != "(delete)" && "$LOCAL_SHA" != "$HEAD_SHA" ]]; then
+      echo "ERROR: Ref $LOCAL_REF pushes $LOCAL_SHA, but council reviews cover $HEAD_SHA (PUSH_HEAD_MISMATCH)." >&2
+      echo "Push the current branch with git push, or check out and review the intended branch before retrying." >&2
+      exit 1
+    fi
+  done
+fi
+
 if [[ ! -f "$REVIEW_LOG" ]]; then
   echo "ERROR: Council gate failed."
   echo "No review log found at: $REVIEW_LOG"
@@ -47,7 +57,7 @@ fi
 set +e
 CHECK_OUTPUT="$(
   ruby -rjson -e '
-    file, head_sha, head_short = ARGV
+    file, head_sha = ARGV
     required = %w[plan-eng-review plan-design-review plan-devex-review]
     valid_statuses = %w[clean clear]
     entries = []
@@ -71,7 +81,7 @@ CHECK_OUTPUT="$(
         next false unless entry["skill"] == skill
         commit = (entry["commit_full"] || entry["commit"]).to_s
         next false if commit.empty?
-        head_sha.start_with?(commit) || commit.start_with?(head_short)
+        head_sha.start_with?(commit)
       end
       result[skill] = matched && (
         valid_statuses.include?(matched["status"].to_s.downcase) ||
@@ -87,7 +97,7 @@ CHECK_OUTPUT="$(
 
     required.each { |skill| puts "#{skill}=#{result[skill] ? "ok" : "missing"}" }
     exit(result.values.all? ? 0 : 2)
-  ' "$REVIEW_LOG" "$HEAD_SHA" "$HEAD_SHORT"
+  ' "$REVIEW_LOG" "$HEAD_SHA"
 )"
 CHECK_STATUS=$?
 set -e

@@ -4,7 +4,7 @@
 
 ### Fixed
 
-- Require the latest review result before publishing changes, with explicit design applicability for changes without UI scope.
+- Require the latest review result before publishing changes, with explicit design applicability for changes without UI scope. Only the reviewed checkout commit can be pushed.
 
 ## [3.6.24] - 2026-11-16
 
