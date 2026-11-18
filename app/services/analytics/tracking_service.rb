@@ -321,8 +321,7 @@ module Analytics
         # Log for debugging in development
         Rails.logger.info("[Analytics] Event: #{name}, Properties: #{clean_properties}") if Rails.env.development?
 
-        # You can also send to other analytics services here
-        # Example: Segment.track(user_id: user&.id, event: name, properties: clean_properties)
+        PosthogCaptureJob.capture(name, clean_properties, user_id: user&.id)
 
         true
       rescue => e
