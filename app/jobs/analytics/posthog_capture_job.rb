@@ -22,7 +22,7 @@ module Analytics
       return unless distinct_id
 
       properties[:company_id] = company_id if company_id
-      timestamp = Time.current.iso8601
+      timestamp = Time.current.iso8601(6)
       ActiveRecord.after_all_transactions_commit do
         perform_later(name, distinct_id, properties, timestamp)
       rescue StandardError => error

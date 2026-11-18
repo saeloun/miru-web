@@ -27,9 +27,11 @@ messaging providers are not enabled by installing the browser SDK.
 People use `miru:user:<id>` and the `company` group uses `miru:company:<id>`.
 Names, emails and client/invoice content are excluded from backend capture.
 Replay masks text, attributes and inputs, blocks documents and media, and stops
-on authentication, profile, settings, payroll, employee, hiring and shared invoice
-pages. Network bodies, headers and console recording are disabled. Event and
+on authentication, profile, settings, team, payroll, employee, hiring and shared
+invoice pages. Network bodies, headers and console recording are disabled. Event and
 replay URLs lose query strings and fragments. Do Not Track is respected.
+Heatmap URL keys and initial/previous-page pathnames are sanitized too. Visits to
+different records still count separately while exported URLs use `:id` placeholders.
 
 The official `posthog-rails` integration captures Rails and background-job
 exceptions. Exception messages, source snippets, request parameters and absolute

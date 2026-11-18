@@ -7,6 +7,7 @@ import { chromium } from "playwright";
 import ts from "typescript";
 
 const replayCalls = [];
+const pageviews = [];
 let sdkConfig;
 const sdk = {
   init: (_token, config) => {
@@ -15,7 +16,7 @@ const sdk = {
   get_property: () => "miru:user:42",
   identify: () => {},
   group: () => {},
-  capture: () => {},
+  capture: (name, properties) => pageviews.push({ name, properties }),
   logger: { info: () => {} },
   startSessionRecording: () => replayCalls.push("start"),
   stopSessionRecording: () => replayCalls.push("stop"),
@@ -42,6 +43,17 @@ const scrubbedError = sdkConfig.before_send({
       name: "https://app.miru.so/?token=private-secret",
     },
     $exception_message: "private@example.test",
+    title: "private@example.test",
+    $prev_pageview_pathname: "/invoices/private-secret/view",
+    $set_once: { $initial_pathname: "/invoices/private-secret/view" },
+    $heatmap_data: {
+      "https://app.miru.so/users/password/edit?token=private-secret#private": [
+        { x: 1, y: 2 },
+      ],
+      "https://app.miru.so/users/password/edit?token=another-secret": [
+        { x: 3, y: 4 },
+      ],
+    },
     $exception_list: [
       {
         type: "TypeError",
@@ -64,8 +76,20 @@ const scrubbedError = sdkConfig.before_send({
 assert.ok(JSON.stringify(scrubbedError).includes("TypeError"));
 assert.ok(!JSON.stringify(scrubbedError).includes("private@example.test"));
 assert.ok(!JSON.stringify(scrubbedError).includes("private-secret"));
+assert.ok(!JSON.stringify(scrubbedError).includes("another-secret"));
+assert.equal(
+  scrubbedError.properties.$heatmap_data[
+    "https://app.miru.so/users/password/edit"
+  ].length,
+  2
+);
 assert.equal(scrubbedError.properties.$web_vitals_FCP_value, 123);
 for (const pathname of [
+  "/team",
+  "/team/42",
+  "/team/42/employment",
+  "/team/42/billing-identity",
+  "/team/42/automation",
   "/team/42/employee-records",
   "/consultant-payroll",
   "/salary-slips",
@@ -88,6 +112,20 @@ analytics.syncProductAnalytics({
   pathname: "/projects",
 });
 assert.deepEqual(replayCalls, ["start"], "Product routes must allow replay");
+pageviews.length = 0;
+for (const pathname of ["/clients/1", "/clients/1", "/clients/2"]) {
+  analytics.syncProductAnalytics({ userId: 42, companyId: 99, pathname });
+}
+assert.equal(
+  pageviews.length,
+  2,
+  "Different resources must count as separate visits without duplicate rerenders"
+);
+assert.ok(
+  pageviews.every(event =>
+    event.properties.$current_url.endsWith("/clients/:id")
+  )
+);
 
 const base = new URL(process.env.BASE_URL || "http://127.0.0.1:3179");
 assert.ok(["127.0.0.1", "localhost"].includes(base.hostname));
@@ -169,6 +207,7 @@ await context.route("**/*", async route => {
         featureFlags: {},
         featureFlagPayloads: {},
         supportedCompression: [],
+        heatmaps: true,
         sessionRecording: {
           endpoint: "/s/",
           recorderVersion: "v2",
@@ -223,7 +262,13 @@ try {
   await page.waitForFunction(() =>
     document.querySelector('[data-testid="app-loaded"]')
   );
+  await page.waitForTimeout(1000);
+  await page.mouse.click(10, 10);
   await page.waitForTimeout(11000);
+  assert.ok(
+    events.some(event => event.event === "$$heatmap"),
+    "The enabled SDK must emit actual heatmap data"
+  );
   assert.ok(
     events.some(event => event.event === "$pageview"),
     `Expected a pageview; requests: ${requests.join(

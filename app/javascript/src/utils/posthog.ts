@@ -4,7 +4,7 @@ let initialized = false;
 let lastPage: string | null = null;
 
 const privatePath = (pathname: string) =>
-  /\/(sign_in|login|signup|password|email_confirmation|profile|settings|payroll|employees|employee-records|consultant|consultant-payroll|salary-slips|tax-declarations|india-tax|documents|signed-documents|agreements|hiring|interview-feedback|interview-reviews|assignment-reviews)(\/|$)/.test(
+  /\/(sign_in|login|signup|password|email_confirmation|profile|settings|team|payroll|employees|employee-records|consultant|consultant-payroll|salary-slips|tax-declarations|india-tax|documents|signed-documents|agreements|hiring|interview-feedback|interview-reviews|assignment-reviews)(\/|$)/.test(
     pathname
   ) || /^\/invoices\/[^/]+\/(view|payments)/.test(pathname);
 
@@ -97,12 +97,31 @@ export const initializeProductAnalytics = () => {
             properties[key] = analyticsUrl(properties[key]);
           }
         }
-        for (const key of ["$pathname", "$session_entry_pathname"]) {
+        for (const key of [
+          "$pathname",
+          "$initial_pathname",
+          "$session_entry_pathname",
+          "$prev_pageview_pathname",
+        ]) {
           if (typeof properties[key] === "string") {
-            properties[key] = new URL(analyticsUrl(properties[key])).pathname;
+            const url = analyticsUrl(properties[key]);
+            properties[key] = url ? new URL(url).pathname : "";
           }
         }
+        if (properties.$heatmap_data) {
+          const heatmaps = {};
+          for (const [url, points] of Object.entries(
+            properties.$heatmap_data
+          )) {
+            const safeUrl = analyticsUrl(url);
+            if (safeUrl && Array.isArray(points)) {
+              heatmaps[safeUrl] = [...(heatmaps[safeUrl] || []), ...points];
+            }
+          }
+          properties.$heatmap_data = heatmaps;
+        }
         delete properties.$title;
+        delete properties.title;
 
         // Web-vitals attribution embeds navigation URLs; retain its numeric metrics.
         for (const key of Object.keys(properties)) {
@@ -163,6 +182,7 @@ export const syncProductAnalytics = ({
     const previousUser = posthog.get_property("$user_id");
     if (previousUser && previousUser !== `miru:user:${userId}`) {
       posthog.reset();
+      lastPage = null;
     }
     posthog.identify(`miru:user:${userId}`, { role });
     if (companyId) posthog.group("company", `miru:company:${companyId}`);
@@ -176,9 +196,9 @@ export const syncProductAnalytics = ({
   else posthog.stopSessionRecording();
 
   const page = analyticsUrl(pathname);
-  if (lastPage !== page) {
+  if (lastPage !== pathname) {
     posthog.capture("$pageview", { $current_url: page });
     posthog.logger.info("miru.page_view");
-    lastPage = page;
+    lastPage = pathname;
   }
 };
