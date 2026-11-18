@@ -5,7 +5,6 @@ require "fileutils"
 require "json"
 require "open3"
 require "rbconfig"
-require "shellwords"
 require "tmpdir"
 require "yaml"
 
@@ -53,12 +52,12 @@ RSpec.describe "enforce_council_gate.sh" do
                     "PATH" => [@commands, File.dirname(RbConfig.ruby), "/usr/bin", "/bin"].join(":") }
     arguments = ["/bin/bash", File.join(root, "script/enforce_council_gate.sh")]
     if updates
-      hook = YAML.safe_load_file(File.join(root, "lefthook.yml")).fetch("pre-push").fetch("commands").fetch("council-gate")
+      hook = YAML.safe_load_file(File.join(root, "lefthook.yml")).fetch("pre-push").fetch("scripts").fetch("council-gate.sh")
       expect(hook.fetch("use_stdin")).to be(true)
-      command = Shellwords.split(hook.fetch("run"))
-      arguments = ["/bin/bash", File.join(root, command.first), *command.drop(1)]
+      arguments = [hook.fetch("runner"), File.join(root, ".lefthook/pre-push/council-gate.sh")]
     end
-    Open3.capture3(environment, *arguments, stdin_data: updates.to_s, chdir: @directory, unsetenv_others: true)
+    Open3.capture3(environment, *arguments, stdin_data: updates.to_s,
+      chdir: updates ? root : @directory, unsetenv_others: true)
   end
 
   it "accepts all required clean or clear reviews" do
