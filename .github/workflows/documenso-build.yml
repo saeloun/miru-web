@@ -241,7 +241,7 @@ jobs:
         run: python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py --self-check
 
       - name: Prepare unused runner storage sockets and check Unix isolation
-        timeout-minutes: 2
+        timeout-minutes: 3
         run: |
           sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT python3 -I - <<'PY'
           import importlib.util, json, os, pathlib, sys

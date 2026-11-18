@@ -644,7 +644,8 @@ def runner_jobs_diagnostic(raw):
 
 
 def wait_runner_jobs():
-    until = time.monotonic() + 30
+    # Device jobs can use systemd's 90-second default before settling.
+    until = time.monotonic() + 120
     while pending := checked(["systemctl", "list-jobs", "--no-legend", "--no-pager"], timeout=5).strip():
         if time.monotonic() >= until:
             message = "Runner has pending systemd jobs; review reported job IDs with the runner owner before another authorized attempt. Do not stop or ignore units to bypass admission."
@@ -2595,9 +2596,15 @@ def self_check():
             assert all(call.args[0] == ["systemctl", "list-jobs", "--no-legend", "--no-pager"] and call.kwargs == {"timeout": 5} for call in jobs.call_args_list)
             sleep.assert_called_once_with(.2)
         assert not output.getvalue()
+        jobs = Mock(side_effect=[pending, pending, b""])
+        output = io.StringIO()
+        with patch.dict(globals(), checked=jobs), patch.object(time, "monotonic", side_effect=[0, 31, 91]), patch.object(time, "sleep") as sleep, patch.object(sys, "stdout", output):
+            wait_runner_jobs()
+            assert jobs.call_count == 3 and sleep.call_count == 2
+        assert not output.getvalue(), "Settled runner should not emit failure diagnostics"
         jobs = Mock(side_effect=[pending, ordering])
         output = io.StringIO()
-        with patch.dict(globals(), checked=jobs), patch.object(time, "monotonic", side_effect=[0, 30]), patch.object(time, "sleep") as sleep, patch.object(sys, "stdout", output):
+        with patch.dict(globals(), checked=jobs), patch.object(time, "monotonic", side_effect=[0, 120]), patch.object(time, "sleep") as sleep, patch.object(sys, "stdout", output):
             try:
                 wait_runner_jobs()
             except RuntimeError as error:
@@ -2613,7 +2620,7 @@ def self_check():
         assert jobs.call_count == 2 and jobs.call_args.args[0] == ["systemctl", "list-jobs", "--after", "--before", "--full", "--no-legend", "--no-pager"] and jobs.call_args.kwargs == {"timeout": 5}
         for raw in (b"SYNTHETIC_SECRET https://private.invalid/token\n" + pending, b"123 bad\x1b[31m.service start waiting\n", pending * 1000):
             output = io.StringIO()
-            with patch.dict(globals(), checked=Mock(side_effect=[pending, raw])), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(sys, "stdout", output):
+            with patch.dict(globals(), checked=Mock(side_effect=[pending, raw])), patch.object(time, "monotonic", side_effect=[0, 121]), patch.object(sys, "stdout", output):
                 try:
                     wait_runner_jobs()
                 except RuntimeError:
@@ -2628,7 +2635,7 @@ def self_check():
         for results in ([subprocess.CalledProcessError(1, ["systemctl"], output=b"SYNTHETIC_SECRET", stderr=b"SYNTHETIC_SECRET")],
                         [pending, subprocess.CalledProcessError(1, ["systemctl"], output=b"SYNTHETIC_SECRET", stderr=b"SYNTHETIC_SECRET")]):
             output = io.StringIO()
-            with patch.dict(globals(), checked=Mock(side_effect=results)), patch.object(time, "monotonic", side_effect=[0, 31]), patch.object(sys, "stdout", output):
+            with patch.dict(globals(), checked=Mock(side_effect=results)), patch.object(time, "monotonic", side_effect=[0, 121]), patch.object(sys, "stdout", output):
                 try:
                     wait_runner_jobs()
                 except subprocess.CalledProcessError as error:
