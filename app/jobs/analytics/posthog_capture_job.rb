@@ -36,7 +36,9 @@ module Analytics
       return if ENV["POSTHOG_PROJECT_TOKEN"].blank? || ENV["POSTHOG_HOST"].blank?
 
       uri = URI.join(ENV.fetch("POSTHOG_HOST"), "/i/v0/e/")
-      raise ArgumentError, "PostHog requires an HTTPS host" unless uri.is_a?(URI::HTTPS)
+      unless uri.is_a?(URI::HTTPS)
+        raise ArgumentError, "POSTHOG_HOST must be an HTTPS instance URL; correct it and restart web and worker, or unset it to disable PostHog"
+      end
 
       properties = properties.symbolize_keys.slice(*PROPERTIES)
       properties[:$groups] = { company: "miru:company:#{properties[:company_id]}" } if properties[:company_id]
@@ -49,7 +51,10 @@ module Analytics
       response = Net::HTTP.start(uri.host, uri.port, use_ssl: true, open_timeout: 3, read_timeout: 5) do |http|
         http.request(request)
       end
-      raise "PostHog capture failed (HTTP #{response.code})" unless response.is_a?(Net::HTTPSuccess)
+      unless response.is_a?(Net::HTTPSuccess)
+        raise "PostHog capture failed (HTTP #{response.code}); check collector health, POSTHOG_HOST and POSTHOG_PROJECT_TOKEN. " \
+          "Delivery retries up to 5 attempts with the same event UUID."
+      end
     end
   end
 end

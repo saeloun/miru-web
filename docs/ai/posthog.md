@@ -54,6 +54,12 @@ Test mode disables SDK network calls. Missing runtime settings also leave the
 Rails SDK uninitialized. Both web and worker processes need the settings and a
 restart when enabled.
 
+An HTTPS configuration error names `POSTHOG_HOST`: correct the instance URL and
+restart web and worker, or unset the setting to disable PostHog. For a capture
+HTTP error, check collector health, the host and the public project capture token.
+Delivery makes at most five attempts with the same UUID; inspect failed jobs after
+those attempts. Response bodies and credentials are excluded from error messages.
+
 Existing Rails product events supply workspace/client/project creation,
 time entries, invoices, payments, invitations, expenses and imports. The existing
 tracking service supplies signup attribution, trials and subscription conversion.
@@ -99,7 +105,7 @@ subscription purchase delivery specs. Run the required `timeout 30 bin/vite buil
 focused TypeScript checking, ESLint and RuboCop.
 
 With a local app on port 3179 configured for the synthetic token `phc_synthetic`
-and host `https://posthog.example.test`, run `node scripts/qa/posthog.mjs`.
+and host `https://posthog.example.test`, run `node scripts/qa/posthog.test.mjs`.
 It uses Brave, intercepts analytics locally, and checks signup rendering, URL
 redaction, user/workspace identity, guest reset, disabled configuration and an
 unavailable analytics server. It inspects recorder payloads for masked inputs and

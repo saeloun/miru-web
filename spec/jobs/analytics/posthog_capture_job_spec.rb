@@ -77,7 +77,8 @@ RSpec.describe Analytics::PosthogCaptureJob do
 
     expect do
       described_class.new.perform("user_signup", "miru:user:42", {}, Time.current.iso8601)
-    end.to raise_error("PostHog capture failed (HTTP 503)")
+    end.to raise_error("PostHog capture failed (HTTP 503); check collector health, POSTHOG_HOST and POSTHOG_PROJECT_TOKEN. " \
+      "Delivery retries up to 5 attempts with the same event UUID.")
   end
 
   it "rejects plaintext collection endpoints" do
@@ -85,6 +86,6 @@ RSpec.describe Analytics::PosthogCaptureJob do
 
     expect do
       described_class.new.perform("user_signup", "miru:user:42", {}, Time.current.iso8601)
-    end.to raise_error(ArgumentError, "PostHog requires an HTTPS host")
+    end.to raise_error(ArgumentError, "POSTHOG_HOST must be an HTTPS instance URL; correct it and restart web and worker, or unset it to disable PostHog")
   end
 end

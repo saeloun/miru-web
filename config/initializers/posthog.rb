@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 if ENV["POSTHOG_HOST"].present? && ENV["POSTHOG_PROJECT_TOKEN"].present?
-  raise ArgumentError, "PostHog requires an HTTPS host" unless URI.parse(ENV.fetch("POSTHOG_HOST")).is_a?(URI::HTTPS)
+  unless URI.parse(ENV.fetch("POSTHOG_HOST")).is_a?(URI::HTTPS)
+    raise ArgumentError, "POSTHOG_HOST must be an HTTPS instance URL; correct it and restart web and worker, or unset it to disable PostHog"
+  end
 
   PostHog::Rails.configure do |config|
     config.auto_capture_exceptions = true
