@@ -5,7 +5,10 @@ class SalaryHistoryReviewsController < ApplicationController
   before_action :authorize_review
 
   rescue_from ActionController::BadRequest, ActionController::ParameterMissing do
-    render plain: "Choose retain or mark as abandoned for every salary awaiting review", status: 422
+    render :recovery, formats: [:html], layout: false, status: 422, locals: {
+      message: "Choose retain or mark as abandoned for every salary awaiting review. No decisions were saved.",
+      recovery_path: salary_history_review_path(employment_id: @employment.id), recovery_label: "Reopen salary history"
+    }
   end
 
   def show
@@ -19,7 +22,10 @@ class SalaryHistoryReviewsController < ApplicationController
       raise ActionController::BadRequest
     end
     unless attributes[:company_id].to_s == current_company.id.to_s
-      return render plain: "Workspace changed; reload salary history before reviewing", status: 409
+      return render :recovery, formats: [:html], layout: false, status: 409, locals: {
+        message: "Workspace changed. No salary review was saved. Open your current workspace team before reviewing salary history.",
+        recovery_path: "/team", recovery_label: "Open current workspace team"
+      }
     end
     expected = ids(attributes[:active_ids])
     decisions = attributes[:decisions]
@@ -33,7 +39,10 @@ class SalaryHistoryReviewsController < ApplicationController
       ApplicationRecord.uncached { authorize_review }
       active = @employment.compensation_versions.active.order(:id).to_a
       unless active.map(&:id) == expected.sort
-        return render plain: "Salary history changed; reload it before reviewing", status: 409
+        return render :recovery, formats: [:html], layout: false, status: 409, locals: {
+          message: "Salary history changed. No decisions were saved. Reopen salary history to review the latest versions.",
+          recovery_path: salary_history_review_path(employment_id: @employment.id), recovery_label: "Reopen salary history"
+        }
       end
       unresolved = active.filter_map { |version| version.id if version.reviewed_at.nil? }
       raise ActionController::BadRequest unless unresolved.any? && decision_ids.sort == unresolved

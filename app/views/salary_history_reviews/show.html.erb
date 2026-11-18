@@ -14,7 +14,7 @@
       .table-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
       th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
       select, input, button { font: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
-      button { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; } :focus-visible { outline: 3px solid #a78bfa; outline-offset: 2px; }
+      button { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; } :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
       @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #f4f4f5; --card: #18181b; --border: #3f3f46; --primary: #a78bfa; } button { color: #18181b; } }
     </style>
   </head>
@@ -25,41 +25,41 @@
       <p><%= link_to "Back to team", "/team" %></p>
       <section class="panel">
         <p>Older salary history may contain replaced scheduled raises. Confirm each retained salary or mark it as abandoned. Every original amount and date remains stored. Current salary and financial costs stay unavailable until all active history has been reviewed.</p>
-        <% if @versions.any? { |version| version.reviewed_at.nil? } %>
-          <%= form_with url: salary_history_review_path(employment_id: @employment.id), method: :patch, local: true do |form| %>
-            <%= hidden_field_tag "salary_review[company_id]", current_company.id %>
-            <% @versions.each do |version| %>
-              <%= hidden_field_tag "salary_review[active_ids][]", version.id %>
-            <% end %>
-            <div class="table-scroll">
-              <table>
-                <caption>Active salary versions</caption>
-                <thead><tr><th scope="col">Version</th><th scope="col">Effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
-                <tbody>
-                  <% @versions.each do |version| %>
-                    <tr>
-                      <td><%= version.id %></td>
-                      <td><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
-                      <td><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
-                      <td>
-                        <% if version.reviewed_at %>
-                          Reviewed <%= version.reviewed_at.to_date %>
-                        <% else %>
-                          <%= hidden_field_tag "salary_review[decisions][][id]", version.id %>
-                          <label for="salary-decision-<%= version.id %>">Decision for version <%= version.id %></label>
-                          <%= select_tag "salary_review[decisions][][decision]", options_for_select([["Choose a decision", ""], ["Retain", "retain"], ["Mark as abandoned", "retire"]]), id: "salary-decision-#{version.id}", required: true %>
-                        <% end %>
-                      </td>
-                    </tr>
-                  <% end %>
-                </tbody>
-              </table>
-            </div>
+        <%= form_with url: salary_history_review_path(employment_id: @employment.id), method: :patch, local: true do |form| %>
+          <%= hidden_field_tag "salary_review[company_id]", current_company.id %>
+          <% @versions.each do |version| %>
+            <%= hidden_field_tag "salary_review[active_ids][]", version.id %>
+          <% end %>
+          <div class="table-scroll">
+            <table>
+              <caption>Active salary versions</caption>
+              <thead><tr><th scope="col">Version</th><th scope="col">Effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
+              <tbody>
+                <% @versions.each do |version| %>
+                  <tr>
+                    <td><%= version.id %></td>
+                    <td><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
+                    <td><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
+                    <td>
+                      <% if version.reviewed_at %>
+                        Reviewed <%= version.reviewed_at.to_date %>
+                      <% else %>
+                        <%= hidden_field_tag "salary_review[decisions][][id]", version.id %>
+                        <label for="salary-decision-<%= version.id %>">Decision for version <%= version.id %></label>
+                        <%= select_tag "salary_review[decisions][][decision]", options_for_select([["Choose a decision", ""], ["Retain", "retain"], ["Mark as abandoned", "retire"]]), id: "salary-decision-#{version.id}", required: true %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% if @versions.any? { |version| version.reviewed_at.nil? } %>
             <p>Retain means this salary is valid history. Mark as abandoned means the scheduled salary was replaced and must not affect salary or costs. Reviewing an undated salary does not create an effective date.</p>
             <%= form.submit "Save salary history review" %>
+          <% else %>
+            <p role="status">No active salary history is awaiting review.</p>
           <% end %>
-        <% else %>
-          <p role="status">No active salary history is awaiting review.</p>
         <% end %>
       </section>
     </main>

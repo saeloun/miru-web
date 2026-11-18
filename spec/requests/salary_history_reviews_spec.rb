@@ -80,6 +80,12 @@ RSpec.describe "Salary history review", type: :request do
     expect(response).to have_http_status(:see_other)
     expect(reviewed.reload.reviewed_at).to eq(stamp)
     expect(reviewed.superseded_at).to be_nil
+    follow_redirect!
+    expect(response).to have_http_status(:ok)
+    document = Nokogiri::HTML(response.body)
+    expect(document.css("table").text).to include("1000.00", "3000.00", "Reviewed")
+    expect(document.css("select, input[type='submit']")).to be_empty
+    expect(document.css("[role='status']").text).to include("No active salary history is awaiting review")
   end
 
   it "shows employees the review warning without allowing history access" do
@@ -97,6 +103,12 @@ RSpec.describe "Salary history review", type: :request do
     review
     expect(response).to have_http_status(:conflict)
     expect(versions.map { |version| version.reload.reviewed_at }).to all(be_nil)
+    link = Nokogiri::HTML(response.body).at_css("a[href='#{path}']")
+    expect(link&.text).to eq("Reopen salary history")
+    expect(response.body).not_to include("reload")
+    get link["href"]
+    expect(response).to have_http_status(:ok)
+    expect(versions.map { |version| version.reload.reviewed_at }).to all(be_nil)
   end
 
   it "rejects missing, duplicate, foreign and invalid decisions without changing history" do
@@ -111,11 +123,15 @@ RSpec.describe "Salary history review", type: :request do
     end
     review(active_ids: versions.map(&:id) + [versions.first.id])
     expect(response).to have_http_status(:unprocessable_content)
+    expect(Nokogiri::HTML(response.body).at_css("a[href='#{path}']")&.text).to eq("Reopen salary history")
   end
 
   it "rejects another workspace and a stale workspace identity" do
     review(company_id: create(:company).id)
     expect(response).to have_http_status(:conflict)
+    link = Nokogiri::HTML(response.body).at_css("a[href='/team']")
+    expect(link&.text).to eq("Open current workspace team")
+    expect(response.body).not_to include("reload")
     other = create(:employment)
     get "/employee-records/#{other.id}/salary-history"
     expect(response).to have_http_status(:not_found)
