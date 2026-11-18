@@ -48,10 +48,11 @@ RSpec.describe "enforce_council_gate.sh" do
     required.map { |skill| review(skill, "clean") }
   end
 
-  def run_gate(rows, updates: nil)
+  def run_gate(rows, updates: nil, git_repository: nil)
     File.write(File.join(@state, "projects", "synthetic", "branch-reviews.jsonl"), rows.map(&:to_json).join("\n"))
     environment = { "GSTACK_BIN" => @commands, "GSTACK_HOME" => @state,
                     "PATH" => [@commands, File.dirname(RbConfig.ruby), "/usr/bin", "/bin"].join(":") }
+    environment["COUNCIL_GIT_REPO"] = git_repository if git_repository
     arguments = ["/bin/bash", File.join(root, "script/enforce_council_gate.sh")]
     if updates
       hook = YAML.safe_load_file(File.join(root, "lefthook.yml")).fetch("pre-push").fetch("scripts").fetch("council-gate.sh")
@@ -64,7 +65,7 @@ RSpec.describe "enforce_council_gate.sh" do
 
   it "accepts all required clean or clear reviews" do
     rows = required.zip(%w[clean clear CLEAN]).map { |skill, status| review(skill, status) }
-    rows.first[:commit_full] = head[0, 7]
+    rows.first[:commit] = rows.first.delete(:commit_full)
     output, errors, status = run_gate(rows)
 
     expect(status).to be_success, output + errors
@@ -100,6 +101,20 @@ RSpec.describe "enforce_council_gate.sh" do
     output, errors, status = run_gate(rows)
 
     expect(status).not_to be_success, output + errors
+  end
+
+  it "rejects an engineering review with only an abbreviated commit" do
+    rows = clean_reviews.drop(1) + [review("plan-eng-review", "clean", head[0, 7])]
+    output, errors, status = run_gate(rows)
+
+    expect(status).not_to be_success, output + errors
+    expect(output).to include("plan-eng-review=missing")
+  end
+
+  it "ignores an abbreviated review newer than an exact approval" do
+    output, errors, status = run_gate(clean_reviews + [review("plan-eng-review", "issues_open", head[0, 7])])
+
+    expect(status).to be_success, output + errors
   end
 
   it "accepts a pre-push update of the checked-out commit" do
@@ -152,6 +167,37 @@ RSpec.describe "enforce_council_gate.sh" do
     end
   end
 
+  it "checks lightweight and annotated tags using real Git objects" do
+    repository = File.join(@directory, "repository")
+    FileUtils.mkdir_p(repository)
+    git = lambda do |*arguments|
+      output, errors, status = Open3.capture3({ "HOME" => @directory, "PATH" => "/usr/bin:/bin" },
+        "/usr/bin/git", "-C", repository, *arguments, unsetenv_others: true)
+      expect(status).to be_success, output + errors
+      output.strip
+    end
+    git.call("init", "--initial-branch=branch")
+    identity = ["-c", "user.name=Synthetic Fixture", "-c", "user.email=fixture@example.test"]
+    git.call(*identity, "commit", "--allow-empty", "-m", "initial")
+    previous = git.call("rev-parse", "HEAD")
+    git.call(*identity, "commit", "--allow-empty", "-m", "reviewed")
+    current = git.call("rev-parse", "HEAD")
+    git.call("tag", "lightweight")
+    git.call(*identity, "tag", "-a", "annotated", "-m", "reviewed tag")
+    git.call(*identity, "tag", "-a", "unreviewed", "-m", "other commit", previous)
+    write_command("git", 'exec /usr/bin/git -C "$COUNCIL_GIT_REPO" "$@"' + "\n")
+    rows = required.map { |skill| review(skill, "clean", current) }
+
+    { "lightweight" => true, "annotated" => true, "unreviewed" => false }.each do |tag, accepted|
+      object = git.call("rev-parse", "refs/tags/#{tag}")
+      output, errors, status = run_gate(rows, git_repository: repository,
+        updates: "refs/tags/#{tag} #{object} refs/tags/#{tag} #{'0' * 40}\n")
+
+      expect(status.success?).to eq(accepted), output + errors
+      expect(errors).to include("PUSH_HEAD_MISMATCH") unless accepted
+    end
+  end
+
   it "does not treat branch deletion as a pushed commit" do
     output, errors, status = run_gate(clean_reviews,
       updates: "(delete) #{'0' * 40} refs/heads/old #{'b' * 40}\n")
@@ -192,7 +238,9 @@ RSpec.describe "enforce_council_gate.sh" do
       [:unresolved, "0"], [:unresolved, 0.0], [:unresolved, 1], [:commit_full, "a" * 7]
     ].each do |field, value|
       it "rejects malformed no-UI evidence #{field}=#{value.inspect}" do
-        output, errors, status = run_gate(clean_reviews + [design_applicability.merge(field => value)])
+        rows = clean_reviews.reject { |row| row[:skill] == "plan-design-review" } +
+          [design_applicability.merge(field => value)]
+        output, errors, status = run_gate(rows)
 
         expect(status).not_to be_success, output + errors
       end

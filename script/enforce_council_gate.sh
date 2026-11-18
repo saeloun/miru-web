@@ -83,7 +83,7 @@ CHECK_OUTPUT="$(
         next false unless entry["skill"] == skill
         commit = (entry["commit_full"] || entry["commit"]).to_s
         next false if commit.empty?
-        head_sha.start_with?(commit)
+        commit == head_sha
       end
       result[skill] = matched && (
         valid_statuses.include?(matched["status"].to_s.downcase) ||
