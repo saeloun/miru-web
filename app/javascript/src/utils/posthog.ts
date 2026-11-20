@@ -3,6 +3,13 @@ import posthog from "posthog-js";
 let initialized = false;
 let lastPage: string | null = null;
 
+const safeAttributionValue = (value: unknown) =>
+  typeof value === "string" &&
+  value.length <= 255 &&
+  !/@|%40|:\/\/|^\/|(?:token|password|api[_-]?key|secret)\s*[:=]|\bbearer\s|\p{Cc}/iu.test(
+    value
+  );
+
 const privatePath = (pathname: string) =>
   /\/(sign_in|login|signup|password|email_confirmation|profile|settings|team|payroll|employees|employee-records|consultant|consultant-payroll|salary-slips|tax-declarations|india-tax|documents|signed-documents|agreements|hiring|interview-feedback|interview-reviews|assignment-reviews)(\/|$)/.test(
     pathname
@@ -37,6 +44,27 @@ export const initializeProductAnalytics = () => {
   posthog.init(token, {
     api_host: host,
     ui_host: host,
+    save_campaign_params: false,
+    save_referrer: false,
+    loaded: client => {
+      // Flag requests bypass before_send, including initial attribution saved by older SDK settings.
+      for (const key of [
+        "$initial_person_info",
+        "$initial_campaign_params",
+        "$initial_referrer_info",
+      ]) {
+        client.unregister(key);
+      }
+
+      const attribution = Object.fromEntries(
+        [...new URL(window.location.href).searchParams].filter(
+          ([key, value]) =>
+            /^utm_(source|medium|campaign|term|content)$/.test(key) &&
+            safeAttributionValue(value)
+        )
+      );
+      client.register(attribution);
+    },
     capture_pageview: false,
     capture_pageleave: false,
     autocapture: { url_ignorelist: [/\/password/, /\/invoices\/[^/]+\/view/] },
@@ -122,6 +150,15 @@ export const initializeProductAnalytics = () => {
         }
         delete properties.$title;
         delete properties.title;
+
+        for (const key of Object.keys(properties)) {
+          if (
+            /(?:^|[$_])utm_(source|medium|campaign|term|content)$/.test(key) &&
+            !safeAttributionValue(properties[key])
+          ) {
+            delete properties[key];
+          }
+        }
 
         // Web-vitals attribution embeds navigation URLs; retain its numeric metrics.
         for (const key of Object.keys(properties)) {

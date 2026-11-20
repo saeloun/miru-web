@@ -48,4 +48,17 @@ RSpec.describe Analytics::PosthogSubscriber do
     expect(Analytics::PosthogCaptureJob).not_to receive(:capture)
     described_class.new.emit(name: "Unrelated::Event", payload: {})
   end
+
+  it "associates provider payments with their workspace without an authenticated user" do
+    Current.reset
+    payment = build_stubbed(:payment, status: :paid)
+
+    expect do
+      Rails.event.notify(Payments::Recorded.new(payment))
+    end.to have_enqueued_job(Analytics::PosthogCaptureJob).with(
+      "payment_recorded", "miru:company:#{payment.company.id}",
+      { payment_id: payment.id, invoice_id: payment.invoice_id, company_id: payment.company.id, status: payment.status },
+      an_instance_of(String)
+    )
+  end
 end

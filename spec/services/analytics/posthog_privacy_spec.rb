@@ -1,9 +1,45 @@
 # frozen_string_literal: true
 
 require "rails_helper"
+require "posthog/rails/logs/appender"
 
 RSpec.describe Analytics::PosthogPrivacy do
   after { Current.reset }
+
+  it "filters scalar attribution values at the SDK boundary while retaining ordinary campaign values" do
+    properties = { company_id: 99, seat_quantity: 3, billing_interval: "monthly", status: "paid",
+      utm_source: "paid-search", utm_campaign: "Black Friday 2026", utm_term: "contact private@example.test",
+      utm_content: "https://example.test/reset?token=secret", source: "token=private-secret", role: { email: "private@example.test" } }
+    safe = described_class.properties(properties)
+    event = described_class.event(distinct_id: "miru:user:42", properties:)
+
+    expect(safe).to eq(company_id: 99, seat_quantity: 3, billing_interval: "monthly", status: "paid",
+      utm_source: "paid-search", utm_campaign: "Black Friday 2026")
+    expect(event[:properties]).to include(safe.stringify_keys)
+    expect(event.to_json).not_to include("private@example.test", "private-secret", "token=secret", "example.test/reset")
+  end
+
+  it "preserves a validated SDK worker identity before the actual log exporter emits it" do
+    logger = double("OpenTelemetry logger")
+    appender = PostHog::Rails::Logs::Appender.new(logger, before_send: described_class.method(:log))
+    expect(logger).to receive(:on_emit).with(hash_including(
+      body: "Miru perform.active_job", attributes: { "event.name" => "perform.active_job", "posthogDistinctId" => "miru:user:42" }
+    ))
+
+    PostHog.const_get(:Internal)::Context.with_context({ distinct_id: "miru:user:42" }, fresh: true) do
+      appender.add(Logger::INFO, "private@example.test", attributes: { "event.name" => "perform.active_job" })
+    end
+  end
+
+  it "rejects arbitrary worker identities and prefers the authenticated user over SDK context" do
+    [42, "private@example.test", "arbitrary", "miru:company:99"].each do |identity|
+      record = described_class.log(attributes: { "event.name" => "perform.active_job", "posthogDistinctId" => identity })
+      expect(record[:attributes]).not_to have_key("posthogDistinctId")
+    end
+    Current.user = build_stubbed(:user)
+    record = described_class.log(attributes: { "event.name" => "perform.active_job", "posthogDistinctId" => "miru:user:42" })
+    expect(record[:attributes]["posthogDistinctId"]).to eq("miru:user:#{Current.user.id}")
+  end
 
   it "scrubs an exception built by the installed PostHog SDK" do
     client = PostHog::Client.new(api_key: "phc_synthetic", test_mode: true, before_send: described_class.method(:event))

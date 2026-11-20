@@ -26,6 +26,11 @@ messaging providers are not enabled by installing the browser SDK.
 
 People use `miru:user:<id>` and the `company` group uses `miru:company:<id>`.
 Names, emails and client/invoice content are excluded from backend capture.
+Attribution values containing emails, URLs or credential assignments are dropped
+before enqueueing, again at delivery, and from browser campaign properties.
+Automatic campaign/referrer persistence is disabled because feature-flag requests
+bypass event filtering. Startup removes legacy initial attribution before flags
+load and registers only safe campaign values; flags and surveys remain enabled.
 Replay masks text, attributes and inputs, blocks documents and media, and stops
 on authentication, profile, settings, team, payroll, employee, hiring and shared
 invoice pages. Network bodies, headers and console recording are disabled. Event and
@@ -78,6 +83,8 @@ Build a **Miru growth** dashboard with:
 
 Subscription conversion events without a user belong to the company identity;
 analyze the sales funnel by company rather than treating those as user events.
+Group association requires person processing, so these events create company
+service profiles. Filter human analytics to distinct IDs beginning `miru:user:`.
 Financial payment events describe use of Miru's invoicing feature; they are not
 Miru subscription revenue. No historical events are backfilled automatically.
 
@@ -109,7 +116,8 @@ and host `https://posthog.example.test`, run `node scripts/qa/posthog.test.mjs`.
 It uses Brave, intercepts analytics locally, and checks signup rendering, URL
 redaction, user/workspace identity, guest reset, disabled configuration and an
 unavailable analytics server. It inspects recorder payloads for masked inputs and
-text and verifies replay stopping on a settings SPA transition in Brave. Separate
-unit assertions check the application's HR, payroll and team route exclusions.
+text and verifies replay stopping on a settings SPA transition in Brave.
+Flag-request assertions cover fresh visits and legacy attribution persistence.
+Separate unit assertions check the application's HR, payroll and team route exclusions.
 These are local SDK checks, not proof that a
 PostHog server ingested an event.

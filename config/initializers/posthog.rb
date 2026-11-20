@@ -31,4 +31,9 @@ end
 
 Rails.application.config.after_initialize do
   Rails.event.subscribe(Analytics::PosthogSubscriber.new)
+  if PostHog::Rails.config&.auto_instrument_active_job
+    Analytics::PosthogCaptureJob.posthog_distinct_id lambda { |_event, distinct_id, *_rest|
+      Analytics::PosthogPrivacy.user_identity(distinct_id)
+    }
+  end
 end

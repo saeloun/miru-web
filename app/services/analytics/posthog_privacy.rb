@@ -2,7 +2,11 @@
 
 module Analytics
   class PosthogPrivacy
-    EVENT_PROPERTIES = (PosthogCaptureJob::PROPERTIES.map(&:to_s) + %w[
+    PROPERTIES = %i[company_id user_id client_id project_id invoice_id payment_id invitation_id
+      billing_interval seat_quantity provider source sign_in_method status from to role
+      utm_source utm_medium utm_campaign utm_term utm_content].freeze
+    UNSAFE_VALUE = /@|%40|:\/\/|\A\/|(?:token|password|api[_-]?key|secret)\s*[:=]|\bbearer\s|[[:cntrl:]]/i
+    EVENT_PROPERTIES = (PROPERTIES.map(&:to_s) + %w[
       $exception_list $exception_level $exception_source
       $controller $action $response_status_code $feature_flag $feature_flag_response
     ]).freeze
@@ -12,6 +16,7 @@ module Analytics
 
     def self.event(event)
       properties = event.fetch(:properties, {}).stringify_keys.slice(*EVENT_PROPERTIES)
+      properties.reject! { |key, value| key != "$exception_list" && !safe_value?(value) }
       if properties["$exception_list"]
         properties["$exception_list"] = properties["$exception_list"].map do |exception|
           exception = exception.stringify_keys
@@ -24,17 +29,39 @@ module Analytics
           )
         end
       end
-      identity = event[:distinct_id].to_s
-      identified = identity.match?(/\Amiru:user:\d+\z/)
-      event.merge(distinct_id: identified ? identity : "miru:backend",
-        properties: properties.merge("$process_person_profile" => identified))
+      identity = user_identity(event[:distinct_id])
+      event.merge(distinct_id: identity || "miru:backend",
+        properties: properties.merge("$process_person_profile" => identity.present?))
+    end
+
+    def self.properties(properties)
+      properties.symbolize_keys.slice(*PROPERTIES).select { |_, value| safe_value?(value) }
+    end
+
+    def self.safe_value?(value)
+      case value
+      when String, Symbol
+        value.to_s.length <= 255 && !UNSAFE_VALUE.match?(value.to_s)
+      when Numeric
+        !value.respond_to?(:finite?) || value.finite?
+      when TrueClass, FalseClass
+        true
+      else
+        false
+      end
+    end
+
+    def self.user_identity(value)
+      value.to_s if value.to_s.match?(/\Amiru:user:\d+\z/)
     end
 
     def self.log(record)
-      attributes = record.fetch(:attributes, {}).stringify_keys.slice(*LOG_ATTRIBUTES)
+      incoming = record.fetch(:attributes, {}).stringify_keys
+      attributes = incoming.slice(*LOG_ATTRIBUTES)
       return unless attributes["event.name"]
 
-      attributes["posthogDistinctId"] = "miru:user:#{Current.user.id}" if Current.user
+      identity = Current.user ? "miru:user:#{Current.user.id}" : user_identity(incoming["posthogDistinctId"])
+      attributes["posthogDistinctId"] = identity if identity
       attributes["miru.company_id"] = Current.company.id if Current.company
       record.merge(body: "Miru #{attributes.fetch('event.name')}", attributes:)
     end

@@ -37,7 +37,16 @@ runInNewContext(
 );
 analytics.initializeProductAnalytics();
 const scrubbedError = sdkConfig.before_send({
+  $set_once: {
+    $initial_utm_term: "private@example.test",
+    $initial_utm_medium: "cpc",
+  },
   properties: {
+    utm_source: "website",
+    utm_campaign: "Black Friday 2026",
+    utm_term: "private@example.test",
+    $session_entry_utm_term: "private@example.test",
+    utm_content: "http://localhost/reset?token=private-secret",
     $web_vitals_FCP_value: 123,
     $web_vitals_FCP_event: {
       name: "https://app.miru.so/?token=private-secret",
@@ -45,7 +54,11 @@ const scrubbedError = sdkConfig.before_send({
     $exception_message: "private@example.test",
     title: "private@example.test",
     $prev_pageview_pathname: "/invoices/private-secret/view",
-    $set_once: { $initial_pathname: "/invoices/private-secret/view" },
+    $set_once: {
+      $initial_pathname: "/invoices/private-secret/view",
+      $initial_utm_source: "paid-search",
+      $initial_utm_content: "token=private-secret",
+    },
     $heatmap_data: {
       "https://app.miru.so/users/password/edit?token=private-secret#private": [
         { x: 1, y: 2 },
@@ -77,6 +90,13 @@ assert.ok(JSON.stringify(scrubbedError).includes("TypeError"));
 assert.ok(!JSON.stringify(scrubbedError).includes("private@example.test"));
 assert.ok(!JSON.stringify(scrubbedError).includes("private-secret"));
 assert.ok(!JSON.stringify(scrubbedError).includes("another-secret"));
+assert.equal(scrubbedError.properties.utm_source, "website");
+assert.equal(scrubbedError.properties.utm_campaign, "Black Friday 2026");
+assert.equal(
+  scrubbedError.properties.$set_once.$initial_utm_source,
+  "paid-search"
+);
+assert.equal(scrubbedError.$set_once.$initial_utm_medium, "cpc");
 assert.equal(
   scrubbedError.properties.$heatmap_data[
     "https://app.miru.so/users/password/edit"
@@ -85,6 +105,21 @@ assert.equal(
 );
 assert.equal(scrubbedError.properties.$web_vitals_FCP_value, 123);
 for (const pathname of [
+  "/payroll",
+  "/employees",
+  "/employee-records",
+  "/documents",
+  "/hiring",
+  "/profile",
+  "/settings",
+  "/sign_in",
+  "/login",
+  "/signup",
+  "/users/password/edit",
+  "/email_confirmation",
+  "/consultant",
+  "/invoices/x/view",
+  "/invoices/x/payments/success",
   "/team",
   "/team/42",
   "/team/42/employment",
@@ -135,6 +170,7 @@ const browser = await chromium.launch({
 });
 const events = [];
 const logs = [];
+const flagRequests = [];
 const errors = [];
 const requests = [];
 const browserOptions = {
@@ -181,16 +217,23 @@ await context.route("**/*", async route => {
         ),
       });
     }
-    if (request.method() === "POST" && !url.pathname.includes("/flags")) {
+    if (request.method() === "POST") {
       const body = request.postDataBuffer();
+      const encoded = request
+        .headers()
+        ["content-type"]?.includes("application/x-www-form-urlencoded")
+        ? new URLSearchParams(body.toString()).get("data")
+        : null;
       const text =
         body[0] === 0x1f && body[1] === 0x8b
           ? gunzipSync(body).toString()
-          : url.searchParams.get("compression") === "base64"
-          ? Buffer.from(body.toString(), "base64").toString()
+          : encoded || url.searchParams.get("compression") === "base64"
+          ? Buffer.from(encoded || body.toString(), "base64").toString()
           : body.toString();
       const payload = JSON.parse(text);
-      if (payload.resourceLogs) {
+      if (url.pathname.includes("/flags")) {
+        flagRequests.push(payload);
+      } else if (payload.resourceLogs) {
         for (const resource of payload.resourceLogs)
           for (const scope of resource.scopeLogs)
             logs.push(...scope.logRecords);
@@ -257,7 +300,15 @@ await context.route("**/*", async route => {
 });
 
 try {
-  await page.goto(new URL("/signup?token=synthetic-secret#private", base).href);
+  const signupUrl = new URL("/signup?token=synthetic-secret#private", base);
+  signupUrl.searchParams.set("utm_source", "website");
+  signupUrl.searchParams.set("utm_campaign", "Black Friday 2026");
+  signupUrl.searchParams.set("utm_term", "private@example.test");
+  signupUrl.searchParams.set(
+    "utm_content",
+    "http://localhost/reset?token=private-secret"
+  );
+  await page.goto(signupUrl.href);
   await page.getByRole("button", { name: /create account|sign up/i }).waitFor();
   await page.waitForFunction(() =>
     document.querySelector('[data-testid="app-loaded"]')
@@ -290,9 +341,35 @@ try {
     )
   );
   assert.ok(!JSON.stringify(events).includes("#private"));
+  assert.ok(
+    !JSON.stringify(events).includes("private@example.test"),
+    JSON.stringify(
+      events.flatMap(event =>
+        Object.entries(event.properties || {})
+          .filter(([, value]) =>
+            JSON.stringify(value)?.includes("private@example.test")
+          )
+          .map(([key]) => `${event.event}.${key}`)
+      )
+    )
+  );
+  assert.ok(!JSON.stringify(events).includes("private-secret"));
+  assert.ok(
+    flagRequests.length > 0,
+    "Feature flag evaluation must remain enabled"
+  );
+  assert.ok(!JSON.stringify(flagRequests).includes("private@example.test"));
+  assert.ok(!JSON.stringify(flagRequests).includes("private-secret"));
+  assert.ok(!JSON.stringify(flagRequests).includes("synthetic-secret"));
+  assert.ok(!JSON.stringify(flagRequests).includes("#private"));
+  assert.ok(events.some(event => event.properties.utm_source === "website"));
+  assert.ok(
+    events.some(event => event.properties.utm_campaign === "Black Friday 2026")
+  );
   assert.ok(logs.some(log => log.body.stringValue === "miru.page_view"));
   assert.ok(!JSON.stringify(logs).includes("synthetic-secret"));
   assert.ok(!JSON.stringify(logs).includes("#private"));
+  assert.ok(!JSON.stringify(logs).includes("private@example.test"));
   assert.ok(
     !requests.some(path => path.includes("/s/")),
     "Auth pages must not record replay"
@@ -303,6 +380,29 @@ try {
     path: "output/playwright/posthog-signup.png",
     fullPage: true,
   });
+
+  const flagsBeforeReload = flagRequests.length;
+  await page.evaluate(() => {
+    const key = "ph_phc_synthetic_posthog";
+    const stored = JSON.parse(localStorage.getItem(key) || "{}");
+    stored.$initial_person_info = {
+      u: "https://example.test/reset?token=legacy-private-secret#private",
+      r: "https://example.test/?email=private@example.test",
+    };
+    stored.$initial_campaign_params = { utm_term: "private@example.test" };
+    stored.$initial_referrer_info = {
+      $referrer: "https://example.test/?token=legacy-private-secret",
+    };
+    localStorage.setItem(key, JSON.stringify(stored));
+  });
+  await page.reload();
+  await page.getByRole("button", { name: /create account|sign up/i }).waitFor();
+  await page.waitForTimeout(7000);
+  assert.ok(flagRequests.length > flagsBeforeReload);
+  assert.ok(!JSON.stringify(flagRequests).includes("private@example.test"));
+  assert.ok(!JSON.stringify(flagRequests).includes("private-secret"));
+  assert.ok(!JSON.stringify(flagRequests).includes("synthetic-secret"));
+  assert.ok(!JSON.stringify(flagRequests).includes("#private"));
 
   await page.goto(new URL("/posthog-qa", base).href);
   const fixtureAt = await page.evaluate(() => {
