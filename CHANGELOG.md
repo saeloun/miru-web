@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.7.2] - 2026-11-20
+
+### Fixed
+
+- Make payroll audit checks consistently verify the event sequence across database query plans.
+
 ## [3.7.1] - 2026-11-19
 
 ### Changed
