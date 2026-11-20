@@ -10,6 +10,13 @@
 
 - Require reviews for the exact commit being pushed, while accepting a complete no-UI review for changes without a user interface.
 
+## [3.7.0] - 2026-11-19
+
+### Added
+
+- Connect Miru to PostHog for activation and subscription funnels, product usage, web vitals, error tracking and structured logs.
+- Review masked sessions and collect optional product feedback. Personal, payroll, hiring, document and shared-invoice pages are excluded from replay, and tracking URLs omit private tokens.
+
 ## [3.6.24] - 2026-11-16
 
 ### Fixed
