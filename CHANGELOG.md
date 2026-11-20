@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.7.1] - 2026-11-19
+
+### Changed
+
+- Clarify the approvals, fees and payable limits to check before a first live Mercury payment.
+
+### Fixed
+
+- Require reviews for the exact commit being pushed, while accepting a complete no-UI review for changes without a user interface.
+
 ## [3.7.0] - 2026-11-19
 
 ### Added
