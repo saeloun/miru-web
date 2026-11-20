@@ -521,7 +521,7 @@ RSpec.describe Payroll::MercuryPayment do
     it "records append-only events without credentials or bank numbers" do
       stub_mercury_write
       submit(instruction)
-      events = PayrollPaymentEvent.where(payroll_payment_instruction_id: instruction.id)
+      events = PayrollPaymentEvent.where(payroll_payment_instruction_id: instruction.id).order(:id)
       expect(events.pluck(:kind)).to eq(%w[prepared submission_started submission_accepted])
       json = events.to_json
       expect(json).not_to include(token, "123456789012", "SYNT0000001", "secret-token")

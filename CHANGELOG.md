@@ -1,10 +1,16 @@
 # Changelog
 
-## [3.7.2] - 2026-11-20
+## [Unreleased]
 
 ### Fixed
 
 - Keep private employee, tax and signing fields out of Sentry controller traces using the existing request privacy filters.
+
+## [3.7.2] - 2026-11-20
+
+### Fixed
+
+- Make payroll audit checks consistently verify the event sequence across database query plans.
 
 ## [3.7.1] - 2026-11-19
 
