@@ -236,6 +236,25 @@ Before you start, a server administrator needs to:
    An unchanged retry adds no credit and can recover interrupted settlement.
    When every transfer is credited, the reserved claims are marked paid.
 
+### First live verification payment
+
+Connect the official company account and verify the existing India beneficiary
+before enabling live requests. The assigned accounts reviewer prepares and
+approves the INR payable; a different assigned owner gives final approval in Miru.
+The bank approver must also differ from the Mercury API token creator. These are
+separate approvals: approving in Miru does not release money from Mercury.
+
+For a small test, review the USD principal, fee and total company debit separately.
+[Mercury currently publishes a $15 OUR wire fee](https://support.mercury.com/hc/en-us/articles/28773111244436-Covering-recipient-fees-for-USD-international-wires),
+so a $1 principal can mean a $16 debit. Confirm the actual account fee before
+submission; receiving-bank charges and the final INR credit remain separate.
+
+Miru derives the USD principal from the approved INR payable. There is no
+independent USD test-amount field. Keep a verification payment separate from
+regular compensation and resolve its payable classification first; do not change
+contractual fees or mark a monthly payable settled to force a $1 test. A passing
+mocked test does not verify a real beneficiary, account permission or bank credit.
+
 ### If the outcome is unknown
 
 After a timeout or an unclear response, Mercury may have accepted the request, so

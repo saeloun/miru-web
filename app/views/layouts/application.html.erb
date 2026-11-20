@@ -33,6 +33,10 @@
 
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <% if ENV["POSTHOG_PROJECT_TOKEN"].present? && ENV["POSTHOG_HOST"].present? %>
+      <meta name="posthog-project-token" content="<%= ENV.fetch('POSTHOG_PROJECT_TOKEN') %>">
+      <meta name="posthog-host" content="<%= ENV.fetch('POSTHOG_HOST') %>">
+    <% end %>
     <%= vite_client_tag %>
     <%= vite_javascript_tag 'application.tsx' %>
 
