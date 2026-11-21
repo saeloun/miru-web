@@ -95,7 +95,11 @@
                 <td><%= profitability_number(row[:salary_inr], currency: "INR") %></td><td><%= profitability_number(row[:salary_usd], currency: "USD") %></td>
                 <% [:revenue, :compensation_cost, :margin].each do |key| %><td><%= profitability_number(row[key], currency: @report[:currency]) %></td><% end %>
                 <td><%= profitability_number(row[:margin_percentage], percent: true) %></td>
-                <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %></td>
+                <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %>
+                  <% if row[:flags].include?("compensation_history_requires_review") && policy(EmployeeRecord).manage? %>
+                    <%= link_to "Review salary history", salary_history_review_path(employment_id: row[:employment_id], company_id: current_company.id) %>
+                  <% end %>
+                </td>
               </tr>
               <tr><td colspan="15" class="detail">
                 <details><summary>Inspect <%= row[:person] %> — project hours, rates and compensation history</summary>

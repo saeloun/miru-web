@@ -80,13 +80,15 @@ class Reports::CompensationProfitabilityController < ApplicationController
     def record_compensation_history
       employment = current_company.employments.find(params.require(:employment_id))
       details = params.require(:salary_details).permit(*EmployeeRecord::SALARY_KEYS).to_h
-      candidate = employment.employee_record || EmployeeRecord.new(employment:)
-      candidate.private_details = details
-      unless candidate.valid? && EmployeeRecord::SALARY_KEYS.all? { |key| details[key].present? }
-        raise Reports::CompensationProfitability::InvalidFilters, "Supply complete valid compensation terms"
+      employment.with_lock do
+        candidate = employment.employee_record || EmployeeRecord.new(employment:)
+        candidate.private_details = details
+        unless candidate.valid? && EmployeeRecord::SALARY_KEYS.all? { |key| details[key].present? }
+          raise Reports::CompensationProfitability::InvalidFilters, "Supply complete valid compensation terms"
+        end
+        version = employment.compensation_versions.create!(salary_details: details, effective_on: Date.iso8601(details.fetch("salary_effective_on")), reviewed_at: Time.current)
+        current_company.audits.create!(action: "compensation_history", user: current_user, audited_changes: { compensation_version_id: version.id })
       end
-      version = employment.compensation_versions.create!(salary_details: details, effective_on: Date.iso8601(details.fetch("salary_effective_on")))
-      current_company.audits.create!(action: "compensation_history", user: current_user, audited_changes: { compensation_version_id: version.id })
     end
 
     def authorize_report

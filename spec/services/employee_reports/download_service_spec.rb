@@ -80,6 +80,26 @@ RSpec.describe EmployeeReports::DownloadService do
       "Current salary currency" => "INR", "Month configured national holiday dates (JSON)" => '["2026-10-02"]')
   end
 
+  it "exports effective salary rather than future settings regardless of the selected month" do
+    salary = { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly", "salary_effective_on" => "2026-10-01" }
+    record = employment.create_employee_record!(private_details: salary)
+    record.update!(private_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-01"))
+    expect(row["Current salary amount"]).to eq("1000.00")
+    csv = described_class.new(report:, month: "2026-09", employments: Employment.where(id: employment.id)).process
+    expect(CSV.parse(csv, headers: true).first["Current salary amount"]).to eq("1000.00")
+  end
+
+  it "flags unknown history and never exports retired configured salary as current pay" do
+    salary = { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly", "salary_effective_on" => "2026-10-01" }
+    record = employment.create_employee_record!(private_details: salary)
+    pending = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-10-05")
+    legacy = employment.compensation_versions.create!(effective_on: "2026-10-05", salary_details: pending)
+    record.update_columns(private_details: pending)
+    expect(row["Current salary amount"]).to eq("Administrator review required")
+    legacy.update!(superseded_at: Time.current)
+    expect(row["Current salary amount"]).to eq("1000.00")
+  end
+
   it "bounds exports and rejects invalid month values" do
     stub_const("EmployeeReports::DownloadService::MAX_EMPLOYEES", 0)
     expect { row }.to raise_error(ArgumentError, /exceeds/)
@@ -114,6 +134,8 @@ RSpec.describe EmployeeReports::DownloadService do
     leave_type = create(:leave_type, leave: create(:leave, company:, year: 2026))
     staff = [employment] + 7.times.map { create(:employment, company:, resigned_at: nil, joined_at: Date.new(2020, 1, 1)) }
     staff.each do |member|
+      create(:employee_record, employment: member, private_details: { "salary_amount" => "100.00", "salary_currency" => "INR",
+        "salary_frequency" => "monthly", "salary_effective_on" => "2026-10-01" })
       create(:timesheet_entry, project:, user: member.user, work_date: "2026-10-01", duration: 60)
       create(:timeoff_entry, user: member.user, leave_type:, leave_date: "2026-10-02", duration: 120)
       create(:expense, company:, user: member.user, amount: "12.34", currency: "USD", expense_type: :personal,
@@ -121,6 +143,8 @@ RSpec.describe EmployeeReports::DownloadService do
       create(:expense, company:, user: member.user, amount: "5.67", currency: "INR", expense_type: :personal,
         status: :approved, approved_at: Time.utc(2026, 10, 2))
     end
+    stored = EmployeeRecord.connection.select_value("SELECT private_details FROM employee_records WHERE employment_id = #{employment.id}")
+    expect(stored).not_to include("salary_amount", "100.00")
     holiday = create(:holiday, company:, year: 2026)
     create(:holiday_info, holiday:, date: "2026-10-02", category: :national)
     export = ->(members) { described_class.new(report:, month: "2026-10", employments: Employment.where(id: members.map(&:id))).process }
@@ -137,6 +161,7 @@ RSpec.describe EmployeeReports::DownloadService do
           expect(rows.size).to eq(members.size)
           rows.each do |result|
             expect(result.to_h).to include("Month recorded work (minutes)" => "60.0",
+              "Current salary amount" => "100.00",
               "Month recorded work (8-hour days)" => "0.125",
               "Month recorded time off (minutes)" => "120", "Month recorded working days" => "1",
               "Month recorded paid reimbursements by currency (JSON)" => '{"USD":"12.34"}',

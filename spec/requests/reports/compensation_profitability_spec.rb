@@ -35,6 +35,16 @@ RSpec.describe "Organization compensation profitability", type: :request do
     expect(response.headers["X-Robots-Tag"]).to eq("noindex, nofollow")
   end
 
+  it "links an uncertain salary warning to the scoped administrator review" do
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    expect(response).to have_http_status(:ok)
+    document = Nokogiri::HTML(response.body)
+    link = document.at_css("a[href^='/employee-records/#{employment.id}/salary-history']")
+    expect(link&.text).to eq("Review salary history")
+    expect(document.css(".quality").text).to include("Compensation history requires review")
+  end
+
   it "encrypts snapshots, audits generation and downloads the same snapshot after data changes" do
     payload = generate
     run = CompensationReportRun.last

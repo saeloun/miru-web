@@ -42,7 +42,11 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
       end
       record.private_details = record.private_details.merge(values)
       record.save!
-      record.audits.create!(action: "update", user: current_user, associated: current_company, audited_changes: {})
+      audit_changes = {}
+      if record.superseded_compensation_version_ids.any?
+        audit_changes["superseded_compensation_version_ids"] = record.superseded_compensation_version_ids
+      end
+      record.audits.create!(action: "update", user: current_user, associated: current_company, audited_changes: audit_changes)
     end
     render json: { employee_record: details(employment) }
   end
@@ -158,6 +162,7 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
     # Display labels must not reinterpret stored bank country or currency declarations.
     def details(employment)
       user = employment.user
+      record = employment.employee_record || employment.build_employee_record
       documents = employment.employee_documents.includes(file_attachment: :blob).order(created_at: :desc, id: :desc)
       {
         company_id: current_company.id, can_manage: policy(EmployeeRecord).manage?,
@@ -167,7 +172,8 @@ class Api::V1::EmployeeRecordsController < Api::V1::ApplicationController
             address.slice(:id, :address_type, :address_line_1, :address_line_2, :city, :state, :country, :pin)
           end),
         employment: employment.slice(:id, :employee_id, :designation, :employment_type, :joined_at, :resigned_at),
-        private_details: (employment.employee_record || employment.build_employee_record).details_with_defaults,
+        private_details: record.details_with_defaults, current_salary: record.current_salary,
+        compensation_history_requires_review: CompensationVersion.history_requires_review?(employment),
         bank_countries: ISO3166::Country.all.sort_by(&:common_name).to_h { |country| [country.alpha2, country.common_name] },
         documents: EmployeeDocument::KINDS.index_with do |kind|
           documents.filter_map { |document| document_details(document) if document.kind == kind }
