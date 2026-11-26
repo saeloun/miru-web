@@ -790,6 +790,7 @@ def defer_cancellation():
 
 
 PRELOAD = r'''require "bundler/setup"
+require "rspec/expectations"
 require "rails"
 require "dotenv/rails"
 require "json"
