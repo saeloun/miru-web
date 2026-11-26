@@ -102,8 +102,10 @@ class EmployeeRecord < ApplicationRecord
           versions.active.where(effective_on: ..today).exists?)
 
         effective_on = explicit_date || today
-        next if index.zero? && versions.where(effective_on:).any? do |version|
-          version.superseded_at.nil? || version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank
+        previous_versions = explicit_date ? versions.where(effective_on:) : versions
+        next if index.zero? && previous_versions.any? do |version|
+          (version.superseded_at.nil? && version.effective_on == effective_on) ||
+            (version.superseded_at && version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank)
         end
 
         latest = versions.active.order(:effective_on, :id).last

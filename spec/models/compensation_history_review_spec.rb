@@ -59,6 +59,22 @@ RSpec.describe CompensationVersion, "legacy salary review" do
     end
   end
 
+  it "does not recreate abandoned undated terms when a salary is edited on a later day" do
+    record = nil
+    travel_to(Time.utc(2026, 11, 1, 12)) do
+      record = employment.create_employee_record!(private_details: salary.except("salary_effective_on"))
+      employment.compensation_versions.update_all(superseded_at: Time.current, reviewed_at: nil)
+      employment.compensation_versions.reset
+    end
+    travel_to(Time.utc(2026, 11, 26, 12)) do
+      correction = salary.merge("salary_amount" => "1500.00", "salary_effective_on" => "2026-11-26")
+      record.update!(private_details: correction)
+
+      expect(employment.compensation_versions.active.map(&:salary_details)).to eq([correction])
+      expect(record.current_salary).to eq(correction)
+    end
+  end
+
   it "marks new explicit declarations reviewed but keeps a legacy observation unresolved" do
     record = employment.create_employee_record!(private_details: salary)
     expect(employment.compensation_versions.last.reviewed_at).to be_present
