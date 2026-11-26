@@ -14,10 +14,8 @@ Sentry.init do |config|
 
   config.before_send_transaction = lambda do |event, _hint|
     event.spans.each do |span|
-      data = span[:data]
-      next unless data && data[:params].is_a?(Hash)
-
-      data[:params] = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters).filter(data[:params])
+      span[:data]&.delete(:params)
+      span[:data]&.delete("params")
     end
     event
   end

@@ -538,7 +538,7 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
     end
     download_ms = (Process.clock_gettime(Process::CLOCK_MONOTONIC) - started) * 1000
     File.write(Rails.root.join("tmp/capybara/agreement-long-ui-metrics.json"), {
-      environment: "headless Brave/Cuprite, arm64 macOS, Ruby4.0.9, isolated Rails test server",
+      environment: "headless Brave/Cuprite, arm64 macOS, Ruby#{RUBY_VERSION}, isolated Rails test server",
       width: 375, fields: 60, field_dialog_ms: opened_ms, field_settings_ms: @settings_ms, pdf_download_ms: download_ms
     }.to_json)
     expect(@console_errors).to be_empty

@@ -45,6 +45,28 @@ RSpec.describe "Tax declarations", type: :request do
     }
   end
 
+  it "omits flat private tax fields captured by the actual rejected controller request" do
+    transaction = Sentry::Transaction.new(name: "Flat tax trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::TaxDeclarationsController#create")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    post "/api/v1/tax_declarations", params: {
+      company_id: company.id, tax_year: "2026", category: "investment",
+      claimed_amount: "456.78", notes: "Synthetic flat tax note"
+    }, as: :json
+
+    expect(response).to have_http_status(:conflict)
+    expect(TaxDeclaration.count).to eq(0)
+    expect(span.to_hash.dig(:data, :params)).to include("claimed_amount" => "456.78", "notes" => "Synthetic flat tax note")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.to_json).not_to include("456.78", "Synthetic flat tax note")
+  end
+
   [:resigned, :future_joining, :missing_joining].each do |membership_state|
     it "denies #{membership_state} reviewers access to coworkers' tax evidence" do
       record = claim

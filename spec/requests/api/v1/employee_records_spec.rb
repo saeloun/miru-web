@@ -86,7 +86,8 @@ RSpec.describe "Employee records", type: :request do
     event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
     event.spans = [span.to_hash]
     event = Sentry.configuration.before_send_transaction.call(event, {})
-    expect(event.spans.first.dig(:data, :params, "employee_record")).to eq("[FILTERED]")
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.first.fetch(:data)).to include(method: "PATCH", path: "/api/v1/employee_records")
     expect(event.spans.to_json).not_to include("000123456789", "123.45")
 
     patch "/api/v1/employee_records", params: {
@@ -99,13 +100,11 @@ RSpec.describe "Employee records", type: :request do
     expect(span.to_hash.dig(:data, :params, "account_number")).to eq("000987654321")
     event.spans = [span.to_hash]
     event = Sentry.configuration.before_send_transaction.call(event, {})
-    expect(event.spans.first.dig(:data, :params)).to include(
-      "account_number" => "[FILTERED]", "bank_account_number_confirmation" => "[FILTERED]",
-      "salary" => "[FILTERED]", "salary_amount" => "[FILTERED]", "page" => "2")
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
     expect(event.spans.to_json).not_to include("000987654321", "987.65")
   end
 
-  it "redacts other private trace envelopes while preserving safe and non-parameter data" do
+  it "omits all span parameters while preserving other trace diagnostics" do
     transaction = Sentry::Transaction.new(name: "Private trace envelopes", sampled: true, hub: Sentry.get_current_hub)
     envelopes = {
       "Api::V1::TaxDeclarationsController#create" => { "tax_declaration" => { "claimed_amount" => "456.78", "notes" => "Private tax note" } },
@@ -118,20 +117,23 @@ RSpec.describe "Employee records", type: :request do
       span.set_data(:params, params.merge("page" => "2"))
       span.to_hash
     end
-    unaffected = [{ description: "SQL", data: { query: "SELECT 1" } }, { description: "No data" },
-      { description: "Non-hash params", data: { params: "unchanged" } }]
+    custom = Sentry::Span.new(transaction:, op: "custom", description: "Custom span")
+    custom.set_data("params", { recipients: ["synthetic@example.test"] }.to_json)
+    custom.set_data(:params, "Synthetic raw params")
+    custom.set_data(:diagnostic, "retained")
+    expect(custom.to_hash.fetch(:data).fetch("params")).to include("synthetic@example.test")
+    unaffected = [{ description: "SQL", data: { query: "SELECT 1" } }, { description: "No data" }]
     event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
-    event.spans = spans + unaffected.deep_dup
+    event.spans = spans + [custom.to_hash] + unaffected.deep_dup
     event = Sentry.configuration.before_send_transaction.call(event, {})
 
-    expect(event.spans[0].dig(:data, :params, "tax_declaration")).to eq("[FILTERED]")
-    expect(event.spans[1].dig(:data, :params, "review"))
-      .to eq("decision" => "approve", "approved_amount" => "[FILTERED]", "reason" => "[FILTERED]")
-    expect(event.spans[2].dig(:data, :params, "agreement")).to eq("[FILTERED]")
-    expect(event.spans[3].dig(:data, :params, "signature_request")).to eq("[FILTERED]")
-    expect(event.spans.first(4).map { |span| span.dig(:data, :params, "page") }).to eq(%w[2 2 2 2])
-    expect(event.spans.last(3)).to eq(unaffected)
-    expect(event.spans.to_json).not_to include("456.78", "Private tax note", "Private review reason", "Private agreement text", "Private signature title", "private@example.test")
+    event.spans.first(5).each do |span|
+      expect(span.fetch(:data)).not_to have_key(:params)
+      expect(span.fetch(:data)).not_to have_key("params")
+    end
+    expect(event.spans[4].fetch(:data)).to eq(diagnostic: "retained")
+    expect(event.spans.last(2)).to eq(unaffected)
+    expect(event.spans.to_json).not_to include("456.78", "Private tax note", "Private review reason", "Private agreement text", "Private signature title", "private@example.test", "synthetic@example.test", "Synthetic raw params")
   end
 
   context "bank account confirmation" do
