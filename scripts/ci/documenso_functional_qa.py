@@ -96,6 +96,10 @@ COMMAND_FAILURE_MARKERS = {
     "rspec": (b"RSpec::Expectations::ExpectationNotMetError", b"Failure/Error:", b"Failed examples:"),
 }
 COMMAND_FAILURE_CATEGORIES = set(COMMAND_FAILURE_MARKERS) | {"unclassified", "unavailable"}
+RSPEC_ERROR_CLASSES = {"NameError", "NoMethodError", "LoadError", "SyntaxError", "ArgumentError", "TypeError", "RuntimeError",
+                       "RSpec::Expectations::ExpectationNotMetError", "DocumensoLive::Failure", "PG::ConnectionBad",
+                       "ActiveRecord::StatementInvalid", "Capybara::ElementNotFound", "Capybara::ExpectationNotMet",
+                       "Ferrum::TimeoutError", "Ferrum::BrowserError"}
 FORBIDDEN_FLAGS = ("no-sandbox", "disable-setuid-sandbox", "disable-web-security", "disable-site-isolation", "ignore-certificate-errors", "single-process", "no-zygote", "--proxy-server", "--host-resolver-rules")
 RELAY_SOCKETS = ("/run/dbus/system_bus_socket", "/run/systemd/resolve/io.systemd.Resolve", "/run/nscd/socket", "/var/run/nscd/socket", "/run/nslcd/socket", "/run/avahi-daemon/socket", "/run/systemd/machine/io.systemd.Machine", "/run/samba/winbindd/pipe", "/var/lib/samba/winbindd_privileged/pipe")
 _cancel_depth = 0
@@ -160,14 +164,18 @@ def private(path, value, uid=None):
         output.write(data)
 
 
+def command_log_tail(path):
+    descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+    with os.fdopen(descriptor, "rb") as stream:
+        info = os.fstat(stream.fileno())
+        require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and stat.S_IMODE(info.st_mode) == 0o600 and info.st_nlink == 1)
+        stream.seek(max(0, info.st_size - 65536))
+        return stream.read(65536)
+
+
 def command_failure_category(path):
     try:
-        descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
-        with os.fdopen(descriptor, "rb") as stream:
-            info = os.fstat(stream.fileno())
-            require(stat.S_ISREG(info.st_mode) and info.st_uid == 0 and stat.S_IMODE(info.st_mode) == 0o600 and info.st_nlink == 1)
-            stream.seek(max(0, info.st_size - 65536))
-            tail = stream.read(65536)
+        tail = command_log_tail(path)
     except (OSError, RuntimeError, ValueError):
         return "unavailable"
     for category, markers in COMMAND_FAILURE_MARKERS.items():
@@ -176,12 +184,38 @@ def command_failure_category(path):
     return "unclassified"
 
 
+def rspec_diagnostics(tail):
+    # Export fixed categories and bounded numbers, never exception messages or paths.
+    lines = {line.strip() for line in tail.splitlines()}
+    result = {"load_error": b"An error occurred while loading " in tail,
+              "error_classes": sorted(name for name in RSPEC_ERROR_CLASSES if name.encode() + b":" in lines),
+              "spec_lines": sorted({int(match[1]) for match in re.finditer(
+                  rb"(?m)^[ \t]*# (?:[^\r\n]*/)?documenso_live_provider_spec\.rb:([1-9][0-9]{0,3})(?=[:\r\n]|$)", tail)})[:8]}
+    summary = re.search(rb"(?m)^([0-9]{1,4}) examples?, ([0-9]{1,4}) failures?(?:, ([0-9]{1,4}) pending)?(?:, ([0-9]{1,4}) errors? occurred outside of examples?)?\r?$", tail)
+    if summary:
+        result["counts"] = dict(zip(("examples", "failures", "pending", "outside_errors"), (int(value or 0) for value in summary.groups())))
+    return result
+
+
 def validate_command_failure(value):
-    require(isinstance(value, dict) and set(value) == {"label", "returncode", "category"})
+    require(isinstance(value, dict) and {"label", "returncode", "category"} <= set(value) <= {"label", "returncode", "category", "rspec"})
     require(isinstance(value["label"], str) and value["label"] in COMMAND_LABELS)
     code, browser = value["returncode"], value["label"] in BROWSER_LABELS
     require((code is None and browser) or (type(code) is int and -64 <= code <= 255 and (code != 0 or browser)))
     require(isinstance(value["category"], str) and value["category"] in COMMAND_FAILURE_CATEGORIES)
+    if "rspec" in value:
+        details = value["rspec"]
+        require(value["label"] == "functional" and isinstance(details, dict) and
+                {"load_error", "error_classes", "spec_lines"} <= set(details) <= {"load_error", "error_classes", "spec_lines", "counts"})
+        require(type(details["load_error"]) is bool and isinstance(details["error_classes"], list) and
+                len(details["error_classes"]) <= len(RSPEC_ERROR_CLASSES) and
+                all(isinstance(name, str) and name in RSPEC_ERROR_CLASSES for name in details["error_classes"]))
+        require(isinstance(details["spec_lines"], list) and len(details["spec_lines"]) <= 8 and
+                all(type(line) is int and 1 <= line <= 9999 for line in details["spec_lines"]))
+        if "counts" in details:
+            counts = details["counts"]
+            require(isinstance(counts, dict) and set(counts) == {"examples", "failures", "pending", "outside_errors"} and
+                    all(type(count) is int and 0 <= count <= 9999 for count in counts.values()))
 
 
 def browser_admission():
@@ -928,7 +962,13 @@ for port in (2375,2376):
     def record_command_failure(self, process, returncode):
         label = getattr(process, "_qa_label", None)
         if isinstance(label, str) and label in COMMAND_LABELS:
-            failure = {"label": label, "returncode": returncode, "category": command_failure_category(self.setup / "private-logs" / (label + ".log"))}
+            path = self.setup / "private-logs" / (label + ".log")
+            failure = {"label": label, "returncode": returncode, "category": command_failure_category(path)}
+            if label == "functional":
+                try:
+                    failure["rspec"] = rspec_diagnostics(command_log_tail(path))
+                except (OSError, RuntimeError, ValueError):
+                    pass
             validate_command_failure(failure)
             self.state["failed_command"] = failure
             try:
@@ -1429,7 +1469,7 @@ os.execve(sys.argv[4],sys.argv[4:],os.environ)
         private(self.op / "qa-config.new", json.dumps(config), self.uid)
         os.replace(self.op / "qa-config.new", self.op / "qa-config.json")
         require(self.spec.is_file())
-        self.wait(self.start([str(self.args.bundle), "exec", "rspec", str(self.spec), "--format", "progress"], "functional", runtime=True, cwd=self.args.app), max(1, 1500 - int(time.monotonic() - self.started)))
+        self.wait(self.start([str(self.args.bundle), "exec", "rspec", str(self.spec), "--format", "progress", "--no-color"], "functional", runtime=True, cwd=self.args.app), max(1, 1500 - int(time.monotonic() - self.started)))
 
     def browser_tmp(self):
         alias, target = self.work / "t", self.op / "tmp"
@@ -1993,6 +2033,27 @@ def self_check():
             metadata[4] = 0
             return os.stat_result(metadata)
         chromium_failures = []
+        rspec_log = (b"An error occurred while loading /private/documenso_live_provider_spec.rb.\n"
+                     b"Failure/Error: PRIVATE_DIAGNOSTIC_MARKER https://private.invalid/token\n"
+                     b"NameError:\n  PRIVATE_DIAGNOSTIC_MARKER\n"
+                     b"# /private/documenso_live_provider_spec.rb:151:in '<top (required)>'\n"
+                     b"# /private/unrelated_spec.rb:999:in 'private'\n"
+                     b"0 examples, 0 failures, 1 error occurred outside of examples\n")
+        rspec_details = {"load_error": True, "error_classes": ["NameError"], "spec_lines": [151],
+                         "counts": {"examples": 0, "failures": 0, "pending": 0, "outside_errors": 1}}
+        assert rspec_diagnostics(rspec_log) == rspec_details
+        assert "PRIVATE_DIAGNOSTIC_MARKER" not in json.dumps(rspec_diagnostics(rspec_log))
+        assert rspec_diagnostics(b"") == {"load_error": False, "error_classes": [], "spec_lines": []}
+        assert rspec_diagnostics(b"  Capybara::ElementNotFound:\n1 example, 1 failure, 2 pending\n") == {
+            "load_error": False, "error_classes": ["Capybara::ElementNotFound"], "spec_lines": [],
+            "counts": {"examples": 1, "failures": 1, "pending": 2, "outside_errors": 0}}
+        hostile_log = (b"Unknown::PRIVATE_DIAGNOSTIC_MARKER:\nhttps://private.invalid/documenso_live_provider_spec.rb:123\n"
+                       b"# /private/documenso_live_provider_spec.rb:0\n# /private/documenso_live_provider_spec.rb:10000\n"
+                       b"# /private/documenso_live_provider_spec.rb:12PRIVATE_DIAGNOSTIC_MARKER\n"
+                       b"10000 examples, 1 failure\n")
+        assert rspec_diagnostics(hostile_log) == {"load_error": False, "error_classes": [], "spec_lines": []}
+        many_lines = b"".join(f"# /private/documenso_live_provider_spec.rb:{number}\n".encode() for number in range(1, 20))
+        assert rspec_diagnostics(many_lines)["spec_lines"] == list(range(1, 9))
         with patch.object(os, "fstat", side_effect=root_owned_log):
             for category, marker in (("chromium_icu_fatal", b"FATAL:base/i18n/icu_util.cc:"), ("chromium_base_fatal", b"FATAL:base/files/file.cc:"), ("chromium_sandbox_fatal", b"FATAL:sandbox/linux/services/credentials.cc:"), ("chromium_zygote_fatal", b"FATAL:content/browser/zygote_host/zygote_host_impl_linux.cc:"), ("chromium_crashpad_fatal", b"FATAL:components/crash/core/app/crashpad_linux.cc:"), ("chromium_profile_fatal", b"FATAL:chrome/browser/profiles/profile_manager.cc:")):
                 failure_log.write_bytes(b"No such file or directory\n[1:2:1116/030000.000000:" + marker + b"123] PRIVATE_DIAGNOSTIC_MARKER ws://private/path Permission denied")
@@ -2037,7 +2098,27 @@ def self_check():
         failed_command = {"label": "schema", "returncode": 1, "category": "pg"}
         assert failure_fixture.state["failed_command"] == failed_command
         failure_fixture.save.assert_called_once()
+        functional_log = failure_fixture.setup / "private-logs/functional.log"
+        private(functional_log, rspec_log)
+        functional_failure = {"label": "functional", "returncode": 1, "category": "rspec", "rspec": rspec_details}
+        with patch.object(os, "fstat", side_effect=root_owned_log):
+            failure_fixture.record_command_failure(argparse.Namespace(_qa_label="functional"), 1)
+        assert failure_fixture.state["failed_command"] == functional_failure
+        functional_log.unlink()
+        functional_log.symlink_to(failure_log)
+        failure_fixture.record_command_failure(argparse.Namespace(_qa_label="functional"), 1)
+        assert failure_fixture.state["failed_command"] == {"label": "functional", "returncode": 1, "category": "unavailable"}
         invalid_failures = [None, [], {**failed_command, "private": "PRIVATE_DIAGNOSTIC_MARKER"}]
+        invalid_failures.extend({**functional_failure, "rspec": value} for value in (
+            None, [], {**rspec_details, "message": "PRIVATE_DIAGNOSTIC_MARKER"},
+            {**rspec_details, "error_classes": ["PRIVATE_DIAGNOSTIC_MARKER"]},
+            {**rspec_details, "error_classes": [[]]}, {**rspec_details, "load_error": 1},
+            {**rspec_details, "spec_lines": [True]}, {**rspec_details, "spec_lines": [0]},
+            {**rspec_details, "spec_lines": [10000]}, {**rspec_details, "spec_lines": list(range(1, 10))},
+            {**rspec_details, "counts": {**rspec_details["counts"], "examples": True}},
+            {**rspec_details, "counts": {**rspec_details["counts"], "outside_errors": 10000}},
+            {**rspec_details, "counts": {"examples": 0}}))
+        invalid_failures.append({**failed_command, "rspec": rspec_details})
         invalid_failures.extend({**failed_command, key: value} for key, value in (
             ("label", "PRIVATE_DIAGNOSTIC_MARKER"), ("label", []), ("returncode", True),
             ("returncode", 256), ("returncode", -65), ("returncode", "PRIVATE_DIAGNOSTIC_MARKER"),
@@ -2565,7 +2646,7 @@ def self_check():
         (fake.op / "output").mkdir(parents=True)
         fake.state.update(runtime_processes_stopped=True, failed_command=failed_command)
         with patch.dict(globals(), uid_processes=lambda uid: []):
-            for number, valid_failure in enumerate([failed_command, *browser_deadline_failures, *chromium_failures]):
+            for number, valid_failure in enumerate([failed_command, functional_failure, *browser_deadline_failures, *chromium_failures]):
                 fake.output = fake.work / ("diagnostic-" + str(number))
                 fake.state["failed_command"] = valid_failure
                 assert fake.export_evidence(False)
