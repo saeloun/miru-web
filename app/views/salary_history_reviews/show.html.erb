@@ -16,6 +16,14 @@
       select, input, button { font: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
       button { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; } :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
       @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #f4f4f5; --card: #18181b; --border: #3f3f46; --primary: #a78bfa; } button { color: #18181b; } }
+      @media (max-width: 639px) {
+        .table-scroll { overflow: visible; } table, caption, tbody, tr, td { display: block; }
+        thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+        caption { text-align: left; } tbody tr { padding: 12px 0; } tbody tr + tr { border-top: 1px solid var(--border); }
+        td { border: 0; padding: 6px 0; } td[data-label] { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 8px; }
+        td[data-label]::before { content: attr(data-label); font-weight: 600; }
+        label { display: block; } select { display: block; width: 100%; min-height: 40px; margin-top: 4px; }
+      }
     </style>
   </head>
   <body>
@@ -31,15 +39,15 @@
             <%= hidden_field_tag "salary_review[active_ids][]", version.id %>
           <% end %>
           <div class="table-scroll">
-            <table>
+            <table role="table">
               <caption>Active salary versions</caption>
               <thead><tr><th scope="col">Version</th><th scope="col">Effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
               <tbody>
                 <% @versions.each do |version| %>
                   <tr>
-                    <td><%= version.id %></td>
-                    <td><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
-                    <td><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
+                    <td data-label="Version"><%= version.id %></td>
+                    <td data-label="Effective date"><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
+                    <td data-label="Recorded salary"><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
                     <td>
                       <% if version.reviewed_at %>
                         Reviewed <%= version.reviewed_at.to_date %>

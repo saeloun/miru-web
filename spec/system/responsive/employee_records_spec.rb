@@ -121,6 +121,73 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     end
   end
 
+  it "lets a free-plan admin resolve legacy salary history through the review form" do
+    company.update!(plan_tier: "free")
+    salary = { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly",
+      "salary_effective_on" => Date.current.prev_month.beginning_of_month.iso8601 }
+    record = employment.create_employee_record!(private_details: salary)
+    record.update!(private_details: salary.merge("salary_amount" => "2000.00",
+      "salary_effective_on" => Date.current.next_month.beginning_of_month.iso8601))
+    versions = employment.compensation_versions.active.order(:effective_on, :id).to_a
+    expect(versions.size).to eq(2)
+    CompensationVersion.where(id: versions.map(&:id)).update_all(reviewed_at: nil)
+
+    with_forgery_protection do
+      open_records(admin)
+      expect(page).to have_content("Salary history needs administrator review")
+      click_link "Review salary history"
+      expect(page).to have_css("h1", text: "Review salary history")
+      click_button "Save salary history review"
+      expect(page).to have_css("select:required:invalid", count: 2)
+      expect(versions.map { |version| version.reload.reviewed_at }).to all(be_nil)
+      select "Retain", from: "Decision for version #{versions.first.id}"
+      select "Mark as abandoned", from: "Decision for version #{versions.last.id}"
+      expect(page).to have_select("Decision for version #{versions.first.id}", selected: "Retain")
+      expect(page).to have_select("Decision for version #{versions.last.id}", selected: "Mark as abandoned")
+      [1440, 375].each do |width|
+        page.current_window.resize_to(width, 1000)
+        expect_mobile_fit
+        expect(page.evaluate_script(<<~JS)).to be(true)
+          [...document.querySelectorAll("select")].every(select => {
+            const bounds = select.getBoundingClientRect();
+            return bounds.left >= 0 && bounds.right <= innerWidth;
+          })
+        JS
+        capture_records("salary-history-review-#{width}.png")
+      end
+      click_button "Save salary history review"
+      expect(page).to have_css("[role='status']", text: "No active salary history is awaiting review.")
+      expect(versions.first.reload.reviewed_at).to be_present
+      expect(versions.last.reload.superseded_at).to be_present
+      expect(record.reload.private_details.fetch("salary_amount")).to eq("2000.00")
+      expect(@console_errors).to be_empty
+
+      open_records(admin)
+      within find("h2", text: "Current salary", exact_text: true).find(:xpath, "..") do
+        expect(page).to have_css("dd", text: "1000.00", exact_text: true)
+        expect(page).not_to have_css("dd", text: "2000.00", exact_text: true)
+      end
+      expect(page).not_to have_content("Salary history needs administrator review")
+      capture_records("salary-history-reviewed-profile.png")
+      expect(@console_errors).to be_empty
+    end
+  end
+
+  it "shows an employee the legacy salary history warning without an administrator review link" do
+    employment.compensation_versions.create!(effective_on: Date.current.prev_month.beginning_of_month,
+      salary_details: { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly" })
+
+    with_forgery_protection do
+      page.current_window.resize_to(375, 1000)
+      open_records(employee)
+      expect(page).to have_content("Salary history needs administrator review")
+      expect(page).not_to have_link("Review salary history")
+      expect_mobile_fit
+      capture_records("salary-history-employee-warning.png")
+      expect(@console_errors).to be_empty
+    end
+  end
+
   [1400, 390].each do |width|
     it "confirms bank changes, clears canceled confirmation and keeps account numbers masked at #{width}px" do
       company.update!(name: "Synthetic bank QA")
