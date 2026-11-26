@@ -30,7 +30,7 @@ RSpec.describe "Documenso functional QA isolation" do
     expect(artifacts.first.fetch("with").fetch("path")).to eq("${{ env.MIRU_QA_WORK }}/evidence/")
   end
 
-  it "loads the auto-required policy matchers after the application preload" do
+  it "preserves isolated preload and pinned worker registration contracts" do
     prefix, errors, status = Open3.capture3("python3", "-I", "-B", "-c", <<~PYTHON, chdir: root)
       import ast, pathlib
       tree = ast.parse(pathlib.Path("scripts/ci/documenso_functional_qa.py").read_text())
@@ -64,6 +64,12 @@ RSpec.describe "Documenso functional QA isolation" do
       File.write(fixture, <<~RUBY)
         RSpec.describe "isolated public helper loader" do
           it("loads before Rails initialization") { expect(Rails.application.initialized?).to be(false) }
+
+          it "matches the pinned fork supervisor registration kind" do
+            source = File.read(#{File.join(root, "scripts/ci/documenso_live_provider_spec.rb").inspect}, encoding: "UTF-8")
+            lookup = source.lines.find { |line| line.include?("supervisor = SolidQueue::Process.find_by") }
+            expect(lookup[/kind: "([^"]+)"/, 1]).to eq(SolidQueue::Supervisor::ForkSupervisor.allocate.kind)
+          end
         end
       RUBY
       output, errors, status = Open3.capture3(
@@ -73,7 +79,7 @@ RSpec.describe "Documenso functional QA isolation" do
         "-I", File.join(root, "spec"), fixture, "--no-color", chdir: directory, unsetenv_others: true)
 
       expect(status).to be_success, output + errors
-      expect(output).to include("1 example, 0 failures")
+      expect(output).to include("2 examples, 0 failures")
     end
   end
 end

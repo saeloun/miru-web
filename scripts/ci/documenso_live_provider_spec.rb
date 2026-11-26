@@ -504,7 +504,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       check(boot.stat.uid == Process.uid && boot.stat.mode & 0o777 == 0o600 && boot.size <= 4096, "Unsafe worker boot receipt")
       check(JSON.parse(boot.read) == { "pid" => pid, "database" => @config.fetch("database"), "csrf" => true,
         "real_solid_queue" => true, "local_smtp" => true }, "Real worker guards differ from admission")
-      supervisor = SolidQueue::Process.find_by(kind: "Supervisor", pid:)
+      supervisor = SolidQueue::Process.find_by(kind: "Supervisor(fork)", pid:)
       supervisor && SolidQueue::Process.where(kind: "Worker", supervisor_id: supervisor.id)
         .where("last_heartbeat_at > ?", 2.minutes.ago).any? do |worker|
           File.stat("/proc/#{worker.pid}").uid == Process.uid
