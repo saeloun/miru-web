@@ -31,14 +31,18 @@ RSpec.describe "Salary history review", type: :request do
     patch path, params: { salary_review: attributes }
   end
 
-  it "lets a free-workspace admin review historical employment without exposing bank data" do
-    employment.update!(resigned_at: "2026-10-01")
-    employment.discard!
-    get path
-    expect(response).to have_http_status(:ok)
-    expect(response.body).to include("Review salary history", "1000.00", "Retain", "Mark as abandoned")
-    expect(response.body).not_to include("bank_account")
-    expect(response.headers["Cache-Control"]).to include("private", "no-store")
+  %w[admin owner].each do |role|
+    it "lets a free-workspace #{role} review historical employment without exposing bank data" do
+      admin.remove_role(:admin, company)
+      admin.add_role(role, company)
+      employment.update!(resigned_at: "2026-10-01")
+      employment.discard!
+      get path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Review salary history", "1000.00", "Retain", "Mark as abandoned")
+      expect(response.body).not_to include("bank_account")
+      expect(response.headers["Cache-Control"]).to include("private", "no-store")
+    end
   end
 
   it "retains all payloads and records the explicit abandoned-raise decision atomically" do

@@ -153,6 +153,7 @@ module Reports
 
           # Overlapping or repeated employment records need reconciliation before attributing costs and hours.
           row = records.last.merge(flags: (records.flat_map { |record| record[:flags] } + ["multiple_employment_records_require_review"]).uniq,
+            salary_history_review_employment_ids: records.flat_map { |record| record[:salary_history_review_employment_ids] }.uniq,
             client_ids: records.flat_map { |record| record[:client_ids] }.uniq, projects: [])
           %i[total_hours billable_hours available_hours utilization effective_rate annual_compensation days_to_yearly_salary
             salary_inr salary_usd compensation_cost revenue margin margin_percentage].each { |key| row[key] = nil }
@@ -175,6 +176,7 @@ module Reports
           flags << "timesheets_incomplete"
         end
         person_identity(employment, projects, from, to).merge(finances).merge(
+          salary_history_review_employment_ids: flags.include?("compensation_history_requires_review") ? [employment.id] : [],
           compensation_changes: compensation_changes(employment, start, finish), projects:, flags: flags.uniq.sort)
       end
 

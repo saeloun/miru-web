@@ -80,5 +80,6 @@ encrypted salary bytes, dates and row IDs. No automatic backfill is performed.
 Apply both salary metadata migrations before activating the new readers and stop
 old writers during activation. Inventory/review production history before enabling
 affected financial calculations. Keep schema forward on code rollback; the review
-migration refuses to drop metadata once reviewed versions exist. Real browser QA
+migration refuses rollback after retain or abandon decisions, and the supersession
+migration protects used retirement metadata. Real browser QA
 and production review remain release prerequisites.

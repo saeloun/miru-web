@@ -48,7 +48,9 @@ class EmployeeRecord < ApplicationRecord
     effective_on = self.class.iso_date?(configured["salary_effective_on"])
     today = Time.current.in_time_zone(employment.company.resolved_time_zone).to_date
     details = CompensationVersion.terms_for(employment).reverse.find { |date, _id, _details| date <= today }&.last
-    retired = employment.compensation_versions.any? { |version| version.superseded_at && version.salary_details == configured }
+    retired = employment.compensation_versions.any? do |version|
+      version.superseded_at && version.salary_details.slice(*SALARY_KEYS).compact_blank == configured.compact_blank
+    end
     details ||= configured unless effective_on || retired
     SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
   end
@@ -100,7 +102,9 @@ class EmployeeRecord < ApplicationRecord
           versions.active.where(effective_on: ..today).exists?)
 
         effective_on = explicit_date || today
-        next if index.zero? && versions.active.exists?(effective_on:)
+        next if index.zero? && versions.where(effective_on:).any? do |version|
+          version.superseded_at.nil? || version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank
+        end
 
         latest = versions.active.order(:effective_on, :id).last
         next if latest&.salary_details == salary

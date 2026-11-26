@@ -173,6 +173,27 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     end
   end
 
+  it "opens the older unresolved employment from a combined profitability row" do
+    company.update!(plan_tier: "paid")
+    version = employment.compensation_versions.create!(effective_on: Date.current.prev_month.beginning_of_month,
+      salary_details: { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly" })
+    create(:employment, company:, user: employee, joined_at: Date.current.prev_month.beginning_of_month, resigned_at: nil)
+
+    with_forgery_protection do
+      open_records(admin)
+      visit "/reports/compensation-profitability?period=month&person_id=#{employee.id}"
+      expect(page).to have_css("h1", text: "Compensation Burn and Profitability")
+      expect(page).to have_link("Review salary history", href: salary_history_review_path(employment_id: employment.id, company_id: company.id))
+      click_link "Review salary history"
+      expect(page).to have_css("h1", text: "Review salary history")
+      expect(page).to have_select("Decision for version #{version.id}")
+      page.current_window.resize_to(375, 1000)
+      expect_mobile_fit
+      capture_records("salary-history-older-employment.png")
+      expect(@console_errors).to be_empty
+    end
+  end
+
   it "shows an employee the legacy salary history warning without an administrator review link" do
     employment.compensation_versions.create!(effective_on: Date.current.prev_month.beginning_of_month,
       salary_details: { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly" })

@@ -86,6 +86,7 @@
           <caption><%= pluralize(@report[:people].length, "person", "people") %> · amounts in <%= @report[:currency] %> unless indicated</caption>
           <thead><tr><th scope="col">Person / Primary Project</th><th scope="col">Effective Rate / hr</th><th scope="col">Total Worked</th><th scope="col">Billable Hours</th><th scope="col">Available Hours</th><th scope="col">Utilization</th><th scope="col">Annual Compensation</th><th scope="col">Days to Yearly Salary</th><th scope="col">Salary in INR</th><th scope="col">Salary in USD</th><th scope="col">Revenue</th><th scope="col">Compensation Cost</th><th scope="col">Margin</th><th scope="col">Margin %</th><th scope="col">Data Quality</th></tr></thead>
           <tbody>
+            <% can_review_salary_history = policy(EmployeeRecord).manage? %>
             <% @report[:people].each do |row| %>
               <tr>
                 <td><strong><%= row[:person] %></strong><br><%= row[:primary_project] || "No primary project" %><br><small><%= [row[:department], row[:status]].compact.join(" · ") %></small></td>
@@ -96,8 +97,10 @@
                 <% [:revenue, :compensation_cost, :margin].each do |key| %><td><%= profitability_number(row[key], currency: @report[:currency]) %></td><% end %>
                 <td><%= profitability_number(row[:margin_percentage], percent: true) %></td>
                 <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %>
-                  <% if row[:flags].include?("compensation_history_requires_review") && policy(EmployeeRecord).manage? %>
-                    <%= link_to "Review salary history", salary_history_review_path(employment_id: row[:employment_id], company_id: current_company.id) %>
+                  <% if can_review_salary_history %>
+                    <% row[:salary_history_review_employment_ids].each do |employment_id| %>
+                      <%= link_to "Review salary history", salary_history_review_path(employment_id:, company_id: current_company.id), "aria-label": "Review salary history for employment #{employment_id}" %>
+                    <% end %>
                   <% end %>
                 </td>
               </tr>

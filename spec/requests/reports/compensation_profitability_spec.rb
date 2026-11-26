@@ -45,6 +45,21 @@ RSpec.describe "Organization compensation profitability", type: :request do
     expect(document.css(".quality").text).to include("Compensation history requires review")
   end
 
+  it "links every unresolved employment after combining one person's report rows" do
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    latest = create(:employment, company:, user: person, joined_at: "2026-07-01", resigned_at: nil)
+
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    links = Nokogiri::HTML(response.body).css("a[href*='/salary-history']")
+    expect(links.map { |link| link["href"].split("?").first }).to eq([salary_history_review_path(employment_id: employment.id)])
+
+    latest.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    links = Nokogiri::HTML(response.body).css("a[href*='/salary-history']")
+    expect(links.map { |link| link["href"].split("?").first }).to contain_exactly(
+      salary_history_review_path(employment_id: employment.id), salary_history_review_path(employment_id: latest.id))
+  end
+
   it "encrypts snapshots, audits generation and downloads the same snapshot after data changes" do
     payload = generate
     run = CompensationReportRun.last
