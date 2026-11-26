@@ -1,5 +1,34 @@
 # Changelog
 
+## [3.7.2] - 2026-11-20
+
+### Fixed
+
+- Make payroll audit checks consistently verify the event sequence across database query plans.
+
+## [3.7.1] - 2026-11-19
+
+### Changed
+
+- Clarify the approvals, fees and payable limits to check before a first live Mercury payment.
+
+### Fixed
+
+- Require reviews for the exact commit being pushed, while accepting a complete no-UI review for changes without a user interface.
+
+## [3.7.0] - 2026-11-19
+
+### Added
+
+- Connect Miru to PostHog for activation and subscription funnels, product usage, web vitals, error tracking and structured logs.
+- Review masked sessions and collect optional product feedback. Personal, payroll, hiring, document and shared-invoice pages are excluded from replay, and tracking URLs omit private tokens.
+
+## [3.6.24] - 2026-11-16
+
+### Fixed
+
+- Reject conflicting Mercury credit entries before they change balances or prematurely settle reimbursements. Exact retries still recover interrupted settlement.
+
 ## [3.6.22] - 2026-11-16
 
 ### Fixed

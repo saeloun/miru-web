@@ -16,6 +16,8 @@ import { reportClientError } from "utils/runtimeRecovery";
 import { getSessionRequestHeaders } from "utils/authHeaders";
 import { toast } from "sonner";
 import type { Company } from "../types/company";
+import { useLocation } from "react-router-dom";
+import { syncProductAnalytics } from "utils/posthog";
 
 const AUTH_PATH_PREFIXES = [
   "/user/sign_in",
@@ -102,6 +104,7 @@ const AppUserContextProvider = ({
 };
 
 const AppWithUserData = (props: any) => {
+  const location = useLocation();
   const isAuthPage = isAuthPagePath(window.location.pathname);
   const isPublicPage = isPublicPagePath(window.location.pathname);
   const [userData, setUserData] = useState<UserDataState>({
@@ -299,6 +302,23 @@ const AppWithUserData = (props: any) => {
         }
       : null;
   }, [companyState, company]);
+
+  useEffect(() => {
+    if (authResolution === "unknown") return;
+
+    syncProductAnalytics({
+      userId: user?.id,
+      companyId: resolvedCompany?.id,
+      role: companyRole || undefined,
+      pathname: location.pathname,
+    });
+  }, [
+    authResolution,
+    user?.id,
+    resolvedCompany?.id,
+    companyRole,
+    location.pathname,
+  ]);
 
   const handleOverlayVisibility = (isOverlayVisible: boolean) => {
     const overlayEl = document.getElementById("overlay");

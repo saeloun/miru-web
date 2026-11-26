@@ -118,7 +118,7 @@ module Payroll
       raise MercuryPayment::Blocked.new("credit_reference_invalid") unless reference.is_a?(String) && reference.match?(REFERENCE_FORMAT)
 
       instruction.with_lock do
-        next if duplicate_credit?(instruction, minor, reference)
+        next if duplicate_credit?(instruction, minor, date, reference)
         raise MercuryPayment::Blocked.new("credit_not_recordable") unless instruction.credit_recordable?
 
         total = instruction.credited_minor + minor
@@ -456,9 +456,14 @@ module Payroll
         raise MercuryPayment::Blocked.new("credit_date_invalid"), cause: nil
       end
 
-      def duplicate_credit?(instruction, minor, reference)
-        instruction.payroll_payment_events.where(kind: "credit_recorded")
-          .where("data->>'reference' = ? AND (data->>'amount_minor')::bigint = ?", reference, minor).exists?
+      def duplicate_credit?(instruction, minor, date, reference)
+        credits = instruction.payroll_payment_events.where(kind: "credit_recorded")
+          .where("data->>'reference' = ?", reference).pluck(:data)
+        if credits.any? { |data| data["amount_minor"] != minor || data["credited_on"] != date.iso8601 }
+          raise Workflow::Conflict, "Credit reference conflicts with the recorded transfer"
+        end
+
+        credits.any?
       end
   end
 end
