@@ -4,7 +4,8 @@
 
 ### Fixed
 
-- Keep private employee, tax and signing fields out of Sentry controller traces using the existing request privacy filters.
+- Omit request parameters from Sentry traces to keep private employee, tax and signing values out of trace data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
 
 ## [3.7.2] - 2026-11-20
 
