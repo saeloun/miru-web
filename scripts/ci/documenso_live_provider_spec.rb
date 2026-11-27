@@ -649,7 +649,10 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     session.visit(url)
     source_offer(session, "signing-#{kind}") if role == "signer"
     if role == "signer"
+      mobile = session.current_window.size.first < 1024
+      session.find('button[aria-label="Expand"]').click if mobile
       typed_signature(session, identity.fetch("name"))
+      session.find('button[aria-label="Collapse"]').click if mobile
       %w[Signature Initials].each { |type| session.find("button[aria-label^='Synthetic #{type} ']").click }
       session.find('button[aria-label^="Synthetic Text "]').click
       session.fill_in("custom-text", with: "Synthetic editable note 2462")
