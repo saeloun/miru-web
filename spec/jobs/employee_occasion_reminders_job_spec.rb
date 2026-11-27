@@ -146,6 +146,23 @@ RSpec.describe EmployeeOccasionRemindersJob, type: :job do
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
+  it "excludes occasions after employment ends but includes the final employment day" do
+    opt_in
+    employment.update!(resigned_at: Date.new(2026, 12, 31))
+    described_class.perform_now
+
+    expect(ActionMailer::Base.deliveries).to be_empty
+    expect(EmployeeOccasionDelivery.count).to eq(0)
+
+    employment.update!(resigned_at: Date.new(2027, 1, 3))
+    admin_employment.update!(resigned_at: Date.new(2026, 12, 31))
+    described_class.perform_now
+
+    expect(ActionMailer::Base.deliveries.map(&:to)).to eq([[admin.email], [admin.email]])
+    expect(EmployeeOccasionDelivery.pluck(:kind, :event_on)).to match_array(
+      [["birthday", Date.new(2027, 1, 3)], ["work_anniversary", Date.new(2027, 1, 3)]])
+  end
+
   it "does not log failed sends and allows a later successful retry" do
     opt_in
     allow(EmployeeOccasionMailer).to receive(:reminder).and_raise(IOError, "Synthetic failure")
