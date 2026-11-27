@@ -669,7 +669,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       session.find('button[title="document-2.pdf"]').click
       session.find('button[aria-label^="Company required signature "]').click
     end
-    check(session.has_text?("0 Fields Remaining", wait: 20), "Required signing fields remain")
+    check(session.has_text?(mobile ? "Please complete the document once reviewed" : "0 Fields Remaining", wait: 20), "Required signing fields remain")
     earlier = mail_ids(identity.fetch("email"))
     session.click_button("Complete", exact: true)
     session.find('[role="dialog"]').click_button("Sign", exact: true)
