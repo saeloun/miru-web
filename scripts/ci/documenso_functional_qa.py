@@ -559,6 +559,18 @@ def tcp_listener(raw, port, pid):
     require(owner is not None and int(owner[1]) == pid, "TCP listener ownership changed")
 
 
+def tcp_listener_ready(raw, port, pid):
+    if not raw.strip():
+        return False
+    lines = raw.decode().splitlines()
+    fields = lines[0].split() if len(lines) == 1 else []
+    if (len(fields) == 5 and fields[0] == "LISTEN" and fields[1].isdigit() and fields[2].isdigit() and
+            fields[3] == f"127.0.0.1:{port}" and fields[4] == "0.0.0.0:*"):
+        return False
+    tcp_listener(raw, port, pid)
+    return True
+
+
 def relay_principal(raw, uid, gid):
     rows = dict(line.split(":", 1) for line in raw.decode().splitlines() if ":" in line)
     require(uid != 0 and rows["Uid"].split() == [str(uid)] * 4 and rows["Gid"].split() == [str(gid)] * 4)
@@ -1398,8 +1410,7 @@ server {{listen 8081; location / {{proxy_pass http://mailpit:8025; proxy_set_hea
             while True:
                 require(process.poll() is None, "Owned TCP relay failed to start")
                 raw = self.relay_listener_output(port)
-                if raw.strip():
-                    tcp_listener(raw, port, process.pid)
+                if tcp_listener_ready(raw, port, process.pid):
                     break
                 require(time.monotonic() < until, "Owned TCP relay listener deadline reached")
                 time.sleep(.1)
@@ -2421,6 +2432,35 @@ def self_check():
                 pass
             else:
                 raise AssertionError("Unowned or wildcard relay listener accepted")
+        # Execute the actual startup loop: ss can observe LISTEN after its earlier
+        # /proc owner scan, so that first snapshot cannot yet admit ownership.
+        import ast
+        import types
+        module = ast.parse(Path(__file__).read_text())
+        lifecycle = next(node for node in module.body if isinstance(node, ast.ClassDef) and node.name == "Lifecycle")
+        startup = next(node for node in lifecycle.body if isinstance(node, ast.FunctionDef) and node.name == "start_tcp_relays")
+        loop = next(node for node in ast.walk(startup) if isinstance(node, ast.While) and isinstance(node.test, ast.Constant) and node.test.value is True)
+        owner_pending = listener.split(b" users:", 1)[0] + b"\n"
+        def run_listener_startup(outputs):
+            now = [0.0]
+            sample = Mock(side_effect=outputs)
+            clock = types.SimpleNamespace(monotonic=lambda: now[0], sleep=lambda seconds: now.__setitem__(0, now[0] + seconds))
+            scope = {**globals(), "self": types.SimpleNamespace(relay_listener_output=sample), "process": Mock(pid=456, poll=Mock(return_value=None)),
+                     "port": 20000, "until": 0.2, "time": clock}
+            exec(compile(ast.Module(body=[loop], type_ignores=[]), "<actual-relay-startup>", "exec"), scope)
+            return sample.call_count
+        assert run_listener_startup([owner_pending, listener]) == 2
+        assert not tcp_listener_ready(owner_pending, 20000, 456)
+        assert tcp_listener_ready(listener, 20000, 456)
+        for outputs in ([owner_pending] * 4, [owner_pending, listener.replace(b"pid=456", b"pid=457")],
+                        [owner_pending.replace(b"127.0.0.1:20000", b"0.0.0.0:20000")], [owner_pending * 2],
+                        [owner_pending.replace(b"LISTEN", b"ESTAB")], [owner_pending.replace(b":20000", b":20001")]):
+            try:
+                run_listener_startup(outputs)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unowned listener or expired readiness admitted")
         principal = b"Uid:\t1001 1001 1001 1001\nGid:\t1002 1002 1002 1002\nGroups:\nNoNewPrivs:\t1\n" + b"".join(key + b":\t0000000000000000\n" for key in (b"CapInh", b"CapPrm", b"CapEff", b"CapBnd", b"CapAmb"))
         relay_principal(principal, 1001, 1002)
         invalid_principals = [principal.replace(b"1001", b"0"), principal.replace(b"1002", b"0"), principal.replace(b"Groups:\n", b"Groups:\t0\n"), principal.replace(b"NoNewPrivs:\t1", b"NoNewPrivs:\t0")]
