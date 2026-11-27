@@ -546,6 +546,13 @@ def tcp_listener(raw, port, pid):
     lines = raw.decode().splitlines()
     require(len(lines) == 1, "Owned TCP listener missing or duplicated")
     fields = lines[0].split(maxsplit=5)
+    if not (len(fields) == 6 and fields[0] == "LISTEN" and fields[1].isdigit() and fields[2].isdigit()):
+        # Emit only column roles, never raw addresses, process metadata or values.
+        shape = ["queue" if field.isdigit() else "state" if field == "LISTEN" else
+                 "local" if field == f"127.0.0.1:{port}" else "peer" if field == "0.0.0.0:*" else
+                 "owner" if re.fullmatch(r'users:\(\("[^"\\\r\n]+",pid=[1-9][0-9]*,fd=[0-9]+\)\)', field) else
+                 "unknown" for field in fields]
+        print("TCP listener column roles: " + json.dumps(shape), file=sys.stderr, flush=True)
     require(len(fields) == 6 and fields[0] == "LISTEN" and fields[1].isdigit() and fields[2].isdigit())
     require(fields[3] == f"127.0.0.1:{port}" and fields[4] == "0.0.0.0:*")
     owner = re.fullmatch(r'users:\(\("[^"\\\r\n]+",pid=([1-9][0-9]*),fd=([0-9]+)\)\)', fields[5])
@@ -2305,6 +2312,14 @@ def self_check():
             assert tcp_relay_command(key, 20000 + number, snapshot) == [str(SOCKET_ACTIVATE), f"--listen=127.0.0.1:{20000 + number}", str(SOCKET_PROXY), "--connections-max=32", snapshot["endpoints"][service]["address"] + ":" + str(target)]
         listener = b'LISTEN 0 4096 127.0.0.1:20000 0.0.0.0:* users:(("systemd-socket-",pid=456,fd=3))\n'
         tcp_listener(listener, 20000, 456)
+        with patch.object(sys, "stderr", new_callable=io.StringIO) as diagnostic:
+            try:
+                tcp_listener(listener.removeprefix(b"LISTEN "), 20000, 456)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Listener format admission unexpectedly changed")
+            assert diagnostic.getvalue() == 'TCP listener column roles: ["queue", "queue", "local", "peer", "owner"]\n'
         for bad in (b"", listener * 2, listener.replace(b"127.0.0.1:20000", b"0.0.0.0:20000"), listener.replace(b"127.0.0.1:20000", b"[::1]:20000"), listener.replace(b"pid=456", b"pid=457")):
             try:
                 tcp_listener(bad, 20000, 456)
