@@ -1,6 +1,6 @@
 # Review uncertain salary history before using it
 
-Status: selected for implementation under the standing delivery-goal authorization; browser and release verification remain pending. Follow-up to #2461 and PR #2533.
+Status: implemented locally, with [synthetic browser verification recorded on 26 November](../../qa/profile-current-salary-2461/README.md); pushed-head CI, production inventory and controlled rollout remain required. Follow-up to #2461 and PR #2533.
 
 ## Problem and intent
 

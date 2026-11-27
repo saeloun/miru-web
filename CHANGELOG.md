@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.8.0] - 2026-11-27
+
+### Added
+
+- Review uncertain salary history as an administrator, retaining valid terms or marking abandoned raises without deleting their original amounts and dates.
+- See a review warning and administrator recovery links when legacy salary history needs confirmation before salary and financial costs can be shown.
+
+### Fixed
+
+- Show effective salary consistently in employee profiles, exports and profitability reports, excluding replaced pending raises and preserving reviewed decisions through later edits.
+- Keep salary review controls readable on mobile screens and link combined profitability rows to the employment that needs review.
+
 ## [3.7.2] - 2026-11-20
 
 ### Fixed

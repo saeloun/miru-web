@@ -14,7 +14,7 @@ execute payments, calculate salary, or certify statutory filings.
 | Family details | Employee/admin maintain name, DOB, gender and relationship for each family member. |
 | Emergency contact | Employee/admin maintain contact name and phone. |
 | Bank details | Employee/admin maintain account holder, bank, branch, account number, IFSC and optional SWIFT. Changed nonblank account numbers require an exact second entry. |
-| Current salary | Admin sets amount, currency, frequency and effective date; employee can view it. Increment history is optional and deferred. |
+| Current salary | Admin sets amount, currency, frequency and effective date; employee sees terms effective today in the company timezone. Retained salary versions require administrator review when unresolved. |
 | Previous payments | Admin records an external payment with paid date, amount, currency and reference; employee sees paginated history explicitly labeled as manually recorded. No provider settlement claim. |
 | Contract | Admin uploads, employee/admin privately download. Retain uploaded versions. |
 | Customizable saved reports | Admin saves a named selection of permitted columns and generates a private CSV for a selected month. Include insurance and salary presets. Save report definitions, not sensitive export snapshots. |
@@ -69,6 +69,11 @@ settings remain editable. Entering a correction does not acknowledge unknown row
 CSV salary fields use the same current-salary reader, not the selected export month,
 and show `Administrator review required` while history is unresolved.
 
+Employee-record API responses keep configured salary settings in `private_details`
+and expose effective terms separately in `current_salary`. When
+`compensation_history_requires_review` is true, all four `current_salary` values
+are null; configured settings remain available to the existing editor.
+
 Owners and admins can open `/employee-records/:employment_id/salary-history` from
 the profile or compensation report warning, including in free workspaces and for
 retained historical employments. Employees see the warning without admin history.
@@ -83,3 +88,7 @@ affected financial calculations. Keep schema forward on code rollback; the revie
 migration refuses rollback after retain or abandon decisions, and the supersession
 migration protects used retirement metadata. Real browser QA
 and production review remain release prerequisites.
+
+See the [salary-history review design](../superpowers/specs/2026-11-16-salary-history-review-design.md),
+[recorded synthetic QA](../qa/profile-current-salary-2461/README.md), and
+[compensation report guide](../ai/compensation-profitability.md).

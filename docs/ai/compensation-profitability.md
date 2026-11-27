@@ -10,6 +10,10 @@ access employee compensation. Legacy `/admin/compensation-profitability` URLs en
 
 - Employee salaries come from encrypted employee records and immutable encrypted compensation versions.
   Salary edits retain dated history; the reporting configuration can record older known salary terms.
+  Superseded versions are excluded. Any unresolved active version flags
+  `compensation_history_requires_review` and withholds compensation costs until active history is reviewed.
+  Report warnings link to each employment needing review, including older employments in a combined person row.
+  JSON person rows expose those employment IDs in `salary_history_review_employment_ids`.
 - Consultant fees and schedules use the existing dated consultant compensation records, denominated in INR.
   When a person changes engagement type, the latest applicable effective date determines the compensation source.
 - Configure the workspace's actual payroll proration policy: calendar days or scheduled working days per month.
