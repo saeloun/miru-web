@@ -210,13 +210,15 @@ def cancellation_handlers():
 def defer_cancellation():
     global _cleanup_depth, _pending_cancel
     _cleanup_depth += 1
+    completed = False
     try:
         yield
+        completed = True
     finally:
         _cleanup_depth -= 1
         if not _cleanup_depth and _pending_cancel is not None:
             signum, _pending_cancel = _pending_cancel, None
-            if sys.exception() is None:
+            if completed:
                 interrupted(signum, None)
 
 
@@ -829,6 +831,22 @@ def self_check_deferred_failure():
         else:
             raise AssertionError("Protected failure was swallowed")
         assert _cleanup_depth == 0 and _pending_cancel is None
+    for handled_outer_error in (False, True):
+        with cancellation_handlers():
+            try:
+                if handled_outer_error:
+                    try:
+                        raise ValueError("synthetic already-handled outer error")
+                    except ValueError:
+                        with defer_cancellation():
+                            signal.raise_signal(signal.SIGTERM)
+                else:
+                    with defer_cancellation():
+                        signal.raise_signal(signal.SIGTERM)
+            except SystemExit as error:
+                assert error.code == 143
+            else:
+                raise AssertionError("Successful protected work discarded deferred cancellation")
 
 
 def self_check_lookup():
