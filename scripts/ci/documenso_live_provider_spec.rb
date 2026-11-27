@@ -323,20 +323,26 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     [1440, 375].each do |width|
       viewport(session, width)
       session.execute_script("window.scrollTo(0, 0)")
-      link = session.find("a", text: "Corresponding source", exact_text: true)
-      check(link.evaluate_script("this.href") == "#{@config.fetch('provider_origin')}/source" && link[:lang] == "en" &&
-        link[:target] == "_blank" && %w[noopener noreferrer].all? { |value| link[:rel].to_s.split.include?(value) },
-        "Source link contract failed")
-      geometry = link.evaluate_script(<<~JS)
-        (() => { const r=this.getBoundingClientRect(); return {height:r.height,width:r.width,
-          hit:this.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2))}; })()
+      session.find("a", text: "Corresponding source", exact_text: true)
+      snapshot = session.evaluate_script(<<~JS)
+        (() => {
+          const links = [...document.querySelectorAll('a')].filter(link => link.textContent.trim() === 'Corresponding source');
+          if (links.length !== 1) return null;
+          const link = links[0], r = link.getBoundingClientRect();
+          return {href:link.href, lang:link.lang, target:link.target, rel:Array.from(link.relList), height:r.height, width:r.width,
+            hit:link.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2))};
+        })()
       JS
-      check(geometry.fetch("height") >= 44 && geometry.fetch("width").positive? && geometry.fetch("hit"),
+      check(snapshot && snapshot.fetch("href") == "#{@config.fetch('provider_origin')}/source" && snapshot.fetch("lang") == "en" &&
+        snapshot.fetch("target") == "_blank" && %w[noopener noreferrer].all? { |value| snapshot.fetch("rel").include?(value) },
+        "Source link contract failed")
+      check(snapshot.fetch("height") >= 44 && snapshot.fetch("width").positive? && snapshot.fetch("hit"),
         "Source link is obstructed or too small")
-      link.execute_script("this.focus()")
+      session.execute_script("window.qaSourceLink = [...document.querySelectorAll('a')].find(link => link.textContent.trim() === 'Corresponding source'); window.qaSourceLink.focus()")
       session.driver.browser.keyboard.type(:tab)
       session.driver.browser.keyboard.type([:shift, :tab])
-      check(link.evaluate_script("document.activeElement === this"), "Source keyboard focus failed")
+      check(session.evaluate_script("document.activeElement === window.qaSourceLink && window.qaSourceLink.isConnected"), "Source keyboard focus failed")
+      session.execute_script("delete window.qaSourceLink")
       capture(session, "source-#{label}-#{width}.png")
     end
   ensure
