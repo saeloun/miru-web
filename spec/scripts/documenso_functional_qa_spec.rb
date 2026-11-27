@@ -34,6 +34,33 @@ RSpec.describe "Documenso functional QA isolation" do
     expect(artifacts.first.fetch("with").fetch("path")).to eq("${{ env.MIRU_QA_WORK }}/evidence/")
   end
 
+  it "uses the allocated provider port inside its namespace and through the existing proxy" do
+    output, errors, status = Open3.capture3("python3", "-I", "-B", "-c", <<~PYTHON, chdir: root)
+      import ast, pathlib, types
+      tree = ast.parse(pathlib.Path("scripts/ci/documenso_functional_qa.py").read_text())
+      lifecycle = next(node for node in tree.body if isinstance(node, ast.ClassDef) and node.name == "Lifecycle")
+      compose = next(node for node in lifecycle.body if isinstance(node, ast.FunctionDef) and node.name == "compose")
+      update = next(node.value for node in compose.body if isinstance(node, ast.Expr) and isinstance(node.value, ast.Call)
+                    and isinstance(node.value.func, ast.Attribute) and isinstance(node.value.func.value, ast.Name)
+                    and node.value.func.value.id == "provider" and node.value.func.attr == "update")
+      environment = next(keyword.value for keyword in update.keywords if keyword.arg == "environment")
+      proxy = next(node.value for node in compose.body if isinstance(node, ast.Assign)
+                   and any(isinstance(target, ast.Name) and target.id == "proxy" for target in node.targets))
+      for port in (20001, 49151):
+          context = {"self": types.SimpleNamespace(ports={"provider": port})}
+          env = eval(compile(ast.Expression(environment), "<provider-environment>", "eval"), context)
+          config = eval(compile(ast.Expression(proxy), "<provider-proxy>", "eval"), context)
+          assert env["PORT"] == str(port)
+          assert env["NEXT_PUBLIC_WEBAPP_URL"] == f"http://127.0.0.1:{port}"
+          assert env["NEXT_PRIVATE_INTERNAL_WEBAPP_URL"] == f"http://documenso:{port}"
+          assert f"proxy_pass http://documenso:{port};" in config
+          assert "listen 8080;" in config and "documenso:3000" not in config
+      print("Allocated provider namespace port contract passed")
+    PYTHON
+    expect(status).to be_success, output + errors
+    expect(output).to include("Allocated provider namespace port contract passed")
+  end
+
   it "matches the pinned confirmation email through the actual fixture mailbox controls" do
     # Extract helpers without loading the live fixture or its guarded runtime.
     path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
