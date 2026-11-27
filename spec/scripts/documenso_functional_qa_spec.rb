@@ -209,22 +209,38 @@ RSpec.describe "Documenso functional QA isolation" do
     expect { evaluate.call }.not_to raise_error
   end
 
-  it "initializes the QA-only signing iframe with encoded empty embed settings" do
+  it "initializes the QA-only iframe and accepts readiness only from its exact origin and frame" do
     source = File.read(File.join(root, "scripts/ci/documenso_live_provider_spec.rb"), encoding: "UTF-8")
     setter = source.lines.find { |line| line.include?("qa-provider-frame") && line.include?("execute_script") }
-    script = JSON.parse(setter[/execute_script\(("[^"]*")/, 1])
+    script = setter ? JSON.parse(setter[/execute_script\(("[^"]*")/, 1]) : source[/session.execute_script\(<<~JS,.*?\n(.*?)^      JS/m, 1]
+    expect(script).not_to be_nil
     output, errors, status = Open3.capture3("node", "-e", <<~JS, script)
-      const frame={src:""};
+      const assert=require("node:assert/strict");
+      const frame={src:"",contentWindow:{}};
+      const listeners=new Set();
+      global.window={addEventListener:(type,fn)=>{assert.equal(type,"message");listeners.add(fn);},
+        removeEventListener:(type,fn)=>{assert.equal(type,"message");listeners.delete(fn);}};
       global.document={getElementById:id=>{if(id!=="qa-provider-frame")throw Error("Wrong frame");return frame;}};
       new Function(process.argv[1]).apply(null,["http://127.0.0.1:4000/embed/sign/synthetic"]);
       const url=new URL(frame.src);
       if(url.origin!=="http://127.0.0.1:4000" || url.pathname!=="/embed/sign/synthetic")throw Error("Origin/path changed");
       const settings=JSON.parse(decodeURIComponent(atob(url.hash.slice(1))));
       if(Object.keys(settings).length!==0)throw Error("Nonempty settings");
-      console.log("Encoded empty embed settings accepted");
+      assert.equal(window.qaProviderReady,false);
+      const valid={origin:url.origin,source:frame.contentWindow,data:{action:"document-ready",data:null}};
+      for(const change of [{origin:"http://example.invalid"},{source:{}},{data:null},
+          {data:{action:"document-error",data:null}},{data:{action:"document-ready",data:"PRIVATE"}}]) {
+        for(const listener of listeners)listener({...valid,...change});
+        assert.equal(window.qaProviderReady,false);
+        assert.equal(listeners.size,1);
+      }
+      for(const listener of listeners)listener(valid);
+      assert.equal(window.qaProviderReady,true);
+      assert.equal(listeners.size,0);
+      console.log("Encoded settings and exact-frame readiness accepted");
     JS
     expect(status).to be_success, errors
-    expect(output).to include("Encoded empty embed settings accepted")
+    expect(output).to include("Encoded settings and exact-frame readiness accepted")
   end
 
   it "preserves isolated preload and pinned worker registration contracts" do

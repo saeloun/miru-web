@@ -605,7 +605,21 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       token_path = URI(url).path
       check(token_path.match?(%r{\A/sign/[A-Za-z0-9_-]+\z}), "Unexpected invitation route")
       session.visit("#{@config.fetch('provider_origin')}/qa-embed")
-      session.execute_script("document.getElementById('qa-provider-frame').src=arguments[0]+'#'+btoa(encodeURIComponent(JSON.stringify({})))", @config.fetch("provider_origin") + "/embed" + token_path)
+      session.execute_script(<<~JS, @config.fetch("provider_origin") + "/embed" + token_path)
+        const frame = document.getElementById('qa-provider-frame');
+        const origin = new URL(arguments[0]).origin;
+        window.qaProviderReady = false;
+        const ready = event => {
+          if (event.origin === origin && event.source === frame.contentWindow &&
+              event.data?.action === 'document-ready' && event.data.data === null) {
+            window.qaProviderReady = true;
+            window.removeEventListener('message', ready);
+          }
+        };
+        window.addEventListener('message', ready);
+        frame.src = arguments[0] + '#' + btoa(encodeURIComponent(JSON.stringify({})));
+      JS
+      wait_for("Provider embed did not initialize", 20) { session.evaluate_script("window.qaProviderReady === true") }
       session.within_frame("qa-provider-frame") { source_offer(session, "embed-#{kind}") }
     end
     session.visit(url)
