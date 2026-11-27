@@ -809,7 +809,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     @client = create(:client, company: @company, name: "Synthetic live client",
       email: @config.fetch("identities").fetch("signer").fetch("email"))
     @employee, = fixture_user(@company, "unassigned-#{SecureRandom.hex(6)}@miru-qa.invalid", :employee)
-    @other_company = create(:company, name: "Synthetic other signing workspace", base_currency: "USD")
+    @other_company = create(:company, name: "Synthetic other workspace", base_currency: "USD")
     @other_owner, = fixture_user(@other_company, "other-#{SecureRandom.hex(6)}@miru-qa.invalid", :owner)
     login(@owner)
     %w[client consultant].each do |kind|
