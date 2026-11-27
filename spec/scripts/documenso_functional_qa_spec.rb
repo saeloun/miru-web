@@ -142,16 +142,36 @@ RSpec.describe "Documenso functional QA isolation" do
       probe = probe_class.new
       summary = {}
       probe.instance_variable_set(:@summary, summary)
+      probe.instance_variable_set(:@console_errors, { 0 => ["PRIVATE_CONSOLE_MESSAGE"] })
+      probe.instance_variable_set(:@operation_http_statuses, [409])
       error = begin
         probe.fixture_probe
       rescue StandardError => original
         original
       end
       expect { probe.stopped(error) }.to raise_error(failure) { |stopped| expect(stopped.cause).to be_nil }
-      expected_summary = { error_class: "StandardError" }
+      expected_summary = { error_class: "StandardError", operation_http_statuses: [409], console_error_roles: ["miru"] }
       expected_summary[:failure_line] = expected if expected
       expect(summary).to eq(expected_summary)
       expect(JSON.generate(summary)).not_to include("PRIVATE")
+    end
+  end
+
+  it "classifies only failed operation statuses for the exact local API route" do
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    source = File.read(path, encoding: "UTF-8")
+    classifier = Module.new
+    classifier.module_eval(source[/^  def self.operation_failure_status.*?^  end/m], path)
+    origin = "http://127.0.0.1:4000"
+    url = "#{origin}/api/v1/signature_requests/123/operations"
+    expect(classifier.operation_failure_status(nil, origin)).to be_nil
+    expect(classifier.operation_failure_status({ "status" => 409, "url" => url }, origin)).to eq(409)
+    [true, "PRIVATE_STATUS", 399, 600].each do |status|
+      expect(classifier.operation_failure_status({ "status" => status, "url" => url }, origin)).to be_nil
+    end
+    ["http://example.invalid/api/v1/signature_requests/123/operations", "#{origin}/PRIVATE_PATH",
+     "http://PRIVATE_USER@127.0.0.1:4000/api/v1/signature_requests/123/operations", "PRIVATE_URL"].each do |candidate|
+      expect(classifier.operation_failure_status({ "status" => 409, "url" => candidate }, origin)).to be_nil
     end
   end
 

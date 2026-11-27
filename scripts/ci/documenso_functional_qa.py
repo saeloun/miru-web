@@ -1809,13 +1809,25 @@ def validate_png_bytes(data):
 
 
 def validate_summary(value):
-    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line"})
+    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line", "operation_http_statuses", "console_error_roles", "delivery_state"})
     require(value.get("schema_version") == 1 and type(value.get("passed")) is bool and value.get("phase") in PHASES and value.get("image_config_sha256") == CONFIG_SHA)
     require(type(value.get("source_assets_verified")) is int and 0 <= value["source_assets_verified"] <= 3 and type(value.get("console_errors")) is int and value["console_errors"] >= 0)
     if "error_class" in value:
         require(re.fullmatch(r"[A-Za-z][A-Za-z0-9_:]{0,100}", value["error_class"]))
     if "failure_line" in value:
         require(type(value["failure_line"]) is int and 1 <= value["failure_line"] <= 9999)
+    if "operation_http_statuses" in value:
+        require(isinstance(value["operation_http_statuses"], list) and len(value["operation_http_statuses"]) <= 8 and
+                all(type(code) is int and 400 <= code <= 599 for code in value["operation_http_statuses"]))
+    if "console_error_roles" in value:
+        require(isinstance(value["console_error_roles"], list) and len(value["console_error_roles"]) <= 3 and
+                all(role in ("miru", "provider", "signer") for role in value["console_error_roles"]))
+    if "delivery_state" in value:
+        state = value["delivery_state"]
+        require(isinstance(state, dict) and set(state) == {"revision", "provider", "refresh"})
+        require(state["revision"] in ("draft", "under_review", "changes_requested", "approved", "sending", "send_uncertain", "awaiting_signatures", "signed", "declined", "cancelled", "expired", "unknown"))
+        require(state["provider"] in ("DRAFT", "PENDING", "COMPLETED", "REJECTED", "CANCELLED", "unknown"))
+        require(state["refresh"] in ("none", "queued", "running", "waiting", "confirmed", "failed", "uncertain", "unknown"))
     require(isinstance(value.get("packets"), list) and len(value["packets"]) <= 2)
     for packet in value["packets"]:
         require(set(packet) == {"kind", "version", "documents", "fields", "signers", "artifact_checks", "share_sha256", "denials"})
@@ -1946,8 +1958,15 @@ def self_check():
         validate_summary(base)
         for line in (1, 9999):
             validate_summary({**base, "failure_line": line})
+        diagnostic = {**base, "operation_http_statuses": [400, 409, 599], "console_error_roles": ["miru"],
+                      "delivery_state": {"revision": "awaiting_signatures", "provider": "PENDING", "refresh": "none"}}
+        validate_summary(diagnostic)
+        invalid_diagnostics = [{**diagnostic, "operation_http_statuses": value} for value in ([True], [399], [600], ["PRIVATE_DIAGNOSTIC_MARKER"], [409] * 9)]
+        invalid_diagnostics += [{**diagnostic, "console_error_roles": ["PRIVATE_DIAGNOSTIC_MARKER"]}]
+        invalid_diagnostics += [{**diagnostic, "delivery_state": {**diagnostic["delivery_state"], key: "PRIVATE_DIAGNOSTIC_MARKER"}} for key in ("revision", "provider", "refresh")]
+        invalid_diagnostics += [{**diagnostic, "delivery_state": {**diagnostic["delivery_state"], "url": "PRIVATE_DIAGNOSTIC_MARKER"}}]
         invalid_lines = [{**base, "failure_line": line} for line in (0, 10000, True, "PRIVATE_DIAGNOSTIC_MARKER", 1.0)]
-        for changed in ({**base, "url": "forbidden"}, {**base, "error_class": "https://forbidden"}, {**base, "phase": "untrusted"}, {**base, "passed": True}, *invalid_lines):
+        for changed in ({**base, "url": "forbidden"}, {**base, "error_class": "https://forbidden"}, {**base, "phase": "untrusted"}, {**base, "passed": True}, *invalid_lines, *invalid_diagnostics):
             try:
                 validate_summary(changed)
             except RuntimeError:

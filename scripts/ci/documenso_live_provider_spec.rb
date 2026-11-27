@@ -78,6 +78,19 @@ module DocumensoLive
     port
   end
 
+  def self.operation_failure_status(response, origin)
+    return unless response.is_a?(Hash)
+
+    status = response["status"]
+    return unless status.is_a?(Integer) && status.between?(400, 599)
+
+    uri = URI(response.fetch("url"))
+    status if uri.userinfo.nil? && "#{uri.scheme}://#{uri.host}:#{uri.port}" == origin &&
+      uri.path.match?(%r{\A/api/v1/signature_requests/[1-9][0-9]*/operations\z})
+  rescue URI::InvalidURIError, KeyError, TypeError
+    nil
+  end
+
   # Pure offline boundary controls; exits before config, Rails or any IO to services.
   if ARGV == ["--self-check"]
     origin = "http://127.0.0.1:4000"
@@ -170,6 +183,23 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       location = error.backtrace_locations&.find { |row| row.path == __FILE__ && row.base_label != "check" }
       line = location&.lineno
       @summary[:failure_line] ||= line if line.is_a?(Integer) && line.between?(1, 9999)
+      @summary[:operation_http_statuses] = @operation_http_statuses if @operation_http_statuses&.any?
+      roles = %w[miru provider signer]
+      failed_roles = (@console_errors || {}).filter_map { |index, errors| roles[index] if errors.any? }
+      @summary[:console_error_roles] = failed_roles if failed_roles.any?
+      if @record
+        begin
+          revision = @record.current_revision
+          refresh = revision.signature_operations.where(kind: "refresh").order(id: :desc).first
+          @summary[:delivery_state] = {
+            revision: SignatureRequestRevision::STATUSES.include?(revision.status) ? revision.status : "unknown",
+            provider: Signatures::Delivery::PROVIDER_STATUSES.include?(revision.provider_status) ? revision.provider_status : "unknown",
+            refresh: refresh.nil? ? "none" : %w[queued running waiting confirmed failed uncertain].include?(refresh.state) ? refresh.state : "unknown"
+          }
+        rescue ActiveRecord::ActiveRecordError
+          # Optional diagnostics must not replace the original acceptance failure.
+        end
+      end
     end
     raise DocumensoLive::Failure, "Live provider acceptance stopped in #{@phase || 'setup'}", cause: nil
   end
@@ -199,8 +229,19 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
 
   def viewport(session, width)
     session.current_window.resize_to(width, 1000)
-    check(session.evaluate_script("innerWidth === #{width} && document.documentElement.scrollWidth <= innerWidth + 1"),
-      "Viewport or horizontal overflow contract failed")
+    wait_for("Viewport, layout or PDF preview did not settle", 5) do
+      session.evaluate_script(<<~JS, width, session.equal?(@miru))
+        (() => {
+          const [width, miru] = arguments;
+          const workspace = document.querySelector('.signature-workspace') || document.querySelector('main');
+          const box = workspace?.getBoundingClientRect();
+          const preview = document.querySelector('[data-pdf-ready]');
+          return innerWidth === width && document.documentElement.scrollWidth <= innerWidth + 1 &&
+            (!miru || (box && (width >= 1100 || (box.left <= 40 && box.width >= width - 80)) &&
+              (!preview || preview.getAttribute('data-pdf-ready') === 'true')));
+        })()
+      JS
+    end
   end
 
   def local_get(url, maximum = 1_048_576)
@@ -724,6 +765,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     @config = DocumensoLive::CONFIG
     @phase = "admitted"
     @console_errors = {}
+    @operation_http_statuses = []
     @summary = { schema_version: 1, passed: false, phase: @phase, image_config_sha256: DocumensoLive::CONFIG_SHA,
       source_assets_verified: 0, console_errors: 0, packets: [] }
     @deadline = DocumensoLive::ADMISSION.fetch("deadline_epoch")
@@ -782,6 +824,12 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       errors = @console_errors[index] = []
       session.driver.browser.page.on("Runtime.consoleAPICalled") { |event| errors << "console.error" if event["type"] == "error" }
       session.driver.browser.page.on("Runtime.exceptionThrown") { |_event| errors << "uncaught exception" }
+      if index.zero?
+        session.driver.browser.page.on("Network.responseReceived") do |event|
+          status = DocumensoLive.operation_failure_status(event.fetch("response", {}), @config.fetch("miru_origin"))
+          @operation_http_statuses << status if status && @operation_http_statuses.size < 8
+        end
+      end
       session.driver.browser.network.intercept
       session.driver.browser.on(:request) do |request|
         uri = URI(request.url)
