@@ -162,6 +162,7 @@ RSpec.describe "Documenso functional QA isolation" do
     source = File.read(path, encoding: "UTF-8")
     classifier = Module.new
     classifier.module_eval(source[/^  def self.operation_failure_status.*?^  end/m], path)
+    classifier.module_eval(source[/^  def self.recipient_completion_status.*?^  end/m], path)
     origin = "http://127.0.0.1:4000"
     url = "#{origin}/api/v1/signature_requests/123/operations"
     expect(classifier.operation_failure_status(nil, origin)).to be_nil
@@ -173,6 +174,39 @@ RSpec.describe "Documenso functional QA isolation" do
      "http://PRIVATE_USER@127.0.0.1:4000/api/v1/signature_requests/123/operations", "PRIVATE_URL"].each do |candidate|
       expect(classifier.operation_failure_status({ "status" => 409, "url" => candidate }, origin)).to be_nil
     end
+    completion = "#{origin}/api/trpc/recipient.completeDocumentWithToken"
+    expect(classifier.recipient_completion_status({ "status" => 200, "url" => completion }, origin)).to eq(200)
+    expect(classifier.recipient_completion_status({ "status" => 500, "url" => completion }, origin)).to eq(500)
+    [true, "PRIVATE_STATUS", 99, 600].each do |status|
+      expect(classifier.recipient_completion_status({ "status" => status, "url" => completion }, origin)).to be_nil
+    end
+    expect(classifier.recipient_completion_status({ "status" => 200, "url" => "#{origin}/PRIVATE_PATH" }, origin)).to be_nil
+    expect(classifier.recipient_completion_status({ "status" => 200, "url" => completion }, "http://example.invalid")).to be_nil
+  end
+
+  it "requires a recipient commit acknowledgement after the verification form closes" do
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    guard = File.readlines(path, encoding: "UTF-8").find { |line| line.include?("Recipient verification did not complete") }
+    url = "http://127.0.0.1:4000/sign/synthetic"
+    session = double("deferred provider completion")
+    allow(session).to receive(:has_no_css?).and_return(true)
+    allow(session).to receive(:has_current_path?).with("/sign/synthetic/complete", ignore_query: true, wait: 20).and_return(false)
+    allow(session).to receive(:has_text?).with("Document Signed").and_return(false)
+    probe = Object.new
+    probe.define_singleton_method(:check) { |condition, reason| raise reason unless condition }
+    role = "provider"
+    evaluate = lambda do
+      probe.instance_exec(session, url, guard, path, role) { |session, url, guard, path, role| eval(guard, binding, path) }
+    end
+    expect { evaluate.call }.to raise_error("Recipient verification did not complete")
+    allow(session).to receive(:has_current_path?).with("/sign/synthetic/complete", ignore_query: true, wait: 20).and_return(true)
+    allow(session).to receive(:has_text?).with("Document Signed").and_return(true)
+    expect { evaluate.call }.not_to raise_error
+    guard = File.readlines(path, encoding: "UTF-8").find { |line| line.include?("Provider completion was not sealed") }
+    allow(session).to receive(:has_text?).with("Everyone has signed", wait: 20).and_return(false)
+    expect { evaluate.call }.to raise_error("Provider completion was not sealed")
+    allow(session).to receive(:has_text?).with("Everyone has signed", wait: 20).and_return(true)
+    expect { evaluate.call }.not_to raise_error
   end
 
   it "preserves isolated preload and pinned worker registration contracts" do

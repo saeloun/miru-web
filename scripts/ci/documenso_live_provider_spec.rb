@@ -91,6 +91,19 @@ module DocumensoLive
     nil
   end
 
+  def self.recipient_completion_status(response, origin)
+    return unless response.is_a?(Hash)
+
+    status = response["status"]
+    return unless status.is_a?(Integer) && status.between?(100, 599)
+
+    uri = URI(response.fetch("url"))
+    status if uri.userinfo.nil? && "#{uri.scheme}://#{uri.host}:#{uri.port}" == origin &&
+      uri.path == "/api/trpc/recipient.completeDocumentWithToken"
+  rescue URI::InvalidURIError, KeyError, TypeError
+    nil
+  end
+
   # Pure offline boundary controls; exits before config, Rails or any IO to services.
   if ARGV == ["--self-check"]
     origin = "http://127.0.0.1:4000"
@@ -184,6 +197,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       line = location&.lineno
       @summary[:failure_line] ||= line if line.is_a?(Integer) && line.between?(1, 9999)
       @summary[:operation_http_statuses] = @operation_http_statuses if @operation_http_statuses&.any?
+      @summary[:recipient_completion_statuses] = @recipient_completion_statuses if @recipient_completion_statuses&.any?
       roles = %w[miru provider signer]
       failed_roles = (@console_errors || {}).filter_map { |index, errors| roles[index] if errors.any? }
       @summary[:console_error_roles] = failed_roles if failed_roles.any?
@@ -628,7 +642,9 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     session.find('input[name="token"][autocomplete="one-time-code"]').set(code)
     session.click_button("Verify & Complete", exact: true)
     code.clear
-    check(session.has_no_css?('input[autocomplete="one-time-code"]', wait: 20), "Recipient verification did not complete")
+    check(session.has_current_path?(URI(url).path + "/complete", ignore_query: true, wait: 20) && session.has_text?("Document Signed"), "Recipient verification did not complete")
+    (@summary[:recipient_commits] ||= []) << { kind:, role: }
+    check(session.has_text?("Everyone has signed", wait: 20), "Provider completion was not sealed") if role == "provider"
   end
 
   def download_pdf(entry, width, kind)
@@ -766,6 +782,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     @phase = "admitted"
     @console_errors = {}
     @operation_http_statuses = []
+    @recipient_completion_statuses = []
     @summary = { schema_version: 1, passed: false, phase: @phase, image_config_sha256: DocumensoLive::CONFIG_SHA,
       source_assets_verified: 0, console_errors: 0, packets: [] }
     @deadline = DocumensoLive::ADMISSION.fetch("deadline_epoch")
@@ -828,6 +845,13 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
         session.driver.browser.page.on("Network.responseReceived") do |event|
           status = DocumensoLive.operation_failure_status(event.fetch("response", {}), @config.fetch("miru_origin"))
           @operation_http_statuses << status if status && @operation_http_statuses.size < 8
+        end
+      else
+        session.driver.browser.page.on("Network.responseReceived") do |event|
+          status = DocumensoLive.recipient_completion_status(event.fetch("response", {}), @config.fetch("provider_origin"))
+          if status && @recipient_completion_statuses.size < 8
+            @recipient_completion_statuses << { role: %w[miru provider signer][index], status: }
+          end
         end
       end
       session.driver.browser.network.intercept

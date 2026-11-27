@@ -1809,7 +1809,7 @@ def validate_png_bytes(data):
 
 
 def validate_summary(value):
-    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line", "operation_http_statuses", "console_error_roles", "delivery_state"})
+    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line", "operation_http_statuses", "console_error_roles", "delivery_state", "recipient_completion_statuses", "recipient_commits"})
     require(value.get("schema_version") == 1 and type(value.get("passed")) is bool and value.get("phase") in PHASES and value.get("image_config_sha256") == CONFIG_SHA)
     require(type(value.get("source_assets_verified")) is int and 0 <= value["source_assets_verified"] <= 3 and type(value.get("console_errors")) is int and value["console_errors"] >= 0)
     if "error_class" in value:
@@ -1822,6 +1822,17 @@ def validate_summary(value):
     if "console_error_roles" in value:
         require(isinstance(value["console_error_roles"], list) and len(value["console_error_roles"]) <= 3 and
                 all(role in ("miru", "provider", "signer") for role in value["console_error_roles"]))
+    if "recipient_completion_statuses" in value:
+        rows = value["recipient_completion_statuses"]
+        require(isinstance(rows, list) and len(rows) <= 8)
+        require(all(isinstance(row, dict) and set(row) == {"role", "status"} and row["role"] in ("provider", "signer") and
+                    type(row["status"]) is int and 100 <= row["status"] <= 599 for row in rows))
+    if "recipient_commits" in value:
+        rows = value["recipient_commits"]
+        require(isinstance(rows, list) and len(rows) <= 4)
+        require(all(isinstance(row, dict) and set(row) == {"kind", "role"} and row["kind"] in ("client", "consultant") and
+                    row["role"] in ("provider", "signer") for row in rows))
+        require(len({(row["kind"], row["role"]) for row in rows}) == len(rows))
     if "delivery_state" in value:
         state = value["delivery_state"]
         require(isinstance(state, dict) and set(state) == {"revision", "provider", "refresh"})
@@ -1961,6 +1972,18 @@ def self_check():
         diagnostic = {**base, "operation_http_statuses": [400, 409, 599], "console_error_roles": ["miru"],
                       "delivery_state": {"revision": "awaiting_signatures", "provider": "PENDING", "refresh": "none"}}
         validate_summary(diagnostic)
+        recipient_diagnostic = {**diagnostic, "recipient_completion_statuses": [{"role": "signer", "status": 200}, {"role": "provider", "status": 500}],
+                                "recipient_commits": [{"kind": "client", "role": "signer"}]}
+        validate_summary(recipient_diagnostic)
+        for key, values in (("recipient_completion_statuses", [[{"role": "provider", "status": True}], [{"role": "PRIVATE", "status": 200}], [{"role": "provider", "status": 99}], [{"role": "provider", "status": 200, "url": "PRIVATE"}], [{"role": "provider", "status": 200}] * 9]),
+                            ("recipient_commits", [[{"kind": "PRIVATE", "role": "signer"}], [{"kind": "client", "role": "PRIVATE"}], [{"kind": "client", "role": "signer"}] * 2])):
+            for invalid in values:
+                try:
+                    validate_summary({**recipient_diagnostic, key: invalid})
+                except RuntimeError:
+                    pass
+                else:
+                    raise AssertionError("Unsafe recipient diagnostic accepted")
         invalid_diagnostics = [{**diagnostic, "operation_http_statuses": value} for value in ([True], [399], [600], ["PRIVATE_DIAGNOSTIC_MARKER"], [409] * 9)]
         invalid_diagnostics += [{**diagnostic, "console_error_roles": ["PRIVATE_DIAGNOSTIC_MARKER"]}]
         invalid_diagnostics += [{**diagnostic, "delivery_state": {**diagnostic["delivery_state"], key: "PRIVATE_DIAGNOSTIC_MARKER"}} for key in ("revision", "provider", "refresh")]
