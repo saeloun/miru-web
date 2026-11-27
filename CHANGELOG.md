@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.3] - 2026-11-26
+
+### Fixed
+
+- Omit request parameters from Sentry traces to keep private employee, tax and signing values out of trace data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
+
 ## [3.7.2] - 2026-11-20
 
 ### Fixed
