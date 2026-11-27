@@ -1825,9 +1825,14 @@ def validate_summary(value):
             require(set(state) == {"width", "width_matches", "no_overflow", "workspace_ready", "pdf_ready"} and
                     all(type(state[key]) is bool for key in ("width_matches", "no_overflow", "workspace_ready", "pdf_ready")))
         else:
-            require(value.get("wait_probe") == "native_download" and set(state) == {"width", "artifact", "transfer", "file_present", "download_alert"})
+            require(value.get("wait_probe") == "native_download" and set(state) == {"width", "artifact", "transfer", "file_present", "download_alert", "http_requests", "http_statuses", "new_transfers", "filename_matches", "click_events", "trusted_click", "target_matches", "button_hit", "document_visible", "document_focused"})
             require(state["artifact"] in ("signed", "certificate", "audit_log") and state["transfer"] in ("absent", "inProgress", "completed", "canceled", "unknown") and
                     type(state["file_present"]) is bool and type(state["download_alert"]) is bool)
+            require(all(type(state[key]) is int and 0 <= state[key] <= 8 for key in ("http_requests", "new_transfers", "filename_matches")) and
+                    state["filename_matches"] <= state["new_transfers"] and type(state["click_events"]) is int and 0 <= state["click_events"] <= 1)
+            require(all(type(state[key]) is bool for key in ("trusted_click", "target_matches", "button_hit", "document_visible", "document_focused")) and
+                    isinstance(state["http_statuses"], list) and len(state["http_statuses"]) <= 8 and
+                    all(type(code) is int and 100 <= code <= 599 for code in state["http_statuses"]))
     if "operation_http_statuses" in value:
         require(isinstance(value["operation_http_statuses"], list) and len(value["operation_http_statuses"]) <= 8 and
                 all(type(code) is int and 400 <= code <= 599 for code in value["operation_http_statuses"]))
@@ -1984,7 +1989,9 @@ def self_check():
         for probe in ("viewport", "mailbox", "provider_team", "worker_registration", "distribution", "embed_ready", "native_download", "archive_reconciliation", "share_image"):
             validate_summary({**base, "wait_probe": probe})
         viewport_state = {"width": 375, "width_matches": True, "no_overflow": True, "workspace_ready": False, "pdf_ready": True}
-        download_state = {"width": 1440, "artifact": "signed", "transfer": "absent", "file_present": False, "download_alert": False}
+        download_state = {"width": 1440, "artifact": "signed", "transfer": "absent", "file_present": False, "download_alert": False,
+                          "http_requests": 1, "http_statuses": [200], "new_transfers": 0, "filename_matches": 0, "click_events": 1,
+                          "trusted_click": True, "target_matches": True, "button_hit": True, "document_visible": True, "document_focused": True}
         validate_summary({**base, "wait_probe": "viewport", "wait_state": viewport_state})
         for state in ("absent", "inProgress", "completed", "canceled", "unknown"):
             validate_summary({**base, "wait_probe": "native_download", "wait_state": {**download_state, "transfer": state}})
@@ -1992,7 +1999,13 @@ def self_check():
         for probe, state, key, invalid in (("viewport", viewport_state, "width", True), ("viewport", viewport_state, "width", 100),
                                          ("viewport", viewport_state, "workspace_ready", "PRIVATE"), ("viewport", viewport_state, "private", "PRIVATE"),
                                          ("native_download", download_state, "artifact", "PRIVATE"), ("native_download", download_state, "transfer", "PRIVATE"),
-                                         ("native_download", download_state, "file_present", 1), ("native_download", download_state, "download_alert", "PRIVATE")):
+                                         ("native_download", download_state, "file_present", 1), ("native_download", download_state, "download_alert", "PRIVATE"),
+                                         ("native_download", download_state, "http_requests", True), ("native_download", download_state, "new_transfers", 9),
+                                         ("native_download", download_state, "filename_matches", 1), ("native_download", download_state, "click_events", 2),
+                                         ("native_download", download_state, "trusted_click", "PRIVATE"), ("native_download", download_state, "document_visible", 1),
+                                         ("native_download", download_state, "target_matches", "PRIVATE"), ("native_download", download_state, "button_hit", 1),
+                                         ("native_download", download_state, "document_focused", None), ("native_download", download_state, "http_statuses", [True]),
+                                         ("native_download", download_state, "http_statuses", [99]), ("native_download", download_state, "http_statuses", [200] * 9)):
             invalid_waits.append({**base, "wait_probe": probe, "wait_state": {**state, key: invalid}})
         invalid_waits += [{**base, "wait_state": viewport_state}, {**base, "wait_probe": "mailbox", "wait_state": viewport_state},
                           {**base, "wait_probe": "viewport", "wait_state": download_state}, {**base, "wait_probe": "native_download", "wait_state": None}]

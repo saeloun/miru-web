@@ -211,6 +211,23 @@ RSpec.describe "Documenso functional QA isolation" do
     expect(classifier.recipient_completion_status({ "status" => 200, "url" => completion }, "http://example.invalid")).to be_nil
   end
 
+  it "correlates archive dispatch only with the exact in-memory local file path" do
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    source = File.read(path, encoding: "UTF-8")
+    classifier = Module.new
+    classifier.module_eval(source[/^  def self.archive_download_path\?.*?^  end/m], path)
+    origin = "http://127.0.0.1:4000"
+    expected = "/api/v1/signature_archives/123/files/synthetic-key"
+    expect(classifier.archive_download_path?("#{origin}#{expected}?company_id=1", origin, expected)).to be(true)
+    [nil, true, "PRIVATE", "#{origin}#{expected}-other", "#{origin}/PRIVATE", "http://example.invalid#{expected}",
+     "http://PRIVATE@127.0.0.1:4000#{expected}"].each do |url|
+      expect(classifier.archive_download_path?(url, origin, expected)).to be(false)
+    end
+    [nil, "PRIVATE", "/api/v1/signature_archives/123/files/synthetic-key/extra"].each do |candidate|
+      expect(classifier.archive_download_path?("#{origin}#{expected}", origin, candidate)).to be(false)
+    end
+  end
+
   it "identifies the actual timed-out caller without exporting its private reason or path" do
     path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
     source = File.read(path, encoding: "UTF-8")

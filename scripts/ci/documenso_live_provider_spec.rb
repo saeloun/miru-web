@@ -104,6 +104,16 @@ module DocumensoLive
     nil
   end
 
+  def self.archive_download_path?(url, origin, expected_path)
+    return false unless url.is_a?(String) && expected_path.is_a?(String) &&
+      expected_path.match?(%r{\A/api/v1/signature_archives/[0-9]+/files/[A-Za-z0-9_-]+\z})
+
+    uri = URI(url)
+    uri.userinfo.nil? && "#{uri.scheme}://#{uri.host}:#{uri.port}" == origin && uri.path == expected_path
+  rescue URI::InvalidURIError
+    false
+  end
+
   # Pure offline boundary controls; exits before config, Rails or any IO to services.
   if ARGV == ["--self-check"]
     origin = "http://127.0.0.1:4000"
@@ -683,7 +693,23 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     downloads = @miru.driver.browser.downloads
     downloads.set_behavior(save_path: directory.to_s)
     earlier = downloads.files.map { |file| file.fetch("guid") }
+    @archive_request_path = "/api/v1/signature_archives/#{@record.current_revision_id}/files/#{CGI.escapeURIComponent(entry.fetch('key'))}"
+    @archive_http_requests, @archive_http_statuses = 0, []
     @miru.within("article[data-signature-archive]", text: @record.current_revision.title) do
+      @miru.execute_script(<<~JS, filename, @record.current_revision.title)
+        const cards = [...document.querySelectorAll('article[data-signature-archive]')].filter(card =>
+          [...card.querySelectorAll('p')].some(text => text.textContent.trim() === arguments[1]));
+        const button = cards.length === 1 && [...cards[0].querySelectorAll('button')].find(node => node.textContent.trim() === arguments[0]);
+        const state = {click_events:0, trusted_click:false, target_matches:false, button_hit:false,
+          document_visible:document.visibilityState === 'visible', document_focused:document.hasFocus()};
+        window.qaArchiveClickObservation = state;
+        document.addEventListener('click', event => {
+          state.click_events++; state.trusted_click = event.isTrusted;
+          state.target_matches = !!button && event.composedPath().includes(button);
+          if (button) { const box=button.getBoundingClientRect(); state.button_hit=button.contains(document.elementFromPoint(box.x+box.width/2,box.y+box.height/2)); }
+          state.document_visible = document.visibilityState === 'visible'; state.document_focused = document.hasFocus();
+        }, {capture:true, once:true});
+      JS
       @miru.click_button(filename, exact: true)
     end
     path = directory.join(filename)
@@ -691,7 +717,11 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     download_state = lambda do
       state = transfer.nil? ? "absent" : %w[inProgress completed canceled].include?(transfer["state"]) ? transfer["state"] : "unknown"
       { "width" => width, "artifact" => entry.fetch("kind"), "transfer" => state, "file_present" => path.file?,
-        "download_alert" => @miru.has_text?("The signed file could not be downloaded. Try again.", wait: 0) }
+        "download_alert" => @miru.has_text?("The signed file could not be downloaded. Try again.", wait: 0),
+        "http_requests" => @archive_http_requests, "http_statuses" => @archive_http_statuses.dup,
+        "new_transfers" => [downloads.files.count { |file| !earlier.include?(file.fetch("guid")) }, 8].min,
+        "filename_matches" => [downloads.files.count { |file| !earlier.include?(file.fetch("guid")) && file["suggestedFilename"] == filename }, 8].min
+      }.merge(@miru.evaluate_script("window.qaArchiveClickObservation"))
     end
     wait_for("Native download did not complete", 15, probe: "native_download", state: download_state) do
       transfer = downloads.files.find { |file| !earlier.include?(file.fetch("guid")) && file["suggestedFilename"] == filename }
@@ -716,6 +746,8 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     end
     { kind: entry.fetch("kind"), sha256: entry.fetch("sha256"), bytes: path.size,
       pages: info.fetch("pages").size, viewport: width, pdf_signature_valid: signed, body_preserved: signed }
+  ensure
+    @archive_request_path = nil
   end
 
   def archive_packet(kind)
@@ -876,9 +908,21 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       session.driver.browser.page.on("Runtime.consoleAPICalled") { |event| errors << "console.error" if event["type"] == "error" }
       session.driver.browser.page.on("Runtime.exceptionThrown") { |_event| errors << "uncaught exception" }
       if index.zero?
+        session.driver.browser.page.on("Network.requestWillBeSent") do |event|
+          request = event.fetch("request", {})
+          if request["method"] == "GET" && DocumensoLive.archive_download_path?(request["url"], @config.fetch("miru_origin"), @archive_request_path)
+            @archive_http_requests += 1 if @archive_http_requests < 8
+          end
+        end
         session.driver.browser.page.on("Network.responseReceived") do |event|
-          status = DocumensoLive.operation_failure_status(event.fetch("response", {}), @config.fetch("miru_origin"))
+          response = event.fetch("response", {})
+          status = DocumensoLive.operation_failure_status(response, @config.fetch("miru_origin"))
           @operation_http_statuses << status if status && @operation_http_statuses.size < 8
+          code = response["status"]
+          if code.is_a?(Integer) && code.between?(100, 599) &&
+            DocumensoLive.archive_download_path?(response["url"], @config.fetch("miru_origin"), @archive_request_path)
+            @archive_http_statuses << code if @archive_http_statuses.size < 8
+          end
         end
       else
         session.driver.browser.page.on("Network.responseReceived") do |event|
