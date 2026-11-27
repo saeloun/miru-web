@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.6.11] - 2026-11-11
+## [Unreleased]
 
 ### Added
 
@@ -9,6 +9,78 @@
 ### Fixed
 
 - Keep signing-provider build caches separate when the configured base path changes.
+
+## [3.7.3] - 2026-11-26
+
+### Fixed
+
+- Remove request parameters and SQL text from Sentry spans and breadcrumbs, and strip breadcrumb URL queries in errors and traces while retaining timing and status data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
+
+## [3.7.2] - 2026-11-20
+
+### Fixed
+
+- Make payroll audit checks consistently verify the event sequence across database query plans.
+
+## [3.7.1] - 2026-11-19
+
+### Changed
+
+- Clarify the approvals, fees and payable limits to check before a first live Mercury payment.
+
+### Fixed
+
+- Require reviews for the exact commit being pushed, while accepting a complete no-UI review for changes without a user interface.
+
+## [3.7.0] - 2026-11-19
+
+### Added
+
+- Connect Miru to PostHog for activation and subscription funnels, product usage, web vitals, error tracking and structured logs.
+- Review masked sessions and collect optional product feedback. Personal, payroll, hiring, document and shared-invoice pages are excluded from replay, and tracking URLs omit private tokens.
+
+## [3.6.24] - 2026-11-16
+
+### Fixed
+
+- Reject conflicting Mercury credit entries before they change balances or prematurely settle reimbursements. Exact retries still recover interrupted settlement.
+
+## [3.6.22] - 2026-11-16
+
+### Fixed
+
+- Stop birthday and work-anniversary reminders for events after an employee leaves, while retaining events on their final day.
+
+## [3.6.20] - 2026-11-15
+
+### Fixed
+
+- Keep employee profiles accessible when a previous PAN or contract attachment is missing.
+
+## [3.6.19] - 2026-11-15
+
+### Security
+
+- Update MessagePack and Puma to patched versions.
+
+## [3.6.17] - 2026-11-12
+
+### Fixed
+
+- Render salary-slip and invoice emails with fallback branding when an optional company logo file is unavailable.
+
+## [3.6.14] - 2026-11-11
+
+### Fixed
+
+- Require Debian's patched OpenEXR package in production images while retaining supported image thumbnails and PDF generation.
+
+## [3.6.12] - 2026-11-11
+
+### Changed
+
+- Verify the existing image-upload decoder safeguard during CI and runtime-image builds while retaining supported logo thumbnails and invoice PDF checks.
 
 ## [3.6.10] - 2026-11-11
 

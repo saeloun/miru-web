@@ -85,7 +85,7 @@ Miru's Dev Container includes:
 
 ### Base Environment
 - **Ubuntu 22.04** as the base OS
-- **Ruby 4.0.9** with rbenv
+- **Ruby 4.0.10** with rbenv
 - **Node.js 24.22.1 LTS** with nvm
 - **PostgreSQL 16** database server
 - **Git** with common configurations

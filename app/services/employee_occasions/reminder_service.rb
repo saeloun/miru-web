@@ -42,6 +42,8 @@ module EmployeeOccasions
       end
 
       def events(employment)
+        return [] if employment.resigned_at && employment.resigned_at < @event_on
+
         dates = { "birthday" => employment.user.date_of_birth, "work_anniversary" => employment.joined_at }
         dates.filter_map do |kind, date|
           kind if date && date.year < @event_on.year && anniversary(date) == @event_on

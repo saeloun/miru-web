@@ -82,6 +82,8 @@ class ApplicationMailer < ActionMailer::Base
       end
 
       attachments[logo_filename].url
+    rescue ActiveStorage::FileNotFoundError
+      ""
     end
 
     def attached_company_logo_url(company)
