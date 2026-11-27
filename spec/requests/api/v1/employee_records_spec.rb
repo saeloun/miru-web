@@ -71,6 +71,268 @@ RSpec.describe "Employee records", type: :request do
     expect(record.reload.private_details).to include("bank_account_number" => nil, "salary_amount" => "123.45")
   end
 
+  context "current salary" do
+    let(:salary) do
+      { salary_amount: "1000.00", salary_currency: "INR", salary_frequency: "monthly", salary_effective_on: "2026-11-01" }
+    end
+
+    it "keeps future configured terms editable and changes the displayed salary on the company's effective day" do
+      company.update!(timezone: "America/New_York")
+      future_salary = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-16")
+
+      travel_to(Time.utc(2026, 11, 16, 4, 30)) do
+        update_record(salary)
+        update_record(future_salary)
+        expect(response).to have_http_status(:ok)
+        result = response.parsed_body.fetch("employee_record")
+        expect(result.fetch("private_details")).to include(future_salary.stringify_keys)
+        expect(result.fetch("current_salary")).to eq(salary.stringify_keys)
+
+        sign_in employee
+        expect do
+          get "/api/v1/employee_records"
+        end.not_to change(CompensationVersion, :count)
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+      end
+
+      travel_to(Time.utc(2026, 11, 16, 5)) do
+        get "/api/v1/employee_records"
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(future_salary.stringify_keys)
+      end
+    end
+
+    it "returns blank current salary when the first configured salary is future dated" do
+      update_record(salary.merge(salary_effective_on: Date.current.next_month.iso8601))
+
+      expect(response).to have_http_status(:ok)
+      expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(EmployeeRecord::SALARY_KEYS.index_with(nil))
+    end
+
+    it "does not revive a canceled pending salary after its abandoned effective date" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        update_record(salary)
+        update_record(salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10"))
+        update_record(salary)
+      end
+
+      travel_to(Time.utc(2026, 11, 11, 12)) do
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+      end
+    end
+
+    it "audits the actor and superseded salary version IDs without private values" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        update_record(salary.merge(bank_name: "Synthetic private bank"))
+        pending = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10")
+        update_record(pending)
+        employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: pending.merge(salary_amount: "2200.00").stringify_keys, reviewed_at: Time.current)
+        pending_ids = employment.compensation_versions.active.where(effective_on: "2026-11-10").order(:id).pluck(:id)
+
+        update_record(salary)
+
+        expect(response).to have_http_status(:ok)
+        audit = employment.reload.employee_record.audits.order(:id).last
+        expect(audit.user).to eq(admin)
+        expect(audit.associated).to eq(company)
+        expect(audit.audited_changes).to eq("superseded_compensation_version_ids" => pending_ids)
+
+        update_record(salary)
+        expect(employment.reload.employee_record.audits.order(:id).last.audited_changes).to eq({})
+      end
+    end
+
+    it "makes an undated salary edit current immediately on the company-local day" do
+      company.update!(timezone: "America/New_York")
+      travel_to(Time.utc(2026, 11, 16, 4, 30)) do
+        update_record(salary)
+        configured = salary.merge(salary_amount: "1500.00", salary_effective_on: nil)
+        update_record(configured)
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(configured.stringify_keys)
+      end
+    end
+
+    it "audits retained future legacy salary IDs without recording their private values" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        prior = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10")
+        update_record(prior)
+        employment.compensation_versions.delete_all
+
+        update_record(salary.merge(salary_amount: "3000.00", salary_effective_on: "2026-11-20"))
+
+        expect(response).to have_http_status(:ok)
+        observed = employment.compensation_versions.reload.find { |version| version.salary_details == prior.stringify_keys }
+        expect(observed).to be_present
+        expect(observed.superseded_at).to eq(Time.current)
+        expect(observed.reviewed_at).to be_nil
+        audit = employment.reload.employee_record.audits.order(:id).last
+        expect(audit.user).to eq(admin)
+        expect(audit.associated).to eq(company)
+        expect(audit.audited_changes).to eq("superseded_compensation_version_ids" => [observed.id])
+      end
+    end
+
+    it "uses the newest correction when multiple versions share the current effective date" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        update_record(salary)
+        correction = salary.merge(salary_amount: "1500.00").stringify_keys
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: correction, reviewed_at: Time.current)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(correction)
+        expect(response.parsed_body.dig("employee_record", "private_details", "salary_amount")).to eq("1000.00")
+      end
+    end
+
+    it "uses a complete backdated correction instead of a later incomplete salary" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        configured = salary.merge(salary_amount: "2000.00", salary_frequency: nil, salary_effective_on: "2026-11-10")
+        update_record(configured)
+        correction = salary.merge(salary_amount: "1500.00", salary_effective_on: "2026-11-05").stringify_keys
+        employment.compensation_versions.create!(effective_on: "2026-11-05", salary_details: correction, reviewed_at: Time.current)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        result = response.parsed_body.fetch("employee_record")
+        expect(result.fetch("current_salary")).to eq(correction)
+        expect(result.fetch("private_details")).to include(configured.stringify_keys)
+      end
+    end
+
+    it "reads existing compensation terms even when no private record has been saved" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys, reviewed_at: Time.current)
+
+        get "/api/v1/employee_records", params: { user_id: employee.id }
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+        expect(employment.reload.employee_record).to be_nil
+      end
+    end
+
+    [{}, EmployeeRecord::SALARY_KEYS.index_with(nil)].each do |empty_salary|
+      it "keeps independent salary history when #{empty_salary.empty? ? 'absent' : 'null'} settings are submitted as blanks" do
+        travel_to(Time.utc(2026, 11, 15, 12)) do
+          private_record = employment.create_employee_record!(private_details: empty_salary.merge("emergency_contact_name" => "Original synthetic contact"))
+          employment.compensation_versions.delete_all
+          independent = employment.compensation_versions.create!(effective_on: salary.fetch(:salary_effective_on), salary_details: salary.stringify_keys, reviewed_at: Time.current)
+          payroll_version = private_record.payroll_version
+
+          update_record(EmployeeRecord::SALARY_KEYS.index_with("").merge("emergency_contact_name" => "Synthetic contact"))
+
+          expect(response).to have_http_status(:ok)
+          aggregate_failures do
+            expect(employment.compensation_versions.order(:id).pluck(:id)).to eq([independent.id])
+            expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(salary.stringify_keys)
+            expect(private_record.reload.payroll_version).to eq(payroll_version)
+          end
+        end
+      end
+    end
+
+    it "retains an intentional clearing of nonblank salary and flags missing financial terms" do
+      travel_to(Time.utc(2026, 11, 15, 12)) do
+        company.update!(plan_tier: "paid", compensation_proration: "calendar_days")
+        update_record(salary)
+        payroll_version = employment.reload.employee_record.payroll_version
+        blanks = EmployeeRecord::SALARY_KEYS.index_with("")
+
+        expect do
+          update_record(blanks)
+        end.to change(CompensationVersion, :count).by(1)
+
+        expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(blanks)
+        expect(employment.reload.employee_record.payroll_version).to eq(payroll_version + 1)
+        report = Reports::CompensationProfitability.new(user: admin, company:,
+          filters: { period: "custom", from: "2026-11-15", to: "2026-11-15", currency: "INR" }).process
+        row = report.fetch(:people).find { |person| person[:person_id] == employee.id }
+        expect(row[:compensation_cost]).to be_nil
+        expect(row[:flags]).to include("missing_compensation")
+      end
+    end
+
+    [nil, "2026-11-01"].each do |effective_on|
+      it "preserves legacy configured salary without versions for effective date #{effective_on.inspect}" do
+        travel_to(Time.utc(2026, 11, 15, 12)) do
+          configured = salary.merge(salary_effective_on: effective_on)
+          update_record(configured)
+          employment.compensation_versions.delete_all
+
+          get "/api/v1/employee_records", params: { user_id: employee.id }
+
+          expect(response.parsed_body.dig("employee_record", "current_salary")).to eq(configured.stringify_keys)
+        end
+      end
+    end
+  end
+
+  it "redacts private employee parameters captured by the actual controller trace" do
+    transaction = Sentry::Transaction.new(name: "Employee trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::EmployeeRecordsController#update")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    update_record({ bank_account_number: "000123456789", salary_amount: "123.45" }, bank_account_number_confirmation: "000123456789")
+
+    expect(response).to have_http_status(:ok)
+    expect(span.to_hash.dig(:data, :params, "employee_record", "private_details"))
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.first.fetch(:data)).to include(method: "PATCH", path: "/api/v1/employee_records")
+    expect(event.spans.to_json).not_to include("000123456789", "123.45")
+
+    patch "/api/v1/employee_records", params: {
+      account_number: "000987654321", bank_account_number_confirmation: "000987654321",
+      salary: "987.65", salary_amount: "987.65", page: "2"
+    }, as: :json
+    expect(response).to have_http_status(:bad_request)
+    expect(Employment.find(employment.id).employee_record.private_details)
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    expect(span.to_hash.dig(:data, :params, "account_number")).to eq("000987654321")
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.to_json).not_to include("000987654321", "987.65")
+  end
+
+  it "omits all span parameters while preserving other trace diagnostics" do
+    transaction = Sentry::Transaction.new(name: "Private trace envelopes", sampled: true, hub: Sentry.get_current_hub)
+    envelopes = {
+      "Api::V1::TaxDeclarationsController#create" => { "tax_declaration" => { "claimed_amount" => "456.78", "notes" => "Private tax note" } },
+      "Api::V1::TaxDeclarationsController#review" => { "review" => { "decision" => "approve", "approved_amount" => "456.78", "reason" => "Private review reason" } },
+      "Api::V1::AgreementsController#create" => { "agreement" => { "body" => "Private agreement text" } },
+      "Api::V1::SignatureRequestsController#create" => { "signature_request" => { title: "Private signature title", recipients: [{ email: "private@example.test" }] }.to_json }
+    }
+    spans = envelopes.map do |description, params|
+      span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description:)
+      span.set_data(:params, params.merge("page" => "2"))
+      span.to_hash
+    end
+    custom = Sentry::Span.new(transaction:, op: "custom", description: "Custom span")
+    custom.set_data("params", { recipients: ["synthetic@example.test"] }.to_json)
+    custom.set_data(:params, "Synthetic raw params")
+    custom.set_data(:diagnostic, "retained")
+    expect(custom.to_hash.fetch(:data).fetch("params")).to include("synthetic@example.test")
+    unaffected = [{ description: "SQL", data: { query: "SELECT 1" } }, { description: "No data" }]
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = spans + [custom.to_hash] + unaffected.deep_dup
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+
+    event.spans.first(5).each do |span|
+      expect(span.fetch(:data)).not_to have_key(:params)
+      expect(span.fetch(:data)).not_to have_key("params")
+    end
+    expect(event.spans[4].fetch(:data)).to eq(diagnostic: "retained")
+    expect(event.spans.last(2)).to eq(unaffected)
+    expect(event.spans.to_json).not_to include("456.78", "Private tax note", "Private review reason", "Private agreement text", "Private signature title", "private@example.test", "synthetic@example.test", "Synthetic raw params")
+  end
+
   context "bank account confirmation" do
     %i[admin employee].each do |actor|
       it "allows #{actor} to save explicit India and USD bank declarations" do

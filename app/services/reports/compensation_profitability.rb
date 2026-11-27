@@ -140,7 +140,7 @@ module Reports
 
       def reportable_employment?(employment, from, to)
         roles = employment.user.roles.filter_map { |role| role.name if role.resource_type == "Company" && role.resource_id == @company.id }.uniq
-        return false if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.empty?
+        return false if roles == ["client"] && employment.employee_record.nil? && employment.consultant_compensations.empty? && employment.compensation_versions.all?(&:superseded_at)
         return false if employment.joined_at && employment.joined_at > to
         return false if employment.resigned_at && employment.resigned_at < from
 
@@ -153,6 +153,7 @@ module Reports
 
           # Overlapping or repeated employment records need reconciliation before attributing costs and hours.
           row = records.last.merge(flags: (records.flat_map { |record| record[:flags] } + ["multiple_employment_records_require_review"]).uniq,
+            salary_history_review_employment_ids: records.flat_map { |record| record[:salary_history_review_employment_ids] }.uniq,
             client_ids: records.flat_map { |record| record[:client_ids] }.uniq, projects: [])
           %i[total_hours billable_hours available_hours utilization effective_rate annual_compensation days_to_yearly_salary
             salary_inr salary_usd compensation_cost revenue margin margin_percentage].each { |key| row[key] = nil }
@@ -164,6 +165,7 @@ module Reports
         flags = []
         flags << "missing_joining_date" unless employment.joined_at
         flags << "archived_employment_missing_exit_date" if employment.discarded_at && employment.resigned_at.nil?
+        flags << "compensation_history_requires_review" if CompensationVersion.history_requires_review?(employment)
         start = [from, employment.joined_at || from].max
         finish = [to, employment.resigned_at || to].min
         approved = approved_entries(employment, start, finish, flags)
@@ -174,6 +176,7 @@ module Reports
           flags << "timesheets_incomplete"
         end
         person_identity(employment, projects, from, to).merge(finances).merge(
+          salary_history_review_employment_ids: flags.include?("compensation_history_requires_review") ? [employment.id] : [],
           compensation_changes: compensation_changes(employment, start, finish), projects:, flags: flags.uniq.sort)
       end
 
@@ -224,24 +227,12 @@ module Reports
 
       def compensation_terms(employment)
         @compensation_terms ||= {}
-        @compensation_terms[employment.id] ||= begin
-          employee = employment.compensation_versions.map { |version| [version.effective_on, version.id, version.salary_details] }
-          # Existing encrypted salaries remain usable; do not invent history before their explicit effective date.
-          if (details = employment.employee_record&.private_details)
-            date = EmployeeRecord.iso_date?(details["salary_effective_on"])
-            employee << [date, 0, details.slice(*EmployeeRecord::SALARY_KEYS)] if date
-          end
-          # A dated correction resolves incomplete versions recorded after its effective date.
-          employee.reject! do |date, id, details|
-            !valid_employee_salary?(details) && employee.any? do |later_date, later_id, later_details|
-              later_id > id && later_date <= date && valid_employee_salary?(later_details)
-            end
-          end
-          employee.sort_by { |date, id, _details| [date, id] }
-        end
+        @compensation_terms[employment.id] ||= CompensationVersion.terms_for(employment)
       end
 
       def compensation_at(employment, date)
+        return if CompensationVersion.history_requires_review?(employment)
+
         consultants = employment.consultant_compensations.sort_by { |terms| [terms.effective_on, terms.id] }
         terms = consultants.reverse.find { |item| item.effective_on <= date }
         version = compensation_terms(employment).reverse.find { |effective, _id, _details| effective <= date }
@@ -252,18 +243,12 @@ module Reports
         return unless version
 
         details = version.last
-        return unless valid_employee_salary?(details)
+        return unless CompensationVersion.complete_salary?(details)
 
         monthly = details["salary_amount"].to_d
         monthly /= 12 if details["salary_frequency"] == "annual"
-        annual = details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12
-        { monthly:, annual:, currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
-      end
-
-      def valid_employee_salary?(details)
-        EmployeeRecord.iso_date?(details["salary_effective_on"]) &&
-          details["salary_amount"].to_s.match?(EmployeeRecord::AMOUNT_FORMAT) && details["salary_amount"].to_d.positive? &&
-          EmployeeRecord.supported_currency?(details["salary_currency"]) && %w[monthly annual].include?(details["salary_frequency"])
+        { monthly:, annual: details["salary_frequency"] == "annual" ? details["salary_amount"].to_d : monthly * 12,
+          currency: details["salary_currency"], source: "employee_record", effective_on: version.first }
       end
 
       def schedule(employment, terms, flags)

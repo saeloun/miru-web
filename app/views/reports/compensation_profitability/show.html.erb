@@ -17,7 +17,7 @@
       form, .summary { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
       label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
       input, select, button, .button { padding: 9px 12px; font: inherit; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
-      button, .button { cursor: pointer; background: var(--primary); color: white; text-decoration: none; }
+      button, input[type="submit"], .button { cursor: pointer; background: var(--primary); color: white; text-decoration: none; min-height: 40px; }
       :focus-visible { outline: 3px solid #a78bfa; outline-offset: 2px; }
       .metric { flex: 1 1 180px; } .metric strong { display: block; font-size: 21px; font-variant-numeric: tabular-nums; }
       .table-scroll { overflow-x: auto; } table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
@@ -27,8 +27,8 @@
       summary { cursor: pointer; font-weight: 600; } .flag { display: inline-block; color: #92400e; background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
       .detail { white-space: normal; text-align: left; } .detail table { margin-top: 14px; } .quality { max-width: 260px; white-space: normal; }
       fieldset { border: 1px solid var(--border); border-radius: 6px; margin: 20px 0; padding: 16px; } legend { font-weight: 600; }
-      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #fafafa; --card: #18181b; --border: #3f3f46; --muted-foreground: #a1a1aa; --primary: #a78bfa; } button, .button { color: #09090b; } }
-      @media (max-width: 700px) { main { padding: 16px; } form label, form button { width: 100%; } }
+      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #fafafa; --card: #18181b; --border: #3f3f46; --muted-foreground: #a1a1aa; --primary: #a78bfa; } button, input[type="submit"], .button { color: #09090b; } }
+      @media (max-width: 700px) { main { padding: 16px; } form label, form button, form input[type="submit"] { width: 100%; } }
     </style>
   </head>
   <body>
@@ -86,6 +86,7 @@
           <caption><%= pluralize(@report[:people].length, "person", "people") %> · amounts in <%= @report[:currency] %> unless indicated</caption>
           <thead><tr><th scope="col">Person / Primary Project</th><th scope="col">Effective Rate / hr</th><th scope="col">Total Worked</th><th scope="col">Billable Hours</th><th scope="col">Available Hours</th><th scope="col">Utilization</th><th scope="col">Annual Compensation</th><th scope="col">Days to Yearly Salary</th><th scope="col">Salary in INR</th><th scope="col">Salary in USD</th><th scope="col">Revenue</th><th scope="col">Compensation Cost</th><th scope="col">Margin</th><th scope="col">Margin %</th><th scope="col">Data Quality</th></tr></thead>
           <tbody>
+            <% can_review_salary_history = policy(EmployeeRecord).manage? %>
             <% @report[:people].each do |row| %>
               <tr>
                 <td><strong><%= row[:person] %></strong><br><%= row[:primary_project] || "No primary project" %><br><small><%= [row[:department], row[:status]].compact.join(" · ") %></small></td>
@@ -95,7 +96,13 @@
                 <td><%= profitability_number(row[:salary_inr], currency: "INR") %></td><td><%= profitability_number(row[:salary_usd], currency: "USD") %></td>
                 <% [:revenue, :compensation_cost, :margin].each do |key| %><td><%= profitability_number(row[key], currency: @report[:currency]) %></td><% end %>
                 <td><%= profitability_number(row[:margin_percentage], percent: true) %></td>
-                <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %></td>
+                <td class="quality"><% row[:flags].each do |flag| %><span class="flag"><%= flag.humanize %></span> <% end %><%= "Complete" if row[:flags].empty? %>
+                  <% if can_review_salary_history %>
+                    <% row[:salary_history_review_employment_ids].each do |employment_id| %>
+                      <%= link_to "Review salary history for employment #{employment_id}", salary_history_review_path(employment_id:, company_id: current_company.id), "aria-label": "Review salary history for employment #{employment_id}" %>
+                    <% end %>
+                  <% end %>
+                </td>
               </tr>
               <tr><td colspan="15" class="detail">
                 <details><summary>Inspect <%= row[:person] %> — project hours, rates and compensation history</summary>

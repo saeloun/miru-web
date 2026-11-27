@@ -39,6 +39,21 @@ RSpec.describe Reports::CompensationProfitability do
     ProfitabilityBillingRate.create!(project: project_record, user: person, hourly_rate: amount, currency:, effective_on:, billing_method:)
   end
 
+
+  it "restores old-path legacy salary costs only after observing and reviewing the missing terms" do
+    employment.compensation_versions.delete_all
+    employment.compensation_versions.create!(effective_on: "2026-12-01",
+      salary_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-12-01"),
+      reviewed_at: Time.current)
+    expect(row[:flags]).to include("compensation_history_requires_review")
+    expect(row[:compensation_cost]).to be_nil
+    observed = record.observe_legacy_salary!
+    expect(observed.reviewed_at).to be_nil
+    observed.update!(reviewed_at: Time.current)
+    expect(row[:compensation_cost]).to eq(3100.to_d)
+    expect(record.reload.current_salary["salary_amount"]).to eq("3100.00")
+  end
+
   it "includes people with costs and no projects, retains negative margins and uses N/A for zero-revenue percentages" do
     result = row
     expect(result).to include(compensation_cost: 3100.to_d, salary_inr: 3100.to_d, salary_usd: 38.75.to_d,
@@ -96,6 +111,20 @@ RSpec.describe Reports::CompensationProfitability do
     result = report(person_id: person.id, department: "Absent")
     expect(result[:people]).to be_empty
     expect(result[:available_people]).to eq([{ id: person.id, name: person.full_name }])
+  end
+
+  it "excludes client-only people after their only compensation history is superseded" do
+    client_user = create(:user, current_workspace: company)
+    client_user.add_role(:client, company)
+    client_employment = create(:employment, company:, user: client_user, joined_at: "2026-01-01", resigned_at: nil)
+    version = client_employment.compensation_versions.create!(effective_on: "2026-01-01", salary_details: record.private_details)
+    expect(report[:available_people]).to include(hash_including(id: client_user.id))
+
+    version.update!(superseded_at: Time.current)
+
+    result = report
+    expect(result[:people]).not_to include(hash_including(person_id: client_user.id))
+    expect(result[:available_people]).not_to include(hash_including(id: client_user.id))
   end
 
   it "matches filters against every employment while preserving the person's reconciliation warning" do
@@ -177,9 +206,32 @@ RSpec.describe Reports::CompensationProfitability do
 
   it "preserves manually corrected history when the mutable current salary is edited later" do
     employment.compensation_versions.create!(effective_on: "2026-01-01",
-      salary_details: record.private_details.merge("salary_amount" => "6200.00"))
+      salary_details: record.private_details.merge("salary_amount" => "6200.00"), reviewed_at: Time.current)
     record.update!(private_details: record.private_details.merge("salary_amount" => "9300.00", "salary_effective_on" => "2026-10-01"))
     expect(row[:compensation_cost]).to eq(6200.to_d)
+  end
+
+  it "withholds salary and financial costs until unknown legacy history is reviewed" do
+    legacy = employment.compensation_versions.create!(effective_on: "2026-07-01",
+      salary_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-01"))
+    result = row
+    expect(result).to include(compensation_cost: nil, salary_inr: nil, salary_usd: nil, annual_compensation: nil, margin: nil)
+    expect(result[:flags]).to include("compensation_history_requires_review")
+    expect(record.current_salary.values).to all(be_nil)
+    legacy.update!(reviewed_at: Time.current)
+    employment.compensation_versions.reset
+    expect(row[:compensation_cost]).to eq(6200.to_d)
+    expect(record.current_salary["salary_amount"]).to eq("6200.00")
+  end
+
+  it "excludes a canceled pending salary from historical compensation costs" do
+    original = record.private_details.dup
+    travel_to(Time.utc(2026, 7, 1, 12)) do
+      record.update!(private_details: original.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-16"))
+      record.update!(private_details: original)
+    end
+
+    expect(row[:compensation_cost]).to eq(3100.to_d)
   end
 
   it "does not invent a salary effective date when the private record is incomplete" do
@@ -196,6 +248,37 @@ RSpec.describe Reports::CompensationProfitability do
     end.to change { employment.compensation_versions.count }.by(1)
     expect(row(period: "month", anchor: Date.current.iso8601)[:compensation_cost]).to eq(6200.to_d)
     expect(row[:compensation_cost]).to eq(6200.to_d)
+  end
+
+  it "resolves the same complete backdated correction for salary display and compensation costs" do
+    record.update!(private_details: record.private_details.merge("salary_amount" => "9300.00",
+      "salary_frequency" => nil, "salary_effective_on" => "2026-07-16"))
+    correction = record.private_details.merge("salary_amount" => "6200.00", "salary_frequency" => "monthly", "salary_effective_on" => "2026-07-01")
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: correction, reviewed_at: Time.current)
+
+    expect(row[:compensation_cost]).to eq(6200.to_d)
+    expect(record.current_salary).to eq(correction)
+  end
+
+  it "keeps incomplete latest terms visible and flags missing compensation without a later correction" do
+    configured = record.private_details.merge("salary_frequency" => nil, "salary_effective_on" => "2026-07-01")
+    record.update!(private_details: configured)
+
+    expect(record.current_salary).to eq(configured)
+    expect(row[:compensation_cost]).to be_nil
+    expect(row[:flags]).to include("missing_compensation")
+  end
+
+  it "does not infer a historical salary start from an observed legacy undated salary" do
+    travel_to(Time.utc(2026, 7, 1, 12)) do
+      record.update!(private_details: record.private_details.merge("salary_effective_on" => nil))
+      employment.compensation_versions.delete_all
+      record.update!(private_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-07-16"))
+
+      result = row(period: "custom", from: "2026-07-01", to: "2026-07-15")
+      expect(result[:compensation_cost]).to be_nil
+      expect(result[:flags]).to include("missing_compensation")
+    end
   end
 
   it "retains employee salary before a transition into dated consultant compensation" do

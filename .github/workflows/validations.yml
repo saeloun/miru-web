@@ -47,9 +47,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 
@@ -183,9 +183,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 
@@ -238,6 +238,14 @@ jobs:
           spec/system/auth/two_factor_spec.rb spec/system/invoices spec/system/time_tracking/add_entry_spec.rb
           spec/system/profile/settings_spec.rb
 
+      - name: Preserve employee salary display screenshot
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: employee-salary-display
+          path: tmp/capybara/employee-records-scheduled-salary.png
+          if-no-files-found: warn
+
       - name: Upload browser failure screenshots
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -257,9 +265,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 

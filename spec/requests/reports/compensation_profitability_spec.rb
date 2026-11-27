@@ -35,6 +35,31 @@ RSpec.describe "Organization compensation profitability", type: :request do
     expect(response.headers["X-Robots-Tag"]).to eq("noindex, nofollow")
   end
 
+  it "links an uncertain salary warning to the scoped administrator review" do
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    expect(response).to have_http_status(:ok)
+    document = Nokogiri::HTML(response.body)
+    link = document.at_css("a[href^='/employee-records/#{employment.id}/salary-history']")
+    expect(link&.text).to eq("Review salary history for employment #{employment.id}")
+    expect(document.css(".quality").text).to include("Compensation history requires review")
+  end
+
+  it "links every unresolved employment after combining one person's report rows" do
+    employment.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    latest = create(:employment, company:, user: person, joined_at: "2026-07-01", resigned_at: nil)
+
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    links = Nokogiri::HTML(response.body).css("a[href*='/salary-history']")
+    expect(links.map { |link| link["href"].split("?").first }).to eq([salary_history_review_path(employment_id: employment.id)])
+
+    latest.compensation_versions.create!(effective_on: "2026-07-01", salary_details: employment.employee_record.private_details)
+    get path, params: { period: "month", anchor: "2026-07-01", person_id: person.id }
+    links = Nokogiri::HTML(response.body).css("a[href*='/salary-history']")
+    expect(links.map { |link| link["href"].split("?").first }).to contain_exactly(
+      salary_history_review_path(employment_id: employment.id), salary_history_review_path(employment_id: latest.id))
+  end
+
   it "encrypts snapshots, audits generation and downloads the same snapshot after data changes" do
     payload = generate
     run = CompensationReportRun.last
@@ -236,6 +261,89 @@ RSpec.describe "Organization compensation profitability", type: :request do
     audit = company.audits.last
     expect(audit.action).to eq("compensation_history")
     expect(audit.audited_changes.to_json).not_to include("6200")
+  end
+
+  context "with legacy salary without version history" do
+    let(:future_salary) do
+      { salary_amount: "6200.00", salary_currency: "INR", salary_frequency: "monthly", salary_effective_on: "2026-11-01" }
+    end
+
+    around { |example| travel_to(Time.utc(2026, 10, 15)) { example.run } }
+
+    before { employment.compensation_versions.delete_all }
+
+    def declare_future_salary(target = employment)
+      post "#{path}/configure", params: { company_id: company.id, configuration: "compensation",
+        employment_id: target.id, salary_details: future_salary }
+    end
+
+    it "preserves the original dated terms for review and audits both version IDs" do
+      original = employment.employee_record.private_details
+      expect(employment.employee_record.current_salary["salary_amount"]).to eq("3100.00")
+      declare_future_salary
+      expect(response).to have_http_status(:see_other)
+      versions = employment.compensation_versions.reload.order(:id)
+      expect(versions.count).to eq(2)
+      expect(versions.first.salary_details).to eq(original)
+      expect(versions.first.effective_on).to eq(Date.new(2026, 1, 1))
+      expect(versions.first.reviewed_at).to be_nil
+      expect(versions.last.reviewed_at).to be_present
+      expect(CompensationVersion.history_requires_review?(employment)).to be(true)
+      expect(employment.employee_record.reload.private_details).to eq(original)
+      expect(company.audits.last.audited_changes).to include(compensation_version_id: versions.last.id,
+        observed_compensation_version_id: versions.first.id)
+      versions.first.update!(reviewed_at: Time.current)
+      expect(employment.reload.employee_record.current_salary["salary_amount"]).to eq("3100.00")
+    end
+
+    it "observes undated terms on the company day without adding a salary start date" do
+      company.update!(timezone: "Pacific Time (US & Canada)")
+      original = employment.employee_record.private_details.except("salary_effective_on")
+      employment.employee_record.update_columns(private_details: original)
+      declare_future_salary
+      observed = employment.compensation_versions.reload.order(:id).first
+      expect(observed.salary_details).to eq(original)
+      expect(observed.effective_on).to eq(Date.new(2026, 10, 14))
+      expect(observed.reviewed_at).to be_nil
+      expect(CompensationVersion.history_requires_review?(employment)).to be(true)
+    end
+
+    it "does not invent salary history for a contact-only record" do
+      original = { "emergency_contact_name" => Faker::Name.name }
+      employment.employee_record.update_columns(private_details: original)
+      declare_future_salary
+      expect(response).to have_http_status(:see_other)
+      expect(employment.compensation_versions.reload.count).to eq(1)
+      expect(CompensationVersion.history_requires_review?(employment)).to be(false)
+      expect(employment.employee_record.reload.private_details).to eq(original)
+    end
+
+    it "does not revive an original salary that already has retired history" do
+      original = employment.compensation_versions.create!(effective_on: "2026-01-01",
+        salary_details: employment.employee_record.private_details, superseded_at: Time.current)
+      declare_future_salary
+      expect(response).to have_http_status(:see_other)
+      expect(employment.compensation_versions.reload.count).to eq(2)
+      expect(original.reload.superseded_at).to eq(Time.current)
+      expect(employment.compensation_versions.active.count).to eq(1)
+      expect(CompensationVersion.history_requires_review?(employment)).to be(false)
+    end
+
+    it "keeps a new employment without a private record free of invented history" do
+      target = create(:employment, company:, resigned_at: nil)
+      declare_future_salary(target)
+      expect(response).to have_http_status(:see_other)
+      expect(target.compensation_versions.count).to eq(1)
+      expect(target.reload.employee_record).to be_nil
+    end
+
+    it "rolls back the observation and declaration if the audit fails" do
+      original = employment.employee_record.private_details
+      allow_any_instance_of(Company).to receive(:audits).and_raise("Synthetic audit failure")
+      expect { declare_future_salary }.to raise_error("Synthetic audit failure")
+      expect(employment.compensation_versions.reload).to be_empty
+      expect(employment.employee_record.reload.private_details).to eq(original)
+    end
   end
 
   it "rejects configuration from a stale organization tab before making changes" do

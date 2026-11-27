@@ -82,7 +82,7 @@ await timer.save();
 Miru leverages modern, battle-tested technologies to ensure reliability, performance, and developer happiness:
 
 ### Backend
-- **Ruby on Rails 8.0.2**: Latest Rails with Hotwire for reactive UIs
+- **Ruby on Rails 8.1.4.1**: Rails with Hotwire for reactive UIs
 - **PostgreSQL 15+**: Robust relational database with advanced features
 - **Solid Queue**: Built-in Rails job processing (no external dependencies)
 
@@ -96,7 +96,9 @@ Miru leverages modern, battle-tested technologies to ensure reliability, perform
 - **Docker**: Containerized deployment
 - **GitHub Actions**: Automated CI/CD pipeline
 - **AWS S3**: Secure file storage
-- **Sentry**: Error tracking and monitoring
+- **Sentry**: Error tracking and monitoring. Error and transaction callbacks omit
+  breadcrumb `params` and query strings from breadcrumb `path`; transaction spans
+  also omit their `params` data.
 
 ## Getting Started
 
@@ -119,11 +121,11 @@ docker-compose exec app bundle exec rails db:setup
 
 ### Local Development (macOS/Linux)
 ```bash
-# Install dependencies with mise (recommended)
-mise install ruby@4.0.1
-mise install node@22.11.0
-mise use ruby@4.0.1
-mise use node@22.11.0
+# Install the repository's pinned Ruby and Node versions with mise
+mise install ruby@4.0.10
+mise install node@24.22.1
+mise use ruby@4.0.10
+mise use node@24.22.1
 
 # Install gems and packages
 bundle install

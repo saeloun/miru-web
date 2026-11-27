@@ -18,6 +18,10 @@ class EmployeeRecordPolicy < ApplicationPolicy
     index? && staff_roles(user.id).where(name: %w[owner admin]).exists?
   end
 
+  def review_history?
+    manage? && record.company_id == workspace_id && staff_roles(record.user_id).exists?
+  end
+
   def active_employments
     Employment.kept.joins(:user).merge(User.kept).where(company_id: workspace_id)
       .where("joined_at IS NULL OR joined_at <= ?", Date.current)

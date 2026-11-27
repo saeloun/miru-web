@@ -82,7 +82,7 @@ jobs:
             type=gha,mode=max,scope=prod
           platforms: linux/amd64
           build-args: |
-            RUBY_VERSION=4.0.9
+            RUBY_VERSION=4.0.10
             NODE_VERSION=24.22.1
 
       - name: Build and push development image
@@ -104,7 +104,7 @@ jobs:
             type=gha,mode=max,scope=dev
           platforms: linux/amd64
           build-args: |
-            RUBY_VERSION=4.0.9
+            RUBY_VERSION=4.0.10
             NODE_VERSION=24.22.1
 
       - name: Generate devcontainer metadata

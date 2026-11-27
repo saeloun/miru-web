@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.8.0] - 2026-11-27
+
+### Added
+
+- Review uncertain salary history as an administrator, retaining valid terms or marking abandoned raises without deleting their original amounts and dates.
+- See a review warning and administrator recovery links when legacy salary history needs confirmation before salary and financial costs can be shown.
+
+### Fixed
+
+- Show effective salary consistently in employee profiles, exports and profitability reports, excluding replaced pending raises and preserving reviewed decisions through later edits.
+- Preserve existing salary settings for review when adding the first report-history entry.
+- Keep salary review controls readable on mobile, preserve profile drafts before review navigation and distinguish employment links in combined reports.
+
+## [3.7.3] - 2026-11-26
+
+### Fixed
+
+- Remove request parameters and SQL text from Sentry spans and breadcrumbs, and strip breadcrumb URL queries in errors and traces while retaining timing and status data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
+
 ## [3.7.2] - 2026-11-20
 
 ### Fixed

@@ -14,7 +14,7 @@ execute payments, calculate salary, or certify statutory filings.
 | Family details | Employee/admin maintain name, DOB, gender and relationship for each family member. |
 | Emergency contact | Employee/admin maintain contact name and phone. |
 | Bank details | Employee/admin maintain account holder, bank, branch, account number, IFSC and optional SWIFT. Changed nonblank account numbers require an exact second entry. |
-| Current salary | Admin sets amount, currency, frequency and effective date; employee can view it. Increment history is optional and deferred. |
+| Current salary | Admin sets amount, currency, frequency and effective date; employee sees terms effective today in the company timezone. Retained salary versions require administrator review when unresolved. |
 | Previous payments | Admin records an external payment with paid date, amount, currency and reference; employee sees paginated history explicitly labeled as manually recorded. No provider settlement claim. |
 | Contract | Admin uploads, employee/admin privately download. Retain uploaded versions. |
 | Customizable saved reports | Admin saves a named selection of permitted columns and generates a private CSV for a selected month. Include insurance and salary presets. Save report definitions, not sensitive export snapshots. |
@@ -59,3 +59,41 @@ editor starts confirmation blank and clears it on number changes, successful sav
 or cancellation. Failed saves retain the entered draft. Existing programmatic model
 imports and the spouse/split confirmation workflow are unchanged. Double entry does
 not establish bank ownership; recipient verification and payment readiness still apply.
+
+## Reviewing uncertain salary history
+
+Older salary versions may represent either valid history or replaced scheduled raises.
+Active versions without review metadata block current salary and compensation-cost
+results with `compensation_history_requires_review`; no amount is guessed. Salary
+settings remain editable. Entering a correction does not acknowledge unknown rows.
+CSV salary fields use the same current-salary reader, not the selected export month,
+and show `Administrator review required` while history is unresolved.
+
+The first salary-history entry from the profitability report also preserves existing
+salary settings as an unreviewed observation. Original dates stay intact; undated
+settings are observed on the company day without adding a salary start date.
+
+Employee-record API responses keep configured salary settings in `private_details`
+and expose effective terms separately in `current_salary`. When
+`compensation_history_requires_review` is true, all four `current_salary` values
+are null; configured settings remain available to the existing editor.
+
+Owners and admins can open `/employee-records/:employment_id/salary-history` from
+the profile or compensation report warning, including in free workspaces and for
+retained historical employments. Employees see the warning without admin history.
+While a profile draft is being edited, save or cancel it before opening salary review.
+Every unresolved version requires retain or mark-as-abandoned; already reviewed
+rows are read-only. Submission checks the workspace and full active-ID set under
+the employment lock. Decisions and actor/ID-only audit commit together, preserving
+encrypted salary bytes, dates and row IDs. No automatic backfill is performed.
+
+Apply both salary metadata migrations before activating the new readers and stop
+old writers during activation. Inventory/review production history before enabling
+affected financial calculations. Keep schema forward on code rollback; the review
+migration refuses rollback after retain or abandon decisions, and the supersession
+migration protects used retirement metadata. Real browser QA
+and production review remain release prerequisites.
+
+See the [salary-history review design](../superpowers/specs/2026-11-16-salary-history-review-design.md),
+[recorded synthetic QA](../qa/profile-current-salary-2461/README.md), and
+[compensation report guide](../ai/compensation-profitability.md).

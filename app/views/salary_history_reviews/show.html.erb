@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Review salary history | Miru</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <style>
+      :root { color-scheme: light dark; --background: #fafafb; --foreground: #27272a; --card: #fff; --border: #e4e4e7; --primary: #5b34ea; }
+      * { box-sizing: border-box; } body { margin: 0; background: var(--background); color: var(--foreground); font: 14px/1.5 system-ui, sans-serif; }
+      main { max-width: 1000px; margin: auto; padding: 24px; } a { color: var(--primary); }
+      .panel { padding: 20px; margin: 20px 0; border: 1px solid var(--border); border-radius: 10px; background: var(--card); }
+      .table-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+      th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+      select, input, button { font: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
+      button, input[type="submit"] { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; min-height: 40px; } :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #f4f4f5; --card: #18181b; --border: #3f3f46; --primary: #a78bfa; } button, input[type="submit"] { color: #18181b; } }
+      @media (max-width: 639px) {
+        .table-scroll { overflow: visible; } table, caption, tbody, tr, td { display: block; }
+        thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+        caption { text-align: left; } tbody tr { padding: 12px 0; } tbody tr + tr { border-top: 1px solid var(--border); }
+        td { border: 0; padding: 6px 0; } td[data-label] { display: grid; grid-template-columns: 100px minmax(0, 1fr); gap: 8px; }
+        td[data-label]::before { content: attr(data-label); font-weight: 600; }
+        label { display: block; } select { display: block; width: 100%; min-height: 40px; margin-top: 4px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Review salary history</h1>
+      <p><%= @employment.user.full_name %> · Employment <%= @employment.employee_id %></p>
+      <p><%= link_to "Back to team", "/team" %></p>
+      <section class="panel">
+        <p>Older salary history may contain replaced scheduled raises. Confirm each retained salary or mark it as abandoned. Every original amount and date remains stored. Current salary and financial costs stay unavailable until all active history has been reviewed.</p>
+        <% if @legacy_salary %>
+          <h2>Stored salary missing from history</h2>
+          <dl>
+            <dt>Declared effective date</dt><dd><%= @legacy_salary["salary_effective_on"].presence || "Date not recorded" %></dd>
+            <dt>Recorded salary</dt><dd><%= @legacy_salary.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></dd>
+          </dl>
+          <p>Add these stored facts for review before deciding which salary history to retain. Adding them does not approve them. Undated settings are observed on the current company day without inventing a declared effective date.</p>
+          <%= form_with url: "#{salary_history_review_path(employment_id: @employment.id)}/observe", method: :post, local: true do |form| %>
+            <%= hidden_field_tag "salary_observation[company_id]", current_company.id %>
+            <%= hidden_field_tag "salary_observation[payroll_version]", @employment.employee_record.payroll_version %>
+            <% @versions.each do |version| %>
+              <%= hidden_field_tag "salary_observation[active_ids][]", version.id %>
+            <% end %>
+            <%= form.submit "Add stored salary for review" %>
+          <% end %>
+        <% end %>
+        <%= form_with url: salary_history_review_path(employment_id: @employment.id), method: :patch, local: true do |form| %>
+          <%= hidden_field_tag "salary_review[company_id]", current_company.id %>
+          <% @versions.each do |version| %>
+            <%= hidden_field_tag "salary_review[active_ids][]", version.id %>
+          <% end %>
+          <div class="table-scroll">
+            <table role="table">
+              <caption>Active salary versions</caption>
+              <thead><tr><th scope="col">Version</th><th scope="col">Applies from</th><th scope="col">Declared effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
+              <tbody>
+                <% @versions.each do |version| %>
+                  <tr>
+                    <td data-label="Version"><%= version.id %></td>
+                    <td data-label="Applies from"><%= version.effective_on.iso8601 %></td>
+                    <td data-label="Declared effective date"><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
+                    <td data-label="Recorded salary"><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
+                    <td>
+                      <% if version.reviewed_at %>
+                        Reviewed <%= version.reviewed_at.to_date %>
+                      <% else %>
+                        <%= hidden_field_tag "salary_review[decisions][][id]", version.id %>
+                        <label for="salary-decision-<%= version.id %>">Decision for version <%= version.id %></label>
+                        <%= select_tag "salary_review[decisions][][decision]", options_for_select([["Choose a decision", ""], ["Retain", "retain"], ["Mark as abandoned", "retire"]]), id: "salary-decision-#{version.id}", required: true %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <% if @legacy_salary %>
+            <p role="status">Add the stored salary for review before saving decisions.</p>
+          <% elsif @versions.any? { |version| version.reviewed_at.nil? } %>
+            <p>Retain means this salary is valid history. Mark as abandoned means the scheduled salary was replaced and must not affect salary or costs. Retaining a salary applies its recorded terms from the Applies from date. An undated salary has no declared effective date; retaining it can leave financial costs unavailable from its recorded date until complete dated terms are supplied.</p>
+            <%= form.submit "Save salary history review" %>
+          <% else %>
+            <p role="status">No active salary history is awaiting review.</p>
+          <% end %>
+        <% end %>
+      </section>
+    </main>
+  </body>
+</html>

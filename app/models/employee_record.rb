@@ -8,12 +8,14 @@ class EmployeeRecord < ApplicationRecord
   FAMILY_KEYS = %w[name date_of_birth gender relationship].freeze
   AMOUNT_FORMAT = /\A\d{1,10}(?:\.\d{1,2})?\z/
 
+  attr_reader :superseded_compensation_version_ids
+
   belongs_to :employment
   has_one :company, through: :employment
   serialize :private_details, coder: JSON, type: Hash
   encrypts :private_details
   audited associated_with: :company, only: [:employment_id]
-  after_save :record_salary_version, if: :saved_change_to_private_details?
+  after_save :record_salary_version
   before_save :advance_payroll_version, if: :will_save_change_to_private_details?
   after_save :record_bank_change_notice, if: :saved_change_to_private_details?
 
@@ -39,6 +41,39 @@ class EmployeeRecord < ApplicationRecord
     DETAIL_KEYS.index_with(nil).merge("family_members" => []).merge(private_details)
   end
 
+  def current_salary
+    return SALARY_KEYS.index_with(nil) if CompensationVersion.history_requires_review?(employment)
+
+    configured = details_with_defaults.slice(*SALARY_KEYS)
+    effective_on = self.class.iso_date?(configured["salary_effective_on"])
+    today = Time.current.in_time_zone(employment.company.resolved_time_zone).to_date
+    details = CompensationVersion.terms_for(employment).reverse.find { |date, _id, _details| date <= today }&.last
+    retired = employment.compensation_versions.any? do |version|
+      version.superseded_at && version.salary_details.slice(*SALARY_KEYS).compact_blank == configured.compact_blank
+    end
+    details ||= configured unless effective_on || retired
+    SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
+  end
+
+  def unversioned_salary
+    salary = (private_details_in_database || {}).slice(*SALARY_KEYS)
+    return if salary.values.all?(&:blank?) || employment.compensation_versions.any? do |version|
+      version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank
+    end
+
+    salary
+  end
+
+  # Preserve legacy settings before version history becomes authoritative.
+  def observe_legacy_salary!
+    salary = unversioned_salary
+    return unless salary
+
+    observed_on = self.class.iso_date?(salary["salary_effective_on"]) ||
+      Time.current.in_time_zone(company.resolved_time_zone).to_date
+    employment.compensation_versions.create!(effective_on: observed_on, salary_details: salary)
+  end
+
   private
 
     # Equivalent empty bank values must not invalidate the payroll source version.
@@ -56,24 +91,56 @@ class EmployeeRecord < ApplicationRecord
     end
 
     def record_salary_version
+      @superseded_compensation_version_ids = []
       previous = private_details_before_last_save || {}
-      return if previous.slice(*SALARY_KEYS) == private_details.slice(*SALARY_KEYS)
+      return if previous.values_at(*SALARY_KEYS).map(&:presence) == private_details.values_at(*SALARY_KEYS).map(&:presence)
 
-      # Preserve the previous effective salary before the mutable private record replaces it.
+      today = Time.current.in_time_zone(company.resolved_time_zone).to_date
+      previous_date = self.class.iso_date?(previous["salary_effective_on"])
+      replaced_pending = previous_date && previous_date > today
+      versions = employment.compensation_versions
+      if replaced_pending
+        @superseded_compensation_version_ids = supersede_pending_salary_versions(previous, versions, previous_date)
+      end
+
+      append_salary_versions(replaced_pending ? {} : previous, versions, today)
+    end
+
+    def supersede_pending_salary_versions(previous, versions, effective_on)
+      same_date = versions.where(effective_on:)
+      retired_ids = same_date.active.where.not(reviewed_at: nil).order(:id).pluck(:id)
+      salary = previous.slice(*SALARY_KEYS)
+      # Legacy pending settings may have no version containing their original facts.
+      unless same_date.any? { |version| version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank }
+        retired_ids << versions.create!(effective_on:, salary_details: salary).id
+      end
+      now = Time.current
+      versions.where(id: retired_ids).update_all(superseded_at: now, updated_at: now)
+      versions.reset
+      retired_ids
+    end
+
+    def append_salary_versions(previous, versions, today)
+      # Observe undated legacy terms from today; never invent an earlier salary start.
       [previous, private_details].each_with_index do |details, index|
         salary = details.slice(*SALARY_KEYS)
         next if salary.empty?
 
         explicit_date = self.class.iso_date?(salary["salary_effective_on"])
-        next if index.zero? && !explicit_date
+        next if index.zero? && !explicit_date && (salary.values.all?(&:blank?) ||
+          versions.active.where(effective_on: ..today).exists?)
 
-        effective_on = explicit_date || Date.current
-        next if index.zero? && employment.compensation_versions.exists?(effective_on:)
+        effective_on = explicit_date || today
+        previous_versions = explicit_date ? versions.where(effective_on:) : versions
+        next if index.zero? && previous_versions.any? do |version|
+          (version.superseded_at.nil? && version.effective_on == effective_on) ||
+            (version.superseded_at && version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank)
+        end
 
-        latest = employment.compensation_versions.order(:effective_on, :id).last
+        latest = versions.active.order(:effective_on, :id).last
         next if latest&.salary_details == salary
 
-        employment.compensation_versions.create!(effective_on:, salary_details: salary)
+        versions.create!(effective_on:, salary_details: salary, reviewed_at: (Time.current unless index.zero?))
       end
     end
 
