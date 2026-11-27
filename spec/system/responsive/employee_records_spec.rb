@@ -173,6 +173,37 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     end
   end
 
+  it "keeps draft employee records in place until an admin saves or cancels before reviewing salary history" do
+    employment.compensation_versions.create!(effective_on: Date.current.prev_month.beginning_of_month,
+      salary_details: { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly" })
+
+    with_forgery_protection do
+      open_records(admin)
+      expect(page).to have_link("Review salary history")
+      click_button "Edit employee records"
+      fill_in "Emergency contact name", with: "Synthetic unsaved contact"
+      expect(page).not_to have_link("Review salary history")
+      expect(page).to have_content("Save or cancel your employee record changes before reviewing salary history.")
+      expect(page).to have_field("Emergency contact name", with: "Synthetic unsaved contact")
+      expect(employment.reload.employee_record).to be_nil
+      page.current_window.resize_to(375, 1000)
+      expect_mobile_fit
+      capture_records("salary-history-draft-profile-375.png")
+
+      click_button "Cancel"
+      expect(page).to have_link("Review salary history")
+      expect(page).not_to have_content("Synthetic unsaved contact")
+      click_button "Edit employee records"
+      expect(page).to have_field("Emergency contact name", with: "")
+      fill_in "Emergency contact name", with: "Synthetic saved contact"
+      click_button "Save employee records"
+      expect(page).to have_css("[role='status']", text: "Employee records saved.")
+      expect(page).to have_link("Review salary history")
+      expect(employment.reload.employee_record.private_details.fetch("emergency_contact_name")).to eq("Synthetic saved contact")
+      expect(@console_errors).to be_empty
+    end
+  end
+
   it "opens the older unresolved employment from a combined profitability row" do
     company.update!(plan_tier: "paid")
     version = employment.compensation_versions.create!(effective_on: Date.current.prev_month.beginning_of_month,
@@ -183,8 +214,9 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
       open_records(admin)
       visit "/reports/compensation-profitability?period=month&person_id=#{employee.id}"
       expect(page).to have_css("h1", text: "Compensation Burn and Profitability")
-      expect(page).to have_link("Review salary history", href: salary_history_review_path(employment_id: employment.id, company_id: company.id))
-      click_link "Review salary history"
+      review_link = "Review salary history for employment #{employment.id}"
+      expect(page).to have_link(review_link, exact: true, href: salary_history_review_path(employment_id: employment.id, company_id: company.id))
+      click_link review_link
       expect(page).to have_css("h1", text: "Review salary history")
       expect(page).to have_select("Decision for version #{version.id}")
       page.current_window.resize_to(375, 1000)

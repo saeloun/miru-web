@@ -86,8 +86,11 @@ class Reports::CompensationProfitabilityController < ApplicationController
         unless candidate.valid? && EmployeeRecord::SALARY_KEYS.all? { |key| details[key].present? }
           raise Reports::CompensationProfitability::InvalidFilters, "Supply complete valid compensation terms"
         end
+        observed = candidate.observe_legacy_salary!
         version = employment.compensation_versions.create!(salary_details: details, effective_on: Date.iso8601(details.fetch("salary_effective_on")), reviewed_at: Time.current)
-        current_company.audits.create!(action: "compensation_history", user: current_user, audited_changes: { compensation_version_id: version.id })
+        current_company.audits.create!(action: "compensation_history", user: current_user, audited_changes: {
+          compensation_version_id: version.id, observed_compensation_version_id: observed&.id
+        })
       end
     end
 

@@ -69,6 +69,10 @@ settings remain editable. Entering a correction does not acknowledge unknown row
 CSV salary fields use the same current-salary reader, not the selected export month,
 and show `Administrator review required` while history is unresolved.
 
+The first salary-history entry from the profitability report also preserves existing
+salary settings as an unreviewed observation. Original dates stay intact; undated
+settings are observed on the company day without adding a salary start date.
+
 Employee-record API responses keep configured salary settings in `private_details`
 and expose effective terms separately in `current_salary`. When
 `compensation_history_requires_review` is true, all four `current_salary` values
@@ -77,6 +81,7 @@ are null; configured settings remain available to the existing editor.
 Owners and admins can open `/employee-records/:employment_id/salary-history` from
 the profile or compensation report warning, including in free workspaces and for
 retained historical employments. Employees see the warning without admin history.
+While a profile draft is being edited, save or cancel it before opening salary review.
 Every unresolved version requires retain or mark-as-abandoned; already reviewed
 rows are read-only. Submission checks the workspace and full active-ID set under
 the employment lock. Decisions and actor/ID-only audit commit together, preserving

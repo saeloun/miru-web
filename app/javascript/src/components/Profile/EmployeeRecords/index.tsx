@@ -521,14 +521,19 @@ const Records = ({ companyId, companyName, userId, self }) => {
             {record.compensation_history_requires_review && (
               <p className="text-sm text-muted-foreground" role="status">
                 {text("salaryHistoryNeedsReview")}
-                {record.can_manage && (
-                  <a
-                    className="ml-2 text-primary underline"
-                    href={`/employee-records/${record.employment.id}/salary-history?company_id=${record.company_id}`}
-                  >
-                    {text("reviewSalaryHistory")}
-                  </a>
-                )}
+                {record.can_manage &&
+                  (editing ? (
+                    <span className="ml-2">
+                      {text("salaryHistoryEditingHelp")}
+                    </span>
+                  ) : (
+                    <a
+                      className="ml-2 text-primary underline"
+                      href={`/employee-records/${record.employment.id}/salary-history?company_id=${record.company_id}`}
+                    >
+                      {text("reviewSalaryHistory")}
+                    </a>
+                  ))}
               </p>
             )}
             <dl className="grid gap-4 tabular-nums sm:grid-cols-2">

@@ -28,3 +28,21 @@ The analytics browser fixture now targets a task-owned Rails test server from th
 - [Older employment reached from a combined report](review-20261126/salary-history-older-employment.png)
 
 These are historical synthetic local browser and request checks, not reruns from the documentation audit. The retained worktree report at `.gstack/tmp/qa-reports/run-20261126T135101Z/` records 48 backend examples, three Brave browser examples and the cached Vite command at `e95cbea18`; those counts overlap the broader selection above. Earlier November 26 reports under `/private/tmp` are no longer available for re-verification. Fresh pushed-head CI, the production inventory and the controlled rollout remain required under #2539.
+
+## Report history and draft protection: 27 November 2026
+
+The first report-history declaration could silently hide an existing salary that had no version rows. The exact request regression failed twice before repair. Six permanent request cases went from two failures to zero: original dated and undated facts remain unreviewed, existing retirement stays intact, contact-only/new profiles gain no invented salary and audit failure rolls both rows back. The combined affected backend selection passed 171 examples.
+
+An actual Brave regression also reproduced salary-review navigation remaining available during unsaved profile editing. The repaired flow requires an explicit save or cancel first. Five focused browser cases passed, followed by the complete 19-example employee-record browser file; those sets overlap. Console checks passed. Native submit targets measured 40/41px with light/dark primary styling, and employment review links are visibly distinct. Vite, changed-file ESLint, Ruby style and Reek checks passed within their recorded scopes.
+
+Initial browser launches failed before assertions because the outer macOS test sandbox prevented renderer initialization. The working test run kept Brave's own sandbox, site isolation and certificate verification, used a fresh anonymous profile, blocked external HTTP and selected a separate disposable local database. These are local synthetic checks, not production or repository-wide acceptance.
+
+All 22 captures below were viewed and their file hashes verified. They contain synthetic fixtures only. The 26 November captures remain unchanged.
+
+- Salary review: [desktop](review-20261127/salary-history-review-1440.png), [375px](review-20261127/salary-history-review-375.png), [older employment](review-20261127/salary-history-older-employment.png), [employee warning](review-20261127/salary-history-employee-warning.png).
+- Review controls: [light](review-20261127/salary-history-control-light.png), [dark](review-20261127/salary-history-control-dark.png); report controls: [light](review-20261127/salary-profitability-controls-light.png), [dark](review-20261127/salary-profitability-controls-dark.png).
+- Salary and drafts: [reviewed profile](review-20261127/salary-history-reviewed-profile.png), [scheduled salary editor](review-20261127/employee-records-scheduled-salary.png), [unsaved draft at375px](review-20261127/salary-history-draft-profile-375.png).
+- Profile and banking: [staff](review-20261127/employee-records-staff.png), [administrator mobile](review-20261127/employee-records-admin-mobile.png), [bank edit1400px](review-20261127/employee-records-bank-edit-1400.png), [bank edit390px](review-20261127/employee-records-bank-edit-390.png), [bank saved1400px](review-20261127/employee-records-bank-saved-1400.png), [bank saved390px](review-20261127/employee-records-bank-saved-390.png).
+- Employee reports: [company/month desktop](review-20261127/employee-report-company-month-desktop.png), [company/month mobile](review-20261127/employee-report-company-month-mobile.png), [editor desktop](review-20261127/employee-report-editor-desktop.png), [editor mobile](review-20261127/employee-report-editor-mobile.png), [saved mobile](review-20261127/employee-report-saved-mobile.png).
+
+Current-head hosted CI, final release reviews, production legacy decisions and controlled rollout remain required.

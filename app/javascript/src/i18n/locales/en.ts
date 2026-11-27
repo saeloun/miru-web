@@ -118,6 +118,8 @@ const en = {
     salary: "Current salary",
     salaryHistoryNeedsReview: "Salary history needs administrator review.",
     reviewSalaryHistory: "Review salary history",
+    salaryHistoryEditingHelp:
+      "Save or cancel your employee record changes before reviewing salary history.",
     salarySettings: "Salary settings",
     salaryHelp:
       "Current salary recorded by your administrator. This is not a calculated payslip or a payment confirmation.",

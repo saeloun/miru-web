@@ -14,8 +14,8 @@
       .table-scroll { overflow-x: auto; } table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
       th, td { text-align: left; padding: 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
       select, input, button { font: inherit; padding: 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); color: var(--foreground); }
-      button { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; } :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #f4f4f5; --card: #18181b; --border: #3f3f46; --primary: #a78bfa; } button { color: #18181b; } }
+      button, input[type="submit"] { background: var(--primary); color: white; cursor: pointer; margin-top: 16px; min-height: 40px; } :focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+      @media (prefers-color-scheme: dark) { :root { --background: #09090b; --foreground: #f4f4f5; --card: #18181b; --border: #3f3f46; --primary: #a78bfa; } button, input[type="submit"] { color: #18181b; } }
       @media (max-width: 639px) {
         .table-scroll { overflow: visible; } table, caption, tbody, tr, td { display: block; }
         thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }

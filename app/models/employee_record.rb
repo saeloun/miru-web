@@ -55,6 +55,16 @@ class EmployeeRecord < ApplicationRecord
     SALARY_KEYS.index_with(nil).merge((details || {}).slice(*SALARY_KEYS))
   end
 
+  # Preserve legacy settings before version history becomes authoritative.
+  def observe_legacy_salary!
+    salary = (private_details_in_database || {}).slice(*SALARY_KEYS)
+    return if salary.values.all?(&:blank?) || employment.compensation_versions.exists?
+
+    observed_on = self.class.iso_date?(salary["salary_effective_on"]) ||
+      Time.current.in_time_zone(company.resolved_time_zone).to_date
+    employment.compensation_versions.create!(effective_on: observed_on, salary_details: salary)
+  end
+
   private
 
     # Equivalent empty bank values must not invalidate the payroll source version.

@@ -10,7 +10,8 @@
 ### Fixed
 
 - Show effective salary consistently in employee profiles, exports and profitability reports, excluding replaced pending raises and preserving reviewed decisions through later edits.
-- Keep salary review controls readable on mobile screens and link combined profitability rows to the employment that needs review.
+- Preserve existing salary settings for review when adding the first report-history entry.
+- Keep salary review controls readable on mobile, preserve profile drafts before review navigation and distinguish employment links in combined reports.
 
 ## [3.7.2] - 2026-11-20
 
