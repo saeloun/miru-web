@@ -324,7 +324,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     typed_signature(@provider, identity.fetch("name"))
     earlier = mail_ids(identity.fetch("email"))
     @provider.click_button("Create account", exact: true)
-    url = mail_to(identity.fetch("email"), /verif/i, earlier) do |message|
+    url = mail_to(identity.fetch("email"), /\APlease confirm your email\z/, earlier) do |message|
       DocumensoLive.message_link(message, @config.fetch("provider_origin"), %r{\A/verify-email/[^/]+\z})
     end
     @provider.visit(url)

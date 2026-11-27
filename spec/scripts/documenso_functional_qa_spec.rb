@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+require "cgi"
+require "json"
 require "open3"
+require "set"
 require "tmpdir"
+require "uri"
 require "yaml"
 
 RSpec.describe "Documenso functional QA isolation" do
@@ -28,6 +32,69 @@ RSpec.describe "Documenso functional QA isolation" do
     expect(artifacts.size).to eq(1)
     expect(artifacts.first.fetch("if")).to eq("always()")
     expect(artifacts.first.fetch("with").fetch("path")).to eq("${{ env.MIRU_QA_WORK }}/evidence/")
+  end
+
+  it "matches the pinned confirmation email through the actual fixture mailbox controls" do
+    # Extract helpers without loading the live fixture or its guarded runtime.
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    source = File.read(path, encoding: "UTF-8")
+    nodes = []
+    visit = lambda do |node|
+      next unless node.is_a?(RubyVM::AbstractSyntaxTree::Node)
+
+      nodes << node
+      node.children.each { |child| visit.call(child) }
+    end
+    visit.call(RubyVM::AbstractSyntaxTree.parse(source))
+    definition = ->(node) { source.lines[(node.first_lineno - 1)..(node.last_lineno - 1)].join }
+    fixture = Module.new
+    stub_const("DocumensoLive", fixture)
+    nodes.select { |node| node.type == :DEFS && %i[check message_link].include?(node.children[1]) }.each do |node|
+      fixture.module_eval(definition.call(node), path, node.first_lineno)
+    end
+    matcher_class = Class.new
+    nodes.select { |node| node.type == :DEFN && %i[mailbox mail_to local_get wait_for].include?(node.children.first) }.each do |node|
+      matcher_class.class_eval(definition.call(node), path, node.first_lineno)
+    end
+    matcher_class.define_method(:check) { |condition, reason| fixture.check(condition, reason) }
+    account = nodes.find { |node| node.type == :DEFN && node.children.first == :provider_account }
+    account_nodes = nodes.select { |node| node.first_lineno.between?(account.first_lineno, account.last_lineno) }
+    call = account_nodes.find { |node| node.type == :FCALL && node.children.first == :mail_to }
+    subject = call.children[1].children.find { |node| node&.type == :REGX }.children.first
+    link_call = account_nodes.find { |node| node.type == :CALL && node.children[1] == :message_link }
+    token_path = link_call.children[2].children.find { |node| node&.type == :REGX }.children.first
+    origin = "http://127.0.0.1:4000"
+    email = "provider@miru-qa.invalid"
+    link = "#{origin}/verify-email/fresh"
+    message = { "ID" => "fresh", "Subject" => "Please confirm your email", "To" => [{ "Address" => email }] }
+    cases = [
+      ["valid confirmation", {}, link, link],
+      ["wrong subject", { "Subject" => "Please verify your email" }, link, nil],
+      ["prefixed subject", { "Subject" => "Re: Please confirm your email" }, link, nil],
+      ["suffixed subject", { "Subject" => "Please confirm your email\nOther subject" }, link, nil],
+      ["wrong recipient", { "To" => [{ "Address" => "other@miru-qa.invalid" }] }, link, nil],
+      ["earlier message", { "ID" => "earlier" }, link, nil],
+      ["used message", { "ID" => "used" }, link, nil],
+      ["foreign origin", {}, "http://example.invalid:4000/verify-email/fresh", nil],
+      ["wrong token path", {}, "#{link}/complete", nil]
+    ]
+    cases.each do |label, changes, candidate, expected|
+      matcher = matcher_class.new
+      matcher.instance_variable_set(:@config, { "mailpit_origin" => origin })
+      matcher.instance_variable_set(:@used_mail, Set["used"])
+      allow(matcher).to receive(:wait_for) { |_reason, &block| block.call }
+      allow(matcher).to receive(:local_get) do |url|
+        body = URI(url).path == "/api/v1/search" ? { "messages" => [message.merge(changes)] } : { "Text" => candidate }
+        [Struct.new(:code).new("200"), JSON.generate(body)]
+      end
+      result = matcher.mail_to(email, subject, Set["earlier"]) do |body|
+        fixture.message_link(body, origin, token_path)
+      end
+      aggregate_failures(label) do
+        expect(result).to eq(expected)
+        expect(matcher.instance_variable_get(:@used_mail)).to eq(expected ? Set["used", "fresh"] : Set["used"])
+      end
+    end
   end
 
   it "preserves isolated preload and pinned worker registration contracts" do
