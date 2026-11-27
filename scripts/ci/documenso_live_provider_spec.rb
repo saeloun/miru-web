@@ -568,12 +568,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       session.find('button[aria-label^="Synthetic Dropdown "]').click
       session.find('[role="option"]', text: "Synthetic option B", exact_text: true).click
       session.find('button[aria-label^="Synthetic Name "]').click
-      session.find('button[aria-label^="Synthetic Email "]').click
-      if session.has_css?('[role="dialog"] input[name="email"]', wait: 2)
-        session.find('[role="dialog"] input[name="email"]').set(identity.fetch("email"))
-        session.find('[role="dialog"]').click_button("Enter", exact: true)
-      end
-      # The pinned provider prefills Date as inserted/readOnly and omits its click control.
+      # Date and Email are prefilled; clicking an inserted Email field clears it.
     else
       session.find('button[title="document-2.pdf"]').click
       session.find('button[aria-label^="Company required signature "]').click
