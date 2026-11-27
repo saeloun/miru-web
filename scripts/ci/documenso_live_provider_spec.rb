@@ -710,7 +710,30 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
           state.document_visible = document.visibilityState === 'visible'; state.document_focused = document.hasFocus();
         }, {capture:true, once:true});
       JS
-      @miru.click_button(filename, exact: true)
+      @miru.find_button(filename, exact: true) do |button|
+        button.evaluate_script(<<~JS)
+          (()=>{
+          const node=this;
+          node.scrollIntoView({block:'center',inline:'nearest',behavior:'instant'});
+          const sample=()=>{const box=node.getBoundingClientRect();return {rect:[box.x,box.y,box.width,box.height],
+            hit:node.isConnected && node.contains(document.elementFromPoint(box.x+box.width/2,box.y+box.height/2)),
+            moving:document.getAnimations().some(animation=>animation.playState==='running' && animation.effect?.getTiming().iterations!==Infinity &&
+              animation.effect?.target instanceof Element && animation.effect.target.contains(node))};};
+          const matches=(first,last)=>first.hit && last.hit && !first.moving && !last.moving &&
+            first.rect.every((value,index)=>Math.abs(value-last.rect[index])<=0.25);
+          const state=node.qaArchiveReadiness ||= {pending:false,ready:false};
+          const current=sample();
+          if (state.ready && matches(state.last,current)) return true;
+          if (!state.pending) {
+            state.pending=true; state.ready=false;
+            requestAnimationFrame(()=>{const first=sample();requestAnimationFrame(()=>{
+              state.last=sample(); state.ready=matches(first,state.last); state.pending=false;
+            });});
+          }
+          return false;
+          })()
+        JS
+      end.click
     end
     path = directory.join(filename)
     transfer = nil
