@@ -828,7 +828,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     end
     [["unassigned_employee", @employee, @company], ["other_workspace", @other_owner, @other_company]].each do |actor, user, company|
       viewport(@miru, 1440)
-      @miru.click_button("Sign out", exact: true)
+      @miru.find('button[aria-label="Logout"]').click
       login(user)
       statuses = paths.map do |path|
         response = browser_response("#{path}?company_id=#{company.id}")
@@ -837,7 +837,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       end
       rows << { actor:, statuses:, pdf_bytes_served: false }
     end
-    @miru.click_button("Sign out", exact: true)
+    @miru.find('button[aria-label="Logout"]').click
     login(@owner)
     progress("denials", kind)
     rows
