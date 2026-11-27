@@ -13,7 +13,7 @@ Rails.application.config.filter_parameters += [
   :tax_declaration, "review.approved_amount", "review.reason", :consultant_compensation, :payroll_preview, :invoice_authorization, :billing_identity, :billing_review,
   :invoice_preparation, :invoice_delivery,
   :pto_policy, :pto_decision, :pto_recovery_review, :service_fee_review, :payroll_payload, :india_handoff, :payroll_india_handoff, :payroll_india_credit, :review_evidence, :evidence_reference, :tax_estimate, :employee_record, :private_details, :employee_payment, :employee_document,
-  :salary_details, :profitability_billing_rate, :profitability_scenario, :payroll_mercury_connection,
+  :salary, :account_number, :profitability_billing_rate, :profitability_scenario, :payroll_mercury_connection,
   :mercury_payment, :payroll_split_arrangement, :consultants, :agreement, :agreement_template, :signature_request, :signature_review,
   :signature_connection, :files, :payload, :webhookEndpoint, /\Aapplication\z/, /\Ahiring_search\z/, /\Aquery\z/,
   :hiring_setting, :hiring_mailbox, :hiring_receipt, :hiring_message, :hiring_form, :screening, :hiring_decision, :hiring_assignment_template,

@@ -542,7 +542,7 @@ GEM
       net-ssh (>= 5.0.0, < 8.0.0)
     net-smtp (0.5.1)
       net-protocol
-    net-ssh (7.3.8)
+    net-ssh (7.3.10)
       logger
     netrc (0.11.0)
     nio4r (2.7.5)
@@ -674,7 +674,7 @@ GEM
     protocol-websocket (0.20.2)
       protocol-http (~> 0.2)
     public_suffix (7.0.5)
-    puma (7.2.2)
+    puma (7.2.4)
       nio4r (~> 2.0)
     pundit (2.3.2)
       activesupport (>= 3.0.0)
@@ -686,7 +686,7 @@ GEM
       rack (>= 1.0, < 4)
     rack-cors (2.0.0)
       rack (>= 2.0.0)
-    rack-protection (4.2.1)
+    rack-protection (4.2.2)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
@@ -1153,7 +1153,7 @@ DEPENDENCIES
   webmock (~> 3.26.2)
 
 RUBY VERSION
-  ruby 4.0.9
+  ruby 4.0.10
 
 BUNDLED WITH
   4.0.20
