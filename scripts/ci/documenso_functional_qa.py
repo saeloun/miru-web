@@ -1809,11 +1809,13 @@ def validate_png_bytes(data):
 
 
 def validate_summary(value):
-    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class"})
+    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line"})
     require(value.get("schema_version") == 1 and type(value.get("passed")) is bool and value.get("phase") in PHASES and value.get("image_config_sha256") == CONFIG_SHA)
     require(type(value.get("source_assets_verified")) is int and 0 <= value["source_assets_verified"] <= 3 and type(value.get("console_errors")) is int and value["console_errors"] >= 0)
     if "error_class" in value:
         require(re.fullmatch(r"[A-Za-z][A-Za-z0-9_:]{0,100}", value["error_class"]))
+    if "failure_line" in value:
+        require(type(value["failure_line"]) is int and 1 <= value["failure_line"] <= 9999)
     require(isinstance(value.get("packets"), list) and len(value["packets"]) <= 2)
     for packet in value["packets"]:
         require(set(packet) == {"kind", "version", "documents", "fields", "signers", "artifact_checks", "share_sha256", "denials"})
@@ -1942,7 +1944,10 @@ def self_check():
             raise AssertionError("PNG metadata accepted")
         base = {"schema_version": 1, "passed": False, "phase": "admitted", "image_config_sha256": CONFIG_SHA, "source_assets_verified": 0, "console_errors": 0, "packets": []}
         validate_summary(base)
-        for changed in ({**base, "url": "forbidden"}, {**base, "error_class": "https://forbidden"}, {**base, "phase": "untrusted"}, {**base, "passed": True}):
+        for line in (1, 9999):
+            validate_summary({**base, "failure_line": line})
+        invalid_lines = [{**base, "failure_line": line} for line in (0, 10000, True, "PRIVATE_DIAGNOSTIC_MARKER", 1.0)]
+        for changed in ({**base, "url": "forbidden"}, {**base, "error_class": "https://forbidden"}, {**base, "phase": "untrusted"}, {**base, "passed": True}, *invalid_lines):
             try:
                 validate_summary(changed)
             except RuntimeError:

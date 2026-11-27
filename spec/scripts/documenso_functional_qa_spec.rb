@@ -97,6 +97,64 @@ RSpec.describe "Documenso functional QA isolation" do
     end
   end
 
+  it "checks the actual connection button's blank-key state before filling it" do
+    component = File.read(File.join(root, "app/javascript/src/components/DocumentSignatures/DeliveryPanel.tsx"), encoding: "UTF-8")
+    expression = component[/<Button type="submit" disabled=\{([^}]+)\}>/, 1]
+    expect(expression).not_to be_nil
+    output, errors, status = Open3.capture3("node", "-e", <<~JS, expression)
+      const disabled = new Function("apiKey", "blocked", "return " + process.argv[1]);
+      console.log(JSON.stringify([disabled("", false), disabled("  ", false), disabled("synthetic-key", false), disabled("synthetic-key", true)]));
+    JS
+    expect(status).to be_success, errors
+    states = JSON.parse(output)
+    expect(states).to eq([true, true, false, true])
+
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    line = File.readlines(path, encoding: "UTF-8").find { |row| row.include?("Fresh signing connection UI missing") }
+    probe = Object.new
+    browser = double("actual blank-key button")
+    allow(browser).to receive(:has_button?) do |name, **options|
+      name == "Connect signing" && options.fetch(:disabled, false) == states.first
+    end
+    probe.instance_variable_set(:@miru, browser)
+    probe.define_singleton_method(:check) { |condition, reason| raise reason unless condition }
+    probe.instance_eval(line, path)
+    enabled = File.readlines(path, encoding: "UTF-8").find { |row| row.include?("Signing key did not enable connection") }
+    allow(browser).to receive(:has_button?) do |name, **options|
+      name == "Connect signing" && options.fetch(:disabled, false) == states[2]
+    end
+    probe.instance_eval(enabled, path)
+  end
+
+  it "reports only bounded positions from the actual fixture in stopped errors" do
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    source = File.read(path, encoding: "UTF-8")
+    method = source[/^  def stopped\(error\).*?^  end/m]
+    failure = Class.new(StandardError)
+    stub_const("DocumensoLive::Failure", failure)
+    cases = [[path, 1, 1], [path, 9999, 9999], [path, 0, nil], [path, 10000, nil], ["PRIVATE_FOREIGN_PATH", 42, nil], [path, 40, 41, true]]
+    cases.each do |file, line, expected, through_check|
+      probe_class = Class.new
+      probe_class.class_eval(method, path)
+      code = through_check ? "def check; raise StandardError, 'PRIVATE_MESSAGE'; end\ndef fixture_probe; check; end" :
+        'def fixture_probe; raise StandardError, "PRIVATE_MESSAGE"; end'
+      probe_class.class_eval(code, file, line)
+      probe = probe_class.new
+      summary = {}
+      probe.instance_variable_set(:@summary, summary)
+      error = begin
+        probe.fixture_probe
+      rescue StandardError => original
+        original
+      end
+      expect { probe.stopped(error) }.to raise_error(failure) { |stopped| expect(stopped.cause).to be_nil }
+      expected_summary = { error_class: "StandardError" }
+      expected_summary[:failure_line] = expected if expected
+      expect(summary).to eq(expected_summary)
+      expect(JSON.generate(summary)).not_to include("PRIVATE")
+    end
+  end
+
   it "preserves isolated preload and pinned worker registration contracts" do
     prefix, errors, status = Open3.capture3("python3", "-I", "-B", "-c", <<~PYTHON, chdir: root)
       import ast, pathlib

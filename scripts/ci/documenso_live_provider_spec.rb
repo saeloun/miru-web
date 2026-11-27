@@ -165,7 +165,12 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
   def take_failed_screenshot; end
 
   def stopped(error)
-    @summary[:error_class] ||= error.class.name if @summary
+    if @summary
+      @summary[:error_class] ||= error.class.name
+      location = error.backtrace_locations&.find { |row| row.path == __FILE__ && row.base_label != "check" }
+      line = location&.lineno
+      @summary[:failure_line] ||= line if line.is_a?(Integer) && line.between?(1, 9999)
+    end
     raise DocumensoLive::Failure, "Live provider acceptance stopped in #{@phase || 'setup'}", cause: nil
   end
 
@@ -387,8 +392,9 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     check(@record.public_send(kind == "client" ? :client_id : :employment_id) == party.id, "Wrong linked packet subject")
     if kind == "client"
       check(!SignatureConnection.active.exists?(company: @company), "Fresh workspace already has a signing connection")
-      check(@miru.has_button?("Connect signing", wait: 20), "Fresh signing connection UI missing")
+      check(@miru.has_button?("Connect signing", disabled: true, wait: 20), "Fresh signing connection UI missing")
       @miru.fill_in("Signing API key", with: @api_key)
+      check(@miru.has_button?("Connect signing", disabled: false, wait: 20), "Signing key did not enable connection")
       @miru.click_button("Connect signing", exact: true)
       check(@miru.has_text?("Company signing connected"), "Real provider connection failed")
       @connection_id = SignatureConnection.active.find_by!(company: @company, created_by: @owner,
