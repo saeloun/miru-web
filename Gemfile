@@ -261,4 +261,10 @@ gem "strong_migrations"
 gem "redis", "~> 5.4"
 gem "dotenv", groups: [:development, :test]
 
+gem "posthog-ruby", "~> 3.34.3", require: "posthog"
+gem "posthog-rails", "~> 3.26.6"
+gem "opentelemetry-sdk", "~> 1.13", require: false
+gem "opentelemetry-logs-sdk", "~> 0.8", require: false
+gem "opentelemetry-exporter-otlp-logs", "~> 0.7", require: false
+
 gem "rqrcode", "~> 3.2"

@@ -148,6 +148,10 @@ For CLI and MCP setup details, see [`docs/miru-cli.md`](docs/miru-cli.md) and [`
 
 For dependency audit commands, runtime pins, and reviewed CVE exceptions, see [`docs/ai/dependency-security.md`](docs/ai/dependency-security.md).
 
+For PostHog analytics, replay privacy, feedback and structured logging setup, see [`docs/ai/posthog.md`](docs/ai/posthog.md).
+
+For employee records and advance birthday/work-anniversary reminder rules, see [`docs/specs/employee-records.md`](docs/specs/employee-records.md).
+
 For hiring email, private candidate forms, screening, the assignment library, approval and recovery, see [`docs/hiring-email.md`](docs/hiring-email.md) and the [ATS verification record](docs/qa/hiring-2463/README.md).
 
 For bank remittance uploads, retained corrections and invoice linkage, see the [consultant payroll guide](docs/product-guide/payroll/03-consultant-payroll.md#bank-remittance-documents) and [synthetic verification record](docs/qa/consultant-remittance-documents-2458/README.md).
