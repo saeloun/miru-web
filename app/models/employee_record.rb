@@ -91,14 +91,24 @@ class EmployeeRecord < ApplicationRecord
       replaced_pending = previous_date && previous_date > today
       versions = employment.compensation_versions
       if replaced_pending
-        pending = versions.active.where(effective_on: previous_date).where.not(reviewed_at: nil)
-        @superseded_compensation_version_ids = pending.order(:id).pluck(:id)
-        now = Time.current
-        pending.where(id: @superseded_compensation_version_ids).update_all(superseded_at: now, updated_at: now)
-        versions.reset
+        @superseded_compensation_version_ids = supersede_pending_salary_versions(previous, versions, previous_date)
       end
 
       append_salary_versions(replaced_pending ? {} : previous, versions, today)
+    end
+
+    def supersede_pending_salary_versions(previous, versions, effective_on)
+      same_date = versions.where(effective_on:)
+      retired_ids = same_date.active.where.not(reviewed_at: nil).order(:id).pluck(:id)
+      salary = previous.slice(*SALARY_KEYS)
+      # Legacy pending settings may have no version containing their original facts.
+      unless same_date.any? { |version| version.salary_details.slice(*SALARY_KEYS).compact_blank == salary.compact_blank }
+        retired_ids << versions.create!(effective_on:, salary_details: salary).id
+      end
+      now = Time.current
+      versions.where(id: retired_ids).update_all(superseded_at: now, updated_at: now)
+      versions.reset
+      retired_ids
     end
 
     def append_salary_versions(previous, versions, today)

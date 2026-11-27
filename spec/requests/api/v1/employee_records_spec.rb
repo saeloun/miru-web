@@ -153,6 +153,26 @@ RSpec.describe "Employee records", type: :request do
       end
     end
 
+    it "audits retained future legacy salary IDs without recording their private values" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        prior = salary.merge(salary_amount: "2000.00", salary_effective_on: "2026-11-10")
+        update_record(prior)
+        employment.compensation_versions.delete_all
+
+        update_record(salary.merge(salary_amount: "3000.00", salary_effective_on: "2026-11-20"))
+
+        expect(response).to have_http_status(:ok)
+        observed = employment.compensation_versions.reload.find { |version| version.salary_details == prior.stringify_keys }
+        expect(observed).to be_present
+        expect(observed.superseded_at).to eq(Time.current)
+        expect(observed.reviewed_at).to be_nil
+        audit = employment.reload.employee_record.audits.order(:id).last
+        expect(audit.user).to eq(admin)
+        expect(audit.associated).to eq(company)
+        expect(audit.audited_changes).to eq("superseded_compensation_version_ids" => [observed.id])
+      end
+    end
+
     it "uses the newest correction when multiple versions share the current effective date" do
       travel_to(Time.utc(2026, 11, 15, 12)) do
         update_record(salary)

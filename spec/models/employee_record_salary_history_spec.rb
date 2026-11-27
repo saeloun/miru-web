@@ -96,6 +96,61 @@ RSpec.describe EmployeeRecord, "salary history" do
     end
   end
 
+  [:none, :reviewed_correction, :unreviewed_correction].each do |history|
+    it "preserves missing future legacy terms when existing history is #{history}" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        prior = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10")
+        record.update!(private_details: prior)
+        employment.compensation_versions.delete_all
+        correction = unless history == :none
+          employment.compensation_versions.create!(effective_on: "2026-11-10",
+            salary_details: prior.merge("salary_amount" => "2200.00"),
+            reviewed_at: (Time.current if history == :reviewed_correction))
+        end
+        replacement = salary.merge("salary_amount" => "3000.00", "salary_effective_on" => "2026-11-20")
+
+        employment.with_lock { record.update!(private_details: replacement) }
+
+        preserved = employment.compensation_versions.reload.find { |version| version.salary_details == prior }
+        expect(preserved).to be_present
+        expect(preserved.effective_on).to eq(Date.new(2026, 11, 10))
+        expect(preserved.reviewed_at).to be_nil
+        expect(preserved.superseded_at).to eq(Time.current)
+        expect(record.superseded_compensation_version_ids).to include(preserved.id)
+        expect(record.reload.private_details).to eq(replacement)
+        if correction
+          expect(correction.reload.superseded_at).to eq(history == :reviewed_correction ? Time.current : nil)
+        end
+        original_ids = employment.compensation_versions.order(:id).pluck(:id)
+        record.save!
+        expect(employment.compensation_versions.order(:id).pluck(:id)).to eq(original_ids)
+        expect(record.superseded_compensation_version_ids).to eq([])
+      end
+    end
+  end
+
+  [false, true].each do |retired|
+    it "does not duplicate or reclassify a preserved future legacy payload with retired=#{retired}" do
+      travel_to(Time.utc(2026, 11, 5, 12)) do
+        prior = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10")
+        record.update!(private_details: prior)
+        employment.compensation_versions.delete_all
+        original = employment.compensation_versions.create!(effective_on: "2026-11-10", salary_details: prior,
+          superseded_at: (1.day.ago if retired))
+        original_timestamp = original.superseded_at
+
+        record.update!(private_details: salary.merge("salary_amount" => "3000.00", "salary_effective_on" => "2026-11-20"))
+
+        expect(employment.compensation_versions.count).to eq(2)
+        expect(original.reload.salary_details).to eq(prior)
+        expect(original.superseded_at).to eq(original_timestamp)
+        expect(original.reviewed_at).to be_nil
+        expect(record.superseded_compensation_version_ids).not_to include(original.id)
+        expect(CompensationVersion.history_requires_review?(employment)).to eq(!retired)
+      end
+    end
+  end
+
   it "refreshes loaded terms after canceling a pending schedule" do
     travel_to(Time.utc(2026, 11, 5, 12)) do
       record.update!(private_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10"))
