@@ -9,6 +9,7 @@ end
 Rails.application.routes.draw do
   get "/employee-records/:employment_id/salary-history", to: "salary_history_reviews#show", as: :salary_history_review
   patch "/employee-records/:employment_id/salary-history", to: "salary_history_reviews#update"
+  post "/employee-records/:employment_id/salary-history/observe", to: "salary_history_reviews#observe"
   get "/hiring-offer", to: "hiring_offer_portal#show", as: :hiring_offer
   post "/hiring-offer/open", to: "hiring_offer_portal#open"
   post "/hiring-offer/reply", to: "hiring_offer_portal#reply"

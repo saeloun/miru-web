@@ -162,7 +162,10 @@ RSpec.describe "Salary history review", type: :request do
   end
 
   it "rechecks administrator access inside the employment lock" do
-    allow_any_instance_of(EmployeeRecordPolicy).to receive(:manage?).and_return(true, false)
+    allow_any_instance_of(Employment).to receive(:with_lock).and_wrap_original do |method, *arguments, &block|
+      admin.remove_role(:admin, company)
+      method.call(*arguments, &block)
+    end
     review
     expect(response).to have_http_status(:found)
     expect(versions.map { |version| version.reload.reviewed_at }).to all(be_nil)

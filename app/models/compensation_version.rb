@@ -9,7 +9,12 @@ class CompensationVersion < ApplicationRecord
   attr_readonly :employment_id, :effective_on, :salary_details
 
   def self.history_requires_review?(employment)
-    employment.compensation_versions.any? { |version| version.superseded_at.nil? && version.reviewed_at.nil? }
+    versions = employment.compensation_versions
+    return true if versions.any? { |version| version.superseded_at.nil? && version.reviewed_at.nil? }
+
+    # Undated settings do not supersede established history.
+    salary = employment.employee_record&.unversioned_salary if versions.any?
+    EmployeeRecord.iso_date?(salary&.fetch("salary_effective_on", nil)).present?
   end
 
   def self.terms_for(employment)

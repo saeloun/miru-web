@@ -13,7 +13,34 @@ class SalaryHistoryReviewsController < ApplicationController
 
   def show
     @versions = @employment.compensation_versions.active.order(:effective_on, :id)
+    @legacy_salary = @employment.employee_record&.unversioned_salary if @employment.compensation_versions.any?
     render layout: false
+  end
+
+  def observe
+    attributes = params.require(:salary_observation)
+    unless attributes.is_a?(ActionController::Parameters) &&
+        (attributes.keys - %w[company_id active_ids payroll_version]).empty?
+      raise ActionController::BadRequest
+    end
+    expected = ids(attributes.fetch(:active_ids, []))
+    @employment.with_lock do
+      ApplicationRecord.uncached { authorize_review }
+      record = @employment.employee_record
+      unless attributes[:company_id].to_s == current_company.id.to_s &&
+          @employment.compensation_versions.active.order(:id).pluck(:id) == expected.sort &&
+          record && attributes[:payroll_version].to_s == record.payroll_version.to_s && record.unversioned_salary
+        return render :recovery, formats: [:html], layout: false, status: 409, locals: {
+          message: "Stored salary or workspace changed. No salary was added. Reopen salary history to review the latest facts.",
+          recovery_path: salary_history_review_path(employment_id: @employment.id), recovery_label: "Reopen salary history"
+        }
+      end
+      version = record.observe_legacy_salary!
+      current_company.audits.create!(action: "compensation_history_observation", user: current_user, audited_changes: {
+        employment_id: @employment.id, observed_compensation_version_id: version.id
+      })
+    end
+    redirect_to salary_history_review_path(employment_id: @employment.id), status: 303
   end
 
   def update
@@ -38,7 +65,7 @@ class SalaryHistoryReviewsController < ApplicationController
     @employment.with_lock do
       ApplicationRecord.uncached { authorize_review }
       active = @employment.compensation_versions.active.order(:id).to_a
-      unless active.map(&:id) == expected.sort
+      unless active.map(&:id) == expected.sort && @employment.employee_record&.unversioned_salary.blank?
         return render :recovery, formats: [:html], layout: false, status: 409, locals: {
           message: "Salary history changed. No decisions were saved. Reopen salary history to review the latest versions.",
           recovery_path: salary_history_review_path(employment_id: @employment.id), recovery_label: "Reopen salary history"
@@ -76,6 +103,7 @@ class SalaryHistoryReviewsController < ApplicationController
     def authorize_review
       authorize EmployeeRecord, :manage?
       @employment = current_company.employments.find(params[:employment_id])
+      authorize @employment, :review_history?, policy_class: EmployeeRecordPolicy
     end
 
     def prevent_caching

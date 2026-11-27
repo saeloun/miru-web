@@ -39,6 +39,21 @@ RSpec.describe Reports::CompensationProfitability do
     ProfitabilityBillingRate.create!(project: project_record, user: person, hourly_rate: amount, currency:, effective_on:, billing_method:)
   end
 
+
+  it "restores old-path legacy salary costs only after observing and reviewing the missing terms" do
+    employment.compensation_versions.delete_all
+    employment.compensation_versions.create!(effective_on: "2026-12-01",
+      salary_details: record.private_details.merge("salary_amount" => "6200.00", "salary_effective_on" => "2026-12-01"),
+      reviewed_at: Time.current)
+    expect(row[:flags]).to include("compensation_history_requires_review")
+    expect(row[:compensation_cost]).to be_nil
+    observed = record.observe_legacy_salary!
+    expect(observed.reviewed_at).to be_nil
+    observed.update!(reviewed_at: Time.current)
+    expect(row[:compensation_cost]).to eq(3100.to_d)
+    expect(record.reload.current_salary["salary_amount"]).to eq("3100.00")
+  end
+
   it "includes people with costs and no projects, retains negative margins and uses N/A for zero-revenue percentages" do
     result = row
     expect(result).to include(compensation_cost: 3100.to_d, salary_inr: 3100.to_d, salary_usd: 38.75.to_d,

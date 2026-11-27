@@ -33,6 +33,22 @@
       <p><%= link_to "Back to team", "/team" %></p>
       <section class="panel">
         <p>Older salary history may contain replaced scheduled raises. Confirm each retained salary or mark it as abandoned. Every original amount and date remains stored. Current salary and financial costs stay unavailable until all active history has been reviewed.</p>
+        <% if @legacy_salary %>
+          <h2>Stored salary missing from history</h2>
+          <dl>
+            <dt>Declared effective date</dt><dd><%= @legacy_salary["salary_effective_on"].presence || "Date not recorded" %></dd>
+            <dt>Recorded salary</dt><dd><%= @legacy_salary.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></dd>
+          </dl>
+          <p>Add these stored facts for review before deciding which salary history to retain. Adding them does not approve them. Undated settings are observed on the current company day without inventing a declared effective date.</p>
+          <%= form_with url: "#{salary_history_review_path(employment_id: @employment.id)}/observe", method: :post, local: true do |form| %>
+            <%= hidden_field_tag "salary_observation[company_id]", current_company.id %>
+            <%= hidden_field_tag "salary_observation[payroll_version]", @employment.employee_record.payroll_version %>
+            <% @versions.each do |version| %>
+              <%= hidden_field_tag "salary_observation[active_ids][]", version.id %>
+            <% end %>
+            <%= form.submit "Add stored salary for review" %>
+          <% end %>
+        <% end %>
         <%= form_with url: salary_history_review_path(employment_id: @employment.id), method: :patch, local: true do |form| %>
           <%= hidden_field_tag "salary_review[company_id]", current_company.id %>
           <% @versions.each do |version| %>
@@ -41,12 +57,13 @@
           <div class="table-scroll">
             <table role="table">
               <caption>Active salary versions</caption>
-              <thead><tr><th scope="col">Version</th><th scope="col">Effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
+              <thead><tr><th scope="col">Version</th><th scope="col">Applies from</th><th scope="col">Declared effective date</th><th scope="col">Recorded salary</th><th scope="col">Decision</th></tr></thead>
               <tbody>
                 <% @versions.each do |version| %>
                   <tr>
                     <td data-label="Version"><%= version.id %></td>
-                    <td data-label="Effective date"><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
+                    <td data-label="Applies from"><%= version.effective_on.iso8601 %></td>
+                    <td data-label="Declared effective date"><%= version.salary_details["salary_effective_on"].presence || "Date not recorded" %></td>
                     <td data-label="Recorded salary"><%= version.salary_details.values_at("salary_amount", "salary_currency", "salary_frequency").map { |value| value.presence || "Not recorded" }.join(" · ") %></td>
                     <td>
                       <% if version.reviewed_at %>
@@ -62,8 +79,10 @@
               </tbody>
             </table>
           </div>
-          <% if @versions.any? { |version| version.reviewed_at.nil? } %>
-            <p>Retain means this salary is valid history. Mark as abandoned means the scheduled salary was replaced and must not affect salary or costs. Reviewing an undated salary does not create an effective date.</p>
+          <% if @legacy_salary %>
+            <p role="status">Add the stored salary for review before saving decisions.</p>
+          <% elsif @versions.any? { |version| version.reviewed_at.nil? } %>
+            <p>Retain means this salary is valid history. Mark as abandoned means the scheduled salary was replaced and must not affect salary or costs. Retaining a salary applies its recorded terms from the Applies from date. An undated salary has no declared effective date; retaining it can leave financial costs unavailable from its recorded date until complete dated terms are supplied.</p>
             <%= form.submit "Save salary history review" %>
           <% else %>
             <p role="status">No active salary history is awaiting review.</p>

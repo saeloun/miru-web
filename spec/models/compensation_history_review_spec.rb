@@ -9,6 +9,49 @@ RSpec.describe CompensationVersion, "legacy salary review" do
     { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly", "salary_effective_on" => "2026-11-01" }
   end
 
+
+  context "with raw legacy salary and an existing future version from the old report writer" do
+    let(:salary) do
+      { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly", "salary_effective_on" => "2026-01-01" }
+    end
+    let!(:record) do
+      employment.create_employee_record!(private_details: salary).tap { employment.compensation_versions.delete_all }
+    end
+    let!(:future) do
+      employment.compensation_versions.create!(effective_on: "2026-12-01",
+        salary_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-12-01"), reviewed_at: Time.current)
+    end
+
+    around { |example| travel_to(Time.utc(2026, 11, 28, 12)) { example.run } }
+
+    it "withholds unmatched legacy facts even after the future term was retained" do
+      expect { record.current_salary }.not_to change(CompensationVersion, :count)
+      expect(described_class.history_requires_review?(employment)).to be(true)
+      expect(described_class.terms_for(employment)).to be_empty
+      expect(record.current_salary.values).to all(be_nil)
+    end
+
+    it "observes the missing original once without approving it and restores it after explicit review" do
+      observed = nil
+      expect { observed = record.observe_legacy_salary! }.to change(CompensationVersion, :count).by(1)
+      expect(observed).to have_attributes(effective_on: Date.new(2026, 1, 1), salary_details: salary, reviewed_at: nil)
+      expect { record.observe_legacy_salary! }.not_to change(CompensationVersion, :count)
+      expect(described_class.history_requires_review?(employment.reload)).to be(true)
+      observed.update!(reviewed_at: Time.current)
+      expect(record.reload.current_salary).to eq(salary)
+      expect(described_class.terms_for(employment.reload).map(&:last)).to eq([salary, future.salary_details])
+    end
+
+    it "does not duplicate or revive a matching retired payload" do
+      retired = employment.compensation_versions.create!(effective_on: "2026-01-01",
+        salary_details: salary, superseded_at: Time.current)
+      expect { record.observe_legacy_salary! }.not_to change(CompensationVersion, :count)
+      expect(described_class.history_requires_review?(employment.reload)).to be(false)
+      expect(record.reload.current_salary.values).to all(be_nil)
+      expect(retired.reload.superseded_at).to be_present
+    end
+  end
+
   it "withholds legacy salary history rather than choosing an unverified pending raise" do
     record = employment.create_employee_record!(private_details: salary)
     pending = salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-11-10")

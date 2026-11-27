@@ -54,6 +54,77 @@ RSpec.describe "Private employee records browser workflow", type: :system, js: t
     end
   end
 
+
+  it "lets an owner recover old-path stored salary before review, current display and CSV export" do
+    admin.remove_role(:admin, company)
+    admin.add_role(:owner, company)
+    salary = { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly",
+      "salary_effective_on" => "2026-01-01" }
+    record = employment.create_employee_record!(private_details: salary)
+    employment.compensation_versions.delete_all
+    future = employment.compensation_versions.create!(effective_on: "2026-12-01",
+      salary_details: salary.merge("salary_amount" => "2000.00", "salary_effective_on" => "2026-12-01"))
+    report = company.employee_reports.create!(name: "Synthetic legacy salary export", columns: %w[salary_amount salary_currency])
+
+    travel_to(Time.utc(2026, 11, 28, 12)) do
+      with_forgery_protection do
+        open_records(admin)
+        expect(page).to have_content("Salary history needs administrator review")
+        click_link "Review salary history"
+        expect(page).to have_content("1000.00")
+        expect(page).to have_button("Add stored salary for review")
+        expect(page).not_to have_button("Save salary history review")
+        expect(employment.compensation_versions.count).to eq(1)
+        page.current_window.resize_to(375, 1000)
+        expect_mobile_fit
+        capture_records("legacy-salary-observation-375.png")
+        click_button "Add stored salary for review"
+        observed = employment.compensation_versions.order(:id).last
+        expect(observed.reviewed_at).to be_nil
+        expect(observed.salary_details).to eq(salary)
+        [future, observed].each { |version| select "Retain", from: "Decision for version #{version.id}" }
+        expect(page).to have_content("Applies from")
+        expect_mobile_fit
+        capture_records("legacy-salary-decisions-375.png")
+        click_button "Save salary history review"
+        expect(page).to have_content("No active salary history is awaiting review.")
+        expect(record.reload.private_details).to eq(salary)
+        open_records(admin)
+        within find("h2", text: "Current salary", exact_text: true).find(:xpath, "..") do
+          expect(page).to have_css("dd", text: "1000.00", exact_text: true)
+          expect(page).not_to have_css("dd", text: "2000.00", exact_text: true)
+        end
+        month = find_field("Report month").value
+        csv = downloaded_file("employee-report-#{report.id}-#{month}.csv") { click_button "Download CSV" }
+        amounts = CSV.parse(csv, headers: true).pluck("Current salary amount")
+        expect(amounts).to include("1000.00")
+        expect(amounts).not_to include("2000.00")
+        capture_records("legacy-salary-restored-profile-375.png")
+        expect(@console_errors).to be_empty
+      end
+    end
+  end
+
+  it "shows an owner the application date and missing declared date of undated history" do
+    admin.remove_role(:admin, company)
+    admin.add_role(:owner, company)
+    employment.compensation_versions.create!(effective_on: "2026-06-10",
+      salary_details: { "salary_amount" => "1000.00", "salary_currency" => "INR", "salary_frequency" => "monthly" })
+    with_forgery_protection do
+      open_records(admin)
+      click_link "Review salary history"
+      expect(page).to have_content("2026-06-10")
+      expect(page).to have_content("Date not recorded")
+      expect(page).to have_content("financial costs unavailable")
+      [1440, 375].each do |width|
+        page.current_window.resize_to(width, 1000)
+        expect_mobile_fit
+        capture_records("undated-history-dates-#{width}.png")
+      end
+      expect(@console_errors).to be_empty
+    end
+  end
+
   it "lets staff save family, emergency and bank information without submitting admin salary keys" do
     employment.create_employee_record!(private_details: { salary_amount: "1200", salary_currency: "INR" })
     expect(Payroll::MercurySetup.bank_profile_complete?(Payroll::MercurySetup.bank_details(employment))).to be(false)
