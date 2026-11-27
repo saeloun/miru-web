@@ -67,12 +67,13 @@ RSpec.describe "Tax declarations", type: :request do
     expect(event.spans.to_json).not_to include("456.78", "Synthetic flat tax note")
   end
 
-  it "omits request values from serialized error and transaction breadcrumbs while retaining diagnostics" do
+  it "omits request values from serialized error and transaction breadcrumbs while retaining diagnostics", :aggregate_failures do
     require "sentry/transport/dummy_transport"
 
     hub = Sentry.get_main_hub
     original_client = hub.current_client
     raw_breadcrumbs = []
+    raw_sql_spans = []
     transport_class = Class.new(Sentry::DummyTransport) do
       attr_reader :serialized
 
@@ -105,8 +106,16 @@ RSpec.describe "Tax declarations", type: :request do
       if arguments.first == "process_action.action_controller" && arguments.last[:controller] == "Api::V1::TaxDeclarationsController"
         Sentry.add_breadcrumb(Sentry::Breadcrumb.new(category: "custom", data: {
           "params" => { notes: "Synthetic custom params" }.to_json,
-          "path" => "/custom?notes=SyntheticCustomQuery", "method" => "GET", "status" => 200
+          "path" => "/custom?notes=SyntheticCustomQuery", "method" => "GET", "status" => 200,
+          "url" => "https://example.test/custom?notes=SyntheticUrlQuery",
+          "sql" => "SELECT 'SyntheticCustomSql'"
         }))
+        ActiveRecord::Base.connection.select_value("SELECT 'SyntheticSqlLiteral'::text", "Privacy probe")
+        Sentry.with_child_span(op: "db.sql.active_record", description: "SELECT 'SyntheticSqlSpan'::text") do |span|
+          raw_sql_spans << span.to_hash
+        end
+        ActiveSupport::Notifications.instrument("redirect_to.action_controller",
+          status: 303, location: "https://example.test/return?notes=SyntheticRedirectQuery")
         raw_breadcrumbs << Sentry.get_current_scope.breadcrumbs.to_hash.to_json
         Sentry.capture_exception(RuntimeError.new("Synthetic private action exception"))
       end
@@ -123,7 +132,9 @@ RSpec.describe "Tax declarations", type: :request do
 
       expect(response).to have_http_status(:conflict)
       expect(TaxDeclaration.count).to eq(0)
-      expect(raw_breadcrumbs.last).to include(marker, "Synthetic custom params", "SyntheticCustomQuery")
+      expect(raw_breadcrumbs.last).to include(marker, "Synthetic custom params", "SyntheticCustomQuery",
+        "SyntheticUrlQuery", "SyntheticCustomSql", "SyntheticSqlLiteral", "SyntheticRedirectQuery")
+      expect(raw_sql_spans.last).to include(op: "db.sql.active_record", description: "SELECT 'SyntheticSqlSpan'::text")
       expect(client.transport.serialized.map { |item| item.fetch(:type) }).to eq(["Sentry::ErrorEvent", "Sentry::TransactionEvent"])
       client.transport.serialized.each do |item|
         serialized = item.fetch(:payload)
@@ -131,8 +142,23 @@ RSpec.describe "Tax declarations", type: :request do
         controller = crumbs.find { |crumb| crumb["category"] == "process_action.action_controller" }
         expect(controller.fetch("data")).to include("method" => "POST", "path" => "/api/v1/tax_declarations", "status" => 409)
         custom = crumbs.find { |crumb| crumb["category"] == "custom" }
-        expect(custom.fetch("data")).to eq("path" => "/custom", "method" => "GET", "status" => 200)
-        expect(serialized.to_json).not_to include(marker, "Synthetic custom params", "SyntheticCustomQuery", "456.78")
+        expect(custom.fetch("data")).to eq("path" => "/custom", "method" => "GET", "status" => 200,
+          "url" => "https://example.test/custom")
+        sql = crumbs.find { |crumb| crumb["category"] == "sql.active_record" && crumb.dig("data", "name") == "Privacy probe" }
+        expect(sql.fetch("data")).to include("name" => "Privacy probe")
+        expect(sql.fetch("data")).not_to have_key("sql")
+        redirect = crumbs.find { |crumb| crumb["category"] == "redirect_to.action_controller" }
+        expect(redirect.fetch("data")).to eq("status" => 303, "location" => "https://example.test/return")
+        if item.fetch(:type) == "Sentry::TransactionEvent"
+          sql_spans = serialized.fetch("spans").select { |span| span["op"] == "db.sql.active_record" }
+          expect(sql_spans).not_to be_empty
+          sql_spans.each do |span|
+            expect(span["description"]).to be_nil
+            expect(span).to include("start_timestamp", "timestamp")
+          end
+        end
+        expect(serialized.to_json).not_to include(marker, "Synthetic custom params", "SyntheticCustomQuery", "456.78",
+          "SyntheticUrlQuery", "SyntheticCustomSql", "SyntheticSqlLiteral", "SyntheticRedirectQuery", "SyntheticSqlSpan")
       end
     end
   ensure
