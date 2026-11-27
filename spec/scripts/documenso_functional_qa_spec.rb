@@ -209,6 +209,24 @@ RSpec.describe "Documenso functional QA isolation" do
     expect { evaluate.call }.not_to raise_error
   end
 
+  it "initializes the QA-only signing iframe with encoded empty embed settings" do
+    source = File.read(File.join(root, "scripts/ci/documenso_live_provider_spec.rb"), encoding: "UTF-8")
+    setter = source.lines.find { |line| line.include?("qa-provider-frame") && line.include?("execute_script") }
+    script = JSON.parse(setter[/execute_script\(("[^"]*")/, 1])
+    output, errors, status = Open3.capture3("node", "-e", <<~JS, script)
+      const frame={src:""};
+      global.document={getElementById:id=>{if(id!=="qa-provider-frame")throw Error("Wrong frame");return frame;}};
+      new Function(process.argv[1]).apply(null,["http://127.0.0.1:4000/embed/sign/synthetic"]);
+      const url=new URL(frame.src);
+      if(url.origin!=="http://127.0.0.1:4000" || url.pathname!=="/embed/sign/synthetic")throw Error("Origin/path changed");
+      const settings=JSON.parse(decodeURIComponent(atob(url.hash.slice(1))));
+      if(Object.keys(settings).length!==0)throw Error("Nonempty settings");
+      console.log("Encoded empty embed settings accepted");
+    JS
+    expect(status).to be_success, errors
+    expect(output).to include("Encoded empty embed settings accepted")
+  end
+
   it "preserves isolated preload and pinned worker registration contracts" do
     prefix, errors, status = Open3.capture3("python3", "-I", "-B", "-c", <<~PYTHON, chdir: root)
       import ast, pathlib
