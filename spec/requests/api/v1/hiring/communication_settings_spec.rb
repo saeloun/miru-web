@@ -137,7 +137,7 @@ RSpec.describe "Hiring communication configuration", type: :request do
     Api::V1::Hiring::BaseController.allow_forgery_protection = previous_hiring if defined?(Api::V1::Hiring::BaseController)
   end
 
-  it "filters actual controller trace parameters before a Sentry transaction is sent" do
+  it "omits actual controller trace parameters before a Sentry transaction is sent" do
     transaction = Sentry::Transaction.new(name: "Hiring trace privacy", sampled: true, hub: Sentry.get_current_hub)
     span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::Hiring::SettingsController#update")
     allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
@@ -151,11 +151,12 @@ RSpec.describe "Hiring communication configuration", type: :request do
     expect(response).to have_http_status(:ok)
     expect(span.to_hash.dig(:data, :params)).to be_present
     event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
-    event.spans = [span.to_hash, { description: "OtherController#index", data: { params: { page: 2 } } }]
+    event.spans = [span.to_hash, { description: "OtherController#index", data: { params: { page: 2 }, diagnostic: "retained" } }]
     callback = Sentry.configuration.before_send_transaction
     event = callback.call(event, {}) if callback
-    expect(event.spans.first.dig(:data, :params, "hiring_setting")).to eq("[FILTERED]")
-    expect(event.spans.last.dig(:data, :params, :page)).to eq(2)
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.first.fetch(:data)).to include(method: "PUT", path: "/api/v1/hiring/settings")
+    expect(event.spans.last.fetch(:data)).to eq(diagnostic: "retained")
     expect(event.spans.to_json).not_to include("Approved", "company_intro")
   end
 end

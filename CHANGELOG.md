@@ -13,6 +13,13 @@
 - Preserve existing salary settings for review when adding the first report-history entry.
 - Keep salary review controls readable on mobile, preserve profile drafts before review navigation and distinguish employment links in combined reports.
 
+## [3.7.3] - 2026-11-26
+
+### Fixed
+
+- Omit request parameters from Sentry traces to keep private employee, tax and signing values out of trace data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
+
 ## [3.7.2] - 2026-11-20
 
 ### Fixed

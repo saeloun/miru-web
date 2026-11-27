@@ -248,6 +248,71 @@ RSpec.describe "Employee records", type: :request do
     end
   end
 
+  it "redacts private employee parameters captured by the actual controller trace" do
+    transaction = Sentry::Transaction.new(name: "Employee trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::EmployeeRecordsController#update")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    update_record({ bank_account_number: "000123456789", salary_amount: "123.45" }, bank_account_number_confirmation: "000123456789")
+
+    expect(response).to have_http_status(:ok)
+    expect(span.to_hash.dig(:data, :params, "employee_record", "private_details"))
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.first.fetch(:data)).to include(method: "PATCH", path: "/api/v1/employee_records")
+    expect(event.spans.to_json).not_to include("000123456789", "123.45")
+
+    patch "/api/v1/employee_records", params: {
+      account_number: "000987654321", bank_account_number_confirmation: "000987654321",
+      salary: "987.65", salary_amount: "987.65", page: "2"
+    }, as: :json
+    expect(response).to have_http_status(:bad_request)
+    expect(Employment.find(employment.id).employee_record.private_details)
+      .to include("bank_account_number" => "000123456789", "salary_amount" => "123.45")
+    expect(span.to_hash.dig(:data, :params, "account_number")).to eq("000987654321")
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.to_json).not_to include("000987654321", "987.65")
+  end
+
+  it "omits all span parameters while preserving other trace diagnostics" do
+    transaction = Sentry::Transaction.new(name: "Private trace envelopes", sampled: true, hub: Sentry.get_current_hub)
+    envelopes = {
+      "Api::V1::TaxDeclarationsController#create" => { "tax_declaration" => { "claimed_amount" => "456.78", "notes" => "Private tax note" } },
+      "Api::V1::TaxDeclarationsController#review" => { "review" => { "decision" => "approve", "approved_amount" => "456.78", "reason" => "Private review reason" } },
+      "Api::V1::AgreementsController#create" => { "agreement" => { "body" => "Private agreement text" } },
+      "Api::V1::SignatureRequestsController#create" => { "signature_request" => { title: "Private signature title", recipients: [{ email: "private@example.test" }] }.to_json }
+    }
+    spans = envelopes.map do |description, params|
+      span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description:)
+      span.set_data(:params, params.merge("page" => "2"))
+      span.to_hash
+    end
+    custom = Sentry::Span.new(transaction:, op: "custom", description: "Custom span")
+    custom.set_data("params", { recipients: ["synthetic@example.test"] }.to_json)
+    custom.set_data(:params, "Synthetic raw params")
+    custom.set_data(:diagnostic, "retained")
+    expect(custom.to_hash.fetch(:data).fetch("params")).to include("synthetic@example.test")
+    unaffected = [{ description: "SQL", data: { query: "SELECT 1" } }, { description: "No data" }]
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = spans + [custom.to_hash] + unaffected.deep_dup
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+
+    event.spans.first(5).each do |span|
+      expect(span.fetch(:data)).not_to have_key(:params)
+      expect(span.fetch(:data)).not_to have_key("params")
+    end
+    expect(event.spans[4].fetch(:data)).to eq(diagnostic: "retained")
+    expect(event.spans.last(2)).to eq(unaffected)
+    expect(event.spans.to_json).not_to include("456.78", "Private tax note", "Private review reason", "Private agreement text", "Private signature title", "private@example.test", "synthetic@example.test", "Synthetic raw params")
+  end
+
   context "bank account confirmation" do
     %i[admin employee].each do |actor|
       it "allows #{actor} to save explicit India and USD bank declarations" do
