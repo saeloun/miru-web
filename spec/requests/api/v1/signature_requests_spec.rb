@@ -221,6 +221,32 @@ RSpec.describe "Private uploaded signature requests", type: :request do
     expect(filtered.to_json).not_to include("private-")
   end
 
+  it "omits flat signing fields captured by the actual rejected controller request" do
+    record = package
+    revision_id = record.current_revision_id
+    transaction = Sentry::Transaction.new(name: "Flat signing trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::SignatureRequestsController#update")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    patch "/api/v1/signature_requests/#{record.id}", params: {
+      signature_request: "{", company_id: company.id, lock_version: record.lock_version,
+      title: "Synthetic flat signing title", recipients: [{ name: "Synthetic signer", email: "private@example.test" }],
+      fields: [{ value: "Synthetic private field" }]
+    }, as: :json
+
+    expect(response).to have_http_status(:bad_request)
+    expect(record.reload.current_revision_id).to eq(revision_id)
+    expect(span.to_hash.dig(:data, :params, "title")).to eq("Synthetic flat signing title")
+    expect(span.to_hash.dig(:data, :params, "recipients").first).to include("email" => "private@example.test")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.to_json).not_to include("Synthetic flat signing title", "Synthetic signer", "private@example.test", "Synthetic private field")
+  end
+
   it "rejects unsupported upload references, excessive files and page totals" do
     post "/api/v1/signature_requests", params: { signature_request: { company_id: company.id, creation_key:, title: "Bad source" }, files: ["existing-blob-reference"] }, as: :json
     expect(response).to have_http_status(422)

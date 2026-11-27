@@ -1,6 +1,6 @@
 # Dependency security maintenance
 
-Updated 11 November 2026. Run all checks from the repository root:
+Updated 26 November 2026. Run all checks from the repository root:
 
 ```sh
 rtk mise exec -- bundle exec bundler-audit check --update
@@ -13,6 +13,19 @@ rtk mise exec -- pnpm --dir apps/mobile audit
 
 CI runs these checks in the security-audit job. Brakeman was already present; it is
 upgraded to 8.1.0. Keep its warnings visible and fix actionable findings.
+
+The GitHub-hosted Linux CI document-tool installer bounds total HTTPS lookup time and APT execution.
+If an Ubuntu archive lookup fails, it resolves only the three fixed archive hosts
+through [Cloudflare's HTTPS resolver](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/),
+whose hostname must still resolve, and removes its temporary host mappings after installation.
+The hosts lock coordinates only writers taking the same advisory lock; edits from
+noncooperating writers are not protected. Removal retries one recoverable I/O failure
+under a fresh lock, without retrying a changed owned block. Host-file edit failures
+attempt to restore the prior bytes and fail the job; persistent I/O failures or an
+uncatchable termination can prevent restoration. APT signature checks, all required tools
+and the downstream test stages remain enforced. Its offline parser, deadline and
+cleanup checks run with `python3 scripts/ci/install_document_tools.py --self-check`;
+a complete Ubuntu CI run is required in addition to these checks.
 
 ## Runtimes and package compatibility
 
@@ -27,23 +40,33 @@ positive/refusal, raster/logo and Unicode PDF checks remain required. A new exac
 image must pass those checks and a fresh scan; this does not remediate libxml2's
 separate CVE-2026-6653 or establish a clean scan for other installed packages.
 
-- Rails 8.1.4.1 includes the [November 4 security fixes](https://rubyonrails.org/2026/11/4/Rails-8.0.5.2-and-8.1.4.1-have-been-released); Ruby 4.0.9 across mise, Gemfile, Docker, and CI.
+- Rails 8.1.4.1 includes the [November 4 security fixes](https://rubyonrails.org/2026/11/4/Rails-8.0.5.2-and-8.1.4.1-have-been-released); Ruby 4.0.10 across mise, Gemfile, Docker, and CI.
 - Node 24.22.1 LTS across local version files, mise, Docker build arguments, and CI.
   Legacy NodeSource Docker recipes select the Node 24 line and may receive newer patches.
 - pnpm 9.15.9; mise uses the npm backend so pnpm runs on the configured Node runtime.
 - Go 1.26.10 for the CLI, with the toolchain recorded in go.mod.
 
-Ruby 4.0.9 includes the [regexp compilation fixes](https://www.ruby-lang.org/en/news/2026/10/23/regexp-fixes-for-gitlab-cves/)
+Ruby 4.0.10 includes the [November security fixes](https://www.ruby-lang.org/en/news/2026/11/18/multiple-vulnerabilities-in-regexp-and-string/)
+for seven Regexp and String advisories affecting Ruby 4.0.0 through 4.0.9, as well
+as the earlier [regexp compilation fixes](https://www.ruby-lang.org/en/news/2026/10/23/regexp-fixes-for-gitlab-cves/)
 underlying GitLab CVE-2026-89078, CVE-2026-93577, CVE-2026-97229, and
 CVE-2026-110264. These affect compilation of attacker-controlled patterns;
-`Regexp.timeout` does not protect compilation. Ruby 4.0.7 lacks two of these
-fixes, even though the Ruby advisory scanner currently reports no findings.
+`Regexp.timeout` does not protect compilation.
 
-The official `ruby:4.0.9-slim` image was not published at verification time.
-All Docker recipes compile the official release archive on Debian trixie,
-verify its SHA256, and copy the runtime into a separate image without build
-tools. Their smoke checks verify the exact Ruby version, OpenSSL, YAML, zlib, and
-YJIT availability. Kamal's build arguments match Ruby 4.0.9 and Node 24.
+The main Dockerfile pins the published official `ruby:4.0.10-slim` image by OCI
+index digest. The other Docker recipes compile the official release archive on
+Debian trixie, verify its SHA256, and copy the runtime into a separate image
+without build tools. Their smoke checks verify the exact Ruby version, OpenSSL,
+YAML, zlib, and YJIT availability. Kamal's build arguments match Ruby 4.0.10 and
+Node 24.
+
+The lockfile keeps net-ssh on the Kamal-compatible 7.x line with fixes for
+[revoked keys](https://github.com/net-ssh/net-ssh/security/advisories/GHSA-hjwv-j52r-xcg7)
+and [HTTPS proxy verification](https://github.com/net-ssh/net-ssh/security/advisories/GHSA-qcf4-j55x-72hv).
+Puma includes the [MRI TLS fix](https://github.com/puma/puma/security/advisories/GHSA-4v6q-hvv7-49h9),
+and rack-protection includes the 4.2.2 fixes for CookieTossing denial of service,
+HostAuthorization suffix matching, and missing-Referer bypasses. These dependency
+updates add no audit suppressions and do not establish deployed runtime behavior.
 
 The existing brace-expansion CommonJS compatibility patches now target 5.0.12.
 Mobile keeps React and React DOM at 19.1.0, matching Expo SDK 54 / React Native

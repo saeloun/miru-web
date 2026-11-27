@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.3] - 2026-11-26
+
+### Fixed
+
+- Remove request parameters and SQL text from Sentry spans and breadcrumbs, and strip breadcrumb URL queries in errors and traces while retaining timing and status data.
+- Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
+
 ## [3.7.2] - 2026-11-20
 
 ### Fixed

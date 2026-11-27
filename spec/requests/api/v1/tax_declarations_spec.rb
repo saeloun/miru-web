@@ -45,6 +45,127 @@ RSpec.describe "Tax declarations", type: :request do
     }
   end
 
+  it "omits flat private tax fields captured by the actual rejected controller request" do
+    transaction = Sentry::Transaction.new(name: "Flat tax trace privacy", sampled: true, hub: Sentry.get_current_hub)
+    span = Sentry::Span.new(transaction:, op: "view.process_action.action_controller", description: "Api::V1::TaxDeclarationsController#create")
+    allow(Sentry).to receive(:with_child_span).and_wrap_original do |original, **attributes, &block|
+      attributes[:description] == span.description ? block.call(span) : original.call(**attributes, &block)
+    end
+
+    post "/api/v1/tax_declarations", params: {
+      company_id: company.id, tax_year: "2026", category: "investment",
+      claimed_amount: "456.78", notes: "Synthetic flat tax note"
+    }, as: :json
+
+    expect(response).to have_http_status(:conflict)
+    expect(TaxDeclaration.count).to eq(0)
+    expect(span.to_hash.dig(:data, :params)).to include("claimed_amount" => "456.78", "notes" => "Synthetic flat tax note")
+    event = Sentry::TransactionEvent.new(transaction:, configuration: Sentry.configuration)
+    event.spans = [span.to_hash]
+    event = Sentry.configuration.before_send_transaction.call(event, {})
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.to_json).not_to include("456.78", "Synthetic flat tax note")
+  end
+
+  it "omits request values from serialized error and transaction breadcrumbs while retaining diagnostics", :aggregate_failures do
+    require "sentry/transport/dummy_transport"
+
+    hub = Sentry.get_main_hub
+    original_client = hub.current_client
+    raw_breadcrumbs = []
+    raw_sql_spans = []
+    transport_class = Class.new(Sentry::DummyTransport) do
+      attr_reader :serialized
+
+      def initialize(*)
+        super
+        @serialized = []
+      end
+
+      def send_event(event)
+        @serialized << { type: event.class.name, payload: JSON.parse(event.to_hash.to_json) }
+        super
+      end
+    end
+    configuration = Sentry::Configuration.new
+    configuration.dsn = "https://synthetic@sentry.example.test/1"
+    configuration.environment = Rails.env.to_s
+    configuration.enabled_environments = [Rails.env.to_s]
+    configuration.traces_sample_rate = 1.0
+    configuration.auto_session_tracking = false
+    configuration.background_worker_threads = 0
+    configuration.send_default_pii = original_client.configuration.send_default_pii
+    expect(configuration.send_default_pii).to be(false)
+    configuration.transport.transport_class = transport_class
+    configuration.before_send = original_client.configuration.before_send
+    configuration.before_send_transaction = original_client.configuration.before_send_transaction
+    client = Sentry::Client.new(configuration)
+    hub.bind_client(client)
+    allow(Sentry::Rails::Breadcrumb::ActiveSupportLogger).to receive(:add).and_wrap_original do |original, *arguments|
+      result = original.call(*arguments)
+      if arguments.first == "process_action.action_controller" && arguments.last[:controller] == "Api::V1::TaxDeclarationsController"
+        Sentry.add_breadcrumb(Sentry::Breadcrumb.new(category: "custom", data: {
+          "params" => { notes: "Synthetic custom params" }.to_json,
+          "path" => "/custom?notes=SyntheticCustomQuery", "method" => "GET", "status" => 200,
+          "url" => "https://example.test/custom?notes=SyntheticUrlQuery",
+          "sql" => "SELECT 'SyntheticCustomSql'"
+        }))
+        ActiveRecord::Base.connection.select_value("SELECT 'SyntheticSqlLiteral'::text", "Privacy probe")
+        Sentry.with_child_span(op: "db.sql.active_record", description: "SELECT 'SyntheticSqlSpan'::text") do |span|
+          raw_sql_spans << span.to_hash
+        end
+        ActiveSupport::Notifications.instrument("redirect_to.action_controller",
+          status: 303, location: "https://example.test/return?notes=SyntheticRedirectQuery")
+        raw_breadcrumbs << Sentry.get_current_scope.breadcrumbs.to_hash.to_json
+        Sentry.capture_exception(RuntimeError.new("Synthetic private action exception"))
+      end
+      result
+    end
+
+    [false, true].each do |query|
+      client.transport.serialized.clear
+      marker = query ? "SyntheticQueryNote" : "SyntheticBodyNote"
+      path = "/api/v1/tax_declarations#{"?notes=#{marker}" if query}"
+      params = { company_id: company.id, tax_year: "2026", category: "investment", claimed_amount: "456.78" }
+      params[:notes] = marker unless query
+      post path, params:, as: :json
+
+      expect(response).to have_http_status(:conflict)
+      expect(TaxDeclaration.count).to eq(0)
+      expect(raw_breadcrumbs.last).to include(marker, "Synthetic custom params", "SyntheticCustomQuery",
+        "SyntheticUrlQuery", "SyntheticCustomSql", "SyntheticSqlLiteral", "SyntheticRedirectQuery")
+      expect(raw_sql_spans.last).to include(op: "db.sql.active_record", description: "SELECT 'SyntheticSqlSpan'::text")
+      expect(client.transport.serialized.map { |item| item.fetch(:type) }).to eq(["Sentry::ErrorEvent", "Sentry::TransactionEvent"])
+      client.transport.serialized.each do |item|
+        serialized = item.fetch(:payload)
+        crumbs = serialized.fetch("breadcrumbs").fetch("values")
+        controller = crumbs.find { |crumb| crumb["category"] == "process_action.action_controller" }
+        expect(controller.fetch("data")).to include("method" => "POST", "path" => "/api/v1/tax_declarations", "status" => 409)
+        custom = crumbs.find { |crumb| crumb["category"] == "custom" }
+        expect(custom.fetch("data")).to eq("path" => "/custom", "method" => "GET", "status" => 200,
+          "url" => "https://example.test/custom")
+        sql = crumbs.find { |crumb| crumb["category"] == "sql.active_record" && crumb.dig("data", "name") == "Privacy probe" }
+        expect(sql.fetch("data")).to include("name" => "Privacy probe")
+        expect(sql.fetch("data")).not_to have_key("sql")
+        redirect = crumbs.find { |crumb| crumb["category"] == "redirect_to.action_controller" }
+        expect(redirect.fetch("data")).to eq("status" => 303, "location" => "https://example.test/return")
+        if item.fetch(:type) == "Sentry::TransactionEvent"
+          sql_spans = serialized.fetch("spans").select { |span| span["op"] == "db.sql.active_record" }
+          expect(sql_spans).not_to be_empty
+          sql_spans.each do |span|
+            expect(span["description"]).to be_nil
+            expect(span).to include("start_timestamp", "timestamp")
+          end
+        end
+        expect(serialized.to_json).not_to include(marker, "Synthetic custom params", "SyntheticCustomQuery", "456.78",
+          "SyntheticUrlQuery", "SyntheticCustomSql", "SyntheticSqlLiteral", "SyntheticRedirectQuery", "SyntheticSqlSpan")
+      end
+    end
+  ensure
+    hub&.bind_client(original_client) if original_client
+    Sentry.clone_hub_to_current_thread
+  end
+
   [:resigned, :future_joining, :missing_joining].each do |membership_state|
     it "denies #{membership_state} reviewers access to coworkers' tax evidence" do
       record = claim
