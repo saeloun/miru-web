@@ -18,8 +18,11 @@ The GitHub-hosted Linux CI document-tool installer bounds total HTTPS lookup tim
 If an Ubuntu archive lookup fails, it resolves only the three fixed archive hosts
 through [Cloudflare's HTTPS resolver](https://developers.cloudflare.com/1.1.1.1/encryption/dns-over-https/make-api-requests/dns-json/),
 whose hostname must still resolve, and removes its temporary host mappings after installation.
-Host-file edit failures attempt to restore the prior bytes; persistent I/O failures
-can prevent restoration and fail the job. APT signature checks, all required tools
+The hosts lock coordinates only writers taking the same advisory lock; edits from
+noncooperating writers are not protected. Removal retries one recoverable I/O failure
+under a fresh lock, without retrying a changed owned block. Host-file edit failures
+attempt to restore the prior bytes and fail the job; persistent I/O failures or an
+uncatchable termination can prevent restoration. APT signature checks, all required tools
 and the downstream test stages remain enforced. Its offline parser, deadline and
 cleanup checks run with `python3 scripts/ci/install_document_tools.py --self-check`;
 a complete Ubuntu CI run is required in addition to these checks.

@@ -7,6 +7,7 @@ import ipaddress
 import json
 import os
 from pathlib import Path
+import pwd
 import signal
 import subprocess
 import sys
@@ -21,6 +22,7 @@ LIMIT = 65536
 DNS_TIMEOUT = 10
 HOSTS_LOCK_TIMEOUT = 5
 APT_CLEANUP_TIMEOUT = 5
+APT_REAP_TIMEOUT = 5
 CANCEL_SIGNALS = {signal.SIGTERM, signal.SIGINT}
 _cleanup_depth = 0
 _pending_cancel = None
@@ -214,7 +216,8 @@ def defer_cancellation():
         _cleanup_depth -= 1
         if not _cleanup_depth and _pending_cancel is not None:
             signum, _pending_cancel = _pending_cancel, None
-            interrupted(signum, None)
+            if sys.exception() is None:
+                interrupted(signum, None)
 
 
 def lock_hosts(output):
@@ -233,7 +236,8 @@ def lock_hosts(output):
 def lookup(host):
     try:
         # Check the user APT downloads as, rather than root's resolver access.
-        return subprocess.run(["runuser", "-u", "_apt", "--", "getent", "ahostsv4", host], timeout=10,
+        return subprocess.run(["getent", "ahostsv4", host], timeout=10,
+                              user="_apt", group=pwd.getpwnam("_apt").pw_gid, extra_groups=[],
                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                               env=TOOL_ENV).returncode == 0
     except subprocess.TimeoutExpired:
@@ -246,6 +250,7 @@ def fallback_addresses():
 
 @contextmanager
 def temporary_hosts(addresses, path=Path("/etc/hosts")):
+    # shortcut: flock protects cooperating writers only; isolate mappings before supporting other writers.
     if not addresses:
         yield
         return
@@ -277,7 +282,7 @@ def temporary_hosts(addresses, path=Path("/etc/hosts")):
                     output.truncate()
                     output.flush()
                 except BaseException:
-                    # Restore this locked edit's input, including other writers' prior changes.
+                    # Restore this locked edit's input, including cooperating writers' prior changes.
                     try:
                         output.seek(0)
                         if output.write(current) != len(current):
@@ -297,12 +302,14 @@ def temporary_hosts(addresses, path=Path("/etc/hosts")):
         body_error = error
         raise
     finally:
-        # Read the latest contents, not a saved original: retain other writers' edits.
+        # Read again under the advisory lock to retain cooperating writers' edits.
         if installed:
             try:
                 edit_hosts(append=False)
             except BaseException as error:
-                if installed and isinstance(error, SystemExit) and _cancelling:
+                if installed and (isinstance(error, OSError) or isinstance(error, SystemExit) and _cancelling):
+                    if isinstance(error, OSError):
+                        report_error(error, "hosts cleanup retry")
                     try:
                         edit_hosts(append=False)
                     except BaseException as cleanup_error:
@@ -347,7 +354,7 @@ def apt(arguments, timeout):
                             pass
                         break
                     time.sleep(min(0.05, remaining))
-                process.wait(timeout=APT_CLEANUP_TIMEOUT)
+                process.wait(timeout=APT_REAP_TIMEOUT)
             cleaned = True
 
     try:
@@ -574,7 +581,7 @@ def self_check_cancellation():
                                  stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
         try:
             assert select.select([child.stdout], [], [], 2)[0] and child.stdout.readline() == b"ready\n"
-            real_wait, wait_calls, sent_signals = child.wait, 0, []
+            real_wait, wait_calls, sent_signals, wait_timeouts = child.wait, 0, [], []
 
             def owned_spawn(*args, **kwargs):
                 if phase == "spawn":
@@ -584,13 +591,14 @@ def self_check_cancellation():
             def controlled_wait(*args, **kwargs):
                 nonlocal wait_calls
                 wait_calls += 1
+                wait_timeouts.append(kwargs.get("timeout"))
                 if phase == "wait" and wait_calls in (1, 2):
                     signum = signal.SIGINT if wait_calls == 1 else signal.SIGTERM
                     sent_signals.append(signum)
                     signal.raise_signal(signum)
                 return real_wait(*args, **kwargs)
 
-            with cancellation_handlers(), patch.dict(globals(), APT_CLEANUP_TIMEOUT=0.06):
+            with cancellation_handlers(), patch.dict(globals(), APT_CLEANUP_TIMEOUT=0.06, APT_REAP_TIMEOUT=2):
                 try:
                     with patch.object(subprocess, "Popen", side_effect=owned_spawn), \
                             patch.object(child, "wait", side_effect=controlled_wait):
@@ -600,6 +608,8 @@ def self_check_cancellation():
                 else:
                     raise AssertionError("APT cancellation was lost")
                 assert sent_signals == ([signal.SIGINT, signal.SIGTERM] if phase == "wait" else [])
+                if phase == "wait":
+                    assert wait_timeouts[-1] >= 2, "Final reap reused the short TERM grace period"
                 assert child.poll() == -signal.SIGKILL
         finally:
             if child.poll() is None:
@@ -736,7 +746,7 @@ def self_check_process_group(cancel_before_cleanup=False):
             leader.stdout.close()
 
 
-def self_check_hosts_rollback(operations=("write", "truncate", "flush", "short_write", "rollback_flush")):
+def self_check_hosts_rollback(operations=("write", "truncate", "flush", "short_write", "rollback_flush", "cancel_rollback")):
     from unittest.mock import patch
 
     real_open = Path.open
@@ -776,7 +786,9 @@ def self_check_hosts_rollback(operations=("write", "truncate", "flush", "short_w
                 def perform(self, name, *args):
                     self.calls[name] = self.calls.get(name, 0) + 1
                     result = getattr(real, name)(*args)
-                    if self.calls[name] == 1 and (operation == name or operation == "rollback_flush" and name == "truncate"):
+                    if operation == "cancel_rollback" and name == "write" and self.calls[name] == 2:
+                        signal.raise_signal(signal.SIGTERM)
+                    if self.calls[name] == 1 and (operation == name or operation in ("rollback_flush", "cancel_rollback") and name == "truncate"):
                         raise failure
                     if operation == "rollback_flush" and name == "flush":
                         raise rollback_failure
@@ -792,7 +804,7 @@ def self_check_hosts_rollback(operations=("write", "truncate", "flush", "short_w
                 return real_open(target, *args, **kwargs)
 
             try:
-                with patch.object(Path, "open", new=fault_open):
+                with cancellation_handlers(), patch.object(Path, "open", new=fault_open):
                     with temporary_hosts({HOSTS[0]: ["1.1.1.1"]}, path):
                         raise AssertionError("Failed hosts edit must not yield")
             except OSError as error:
@@ -803,6 +815,111 @@ def self_check_hosts_rollback(operations=("write", "truncate", "flush", "short_w
             else:
                 raise AssertionError("Hosts edit failure was not propagated")
             assert path.read_bytes() == original, "Failed edit retained owned hosts bytes"
+
+
+def self_check_deferred_failure():
+    failure = OSError("synthetic protected failure")
+    with cancellation_handlers():
+        try:
+            with defer_cancellation():
+                signal.raise_signal(signal.SIGTERM)
+                raise failure
+        except BaseException as error:
+            assert error is failure, "Deferred cancellation replaced the original failure"
+        else:
+            raise AssertionError("Protected failure was swallowed")
+        assert _cleanup_depth == 0 and _pending_cancel is None
+
+
+def self_check_lookup():
+    from unittest.mock import patch
+
+    real_run, real_spawn, children = subprocess.run, subprocess.Popen, []
+
+    def probe(command, **kwargs):
+        assert command == ["getent", "ahostsv4", HOSTS[0]]
+        assert kwargs.pop("user") == "_apt" and kwargs.pop("group") == 65534
+        assert kwargs.pop("extra_groups") == [] and kwargs["env"] is TOOL_ENV
+        kwargs["timeout"] = 0.05
+        return real_run([sys.executable, "-I", "-c", "import time;time.sleep(30)"], **kwargs)
+
+    def tracked_spawn(*args, **kwargs):
+        child = real_spawn(*args, **kwargs)
+        children.append(child)
+        return child
+
+    with patch.object(pwd, "getpwnam") as account, \
+            patch.object(subprocess, "run", side_effect=probe), \
+            patch.object(subprocess, "Popen", side_effect=tracked_spawn):
+        account.return_value.pw_gid = 65534
+        assert lookup(HOSTS[0]) is False
+        account.assert_called_once_with("_apt")
+    assert len(children) == 1 and children[0].poll() is not None, "Timed-out probe was not reaped"
+
+
+def self_check_hosts_removal():
+    from contextlib import redirect_stderr
+    import io
+    from unittest.mock import patch
+
+    real_open = Path.open
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory, "hosts")
+        original = b"127.0.0.1 localhost\n"
+        for mode in ("once", "persistent", "ownership"):
+            path.write_bytes(original)
+            failure, body_error = OSError("synthetic removal failure"), subprocess.TimeoutExpired(["apt-get"], 1)
+            removals = 0
+            stderr = io.StringIO()
+
+            class RemovalFile:
+                def __init__(self, output):
+                    self.output = output
+
+                def __enter__(self):
+                    return self
+
+                def __exit__(self, *args):
+                    return self.output.__exit__(*args)
+
+                def __getattr__(self, name):
+                    return getattr(self.output, name)
+
+                def truncate(self):
+                    self.output.truncate()
+                    if mode == "persistent" or mode == "once" and removals == 1:
+                        raise failure
+
+            def removal_open(target, *args, **kwargs):
+                nonlocal removals
+                output = real_open(target, *args, **kwargs)
+                if target == path and args == ("r+b",):
+                    if b"miru-document-tools-" in path.read_bytes():
+                        removals += 1
+                        return RemovalFile(output)
+                return output
+
+            try:
+                with redirect_stderr(stderr), patch.object(Path, "open", new=removal_open):
+                    with temporary_hosts({HOSTS[0]: ["1.1.1.1"]}, path):
+                        if mode == "ownership":
+                            with real_open(path, "r+b") as output:
+                                lock_hosts(output)
+                                data = output.read().replace(b"1.1.1.1", b"1.0.0.1")
+                                output.seek(0)
+                                output.write(data)
+                                output.truncate()
+                        raise body_error
+            except subprocess.TimeoutExpired as error:
+                assert error is body_error, "Cleanup replaced the original APT failure"
+            else:
+                raise AssertionError("APT failure was swallowed")
+            assert removals == (1 if mode == "ownership" else 2)
+            assert ("HOSTS_BLOCK_CHANGED" if mode == "ownership" else "UNEXPECTED_OSError") in stderr.getvalue()
+            if mode == "once":
+                assert path.read_bytes() == original, "Recoverable removal retained the owned block"
+            else:
+                assert b"miru-document-tools-" in path.read_bytes()
 
 
 def self_check():
@@ -864,6 +981,7 @@ def self_check():
         path.write_bytes(original)
         with temporary_hosts({host: ["1.1.1.1"]}, path):
             with path.open("ab") as output:
+                lock_hosts(output)
                 output.write(b"# concurrent edit\n")
         assert path.read_bytes() == original + b"# concurrent edit\n"
         with temporary_hosts({}, path):
@@ -897,18 +1015,17 @@ def self_check():
                 return self
 
             def __exit__(self, *args):
-                return self.output.__exit__(*args)
+                nonlocal postcommit
+                result = self.output.__exit__(*args)
+                postcommit = True
+                with real_open(path, "ab") as output:
+                    lock_hosts(output)
+                    output.write(b"# postcommit edit\n")
+                signal.raise_signal(signal.SIGTERM)
+                return result
 
             def __getattr__(self, name):
                 return getattr(self.output, name)
-
-            def flush(self):
-                nonlocal postcommit
-                self.output.flush()
-                postcommit = True
-                with real_open(path, "ab") as output:
-                    output.write(b"# postcommit edit\n")
-                signal.raise_signal(signal.SIGTERM)
 
         def pending_term(target, *args, **kwargs):
             output = real_open(target, *args, **kwargs)
@@ -941,6 +1058,9 @@ def self_check():
     self_check_process_group()
     self_check_process_group(cancel_before_cleanup=True)
     self_check_hosts_rollback()
+    self_check_deferred_failure()
+    self_check_lookup()
+    self_check_hosts_removal()
     print("Offline document-tools self-check passed")
 
 
