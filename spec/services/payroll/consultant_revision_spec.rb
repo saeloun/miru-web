@@ -258,6 +258,14 @@ RSpec.describe Payroll::ConsultantRevision do
       service = Payroll::MercuryReconciliation.new(run)
       service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "1000.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
       expect(claim.reload).not_to be_paid
+      expect do
+        service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "66500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR1")
+      end.to raise_error(Payroll::Workflow::Conflict)
+      expect(leg.reload).to have_attributes(credited_minor: 100_000, credit_state: "partial")
+      expect(leg.payroll_payment_events.where(kind: "credit_recorded").count).to eq(1)
+      expect(claim.reload).to have_attributes(status: "approved", paid_at: nil)
+      expect(PayrollExpenseReservation.find_by!(expense: claim).settled_at).to be_nil
+      expect(leg.payroll_payment_group.reload.fully_credited_at).to be_nil
       service.record_credit!(actor: accounts, instruction_id: leg.id, amount: "66500.00", credited_on: company.resolved_time_zone.today.iso8601, reference: "UTR2")
       expect(claim.reload).to be_paid
       expect(PayrollExpenseReservation.find_by!(expense: claim).settled_at).to be_present

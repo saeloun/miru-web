@@ -47,9 +47,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 
@@ -186,9 +186,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 
@@ -263,9 +263,9 @@ jobs:
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Setup Ruby
-        uses: ruby/setup-ruby@26e5b7d197ebf60545ee9667bcbace0be11ccaec # v1
+        uses: ruby/setup-ruby@145243922b4465b78e04dd66294782c7de45901f # v1
         with:
-          ruby-version: '4.0.9'
+          ruby-version: '4.0.10'
           bundler-cache: true
           bundler: latest
 

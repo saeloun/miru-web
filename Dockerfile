@@ -7,8 +7,8 @@
 # Use with Kamal for deployment or docker-compose for local development.
 
 # Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=4.0.9
-FROM ruby:${RUBY_VERSION}-slim@sha256:88f0d8f1f2f7829c8c85c5cfee774f7ac936a7ba460e904e8c873b6a7f96c311 AS ruby-build
+ARG RUBY_VERSION=4.0.10
+FROM ruby:${RUBY_VERSION}-slim@sha256:67fb5dbef860bb2205a3c69799f7f1c4f5b01c943ae089de436bc266ea8c102e AS ruby-build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential curl
 

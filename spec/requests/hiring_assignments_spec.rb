@@ -275,8 +275,9 @@ RSpec.describe "Hiring assessment HTTP boundaries", type: :request do
     event.spans = [span.to_hash, { description: "Api::V1::Hiring::AssignmentReviewsController#create",
       data: { params: { "hiring_assignment" => { notes: "Private reviewer feedback" } } } }]
     event = Sentry.configuration.before_send_transaction.call(event, {})
-    expect(event.spans.first.dig(:data, :params, "hiring_assessment")).to eq("[FILTERED]")
-    expect(event.spans.last.dig(:data, :params, "hiring_assignment")).to eq("[FILTERED]")
+    expect(event.spans.first.fetch(:data)).not_to have_key(:params)
+    expect(event.spans.first.fetch(:data)).to include(method: "POST")
+    expect(event.spans.last.fetch(:data)).not_to have_key(:params)
     expect(event.spans.to_json).not_to include(@token, "Private reviewer feedback", "own_contribution")
   end
 end

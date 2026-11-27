@@ -23,6 +23,32 @@ RSpec.describe Payroll::MercuryPayment do
     error.codes
   end
 
+  it "keeps a one-dollar principal separate from fees and refuses a duplicate request" do
+    match_terms_to(8_400)
+    record_synthetic_pto_treatment
+    revision = approve_revision(payload: synthetic_payload(amount_minor: 8_400))
+    instruction = ready_payment.prepare!(actor: owner, employment_id: employment.id,
+      expected_digest: revision.digest, quote:).first
+
+    expect(revision.payroll_approvals.order(:stage).pluck(:actor_id)).to eq([accounts.id, owner.id])
+    expect(instruction.principal_minor).to eq(100)
+    expect(instruction.fee_minor).to eq(1_500)
+    expect(instruction.company_debit_minor).to eq(1_600)
+    stub_mercury_reads
+    request = stub_mercury_write(mercury_json(mercury_request("amount" => 1)))
+      .with(body: hash_including("amount" => 1, "chargeType" => "ours", "idempotencyKey" => instruction.idempotency_key))
+    submit(instruction)
+
+    expect(instruction.reload.submission_state).to eq("accepted")
+    expect(instruction.request_status).to eq("pendingApproval")
+    expect(instruction.credited_minor).to eq(0)
+    expect(instruction.payroll_payment_group.fully_credited_at).to be_nil
+    expect do
+      submit(instruction)
+    end.to raise_error(described_class::Blocked) { |error| expect(error.codes).to include("already_submitted") }
+    expect(request).to have_been_requested.once
+  end
+
   describe "#prepare!" do
     it "freezes the quote and an idempotency key without any provider write" do
       instruction = prepared_instruction
@@ -495,7 +521,7 @@ RSpec.describe Payroll::MercuryPayment do
     it "records append-only events without credentials or bank numbers" do
       stub_mercury_write
       submit(instruction)
-      events = PayrollPaymentEvent.where(payroll_payment_instruction_id: instruction.id)
+      events = PayrollPaymentEvent.where(payroll_payment_instruction_id: instruction.id).order(:id)
       expect(events.pluck(:kind)).to eq(%w[prepared submission_started submission_accepted])
       json = events.to_json
       expect(json).not_to include(token, "123456789012", "SYNT0000001", "secret-token")

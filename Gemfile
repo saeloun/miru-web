@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby "4.0.9"
+ruby "4.0.10"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.1.4.1"
@@ -260,5 +260,11 @@ gem "strong_migrations"
 
 gem "redis", "~> 5.4"
 gem "dotenv", groups: [:development, :test]
+
+gem "posthog-ruby", "~> 3.34.3", require: "posthog"
+gem "posthog-rails", "~> 3.26.6"
+gem "opentelemetry-sdk", "~> 1.13", require: false
+gem "opentelemetry-logs-sdk", "~> 0.8", require: false
+gem "opentelemetry-exporter-otlp-logs", "~> 0.7", require: false
 
 gem "rqrcode", "~> 3.2"
