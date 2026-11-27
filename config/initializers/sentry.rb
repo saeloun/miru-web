@@ -15,6 +15,8 @@ Sentry.init do |config|
   sanitize_event = lambda do |event, _hint|
     if event.is_a?(Sentry::TransactionEvent)
       event.spans.each do |span|
+        # SQL text can contain private search and payroll literals.
+        span.delete(:description) if span[:op] == "db.sql.active_record"
         span[:data]&.delete(:params)
         span[:data]&.delete("params")
       end
@@ -23,9 +25,8 @@ Sentry.init do |config|
       data = breadcrumb.data
       next unless data.is_a?(Hash)
 
-      data.delete(:params)
-      data.delete("params")
-      [:path, "path"].each do |key|
+      data.except!(:params, "params", :sql, "sql")
+      [:path, "path", :url, "url", :location, "location"].each do |key|
         data[key] = data[key].split("?", 2).first if data[key].is_a?(String)
       end
     end
