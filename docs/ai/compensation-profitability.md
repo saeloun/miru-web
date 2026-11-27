@@ -16,6 +16,8 @@ access employee compensation. Legacy `/admin/compensation-profitability` URLs en
   JSON person rows expose those employment IDs in `salary_history_review_employment_ids`.
   Before the first report-history declaration, existing salary settings are preserved as an unreviewed
   observation. The declaration does not overwrite those settings or silently approve the older terms.
+  Retaining an undated observation does not supply the explicit salary effective date needed for
+  financial costs, even when the profile can display that current amount.
 - Consultant fees and schedules use the existing dated consultant compensation records, denominated in INR.
   When a person changes engagement type, the latest applicable effective date determines the compensation source.
 - Configure the workspace's actual payroll proration policy: calendar days or scheduled working days per month.

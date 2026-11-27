@@ -17,7 +17,7 @@
 
 ### Fixed
 
-- Omit request parameters from Sentry traces to keep private employee, tax and signing values out of trace data.
+- Omit private request parameters and breadcrumb query context from Sentry errors and traces.
 - Update Ruby and affected SSH, web-server and request-protection dependencies to their security patches.
 
 ## [3.7.2] - 2026-11-20

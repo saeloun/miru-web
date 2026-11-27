@@ -45,4 +45,14 @@ All 22 captures below were viewed and their file hashes verified. They contain s
 - Profile and banking: [staff](review-20261127/employee-records-staff.png), [administrator mobile](review-20261127/employee-records-admin-mobile.png), [bank edit1400px](review-20261127/employee-records-bank-edit-1400.png), [bank edit390px](review-20261127/employee-records-bank-edit-390.png), [bank saved1400px](review-20261127/employee-records-bank-saved-1400.png), [bank saved390px](review-20261127/employee-records-bank-saved-390.png).
 - Employee reports: [company/month desktop](review-20261127/employee-report-company-month-desktop.png), [company/month mobile](review-20261127/employee-report-company-month-mobile.png), [editor desktop](review-20261127/employee-report-editor-desktop.png), [editor mobile](review-20261127/employee-report-editor-mobile.png), [saved mobile](review-20261127/employee-report-saved-mobile.png).
 
-Current-head hosted CI, final release reviews, production legacy decisions and controlled rollout remain required.
+## Runtime integration: 28 November 2026
+
+Application changes at `9e1c7e4f7ceff977ca2bd6798b8550de61c9885f` include the tested Ruby 4.0.10 and Sentry privacy dependency through a normal merge. The salary UI, model, controller, service, policy and database paths are unchanged from the repaired salary parent `9df478a8`; the 22 viewed captures above still describe that UI.
+
+Fresh local integration checks passed 245 backend examples and the complete 19-example employee-record Brave file, with console checks, Vite and changed-file lint. The 55 focused merge checks overlap the 245. These do not add to the hosted totals.
+
+[Hosted CI at 9e1c7e4](https://github.com/saeloun/miru-web/actions/runs/46050723750) passed 6,588 backend examples with 36 pending, 444 responsive browser examples and a separate 23-example CLI lane, all with zero failures. Security audit, image build, Reek and all four CodeQL analyzers passed. The pull-request image build uses `push=false`; it does not publish or deploy the application. These results qualify the recorded application revision, not later source changes.
+
+Eight existing correction/date regressions were also rerun when checking outdated review feedback. The shared profile/report correction rule and Reek repair are verified. Undated salary facts remain undated: the profile may show the current amount while financial reports mark compensation unavailable until an explicitly dated correction is supplied. No historical effective date was fabricated to satisfy a review suggestion.
+
+Final documentation/release gates, production legacy decisions and authenticated controlled rollout remain required. No production salary decision, deployment or payment is established by this evidence.
