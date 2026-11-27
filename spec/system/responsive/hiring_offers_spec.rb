@@ -47,6 +47,7 @@ RSpec.describe "Hiring offer journeys", type: :system, js: true do
     fill_in "Offer expiry date", with: "2026-11-10"
     click_button "Save offer draft"
     expect(page).to have_text("Offer draft saved")
+    expect(page).to have_css("h5", text: "Offer ##{company.hiring_offers.sole.id} ·")
   end
 
   def issue_saved
