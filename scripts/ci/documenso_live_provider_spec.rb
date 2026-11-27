@@ -472,6 +472,8 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     url = mail_to(identity.fetch("email"), /Review a document/, earlier) do |message|
       DocumensoLive.message_link(message, @config.fetch("miru_origin"), %r{\A/document-review\z})
     end
+    # Reopening a fragment on the review page does not rerun its token bootstrap.
+    @signer.visit("about:blank")
     @signer.visit(url)
     check(@signer.has_css?('[data-pdf-ready="true"]', wait: 20) && @signer.has_text?("Review this document"), "Client review unavailable")
     @signer.fill_in("Review comment", with: "Synthetic client reviewed this exact version; software QA only.")
@@ -495,6 +497,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     check(@miru.has_css?('[role="status"]', text: "All changes saved"), "New revision was not saved")
     current = @record.reload.current_revision
     check(current.id != prior.id && current.approval_digest.nil?, "Edit retained old approval")
+    @signer.visit("about:blank")
     @signer.visit(old_link)
     check(@signer.has_text?("This review link is unavailable"), "Old client review still grants access")
     review_and_approve
