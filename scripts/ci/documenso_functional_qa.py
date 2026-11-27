@@ -1809,13 +1809,25 @@ def validate_png_bytes(data):
 
 
 def validate_summary(value):
-    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line", "operation_http_statuses", "console_error_roles", "delivery_state", "recipient_completion_statuses", "recipient_commits"})
+    require(isinstance(value, dict) and set(value) <= {"schema_version", "passed", "phase", "image_config_sha256", "source_assets_verified", "console_errors", "packets", "error_class", "failure_line", "wait_probe", "wait_state", "operation_http_statuses", "console_error_roles", "delivery_state", "recipient_completion_statuses", "recipient_commits"})
     require(value.get("schema_version") == 1 and type(value.get("passed")) is bool and value.get("phase") in PHASES and value.get("image_config_sha256") == CONFIG_SHA)
     require(type(value.get("source_assets_verified")) is int and 0 <= value["source_assets_verified"] <= 3 and type(value.get("console_errors")) is int and value["console_errors"] >= 0)
     if "error_class" in value:
         require(re.fullmatch(r"[A-Za-z][A-Za-z0-9_:]{0,100}", value["error_class"]))
     if "failure_line" in value:
         require(type(value["failure_line"]) is int and 1 <= value["failure_line"] <= 9999)
+    if "wait_probe" in value:
+        require(value["wait_probe"] in ("viewport", "mailbox", "provider_team", "worker_registration", "distribution", "embed_ready", "native_download", "archive_reconciliation", "share_image"))
+    if "wait_state" in value:
+        state = value["wait_state"]
+        require(isinstance(state, dict) and type(state.get("width")) is int and state["width"] in (1440, 375))
+        if value.get("wait_probe") == "viewport":
+            require(set(state) == {"width", "width_matches", "no_overflow", "workspace_ready", "pdf_ready"} and
+                    all(type(state[key]) is bool for key in ("width_matches", "no_overflow", "workspace_ready", "pdf_ready")))
+        else:
+            require(value.get("wait_probe") == "native_download" and set(state) == {"width", "artifact", "transfer", "file_present", "download_alert"})
+            require(state["artifact"] in ("signed", "certificate", "audit_log") and state["transfer"] in ("absent", "inProgress", "completed", "canceled", "unknown") and
+                    type(state["file_present"]) is bool and type(state["download_alert"]) is bool)
     if "operation_http_statuses" in value:
         require(isinstance(value["operation_http_statuses"], list) and len(value["operation_http_statuses"]) <= 8 and
                 all(type(code) is int and 400 <= code <= 599 for code in value["operation_http_statuses"]))
@@ -1969,6 +1981,28 @@ def self_check():
         validate_summary(base)
         for line in (1, 9999):
             validate_summary({**base, "failure_line": line})
+        for probe in ("viewport", "mailbox", "provider_team", "worker_registration", "distribution", "embed_ready", "native_download", "archive_reconciliation", "share_image"):
+            validate_summary({**base, "wait_probe": probe})
+        viewport_state = {"width": 375, "width_matches": True, "no_overflow": True, "workspace_ready": False, "pdf_ready": True}
+        download_state = {"width": 1440, "artifact": "signed", "transfer": "absent", "file_present": False, "download_alert": False}
+        validate_summary({**base, "wait_probe": "viewport", "wait_state": viewport_state})
+        for state in ("absent", "inProgress", "completed", "canceled", "unknown"):
+            validate_summary({**base, "wait_probe": "native_download", "wait_state": {**download_state, "transfer": state}})
+        invalid_waits = [{**base, "wait_probe": value} for value in (True, None, 1, "PRIVATE_DIAGNOSTIC_MARKER", [])]
+        for probe, state, key, invalid in (("viewport", viewport_state, "width", True), ("viewport", viewport_state, "width", 100),
+                                         ("viewport", viewport_state, "workspace_ready", "PRIVATE"), ("viewport", viewport_state, "private", "PRIVATE"),
+                                         ("native_download", download_state, "artifact", "PRIVATE"), ("native_download", download_state, "transfer", "PRIVATE"),
+                                         ("native_download", download_state, "file_present", 1), ("native_download", download_state, "download_alert", "PRIVATE")):
+            invalid_waits.append({**base, "wait_probe": probe, "wait_state": {**state, key: invalid}})
+        invalid_waits += [{**base, "wait_state": viewport_state}, {**base, "wait_probe": "mailbox", "wait_state": viewport_state},
+                          {**base, "wait_probe": "viewport", "wait_state": download_state}, {**base, "wait_probe": "native_download", "wait_state": None}]
+        for invalid in invalid_waits:
+            try:
+                validate_summary(invalid)
+            except RuntimeError:
+                pass
+            else:
+                raise AssertionError("Unsafe wait diagnostic accepted")
         diagnostic = {**base, "operation_http_statuses": [400, 409, 599], "console_error_roles": ["miru"],
                       "delivery_state": {"revision": "awaiting_signatures", "provider": "PENDING", "refresh": "none"}}
         validate_summary(diagnostic)

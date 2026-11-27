@@ -184,6 +184,37 @@ RSpec.describe "Documenso functional QA isolation" do
     expect(classifier.recipient_completion_status({ "status" => 200, "url" => completion }, "http://example.invalid")).to be_nil
   end
 
+  it "identifies the actual timed-out caller without exporting its private reason or path" do
+    path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
+    source = File.read(path, encoding: "UTF-8")
+    failure = Class.new(StandardError)
+    stub_const("DocumensoLive::Failure", failure)
+    probe_class = Class.new
+    %w[wait_for stopped].each { |name| probe_class.class_eval(source[/^  def #{name}\(.*?^  end/m], path) }
+    probe_class.class_eval(<<~RUBY, path, 9000)
+      def fixture_probe
+        wait_for("PRIVATE_REASON", 0, probe: "native_download", state: -> {
+          { "width" => 375, "artifact" => "certificate", "transfer" => "canceled", "file_present" => false, "download_alert" => true }
+        }) { false }
+      end
+    RUBY
+    probe = probe_class.new
+    summary = {}
+    probe.instance_variable_set(:@summary, summary)
+    probe.instance_variable_set(:@deadline, Time.now.to_f + 1800)
+    error = begin
+      probe.fixture_probe
+    rescue StandardError => original
+      original
+    end
+    expect(error).to be_a(failure)
+    expect { probe.stopped(error) }.to raise_error(failure)
+    expect(summary).to eq(wait_probe: "native_download", wait_state: { "width" => 375, "artifact" => "certificate",
+      "transfer" => "canceled", "file_present" => false, "download_alert" => true },
+      error_class: failure.name, failure_line: 9001)
+    expect(JSON.generate(summary)).not_to include("PRIVATE", path)
+  end
+
   it "requires a recipient commit acknowledgement after the verification form closes" do
     path = File.join(root, "scripts/ci/documenso_live_provider_spec.rb")
     guard = File.readlines(path, encoding: "UTF-8").find { |line| line.include?("Recipient verification did not complete") }

@@ -193,7 +193,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
   def stopped(error)
     if @summary
       @summary[:error_class] ||= error.class.name
-      location = error.backtrace_locations&.find { |row| row.path == __FILE__ && row.base_label != "check" }
+      location = error.backtrace_locations&.find { |row| row.path == __FILE__ && !%w[check wait_for loop].include?(row.base_label) }
       line = location&.lineno
       @summary[:failure_line] ||= line if line.is_a?(Integer) && line.between?(1, 9999)
       @summary[:operation_http_statuses] = @operation_http_statuses if @operation_http_statuses&.any?
@@ -227,12 +227,18 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     File.open(DocumensoLive::OUTPUT.join("safe-events.jsonl"), "a", 0o600) { |file| file.puts(JSON.generate(row)) }
   end
 
-  def wait_for(message, seconds = 40)
+  def wait_for(message, seconds = 40, probe:, state: nil)
+    raise DocumensoLive::Failure, "Unknown wait probe" unless %w[viewport mailbox provider_team worker_registration distribution embed_ready native_download archive_reconciliation share_image].include?(probe)
+
     limit = [Process.clock_gettime(Process::CLOCK_MONOTONIC) + seconds,
              Process.clock_gettime(Process::CLOCK_MONOTONIC) + @deadline - Time.now.to_f - 300].min
     loop do
       return if yield
-      raise DocumensoLive::Failure, message if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= limit
+      if Process.clock_gettime(Process::CLOCK_MONOTONIC) >= limit
+        @summary[:wait_probe] = probe if @summary
+        @summary[:wait_state] = state.call if @summary && state
+        raise DocumensoLive::Failure, message
+      end
       sleep 0.2
     end
   end
@@ -243,18 +249,20 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
 
   def viewport(session, width)
     session.current_window.resize_to(width, 1000)
-    wait_for("Viewport, layout or PDF preview did not settle", 5) do
-      session.evaluate_script(<<~JS, width, session.equal?(@miru))
+    observation = nil
+    wait_for("Viewport, layout or PDF preview did not settle", 5, probe: "viewport", state: -> { observation }) do
+      observation = session.evaluate_script(<<~JS, width, session.equal?(@miru))
         (() => {
           const [width, miru] = arguments;
           const workspace = document.querySelector('.signature-workspace') || document.querySelector('main');
           const box = workspace?.getBoundingClientRect();
           const preview = document.querySelector('[data-pdf-ready]');
-          return innerWidth === width && document.documentElement.scrollWidth <= innerWidth + 1 &&
-            (!miru || (box && (width >= 1100 || (box.left <= 40 && box.width >= width - 80)) &&
-              (!preview || preview.getAttribute('data-pdf-ready') === 'true')));
+          return {width, width_matches:innerWidth === width, no_overflow:document.documentElement.scrollWidth <= innerWidth + 1,
+            workspace_ready:!miru || !!(box && (width >= 1100 || (box.left <= 40 && box.width >= width - 80))),
+            pdf_ready:!miru || !preview || preview.getAttribute('data-pdf-ready') === 'true'};
         })()
       JS
+      observation.except("width").values.all?
     end
   end
 
@@ -291,7 +299,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
 
   def mail_to(email, subject, earlier)
     found = nil
-    wait_for("Expected local email was not delivered") do
+    wait_for("Expected local email was not delivered", probe: "mailbox") do
       mailbox(email).each do |item|
         next if earlier.include?(item.fetch("ID")) || @used_mail.include?(item.fetch("ID")) || !item.fetch("Subject").match?(subject)
 
@@ -394,7 +402,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       @provider.fill_in("password", with: identity.fetch("password"))
       @provider.click_button("Sign in", exact: true)
     end
-    wait_for("Provider team route unavailable") { URI(@provider.current_url).path.match?(%r{\A/t/[^/]+/}) }
+    wait_for("Provider team route unavailable", probe: "provider_team") { URI(@provider.current_url).path.match?(%r{\A/t/[^/]+/}) }
     source_offer(@provider, "auth")
     team = URI(@provider.current_url).path.match(%r{\A(/t/[^/]+)/})[1]
     @provider.visit("#{@config.fetch('provider_origin')}#{team}/settings/tokens")
@@ -562,7 +570,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
   def wait_for_worker
     pid = DocumensoLive::ADMISSION.fetch("worker_pid")
     boot = DocumensoLive::CONTROL.join("boot-#{pid}.json")
-    wait_for("Owned SolidQueue worker did not register", 30) do
+    wait_for("Owned SolidQueue worker did not register", 30, probe: "worker_registration") do
       next false unless boot.file?
 
       check(boot.stat.uid == Process.uid && boot.stat.mode & 0o777 == 0o600 && boot.size <= 4096, "Unsafe worker boot receipt")
@@ -586,7 +594,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     end
     @miru.click_button("Send for signature", exact: true)
     @miru.find('[role="dialog"]').click_button("Send signature emails", exact: true)
-    wait_for("Real worker did not distribute the packet", 60) do
+    wait_for("Real worker did not distribute the packet", 60, probe: "distribution") do
       revision = @record.reload.current_revision
       check(!revision.signature_operations.where(state: %w[failed uncertain]).exists?, "Real delivery failed or is uncertain")
       revision.provider_envelope_id.present? && revision.provider_status == "PENDING"
@@ -619,7 +627,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
         window.addEventListener('message', ready);
         frame.src = arguments[0] + '#' + btoa(encodeURIComponent(JSON.stringify({})));
       JS
-      wait_for("Provider embed did not initialize", 20) { session.evaluate_script("window.qaProviderReady === true") }
+      wait_for("Provider embed did not initialize", 20, probe: "embed_ready") { session.evaluate_script("window.qaProviderReady === true") }
       session.within_frame("qa-provider-frame") { source_offer(session, "embed-#{kind}") }
     end
     session.visit(url)
@@ -673,7 +681,13 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
       @miru.click_button(filename, exact: true)
     end
     path = directory.join(filename)
-    wait_for("Native download did not complete", 15) do
+    transfer = nil
+    download_state = lambda do
+      state = transfer.nil? ? "absent" : %w[inProgress completed canceled].include?(transfer["state"]) ? transfer["state"] : "unknown"
+      { "width" => width, "artifact" => entry.fetch("kind"), "transfer" => state, "file_present" => path.file?,
+        "download_alert" => @miru.has_text?("The signed file could not be downloaded. Try again.", wait: 0) }
+    end
+    wait_for("Native download did not complete", 15, probe: "native_download", state: download_state) do
       transfer = downloads.files.find { |file| !earlier.include?(file.fetch("guid")) && file["suggestedFilename"] == filename }
       transfer && transfer["state"] == "completed" && path.file?
     end
@@ -701,7 +715,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
   def archive_packet(kind)
     @phase = "archive"
     @miru.click_button("Check signing status", exact: true)
-    wait_for("Real reconciliation did not archive completed files", 60) do
+    wait_for("Real reconciliation did not archive completed files", 60, probe: "archive_reconciliation") do
       revision = @record.reload.current_revision
       check(revision.archive_error.nil?, "Archive verification failed")
       revision.status == "signed" && revision.archived_at.present?
@@ -735,7 +749,7 @@ RSpec.describe "Exact built Documenso live-provider acceptance", type: :system, 
     response, bytes = local_get(image[:src], 5_242_880)
     check(response.code == "200" && response["Content-Type"].to_s.start_with?("image/png") &&
       bytes.start_with?("\x89PNG\r\n\x1a\n".b) && bytes.byteslice(16, 8).unpack("NN") == [1200, 630], "Built Share PNG contract failed")
-    wait_for("Share image did not render") { image.evaluate_script("this.complete && this.naturalWidth === 1200 && this.naturalHeight === 630") }
+    wait_for("Share image did not render", probe: "share_image") { image.evaluate_script("this.complete && this.naturalWidth === 1200 && this.naturalHeight === 630") }
     [1440, 375].each { |width| viewport(@signer, width) }
     File.binwrite(DocumensoLive::OUTPUT.join("share-#{kind}.png"), bytes)
     progress("share", kind)
