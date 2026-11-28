@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.8.1] - 2026-11-28
+
+### Fixed
+
+- Save both company address lines without losing typed text or other unsaved settings.
+
 ## [3.7.3] - 2026-11-26
 
 ### Fixed
