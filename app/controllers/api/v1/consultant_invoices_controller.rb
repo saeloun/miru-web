@@ -56,23 +56,25 @@ class Api::V1::ConsultantInvoicesController < Api::V1::PayrollBaseController
     def available_runs
       return [] unless Payroll::Entitlement.enabled?(payroll_workspace_id)
 
-      ids = own_employments.pluck(:id)
-      PayrollRun.where(company_id: payroll_workspace_id).order(period: :desc).limit(24).flat_map do |run|
+      employments = own_employments.includes(:consultant_compensations).index_by(&:id)
+      PayrollRun.where(company_id: payroll_workspace_id)
+        .find_each(cursor: [:period, :id], order: [:desc, :desc], batch_size: 24).lazy.flat_map do |run|
         revision = run.payroll_revisions.order(number: :desc).first
         next [] unless revision && revision.payroll_approvals.where(stage: %w[accounts final]).distinct.count(:stage) == 2
 
         revision.payroll_payload.fetch("lines").filter_map do |line|
-          next unless line["pay_type"] == "consultant" && ids.include?(line["employment_id"])
-          employment = own_employments.find(line["employment_id"])
+          next unless line["pay_type"] == "consultant"
+          employment = employments[line["employment_id"]]
+          next unless employment
           preparation = preparation_scope.heads.find_by(payroll_run: run, employment:)
           next if invoice_scope.exists?(payroll_run: run, employment:)
-          terms = employment.consultant_compensations.find_by(id: line.dig("preparation", "terms_id"))
+          terms = employment.consultant_compensations.find { |candidate| candidate.id.to_s == line.dig("preparation", "terms_id").to_s }
           next unless terms
 
           { id: run.id.to_s, employment_id: employment.id.to_s, period: run.period.strftime("%Y-%m"), revision_digest: revision.digest,
             legal_entity_name: terms.legal_entity_name,
             financial_year: Payroll::ConsultantInvoicePreparation.financial_year, preparation: preparation_details(preparation) }
         end
-      end
+      end.first(24)
     end
 end

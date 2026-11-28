@@ -51,11 +51,11 @@ class Payroll::ConsultantInvoicePreparation
     begin
       existing = check_command!(employment_id, facts, reviewed, expected_preparation_id, idempotency_key, command)
       return existing if existing
-      staged = upload(original_pdf) if original_pdf
+      upload(original_pdf) { |blob| staged = blob } if original_pdf
       verify_blob!(staged, descriptor) if staged
       store_preparation!(employment_id:, facts:, reviewed:, expected_revision_digest:, expected_preparation_id:, idempotency_key:, command:, descriptor:, staged:)
     ensure
-      staged&.purge unless staged.nil? || PayrollInvoicePreparation.exists?(original_blob_id: staged.id)
+      cleanup_staged_blob(staged) unless staged.nil? || PayrollInvoicePreparation.exists?(original_blob_id: staged.id)
     end
   end
 
@@ -69,6 +69,7 @@ class Payroll::ConsultantInvoicePreparation
           scope = preparations(employment)
           existing = replay(scope, idempotency_key, command)
           return existing if existing
+          validate_current_financial_year!(facts)
           ensure_unissued!(employment)
           check_head!(scope, expected_preparation_id)
           nil
@@ -114,6 +115,7 @@ class Payroll::ConsultantInvoicePreparation
       revision = @run.current_revision
       raise Payroll::Workflow::Conflict, "Reviewed payroll revision changed" unless revision&.digest == expected_revision_digest
       validate_facts!(facts, reviewed:)
+      validate_current_financial_year!(facts)
       line = revision&.payroll_payload&.fetch("lines", [])&.find { |entry| entry["employment_id"] == employment.id && entry["pay_type"] == "consultant" }
       currently_approved = Payroll::Workflow.new(@run).status == "approved"
       group, legs, handoff = sources
@@ -227,7 +229,7 @@ class Payroll::ConsultantInvoicePreparation
 
     def validate_timing!(facts)
       if facts["mode"] == "generate"
-        invalid! unless facts["timing"] == "post_credit_supported" && facts["financial_year"] == self.class.financial_year
+        invalid! unless facts["timing"] == "post_credit_supported" && facts["financial_year"].is_a?(String) && facts["financial_year"].match?(/\A\d{4}-\d{4}\z/)
       else
         date = Date.iso8601(facts["original_date"])
         if date > Time.current.in_time_zone("Asia/Kolkata").to_date
@@ -235,6 +237,10 @@ class Payroll::ConsultantInvoicePreparation
         end
         invalid! unless facts["original_date"].match?(/\A\d{4}-\d{2}-\d{2}\z/) && facts["financial_year"] == self.class.financial_year(date) && facts["timing"] == "existing_invoice"
       end
+    end
+
+    def validate_current_financial_year!(facts)
+      invalid! if facts["mode"] == "generate" && facts["financial_year"] != self.class.financial_year
     end
 
     def pdf_descriptor(upload)
@@ -247,12 +253,26 @@ class Payroll::ConsultantInvoicePreparation
 
     def upload(file)
       file.rewind
-      blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: "consultant-original.pdf", content_type: "application/pdf")
+      blob = ActiveStorage::Blob.build_after_unfurling(io: file, filename: "consultant-original.pdf", content_type: "application/pdf")
       invalid! if blob.service.public?
+      yield blob
+      blob.save!
+      file.rewind
+      blob.upload_without_unfurling(file)
       blob
+    end
+
+    def cleanup_staged_blob(blob)
+      return unless blob.persisted?
+
+      blob.delete
+      blob.destroy!
     rescue StandardError
-      blob&.purge
-      raise
+      begin
+        blob.purge_later
+      rescue StandardError
+        Rails.logger.warn("Consultant invoice original cleanup requires review")
+      end
     end
 
     def verify_blob!(blob, descriptor)

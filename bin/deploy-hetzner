@@ -135,14 +135,6 @@ deploy_app() {
   bundle exec kamal deploy
 }
 
-# Function to setup database
-setup_database() {
-  echo "🗄️  Setting up database..."
-  
-  # Run database migrations
-  bundle exec kamal app exec --reuse "bin/rails db:create db:migrate"
-}
-
 # Main deployment flow
 echo ""
 echo "Starting deployment process..."
@@ -165,9 +157,6 @@ fi
 
 # Step 4: Deploy the application
 deploy_app
-
-# Step 5: Setup database
-setup_database
 
 echo ""
 echo "✅ Deployment complete!"

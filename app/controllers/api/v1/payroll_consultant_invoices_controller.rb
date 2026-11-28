@@ -35,11 +35,9 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
     authorize @run, :index?, policy_class: PayrollConsultantInvoicePolicy
     revision = @run.current_revision
     approved_revision = Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision)
-    rows = if approved_revision
-      approved_rows(revision)
-    else
-      issued_snapshot_rows
-    end
+    rows = approved_revision ? approved_rows(revision) : []
+    represented_invoice_ids = rows.filter_map { |row| row.dig(:invoice, :id) }
+    rows.concat(issued_snapshot_rows.reject { |row| represented_invoice_ids.include?(row.dig(:invoice, :id)) })
     if !approved_revision && rows.empty?
       raise Payroll::Workflow::NotAuthorized, "Invoice preparation waits for payroll approval"
     end

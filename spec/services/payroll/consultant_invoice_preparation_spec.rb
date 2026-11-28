@@ -72,6 +72,19 @@ RSpec.describe "Consultant invoice preparation" do
     expect { prepare(facts.merge("financial_year" => "2025-2026")) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
   end
 
+  it "replays only an authorized identical command across the Indian financial-year boundary" do
+    travel_to(Time.utc(2027, 3, 31, 18, 29))
+    first = prepare
+    travel_to(Time.utc(2027, 3, 31, 18, 31))
+
+    expect(prepare.id).to eq(first.id)
+    expect { prepare(facts.merge("number" => "2")) }.to raise_error(Payroll::Workflow::Conflict)
+    expect { prepare(key: "new-financial-year-command", previous: first.id.to_s) }.to raise_error(Payroll::ConsultantReview::InvalidInput)
+    accounts.remove_role(:book_keeper, company)
+    expect { prepare }.to raise_error(Payroll::Workflow::NotAuthorized)
+    expect(PayrollInvoicePreparation.count).to eq(1)
+  end
+
   it "preserves an existing full invoice number and shares uniqueness with the equivalent generated number" do
     generated = facts.merge("series" => "INV", "number" => "1")
     linked = facts.merge("mode" => "existing", "series" => "internal", "number" => "INV/1")
@@ -185,9 +198,9 @@ RSpec.describe "Consultant invoice preparation" do
   it "rejects bytes changed between PDF inspection and upload and removes its own unused blob" do
     file = original
     before_count = ActiveStorage::Blob.count
-    allow(service).to receive(:upload).and_wrap_original do |method, input|
+    allow(service).to receive(:upload).and_wrap_original do |method, input, &block|
       File.open(input.tempfile.path, "ab") { |stream| stream.write("\n%drift\n") }
-      method.call(input)
+      method.call(input, &block)
     end
     expect do
       service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts, expected_preparation_id: "", idempotency_key: "drift", original_pdf: file)
@@ -195,6 +208,83 @@ RSpec.describe "Consultant invoice preparation" do
     expect(PayrollInvoicePreparation.count).to eq(0)
     expect(ActiveStorage::Blob.count).to eq(before_count)
   ensure
+    file&.close
+  end
+
+  it "removes its saved blob and partially uploaded object when upload raises" do
+    file = original
+    storage = ActiveStorage::Blob.service
+    before_count = ActiveStorage::Blob.count
+    key = nil
+    allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
+      key = blob_key
+      method.call(blob_key, io, **options)
+      raise IOError, "Synthetic partial upload failure"
+    end
+
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+        expected_preparation_id: "", idempotency_key: "partial-upload", original_pdf: file)
+    end.to raise_error(IOError, "Synthetic partial upload failure")
+    expect(PayrollInvoicePreparation.count).to eq(0)
+    expect(ActiveStorage::Blob.count).to eq(before_count)
+    expect(storage.exist?(key)).to be(false)
+  ensure
+    file&.close
+  end
+
+  it "keeps failed-upload cleanup addressable until a deferred purge can delete the object" do
+    file = original
+    storage = ActiveStorage::Blob.service
+    before_count = ActiveStorage::Blob.count
+    key = nil
+    allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
+      key = blob_key
+      method.call(blob_key, io, **options)
+      raise IOError, "Synthetic partial upload failure"
+    end
+    allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
+
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+        expected_preparation_id: "", idempotency_key: "deferred-partial-upload", original_pdf: file)
+    end.to raise_error(IOError, "Synthetic partial upload failure")
+    blob = ActiveStorage::Blob.find_by!(key:)
+    expect(enqueued_jobs.count { |job| job[:job] == ActiveStorage::PurgeJob }).to eq(1)
+    expect(storage.exist?(key)).to be(true)
+    allow(storage).to receive(:delete).and_call_original
+    perform_enqueued_jobs(only: ActiveStorage::PurgeJob)
+    expect(ActiveStorage::Blob.count).to eq(before_count)
+    expect(storage.exist?(key)).to be(false)
+    expect(PayrollInvoicePreparation.exists?(original_blob_id: blob.id)).to be(false)
+  ensure
+    file&.close
+  end
+
+  it "preserves the original upload failure and addressable bytes when cleanup cannot enqueue" do
+    file = original
+    storage = ActiveStorage::Blob.service
+    key = nil
+    allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
+      key = blob_key
+      method.call(blob_key, io, **options)
+      raise IOError, "Synthetic partial upload failure"
+    end
+    allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
+    allow_any_instance_of(ActiveStorage::Blob).to receive(:purge_later).and_raise(IOError, "Synthetic queue outage")
+    expect(Rails.logger).to receive(:warn).with("Consultant invoice original cleanup requires review")
+
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+        expected_preparation_id: "", idempotency_key: "failed-cleanup-enqueue", original_pdf: file)
+    end.to raise_error(IOError, "Synthetic partial upload failure")
+    expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
+    expect(storage.exist?(key)).to be(true)
+    expect(enqueued_jobs.none? { |job| job[:job] == ActiveStorage::PurgeJob }).to be(true)
+    expect(PayrollInvoicePreparation.count).to eq(0)
+  ensure
+    allow(storage).to receive(:delete).and_call_original if storage
+    ActiveStorage::Blob.find_by(key:)&.purge if key
     file&.close
   end
 
