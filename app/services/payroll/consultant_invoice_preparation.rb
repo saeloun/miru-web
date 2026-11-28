@@ -121,7 +121,8 @@ class Payroll::ConsultantInvoicePreparation
       unless line && Payroll::ConsultantInvoiceIssue.revision_intact?(@run, revision) && (currently_approved || historical_credit)
         raise Payroll::Workflow::Conflict, "An approved consultant revision or intact confirmed historical credit is required"
       end
-      invalid! unless facts.dig("billed_entity", "name") == employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name
+      terms = employment.consultant_compensations.find_by(id: line.dig("preparation", "terms_id"))
+      invalid! unless terms && facts.dig("billed_entity", "name") == terms.legal_entity_name
       reserve_number!(employment, facts) if reviewed
       [revision, line]
     end

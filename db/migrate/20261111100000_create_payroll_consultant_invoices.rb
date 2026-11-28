@@ -94,16 +94,19 @@ class CreatePayrollConsultantInvoices < ActiveRecord::Migration[8.0]
   end
 
   def down
-    if select_value("SELECT EXISTS(SELECT 1 FROM payroll_invoice_preparations)")
-      raise ActiveRecord::IrreversibleMigration, "Preserve consultant invoice records"
-    end
-    drop_table :payroll_consultant_invoice_deliveries
-    drop_table :payroll_consultant_invoices
-    drop_table :payroll_invoice_preparations
-    safety_assured do
-      execute "DROP FUNCTION IF EXISTS public.protect_consultant_invoice()"
-      execute "DROP FUNCTION IF EXISTS public.protect_invoice_preparation()"
-      execute "DROP FUNCTION IF EXISTS public.protect_consultant_invoice_delivery()"
+    connection.transaction do
+      safety_assured { execute "LOCK TABLE payroll_invoice_preparations IN ACCESS EXCLUSIVE MODE" }
+      if select_value("SELECT EXISTS(SELECT 1 FROM payroll_invoice_preparations)")
+        raise ActiveRecord::IrreversibleMigration, "Preserve consultant invoice records"
+      end
+      drop_table :payroll_consultant_invoice_deliveries
+      drop_table :payroll_consultant_invoices
+      drop_table :payroll_invoice_preparations
+      safety_assured do
+        execute "DROP FUNCTION IF EXISTS public.protect_consultant_invoice()"
+        execute "DROP FUNCTION IF EXISTS public.protect_invoice_preparation()"
+        execute "DROP FUNCTION IF EXISTS public.protect_consultant_invoice_delivery()"
+      end
     end
   end
 end

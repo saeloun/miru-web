@@ -119,6 +119,8 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
         next unless line["pay_type"] == "consultant"
         employment = @run.company.employments.kept.find_by(id: line["employment_id"])
         next unless employment
+        terms = employment.consultant_compensations.find_by(id: line.dig("preparation", "terms_id"))
+        next unless terms
         context = invoice_context(@run, employment)
         preparation = preparation_scope.heads.find_by(employment:)
         invoice = invoice_scope.find_by(employment:)
@@ -126,7 +128,7 @@ class Api::V1::PayrollConsultantInvoicesController < Api::V1::PayrollBaseControl
         binding ||= Payroll::BillingIdentity.new(employment).binding
         billing = Payroll::BillingIdentity.new(employment).frozen_binding!(binding) if binding
         { employment_id: employment.id.to_s, consultant_name: employment.user.full_name,
-          legal_entity_name: employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name,
+          legal_entity_name: terms.legal_entity_name,
           billing_identity: billing, supplemental_billing_binding: line.dig("preparation", "billing_identity") ? nil : binding,
           generation_supported: Payroll::ConsultantInvoicePreparation.generation_supported?(billing),
           amounts: line.fetch("amounts").transform_values(&:to_s), preparation: preparation_details(preparation), invoice: invoice && invoice_details(invoice),
