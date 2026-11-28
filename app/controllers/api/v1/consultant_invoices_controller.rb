@@ -66,9 +66,11 @@ class Api::V1::ConsultantInvoicesController < Api::V1::PayrollBaseController
           employment = own_employments.find(line["employment_id"])
           preparation = preparation_scope.heads.find_by(payroll_run: run, employment:)
           next if invoice_scope.exists?(payroll_run: run, employment:)
+          terms = employment.consultant_compensations.find_by(id: line.dig("preparation", "terms_id"))
+          next unless terms
 
           { id: run.id.to_s, employment_id: employment.id.to_s, period: run.period.strftime("%Y-%m"), revision_digest: revision.digest,
-            legal_entity_name: employment.consultant_compensations.find(line.fetch("preparation").fetch("terms_id")).legal_entity_name,
+            legal_entity_name: terms.legal_entity_name,
             financial_year: Payroll::ConsultantInvoicePreparation.financial_year, preparation: preparation_details(preparation) }
         end
       end

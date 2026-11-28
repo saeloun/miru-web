@@ -40,24 +40,27 @@ class PreserveConsultantInvoiceDeliveryReviews < ActiveRecord::Migration[8.1]
   end
 
   def down
-    if select_value("SELECT EXISTS(SELECT 1 FROM payroll_consultant_invoice_deliveries WHERE reconciled_by_id IS NOT NULL)")
-      raise ActiveRecord::IrreversibleMigration, "Preserve consultant invoice reconciliation reviews"
+    connection.transaction do
+      safety_assured { execute "LOCK TABLE payroll_consultant_invoice_deliveries IN ACCESS EXCLUSIVE MODE" }
+      if select_value("SELECT EXISTS(SELECT 1 FROM payroll_consultant_invoice_deliveries WHERE reconciled_by_id IS NOT NULL)")
+        raise ActiveRecord::IrreversibleMigration, "Preserve consultant invoice reconciliation reviews"
+      end
+      safety_assured do
+        execute <<~SQL
+          CREATE OR REPLACE FUNCTION public.protect_consultant_invoice_delivery() RETURNS trigger LANGUAGE plpgsql AS $$
+          BEGIN
+            IF TG_OP='DELETE' OR NEW.payroll_consultant_invoice_id IS DISTINCT FROM OLD.payroll_consultant_invoice_id OR
+              NEW.attempt_number IS DISTINCT FROM OLD.attempt_number OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
+              RAISE EXCEPTION 'Consultant invoice delivery identity is immutable';
+            END IF;
+            RETURN NEW;
+          END; $$;
+        SQL
+      end
+      remove_check_constraint :payroll_consultant_invoice_deliveries, name: "invoice_delivery_reconciliation_complete"
+      remove_column :payroll_consultant_invoice_deliveries, :reconciliation_evidence
+      remove_column :payroll_consultant_invoice_deliveries, :reconciled_at
+      remove_reference :payroll_consultant_invoice_deliveries, :reconciled_by, foreign_key: { to_table: :users }
     end
-    safety_assured do
-      execute <<~SQL
-        CREATE OR REPLACE FUNCTION public.protect_consultant_invoice_delivery() RETURNS trigger LANGUAGE plpgsql AS $$
-        BEGIN
-          IF TG_OP='DELETE' OR NEW.payroll_consultant_invoice_id IS DISTINCT FROM OLD.payroll_consultant_invoice_id OR
-            NEW.attempt_number IS DISTINCT FROM OLD.attempt_number OR NEW.created_at IS DISTINCT FROM OLD.created_at THEN
-            RAISE EXCEPTION 'Consultant invoice delivery identity is immutable';
-          END IF;
-          RETURN NEW;
-        END; $$;
-      SQL
-    end
-    remove_check_constraint :payroll_consultant_invoice_deliveries, name: "invoice_delivery_reconciliation_complete"
-    remove_column :payroll_consultant_invoice_deliveries, :reconciliation_evidence
-    remove_column :payroll_consultant_invoice_deliveries, :reconciled_at
-    remove_reference :payroll_consultant_invoice_deliveries, :reconciled_by, foreign_key: { to_table: :users }
   end
 end
