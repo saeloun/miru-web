@@ -33,6 +33,21 @@ class Payroll::ConsultantInvoicePreparation
     digest(["consultant_invoice_number_v1", invoice_number(facts).upcase])
   end
 
+  def self.cleanup_original_blob(blob_id)
+    blob = ActiveStorage::Blob.find_by(id: blob_id)
+    return unless blob
+
+    blob.with_lock do
+      return if blob.attachments.exists? || PayrollInvoicePreparation.exists?(original_blob_id: blob.id)
+
+      blob.delete
+      blob.destroy!
+    end
+  rescue ActiveRecord::RecordNotFound
+    # Another cleanup already removed the unused blob.
+    nil
+  end
+
   def reviewer?(employment)
     return false unless @actor && @actor.id != employment.user_id &&
       User.kept.exists?(id: @actor.id, current_workspace_id: @run.company_id) && @run.eligible_actor?(@actor, "accounts")
@@ -55,7 +70,7 @@ class Payroll::ConsultantInvoicePreparation
       verify_blob!(staged, descriptor) if staged
       store_preparation!(employment_id:, facts:, reviewed:, expected_revision_digest:, expected_preparation_id:, idempotency_key:, command:, descriptor:, staged:)
     ensure
-      cleanup_staged_blob(staged) unless staged.nil? || PayrollInvoicePreparation.exists?(original_blob_id: staged.id)
+      cleanup_staged_blob(staged) if staged
     end
   end
 
@@ -265,13 +280,14 @@ class Payroll::ConsultantInvoicePreparation
     def cleanup_staged_blob(blob)
       return unless blob.persisted?
 
-      blob.delete
-      blob.destroy!
+      self.class.cleanup_original_blob(blob.id)
     rescue StandardError
       begin
-        blob.purge_later
-      rescue StandardError
         Rails.logger.warn("Consultant invoice original cleanup requires review")
+        Payroll::ConsultantInvoiceOriginalCleanupJob.perform_later(blob.id)
+      rescue StandardError
+        # Keep the row and storage key addressable when logging or the queue is unavailable too.
+        nil
       end
     end
 

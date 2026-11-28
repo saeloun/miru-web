@@ -233,7 +233,7 @@ RSpec.describe "Consultant invoice preparation" do
     file&.close
   end
 
-  it "keeps failed-upload cleanup addressable until a deferred purge can delete the object" do
+  it "keeps failed-upload cleanup addressable through a deferred storage outage and recovery" do
     file = original
     storage = ActiveStorage::Blob.service
     before_count = ActiveStorage::Blob.count
@@ -250,14 +250,90 @@ RSpec.describe "Consultant invoice preparation" do
         expected_preparation_id: "", idempotency_key: "deferred-partial-upload", original_pdf: file)
     end.to raise_error(IOError, "Synthetic partial upload failure")
     blob = ActiveStorage::Blob.find_by!(key:)
-    expect(enqueued_jobs.count { |job| job[:job] == ActiveStorage::PurgeJob }).to eq(1)
+    cleanup_job = Payroll::ConsultantInvoiceOriginalCleanupJob
+    expect(enqueued_jobs.count { |job| job[:job] == cleanup_job }).to eq(1)
+    expect(storage.exist?(key)).to be(true)
+    perform_enqueued_jobs(only: cleanup_job, at: Time.current)
+    expect(ActiveStorage::Blob.exists?(blob.id)).to be(true)
+    expect(storage.exist?(key)).to be(true)
+    expect do
+      4.times { perform_enqueued_jobs(only: cleanup_job) }
+    end.to raise_error(IOError, "Synthetic cleanup outage")
+    expect(performed_jobs.count { |job| job[:job] == cleanup_job }).to eq(5)
+    expect(ActiveStorage::Blob.exists?(blob.id)).to be(true)
     expect(storage.exist?(key)).to be(true)
     allow(storage).to receive(:delete).and_call_original
-    perform_enqueued_jobs(only: ActiveStorage::PurgeJob)
+    perform_enqueued_jobs(only: cleanup_job) { cleanup_job.perform_later(blob.id) }
     expect(ActiveStorage::Blob.count).to eq(before_count)
     expect(storage.exist?(key)).to be(false)
     expect(PayrollInvoicePreparation.exists?(original_blob_id: blob.id)).to be(false)
+    expect do
+      perform_enqueued_jobs(only: cleanup_job) { cleanup_job.perform_later(blob.id) }
+    end.not_to raise_error
   ensure
+    file&.close
+  end
+
+  it "retains prepared originals and standard attachments when cleanup runs later" do
+    file = original
+    receipt = service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+      expected_preparation_id: "", idempotency_key: "retained-original", original_pdf: file)
+    attachment_bytes = File.binread(Rails.root.join("spec/support/fixtures/test-image.png"))
+    attached = ActiveStorage::Blob.create_and_upload!(io: StringIO.new(attachment_bytes), filename: "synthetic.png", content_type: "image/png")
+    worker.avatar.attach(attached)
+    expect(attached.attachments.exists?).to be(true)
+
+    perform_enqueued_jobs(only: Payroll::ConsultantInvoiceOriginalCleanupJob) do
+      Payroll::ConsultantInvoiceOriginalCleanupJob.perform_later(receipt.original_blob_id)
+      Payroll::ConsultantInvoiceOriginalCleanupJob.perform_later(attached.id)
+    end
+
+    expect(receipt.original_blob.download).to eq(File.binread(file.tempfile.path))
+    expect(attached.reload.download).to eq(attachment_bytes)
+  ensure
+    file&.close
+  end
+
+  it "retains a deferred original while its ownership is unknown and cleans it after lookup recovers" do
+    file = original
+    blob = ActiveStorage::Blob.create_and_upload!(io: file, filename: "synthetic-original.pdf", content_type: "application/pdf")
+    allow(PayrollInvoicePreparation).to receive(:exists?).with(original_blob_id: blob.id)
+      .and_raise(ActiveRecord::ConnectionNotEstablished, "Synthetic ownership lookup outage")
+
+    perform_enqueued_jobs(only: Payroll::ConsultantInvoiceOriginalCleanupJob, at: Time.current) do
+      Payroll::ConsultantInvoiceOriginalCleanupJob.perform_later(blob.id)
+    end
+    expect(blob.reload.download).to eq(File.binread(file.tempfile.path))
+    allow(PayrollInvoicePreparation).to receive(:exists?).and_call_original
+    perform_enqueued_jobs(only: Payroll::ConsultantInvoiceOriginalCleanupJob)
+    expect(ActiveStorage::Blob.exists?(blob.id)).to be(false)
+    expect(ActiveStorage::Blob.service.exist?(blob.key)).to be(false)
+  ensure
+    file&.close
+  end
+
+  it "preserves a verification error and staged bytes when the ownership lookup fails" do
+    file = original
+    key = nil
+    allow(service).to receive(:upload).and_wrap_original do |method, input, &block|
+      File.open(input.tempfile.path, "ab") { |stream| stream.write("\n%drift\n") }
+      method.call(input) do |blob|
+        key = blob.key
+        block.call(blob)
+      end
+    end
+    allow(PayrollInvoicePreparation).to receive(:exists?).with(original_blob_id: anything)
+      .and_raise(ActiveRecord::ConnectionNotEstablished, "Synthetic ownership lookup outage")
+    expect(Rails.logger).to receive(:warn).with("Consultant invoice original cleanup requires review")
+
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+        expected_preparation_id: "", idempotency_key: "failed-ownership-lookup", original_pdf: file)
+    end.to raise_error(Payroll::Workflow::Conflict, "Original invoice bytes changed")
+    expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
+    expect(ActiveStorage::Blob.service.exist?(key)).to be(true)
+  ensure
+    ActiveStorage::Blob.find_by(key:)&.purge if key
     file&.close
   end
 
@@ -271,7 +347,7 @@ RSpec.describe "Consultant invoice preparation" do
       raise IOError, "Synthetic partial upload failure"
     end
     allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
-    allow_any_instance_of(ActiveStorage::Blob).to receive(:purge_later).and_raise(IOError, "Synthetic queue outage")
+    allow(Payroll::ConsultantInvoiceOriginalCleanupJob).to receive(:perform_later).and_raise(IOError, "Synthetic queue outage")
     expect(Rails.logger).to receive(:warn).with("Consultant invoice original cleanup requires review")
 
     expect do
@@ -280,8 +356,33 @@ RSpec.describe "Consultant invoice preparation" do
     end.to raise_error(IOError, "Synthetic partial upload failure")
     expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
     expect(storage.exist?(key)).to be(true)
-    expect(enqueued_jobs.none? { |job| job[:job] == ActiveStorage::PurgeJob }).to be(true)
+    expect(enqueued_jobs.none? { |job| job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to be(true)
     expect(PayrollInvoicePreparation.count).to eq(0)
+  ensure
+    allow(storage).to receive(:delete).and_call_original if storage
+    ActiveStorage::Blob.find_by(key:)&.purge if key
+    file&.close
+  end
+
+  it "preserves the upload failure and addressable bytes when cleanup logging fails" do
+    file = original
+    storage = ActiveStorage::Blob.service
+    key = nil
+    allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
+      key = blob_key
+      method.call(blob_key, io, **options)
+      raise IOError, "Synthetic partial upload failure"
+    end
+    allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
+    allow(Rails.logger).to receive(:warn).and_raise(IOError, "Synthetic logger outage")
+
+    expect do
+      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+        expected_preparation_id: "", idempotency_key: "failed-cleanup-logging", original_pdf: file)
+    end.to raise_error(IOError, "Synthetic partial upload failure")
+    expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
+    expect(storage.exist?(key)).to be(true)
+    expect(enqueued_jobs.none? { |job| job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to be(true)
   ensure
     allow(storage).to receive(:delete).and_call_original if storage
     ActiveStorage::Blob.find_by(key:)&.purge if key
