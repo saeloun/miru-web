@@ -1,0 +1,86 @@
+{
+  "passed": true,
+  "scanner": "Trivy0.76.1",
+  "config_sha256": "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e",
+  "archive_sha256": "7dd03c0cc9137131748639afffc375181542219203c138d124e8467d9293092e",
+  "scanner_exit": 0,
+  "database": {
+    "Version": 2,
+    "NextUpdate": "2026-11-28T19:05:47.637500308Z",
+    "UpdatedAt": "2026-11-27T19:05:47.637500704Z",
+    "DownloadedAt": "2026-11-28T00:48:00.845558Z"
+  },
+  "database_repository": "ghcr.io/aquasecurity/trivy-db:2",
+  "vulnerability_occurrences": 0,
+  "all_severities_included": true,
+  "ignorefile": "",
+  "ignore_unfixed": false,
+  "suppressions": false,
+  "os": {
+    "Family": "alpine",
+    "Name": "3.23.8"
+  },
+  "inventory_counts": {
+    "alpine": 30,
+    "node-pkg": 1415
+  },
+  "fixed_targets": [
+    {
+      "Name": "libcrypto3",
+      "Version": "3.5.9-r1",
+      "type": "alpine"
+    },
+    {
+      "Name": "libexpat",
+      "Version": "2.11.0-r0",
+      "type": "alpine"
+    },
+    {
+      "Name": "libfontenc",
+      "Version": "1.1.10-r0",
+      "type": "alpine"
+    },
+    {
+      "Name": "libssl3",
+      "Version": "3.5.9-r1",
+      "type": "alpine"
+    },
+    {
+      "Name": "openssl",
+      "Version": "3.5.9-r1",
+      "type": "alpine"
+    },
+    {
+      "Name": "@hono/node-server",
+      "Version": "2.1.6",
+      "FilePath": "app/node_modules/@hono/node-server/package.json",
+      "type": "node-pkg"
+    },
+    {
+      "Name": "@opentelemetry/instrumentation-http",
+      "Version": "0.222.0",
+      "FilePath": "app/node_modules/@opentelemetry/instrumentation-http/package.json",
+      "type": "node-pkg"
+    },
+    {
+      "Name": "effect",
+      "Version": "3.22.1",
+      "FilePath": "app/node_modules/effect/package.json",
+      "type": "node-pkg"
+    },
+    {
+      "Name": "fast-xml-parser",
+      "Version": "5.12.0",
+      "FilePath": "app/node_modules/fast-xml-parser/package.json",
+      "type": "node-pkg"
+    },
+    {
+      "Name": "hono",
+      "Version": "4.13.16",
+      "FilePath": "app/node_modules/hono/package.json",
+      "type": "node-pkg"
+    }
+  ],
+  "scope": "exact retained candidate archive and official DB snapshot only; no universal security or functional qualification claim",
+  "results_sha256": "cc621b6e7574862396ee8e530383c695e1b88ea63f85f45ed5c9f83b861b19d8"
+}

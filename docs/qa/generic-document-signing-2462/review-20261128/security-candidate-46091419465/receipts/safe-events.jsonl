@@ -1,0 +1,17 @@
+{"schema_version":1,"phase":"admitted","passed":true}
+{"schema_version":1,"phase":"provider_key","passed":true}
+{"schema_version":1,"phase":"fields","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"review","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"send","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"archive","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"share","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"denials","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"packet_complete","passed":true,"packet":"client"}
+{"schema_version":1,"phase":"fields","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"review","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"send","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"archive","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"share","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"denials","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"packet_complete","passed":true,"packet":"consultant"}
+{"schema_version":1,"phase":"complete","passed":true}

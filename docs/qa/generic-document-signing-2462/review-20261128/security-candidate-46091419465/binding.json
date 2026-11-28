@@ -1,0 +1,79 @@
+{
+  "functional_run": 46091419465,
+  "functional_job": 140812966926,
+  "build_run": 46087161946,
+  "build_job_skipped_in_functional_run": true,
+  "runtime_fixture_head": "73a707aa6d144fc3e8103d4893c5131632582367",
+  "runtime_fixture_tree": "04234f4dc6a45facbbb52e96d50cb6af46fa8c4f",
+  "provider_source_head": "9b2b3c48a5a129243ad2189776f6352ba522c1bc",
+  "miru_application_head": "4aa6ff5744267b1942bbf614fac322c8c1184bf7",
+  "provider_config_sha256": "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e",
+  "rootfs_diff_ids_sha256": "791f13335b742e80c0c6f10f7820a245d17fa9e1af9358be598a0935089d3087",
+  "rootfs_layers": 23,
+  "rootfs_uncompressed_bytes": 1533161984,
+  "image_archive_sha256": "7dd03c0cc9137131748639afffc375181542219203c138d124e8467d9293092e",
+  "functional_evidence_artifact": 15241936579,
+  "functional_evidence_zip_sha256": "2dacfd6ace24d9496093c42f48db466853f0a28d24308636d79098f9b6511ee7",
+  "adapter_sha256": "388778cb8d6e7bef98cb143637cc9e59b60d975689bead101e3984eb9a0a6d88",
+  "retention_verifier_sha256": "7f66cd9635e6953432b71e3a8020bf969aa5c2d9282adc6b1f3f3c36b3a1814e",
+  "gallery_png_count": 18,
+  "all_original_png_individually_viewed": 28,
+  "omitted_notice_or_loading_frames": 10,
+  "primary_frames": 8,
+  "context_frames": 8,
+  "known_share_caption_defect_frames": 2,
+  "packets": [
+    {
+      "kind": "client",
+      "version": 4,
+      "documents": 2,
+      "fields": 10,
+      "signers": 2
+    },
+    {
+      "kind": "consultant",
+      "version": 4,
+      "documents": 2,
+      "fields": 10,
+      "signers": 2
+    }
+  ],
+  "native_pdf_downloads": 16,
+  "recipient_commits": [
+    {
+      "kind": "client",
+      "role": "signer"
+    },
+    {
+      "kind": "client",
+      "role": "provider"
+    },
+    {
+      "kind": "consultant",
+      "role": "signer"
+    },
+    {
+      "kind": "consultant",
+      "role": "provider"
+    }
+  ],
+  "denial_requests": 32,
+  "all_four_denial_actors_no_pdf_bytes": true,
+  "source_assets_verified": 3,
+  "console_errors": 0,
+  "cleanup_complete": true,
+  "cleanup_errors": [],
+  "evidence_rejections": [],
+  "fresh_scan_findings": 0,
+  "fresh_scan_db_updated": "2026-11-27T19:05:47.637500704Z",
+  "fresh_scan_db_downloaded": "2026-11-28T00:48:00.845558Z",
+  "limits": [
+    "current private Miru release candidate interoperability not qualified",
+    "production host not qualified",
+    "full document viewer visual acceptance not qualified",
+    "active source alias and provider pin unchanged",
+    "no production activation",
+    "existing docs audit budgets not reset"
+  ],
+  "evidence_only_descendant_no_new_functional_run": true
+}

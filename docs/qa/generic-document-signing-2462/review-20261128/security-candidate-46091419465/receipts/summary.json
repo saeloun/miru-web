@@ -1,0 +1,276 @@
+{
+  "schema_version": 1,
+  "passed": true,
+  "phase": "complete",
+  "image_config_sha256": "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e",
+  "source_assets_verified": 3,
+  "console_errors": 0,
+  "packets": [
+    {
+      "kind": "client",
+      "version": 4,
+      "documents": 2,
+      "fields": 10,
+      "signers": 2,
+      "artifact_checks": [
+        {
+          "kind": "signed",
+          "sha256": "73233c4b3fcff11263e16a6f0a4e5061465f37b0afcf3417e7088eacf7cc3c9c",
+          "bytes": 236138,
+          "pages": 3,
+          "viewport": 1440,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "signed",
+          "sha256": "22ce14580e0da7c7044fef4638ef3765ec21477155da3013c3b7585f9bb95ec2",
+          "bytes": 228837,
+          "pages": 2,
+          "viewport": 1440,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "certificate",
+          "sha256": "7dd2863eaf83257769495c3001159dafc07238966444a9780bcfacbc2c626323",
+          "bytes": 196225,
+          "pages": 1,
+          "viewport": 1440,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "audit_log",
+          "sha256": "82c952b41e273765aa978420a1ea5944d41df1be8a91a95929dcc2b8d2b0e576",
+          "bytes": 757486,
+          "pages": 6,
+          "viewport": 1440,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "signed",
+          "sha256": "73233c4b3fcff11263e16a6f0a4e5061465f37b0afcf3417e7088eacf7cc3c9c",
+          "bytes": 236138,
+          "pages": 3,
+          "viewport": 375,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "signed",
+          "sha256": "22ce14580e0da7c7044fef4638ef3765ec21477155da3013c3b7585f9bb95ec2",
+          "bytes": 228837,
+          "pages": 2,
+          "viewport": 375,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "certificate",
+          "sha256": "7dd2863eaf83257769495c3001159dafc07238966444a9780bcfacbc2c626323",
+          "bytes": 196225,
+          "pages": 1,
+          "viewport": 375,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "audit_log",
+          "sha256": "82c952b41e273765aa978420a1ea5944d41df1be8a91a95929dcc2b8d2b0e576",
+          "bytes": 757486,
+          "pages": 6,
+          "viewport": 375,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        }
+      ],
+      "share_sha256": "0ccb1f4d89b1251f05e5d8adf73826f73858f975c92193462a975734519b3a49",
+      "denials": [
+        {
+          "actor": "anonymous",
+          "statuses": [
+            401,
+            401,
+            401,
+            401
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "stale_workspace",
+          "statuses": [
+            409,
+            409,
+            409,
+            409
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "unassigned_employee",
+          "statuses": [
+            404,
+            404,
+            404,
+            404
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "other_workspace",
+          "statuses": [
+            404,
+            404,
+            404,
+            404
+          ],
+          "pdf_bytes_served": false
+        }
+      ]
+    },
+    {
+      "kind": "consultant",
+      "version": 4,
+      "documents": 2,
+      "fields": 10,
+      "signers": 2,
+      "artifact_checks": [
+        {
+          "kind": "signed",
+          "sha256": "fe994d87f5b93c8d67c3d332f0cb0bc8d7a1e531bd3755b8e319157ac25b30a3",
+          "bytes": 235239,
+          "pages": 3,
+          "viewport": 1440,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "signed",
+          "sha256": "01586a83dd2191bdc32d36f919dce462239f4ff315d95d5d5f15edf92b550ce3",
+          "bytes": 227940,
+          "pages": 2,
+          "viewport": 1440,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "certificate",
+          "sha256": "238782b9fc7fb274c09a52e543ba9e7dd0ab0ccdb91959d1d0c7b30b24569a80",
+          "bytes": 195354,
+          "pages": 1,
+          "viewport": 1440,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "audit_log",
+          "sha256": "4417efad3b071a856c57bfab6802ff1e280cba8d55eb6818cd4695340d1e7f30",
+          "bytes": 757212,
+          "pages": 6,
+          "viewport": 1440,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "signed",
+          "sha256": "fe994d87f5b93c8d67c3d332f0cb0bc8d7a1e531bd3755b8e319157ac25b30a3",
+          "bytes": 235239,
+          "pages": 3,
+          "viewport": 375,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "signed",
+          "sha256": "01586a83dd2191bdc32d36f919dce462239f4ff315d95d5d5f15edf92b550ce3",
+          "bytes": 227940,
+          "pages": 2,
+          "viewport": 375,
+          "pdf_signature_valid": true,
+          "body_preserved": true
+        },
+        {
+          "kind": "certificate",
+          "sha256": "238782b9fc7fb274c09a52e543ba9e7dd0ab0ccdb91959d1d0c7b30b24569a80",
+          "bytes": 195354,
+          "pages": 1,
+          "viewport": 375,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        },
+        {
+          "kind": "audit_log",
+          "sha256": "4417efad3b071a856c57bfab6802ff1e280cba8d55eb6818cd4695340d1e7f30",
+          "bytes": 757212,
+          "pages": 6,
+          "viewport": 375,
+          "pdf_signature_valid": false,
+          "body_preserved": false
+        }
+      ],
+      "share_sha256": "0ccb1f4d89b1251f05e5d8adf73826f73858f975c92193462a975734519b3a49",
+      "denials": [
+        {
+          "actor": "anonymous",
+          "statuses": [
+            401,
+            401,
+            401,
+            401
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "stale_workspace",
+          "statuses": [
+            409,
+            409,
+            409,
+            409
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "unassigned_employee",
+          "statuses": [
+            404,
+            404,
+            404,
+            404
+          ],
+          "pdf_bytes_served": false
+        },
+        {
+          "actor": "other_workspace",
+          "statuses": [
+            404,
+            404,
+            404,
+            404
+          ],
+          "pdf_bytes_served": false
+        }
+      ]
+    }
+  ],
+  "recipient_commits": [
+    {
+      "kind": "client",
+      "role": "signer"
+    },
+    {
+      "kind": "client",
+      "role": "provider"
+    },
+    {
+      "kind": "consultant",
+      "role": "signer"
+    },
+    {
+      "kind": "consultant",
+      "role": "provider"
+    }
+  ]
+}
