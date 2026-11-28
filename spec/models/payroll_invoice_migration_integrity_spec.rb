@@ -136,18 +136,17 @@ RSpec.describe "Payroll invoice migration integrity" do
       attributes = connection.select_one("SELECT * FROM payroll_remittance_documents WHERE id=#{Integer(document.id)}").except("id")
       connection.execute("TRUNCATE payroll_remittance_documents")
       ready, release, backend, outcome, committed = Queue.new, Queue.new, Queue.new, Queue.new, Queue.new
-      config = ActiveRecord::Base.connection_db_config.configuration_hash
       writer = Thread.new do
-        PG.connect(host: config[:host], port: config[:port], dbname: config[:database],
-          user: config[:username] || config[:user], password: config[:password]) do |pg|
-          pg.exec("SET statement_timeout='10s'")
-          pg.exec("BEGIN")
-          columns = attributes.keys.map { |name| PG::Connection.quote_ident(name) }.join(",")
-          placeholders = attributes.keys.each_index.map { |index| "$#{index + 1}" }.join(",")
-          pg.exec_params("INSERT INTO payroll_remittance_documents (#{columns}) VALUES (#{placeholders})", attributes.values)
-          ready << pg.backend_pid
-          release.pop
-          pg.exec("COMMIT")
+        ActiveRecord::Base.connection_pool.with_connection do |sql|
+          sql.transaction do
+            sql.execute("SET LOCAL statement_timeout='10s'")
+            pg = sql.raw_connection
+            columns = attributes.keys.map { |name| PG::Connection.quote_ident(name) }.join(",")
+            placeholders = attributes.keys.each_index.map { |index| "$#{index + 1}" }.join(",")
+            pg.exec_params("INSERT INTO payroll_remittance_documents (#{columns}) VALUES (#{placeholders})", attributes.values)
+            ready << pg.backend_pid
+            release.pop
+          end
           committed << true
         end
       rescue StandardError => error
