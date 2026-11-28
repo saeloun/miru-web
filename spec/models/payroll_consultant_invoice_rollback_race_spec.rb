@@ -48,6 +48,10 @@ RSpec.describe "Consultant invoice rollback versus committed evidence" do
   end
 
   def race_down(kind, mode, sql, values)
+    if ActiveRecord::Base.connection_pool.size < 3
+      raise ArgumentError, "Rollback race requires DB_POOL or RAILS_MAX_THREADS >= 3"
+    end
+
     ready, commit, backend, outcome, committed = Queue.new, Queue.new, Queue.new, Queue.new, Queue.new
     writer = Thread.new do
       ActiveRecord::Base.connection_pool.with_connection do |writer_connection|

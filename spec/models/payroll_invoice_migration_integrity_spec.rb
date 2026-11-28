@@ -131,6 +131,10 @@ RSpec.describe "Payroll invoice migration integrity" do
     end
 
     it "retains a remittance writer committed while #{mode} rollback waits" do
+      if ActiveRecord::Base.connection_pool.size < 3
+        raise ArgumentError, "Rollback race requires DB_POOL or RAILS_MAX_THREADS >= 3"
+      end
+
       document = remittance_document
       connection = ActiveRecord::Base.connection
       attributes = connection.select_one("SELECT * FROM payroll_remittance_documents WHERE id=#{Integer(document.id)}").except("id")
