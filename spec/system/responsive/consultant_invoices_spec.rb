@@ -136,10 +136,10 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
         expect(second.fetch(:original)).to be(false)
         expect(second.fetch(:key)).to eq(first.fetch(:key))
       end
-  ensure
-    release << true if release
     end
     expect(PayrollInvoicePreparation.count).to eq(0)
+  ensure
+    release << true if release
   end
 
   it "retains another consultant's draft and file after a recoverable refresh failure but clears forms on a fresh refusal" do
