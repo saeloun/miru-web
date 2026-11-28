@@ -291,18 +291,14 @@ const OrgEdit = () => {
   }, []);
 
   const handleAddrChange = useCallback(
-    (e, type) => {
-      const { companyAddr } = orgDetails;
-      if (type === "addressLine1") {
-        const changedAddr = { ...companyAddr, addressLine1: e.target.value };
-        setOrgDetails({ ...orgDetails, companyAddr: changedAddr });
-      } else {
-        const changedAddr = { ...companyAddr, addressLine2: e.target.value };
-        setOrgDetails({ ...orgDetails, companyAddr: changedAddr });
-      }
+    (value: string, field: "addressLine1" | "addressLine2") => {
+      setOrgDetails(previous => ({
+        ...previous,
+        companyAddr: { ...previous.companyAddr, [field]: value },
+      }));
       setIsDetailUpdated(true);
     },
-    [orgDetails]
+    []
   );
 
   const setupTimezone = (orgDetails, countryCode) => {

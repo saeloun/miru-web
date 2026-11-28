@@ -14,6 +14,12 @@
 - Keep leave review controls stable while payroll loads, retain the selected report date and wrap long consultant names on mobile.
 - Use a neutral PDF title when a document has none, keeping rendered content out of PDF metadata.
 
+## [3.8.1] - 2026-11-28
+
+### Fixed
+
+- Save both company address lines without losing typed text or other unsaved settings.
+
 ## [3.7.3] - 2026-11-26
 
 ### Fixed

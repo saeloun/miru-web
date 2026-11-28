@@ -80,6 +80,26 @@ RSpec.describe "Settings - Organization", type: :system, js: true do
       end
     end
 
+    it "retains and saves typed text in both address lines" do
+      with_forgery_protection do
+        visit "/settings/organization"
+        click_button "Edit Settings"
+
+        fill_in "Address Line 1", with: "12 Example Street"
+        fill_in "Address Line 2", with: "Suite 3"
+
+        expect(page).to have_field("Address Line 1", with: "12 Example Street")
+        expect(page).to have_field("Address Line 2", with: "Suite 3")
+        click_button "save changes", disabled: false
+        expect(page).to have_button("save changes", disabled: true)
+
+        visit "/settings/organization"
+        click_button "Edit Settings"
+        expect(page).to have_field("Address Line 1", with: "12 Example Street")
+        expect(page).to have_field("Address Line 2", with: "Suite 3")
+      end
+    end
+
     it "shows localized organization copy in Hindi", :aggregate_failures do
       user.update!(locale: "hi")
 
