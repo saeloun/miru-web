@@ -14,8 +14,8 @@ RSpec.describe "Concurrent consultant original submission replay" do
     uploads = []
     services = 2.times.map do
       domain = Payroll::ConsultantInvoicePreparation.new(PayrollRun.find(run.id), actor: User.find(accounts.id))
-      allow(domain).to receive(:upload).and_wrap_original do |method, *arguments|
-        blob = method.call(*arguments)
+      allow(domain).to receive(:upload).and_wrap_original do |method, *arguments, &block|
+        blob = method.call(*arguments, &block)
         ready << blob.id
         release.pop
         blob

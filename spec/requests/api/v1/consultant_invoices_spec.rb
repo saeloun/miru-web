@@ -32,6 +32,44 @@ RSpec.describe "Private consultant invoice API", type: :request do
     actor
   end
 
+  it "finds an eligible older run beyond newer ineligible runs without loading all runs at once" do
+    revision
+    24.times do |index|
+      PayrollRun.create!(company:, period: run.period >> (index + 1), currency: "INR", accounts_reviewer: accounts, final_reviewer: owner)
+    end
+    sign_in worker
+    batches = []
+    listener = ->(_name, _start, _finish, _id, payload) { batches << payload[:record_count] if payload[:class_name] == "PayrollRun" }
+    ActiveSupport::Notifications.subscribed(listener, "instantiation.active_record") do
+      get own_path, params: { company_id: company.id }
+    end
+
+    expect(response).to have_http_status(:ok)
+    expect(response.parsed_body.fetch("available_runs").pluck("id")).to include(run.id.to_s)
+    expect(batches.max).to be <= 24
+  end
+
+  it "retains trusted issued snapshots and downloads for managers after the consultant employment is discarded" do
+    invoice = issued_invoice
+    employment.discard!
+    [owner, accounts, unassigned_invoice_admin].each do |actor|
+      sign_in actor
+      get manager_path, params: { company_id: company.id }
+      expect(response).to have_http_status(:ok)
+      rows = response.parsed_body.dig("consultant_invoices", "consultants")
+      expect(rows.sole).to include("can_configure" => false, "generation_supported" => false)
+      expect(rows.sole.fetch("invoice").fetch("id")).to eq(invoice.id.to_s)
+      get "#{manager_path}/#{invoice.id}/download", params: { company_id: company.id }
+      expect(response).to have_http_status(:ok)
+      expect(response.body.b).to eq(invoice.pdf_blob.download)
+    end
+    accounts.remove_role(:book_keeper, company)
+    sign_in accounts
+    get manager_path, params: { company_id: company.id }
+    expect(response).to have_http_status(:forbidden)
+    expect(response.body).not_to include(invoice.snapshot.dig("consultant", "legal_name"))
+  end
+
   it "does not expose a never-approved draft through a direct invoice index URL" do
     draft = workflow.revise!(actor: accounts, payload: synthetic_payload, idempotency_key: "private-first-draft", expected_digest: nil)
     expect(draft.payroll_approvals.count).to eq(0)
