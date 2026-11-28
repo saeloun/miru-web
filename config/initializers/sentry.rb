@@ -12,15 +12,27 @@ Sentry.init do |config|
   config.environment = Rails.env
   config.enabled_environments = %w[production staging]
 
-  config.before_send_transaction = lambda do |event, _hint|
-    event.spans.each do |span|
-      next unless span[:description].to_s.start_with?("Api::V1::Hiring::", "Hiring::InboundEmailsController", "HiringPortalController", "HiringAssignmentPortalController")
+  sanitize_event = lambda do |event, _hint|
+    if event.is_a?(Sentry::TransactionEvent)
+      event.spans.each do |span|
+        # SQL text can contain private search and payroll literals.
+        span.delete(:description) if span[:op] == "db.sql.active_record"
+        span[:data]&.delete(:params)
+        span[:data]&.delete("params")
+      end
+    end
+    event.breadcrumbs&.each do |breadcrumb|
+      data = breadcrumb.data
+      next unless data.is_a?(Hash)
 
-      data = span[:data]
-      next unless data && data[:params].is_a?(Hash)
-
-      data[:params] = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters).filter(data[:params])
+      data = data.except(:params, "params", :sql, "sql")
+      [:path, "path", :url, "url", :location, "location"].each do |key|
+        data[key] = data[key].split("?", 2).first if data[key].is_a?(String)
+      end
+      breadcrumb.data = data
     end
     event
   end
+  config.before_send = sanitize_event
+  config.before_send_transaction = sanitize_event
 end

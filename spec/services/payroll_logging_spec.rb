@@ -22,6 +22,16 @@ RSpec.describe "Payroll log privacy" do
     expect(filter.filter(parameters)).to eq(parameters.transform_values { "[FILTERED]" })
   end
 
+  it "redacts flat and nested salary and bank fields outside payroll envelopes" do
+    parameters = %w[salary salary_amount salary_details account_number bank_account_number]
+      .index_with { sensitive_value }.merge("page" => "2")
+    redacted = parameters.except("page").transform_values { "[FILTERED]" }.merge("page" => "2")
+    filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+
+    expect(filter.filter(parameters.merge("details" => parameters)))
+      .to eq(redacted.merge("details" => redacted))
+  end
+
   it "redacts payroll payloads from model inspection" do
     revision = PayrollRevision.new(payroll_payload: { "input" => sensitive_value })
 
