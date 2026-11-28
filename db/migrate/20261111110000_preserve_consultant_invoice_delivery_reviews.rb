@@ -1,21 +1,21 @@
 # frozen_string_literal: true
 
 class PreserveConsultantInvoiceDeliveryReviews < ActiveRecord::Migration[8.1]
-  disable_ddl_transaction!
-
   def up
-    add_reference :payroll_consultant_invoice_deliveries, :reconciled_by, index: { algorithm: :concurrently }
-    add_foreign_key :payroll_consultant_invoice_deliveries, :users, column: :reconciled_by_id, validate: false
-    validate_foreign_key :payroll_consultant_invoice_deliveries, :users, column: :reconciled_by_id
+    # The preceding migration creates this table; keep its index and validation transactional.
+    safety_assured do
+      add_reference :payroll_consultant_invoice_deliveries, :reconciled_by, index: true
+      add_foreign_key :payroll_consultant_invoice_deliveries, :users, column: :reconciled_by_id, validate: false
+      validate_foreign_key :payroll_consultant_invoice_deliveries, :users, column: :reconciled_by_id
+    end
     add_column :payroll_consultant_invoice_deliveries, :reconciled_at, :datetime
     add_column :payroll_consultant_invoice_deliveries, :reconciliation_evidence, :text
     add_check_constraint :payroll_consultant_invoice_deliveries,
       "(reconciled_by_id IS NULL AND reconciled_at IS NULL AND reconciliation_evidence IS NULL) OR " \
       "(reconciled_by_id IS NOT NULL AND reconciled_at IS NOT NULL AND reconciliation_evidence IS NOT NULL)",
       name: "invoice_delivery_reconciliation_complete", validate: false
-    validate_check_constraint :payroll_consultant_invoice_deliveries, name: "invoice_delivery_reconciliation_complete"
-
     safety_assured do
+      validate_check_constraint :payroll_consultant_invoice_deliveries, name: "invoice_delivery_reconciliation_complete"
       execute <<~SQL
         CREATE OR REPLACE FUNCTION public.protect_consultant_invoice_delivery() RETURNS trigger LANGUAGE plpgsql AS $$
         BEGIN

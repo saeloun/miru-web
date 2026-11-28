@@ -15,7 +15,8 @@ class CreatePayrollConsultantInvoices < ActiveRecord::Migration[8.0]
       t.datetime :started_at, :next_attempt_at
       t.timestamps
     end
-    add_index :payroll_invoice_preparations, [:company_id, :payroll_run_id, :employment_id, :id], unique: true, name: "invoice_preparation_tenant_identity"
+    add_index :payroll_invoice_preparations, [:company_id, :payroll_run_id, :payroll_revision_id, :employment_id, :id],
+      unique: true, name: "invoice_preparation_tenant_identity"
     add_index :payroll_invoice_preparations, [:payroll_run_id, :employment_id, :idempotency_key], unique: true, name: "invoice_preparation_command"
     add_index :payroll_invoice_preparations, [:payroll_run_id, :employment_id], unique: true,
       where: "previous_preparation_id IS NULL", name: "invoice_preparation_root"
@@ -42,8 +43,8 @@ class CreatePayrollConsultantInvoices < ActiveRecord::Migration[8.0]
       "num_nonnulls(payroll_payment_group_id,payroll_india_handoff_id)=1 AND number_digest ~ '^[0-9a-f]{64}$' AND financial_year ~ '^[0-9]{4}-[0-9]{4}$' AND ((mode='generate' AND authorization_id IS NOT NULL AND original_blob_id IS NULL) OR (mode='existing' AND authorization_id IS NULL AND original_blob_id IS NOT NULL))", name: "consultant_invoice_source"
     safety_assured do
       add_foreign_key :payroll_consultant_invoices, :payroll_invoice_preparations,
-        column: [:company_id, :payroll_run_id, :employment_id, :preparation_id],
-        primary_key: [:company_id, :payroll_run_id, :employment_id, :id], name: "consultant_invoice_preparation_tenant"
+        column: [:company_id, :payroll_run_id, :payroll_revision_id, :employment_id, :preparation_id],
+        primary_key: [:company_id, :payroll_run_id, :payroll_revision_id, :employment_id, :id], name: "consultant_invoice_preparation_tenant"
     end
 
     create_table :payroll_consultant_invoice_deliveries do |t|

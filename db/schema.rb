@@ -1729,7 +1729,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_010000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["actor_id"], name: "index_payroll_invoice_preparations_on_actor_id"
-    t.index ["company_id", "payroll_run_id", "employment_id", "id"], name: "invoice_preparation_tenant_identity", unique: true
+    t.index ["company_id", "payroll_run_id", "payroll_revision_id", "employment_id", "id"], name: "invoice_preparation_tenant_identity", unique: true
     t.index ["company_id"], name: "index_payroll_invoice_preparations_on_company_id"
     t.index ["employment_id"], name: "index_payroll_invoice_preparations_on_employment_id"
     t.index ["original_blob_id"], name: "index_payroll_invoice_preparations_on_original_blob_id"
@@ -2867,7 +2867,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_12_010000) do
   add_foreign_key "payroll_consultant_invoices", "consultant_invoice_authorizations", column: "authorization_id"
   add_foreign_key "payroll_consultant_invoices", "employments"
   add_foreign_key "payroll_consultant_invoices", "payroll_india_handoffs"
-  add_foreign_key "payroll_consultant_invoices", "payroll_invoice_preparations", column: ["company_id", "payroll_run_id", "employment_id", "preparation_id"], primary_key: ["company_id", "payroll_run_id", "employment_id", "id"], name: "consultant_invoice_preparation_tenant"
+  add_foreign_key "payroll_consultant_invoices", "payroll_invoice_preparations", column: ["company_id", "payroll_run_id", "payroll_revision_id", "employment_id", "preparation_id"], primary_key: ["company_id", "payroll_run_id", "payroll_revision_id", "employment_id", "id"], name: "consultant_invoice_preparation_tenant"
   add_foreign_key "payroll_consultant_invoices", "payroll_payment_groups"
   add_foreign_key "payroll_consultant_invoices", "payroll_revisions"
   add_foreign_key "payroll_consultant_invoices", "payroll_runs"

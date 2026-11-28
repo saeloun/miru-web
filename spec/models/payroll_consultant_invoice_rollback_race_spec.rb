@@ -16,7 +16,10 @@ RSpec.describe "Consultant invoice rollback versus committed evidence" do
   before(:context) do
     @migration_context = ActiveRecord::Base.connection_pool.migration_context
     @restore_remittance = @migration_context.get_all_versions.include?(REMITTANCE_VERSION)
-    @migration_context.run(:down, REMITTANCE_VERSION) if @restore_remittance
+    if @restore_remittance
+      ActiveRecord::Base.connection.execute("TRUNCATE payroll_remittance_documents")
+      @migration_context.run(:down, REMITTANCE_VERSION)
+    end
   end
 
   after do
