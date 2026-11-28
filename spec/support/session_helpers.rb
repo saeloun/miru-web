@@ -46,6 +46,12 @@ module SessionHelpers
     ensure_authenticated_session!
   end
 
+  def sign_out(...)
+    # Stop the old page before queuing Warden logout for the next request.
+    visit "about:blank"
+    super
+  end
+
   def login_via_api(user)
     page.evaluate_async_script(<<~JS, user.email, SYSTEM_TEST_PASSWORD, user.locale || "en-US")
       const [email, password, locale, done] = arguments;

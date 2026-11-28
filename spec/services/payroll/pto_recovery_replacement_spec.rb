@@ -89,6 +89,36 @@ RSpec.describe "PTO recovery replacement and owner review" do
       credited_on: Date.current.iso8601, reference: "SYNTHETIC-INDIA-CREDIT")
   end
 
+  it "retains the issued PDF but exposes a PTO return review even while the group remains fully credited" do
+    current = fresh_revision
+    leg = prepared_instruction(revision: current)
+    submit(leg)
+    refresh(leg)
+    credit(leg)
+    facts = { "mode" => "generate", "billed_entity" => { "name" => legal_name, "address" => "1 Fictional Street", "country" => "US", "tax_identifier" => "", "tax_reason" => "Synthetic not applicable" },
+      "document_kind" => "consultant_invoice", "treatment" => "manual_reviewed", "treatment_reason" => "Synthetic reviewed invoice",
+      "timing" => "post_credit_supported", "financial_year" => "2026-2027", "series" => "SYN", "number" => "1",
+      "existing_invoice_considered" => true, "tax_lines" => [], "accounts_destination_confirmed" => true }
+    Payroll::ConsultantInvoicePreparation.new(run, actor: accounts).record!(employment_id: employment.id, facts:,
+      expected_revision_digest: current.digest, expected_preparation_id: "", idempotency_key: "pto-invoice")
+    worker.update!(current_workspace: company)
+    consent = Payroll::InvoiceAuthorization.new(employment, actor: worker)
+    consent.record!(action: "grant", expected_event_id: "", statement_digest: consent.summary.dig(:statement, :digest), idempotency_key: "pto-invoice-consent")
+    bytes = File.binread(Rails.root.join("spec/support/fixtures/pdf-file.pdf"))
+    allow_any_instance_of(Payroll::ConsultantInvoicePdf).to receive(:render).and_return(bytes)
+    invoice = Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).issue!
+    expect(Payroll::ConsultantInvoiceDelivery.credit_review?(invoice)).to be(false)
+    Payroll::PtoRecovery.returned!(run, employment.id)
+    expect(PayrollPtoRecovery.heads.where(payroll_run: run, kind: "returned_review")).to exist
+    expect(leg.payroll_payment_group.reload).to be_fully_credited
+    expect(Payroll::ConsultantInvoiceDelivery.credit_review?(invoice)).to be(true)
+    line = current.payroll_payload.fetch("lines").find { |entry| entry["employment_id"] == employment.id }
+    expect(Payroll::ConsultantInvoiceIssue.new(run, employment_id: employment.id).credited_source_for_review?(revision: current, line:,
+      group: leg.payroll_payment_group, legs: leg.payroll_payment_group.payroll_payment_instructions.reload.to_a, handoff: nil)).to be(false)
+    expect(Payroll::ConsultantInvoiceDelivery.pdf_bytes(invoice, kind: :paid)).to eq(bytes)
+    expect(invoice.reload.snapshot.fetch("status")).to eq("Paid")
+  end
+
   it "requires a fresh reservation before replacing a cancelled original Mercury leg" do
     first = fresh_revision
     leg = prepared_instruction(revision: first)
@@ -112,7 +142,7 @@ RSpec.describe "PTO recovery replacement and owner review" do
     expect(replacement.entitlement_minor).to eq(leg.entitlement_minor)
     submit(replacement)
     refresh(replacement)
-    credit(replacement)
+    expect { credit(replacement) }.to have_enqueued_job(PayrollConsultantInvoiceIssueJob).with(run.id, employment.id)
     expect(replacement.payroll_payment_group.reload.fully_credited_at).to be_present
     expect(PayrollPtoRecovery.heads.find_by!(payroll_run: run)).to have_attributes(kind: "settled", payroll_revision_id: third.id)
     expect { credit(replacement) }.not_to change(PayrollPtoRecovery, :count)

@@ -358,10 +358,68 @@ and ask accounts to reconcile the bank status. Do not bypass the hold, replay a
 send or record a credit without matching bank evidence. Recovery of this case
 requires a separate workflow that preserves the original transfer and claim/PTO history.
 
+## Paid consultant invoices
+
+For an approved service period, **Consultant invoices** on the consultant payroll
+page opens invoice-only preparation. Admins can save facts; a current assigned
+accounts reviewer or owner must review another consultant's preparation. Choose
+**Generate in Miru** or **Link an existing invoice** before issuance. Review the
+contracting entity, billed address, tax/document treatment, supported timing and
+issuer financial year/number explicitly. Unsupported tax or earlier-document
+timing requires manual review and an existing invoice; Miru does not certify tax
+status or calculate statutory taxes.
+
+Miru generation currently supports only reviewed billing facts declared **not GST
+registered**. Registered regular, composition or other schemes, and unresolved or
+unknown status, require an existing original and manual document review. Both
+preparation review and issuance enforce this document-support boundary. This does
+not establish an exemption or complete India GST/export tax automation.
+
+Generation requires current consultant authorization and full confirmed credit,
+including both split legs and any PTO credit review. Generated invoices use the
+actual issue date in Asia/Kolkata and the reviewed financial year/number. Linking
+an existing invoice preserves its exact original PDF, number and date; Miru
+creates a separate current-dated paid settlement statement. Fees, reimbursements,
+adjustments, withholding and actual settlements remain separate. Company OUR
+bank fees are not consultant income.
+
+The reviewer must explicitly confirm the fixed **accounts@saeloun.com** destination;
+there is no recipient editor. Email delivery is separate from payment status.
+An unknown email outcome must be reconciled with evidence and confirmation that
+the old worker stopped before an explicit retry of the same PDF. Issued documents
+are immutable. **My consultant invoices** in personal settings retains private,
+authenticated history/downloads for a kept identity after exit, authorization
+withdrawal or payroll disablement. A later credit review is shown separately.
+
+## Bank remittance documents
+
+For submitted Mercury transfers, consultants can open **My consultant invoices**
+in personal settings to upload bank-issued FIRC, FIRA or inward-remittance advice,
+including before a paid invoice exists. Current authorized accounts reviewers,
+owners and admins can use the transfer or its paid invoice to access the same
+evidence. Choose the document type, upload a private PDF, JPEG or PNG up to 5 MiB,
+and describe the document or correction. A correction retains earlier files;
+downloads remain authenticated and scoped to the consultant and workspace.
+
+**Missing bank document** requests follow-up only after credit is recorded and
+the transfer has not been returned, cancelled, blocked or failed. Payment status
+and document receipt appear separately; an uncredited transfer without a file
+shows **No bank document uploaded yet**. Receiving a file does not mark a transfer paid. A document received before
+invoice issuance appears with that invoice once issued, including separate
+evidence for each spouse-split transfer. Existing evidence remains readable by a
+kept authorized identity after service ends or payroll is disabled; new uploads
+require payroll to remain enabled. Files are declared bank evidence, not Miru's
+verification of authenticity or official certificates issued by Miru. A Mercury
+receipt is not a bank-issued FIRC. Request missing evidence from the receiving
+bank; Miru does not retrieve it or send automated reminders.
+
+Developers can use the [remittance documents API reference](../../contributing-guide/remittance-documents-api.md)
+for request fields, pagination, authenticated downloads and retained corrections.
+
 ## Not available yet
 
-Consultant invoice issuance, government verification of tax identity, FIRC or FIRA
-attachments, replacing returned funds, consultant split requests and Mercury
+Government verification of tax identity,
+replacing returned funds, consultant split requests and Mercury
 webhooks remain follow-on work.
 A returned wire stays visible and can't be replaced from Miru. The India accounts
 handoff, consultant bank-detail editing and explicit PTO policy/decision workflows

@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.9.0] - 2026-11-28
+
+### Added
+
+- Prepare paid consultant invoices from reviewed settlement facts or preserve an existing original, with private history and tracked email delivery.
+- Retain private bank-issued remittance documents, correction history and payment/invoice links, with missing-document follow-up separate from confirmed credit.
+
+### Fixed
+
+- Keep invoice preparation private until payroll approval, preserve exact PDF amounts and prevent conflicting issuer-number reservations.
+- Show an approval wait as a neutral status while retaining alerts for permission errors.
+- Keep leave review controls stable while payroll loads, retain the selected report date and wrap long consultant names on mobile.
+- Use a neutral PDF title when a document has none, keeping rendered content out of PDF metadata.
+
 ## [3.8.1] - 2026-11-28
 
 ### Fixed

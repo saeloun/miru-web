@@ -54,7 +54,11 @@ const RouteConfig = () => {
           {SETTINGS.filter(
             ({ category, path }) =>
               category === "personal" &&
-              !["invoice-authorization", "billing-identity"].includes(path)
+              ![
+                "invoice-authorization",
+                "billing-identity",
+                "consultant-invoices",
+              ].includes(path)
           ).map(({ path, authorisedRoles, Component }) => (
             <Route
               key={path}

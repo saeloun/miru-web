@@ -1,0 +1,63 @@
+<style>
+  body { font: 12px Arial, sans-serif; color: #17212b; }
+  h1 { font-size: 24px; } h2 { font-size: 15px; margin-top: 24px; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  th, td { padding: 8px; border-bottom: 1px solid #d9dde3; text-align: left; vertical-align: top; }
+  .amount { text-align: right; white-space: nowrap; }
+</style>
+<% money = ->(minor, currency = "INR") { "#{currency} #{number_with_precision(BigDecimal(minor.to_s) / 100, precision: 2, separator: '.', delimiter: '')}" } %>
+<h1><%= kind == "paid_settlement" ? "Paid settlement statement" : "Consultant invoice" %></h1>
+<% if kind == "paid_settlement" %>
+  <p><strong>Paid</strong> · Statement generated: <%= snapshot.fetch("document_on") %> (Asia/Kolkata)</p>
+  <p>Original invoice: <%= Payroll::ConsultantInvoicePreparation.invoice_number(snapshot) %> · Original invoice date: <%= snapshot.fetch("issued_on") %></p>
+  <p>This statement links the existing consultant invoice above. Its original PDF, number and date are preserved; this is settlement evidence, not a replacement invoice.</p>
+<% else %>
+  <p><strong>Paid</strong> · Invoice: <%= Payroll::ConsultantInvoicePreparation.invoice_number(snapshot) %> · Issue date: <%= snapshot.fetch("issued_on") %> (Asia/Kolkata)</p>
+<% end %>
+<h2>Service provider</h2>
+<% person = snapshot.fetch("consultant") %>
+<p><strong><%= person.fetch("legal_name") %></strong><br>
+<%= [person["address_line_1"], person["address_line_2"], person["city"], person["state"], person["postal_code"], person["country"]].compact_blank.join(", ") %><br>
+PAN: <%= person["pan_number"].presence || person["pan_reason"] %><br>
+GST: <%= person["gst_number"].presence || person["gst_reason"] %></p>
+<h2>Billed to</h2>
+<% entity = snapshot.fetch("billed_entity") %>
+<p><strong><%= entity.fetch("name") %></strong><br><%= entity.fetch("address") %>, <%= entity.fetch("country") %><br>
+Tax identifier: <%= entity["tax_identifier"].presence || entity["tax_reason"] %></p>
+<p>Service period: <%= snapshot.fetch("service_from") %> to <%= snapshot.fetch("service_to") %></p>
+<table>
+  <thead><tr><th>Description</th><th class="amount">Amount</th></tr></thead>
+  <tbody>
+    <tr><td>Consultancy fees</td><td class="amount"><%= money.call(snapshot.dig("amounts", "base_minor")) %></td></tr>
+    <% snapshot.fetch("extras").each do |entry| %>
+      <tr><td>Approved adjustment: <%= entry.fetch("code").humanize %></td><td class="amount"><%= money.call(entry.fetch("amount_minor")) %></td></tr>
+    <% end %>
+    <% snapshot.fetch("reimbursements").each do |entry| %>
+      <tr><td>Reimbursement: <%= entry.fetch("code").humanize %></td><td class="amount"><%= money.call(entry.fetch("amount_minor")) %></td></tr>
+    <% end %>
+    <% snapshot.fetch("deductions").each do |entry| %>
+      <tr><td><%= entry.fetch("code") == "withholding" ? "Withholding" : "Approved deduction: #{entry.fetch('code').humanize}" %></td><td class="amount">−<%= money.call(entry.fetch("amount_minor")) %></td></tr>
+    <% end %>
+    <tr><td><strong>Net INR entitlement</strong></td><td class="amount"><strong><%= money.call(snapshot.dig("amounts", "net_minor")) %></strong></td></tr>
+  </tbody>
+</table>
+<h2>Confirmed settlement</h2>
+<% snapshot.fetch("settlements").each do |settlement| %>
+  <% if settlement["currency"] == "USD" %>
+    <p>Beneficiary allocation: <%= settlement.fetch("beneficiary").humanize %> · USD principal: <%= money.call(settlement.fetch("principal_minor"), "USD") %><br>
+    INR entitlement: <%= money.call(settlement.fetch("entitlement_minor")) %> · Actual INR credited: <%= money.call(settlement.fetch("credited_minor")) %><br>
+    Reference INR/USD: <%= settlement.fetch("reference_rate") %> · Approved buffered rate: <%= settlement.fetch("buffered_rate") %><br>
+    Provider request: <%= settlement["provider_request_id"] %> · Transaction: <%= settlement["provider_transaction_id"] %></p>
+    <% settlement.fetch("credits").each do |credit| %>
+      <% data = credit.fetch("data") %>
+      <% if credit.fetch("kind") == "shortfall_resolved" %>
+        <p>Reviewed shortfall resolution: <%= money.call(data.fetch("shortfall_minor")) %> · <%= data["reason"] %></p>
+      <% else %>
+        <p>Confirmed credit: <%= data["credited_on"] %> · <%= data["reference"] %></p>
+      <% end %>
+    <% end %>
+  <% else %>
+    <p><%= settlement.fetch("credited_on") %> · <%= money.call(settlement.fetch("credited_minor")) %> · <%= settlement.fetch("reference") %></p>
+  <% end %>
+<% end %>
+<p>Recorded document treatment: <%= snapshot.fetch("treatment_reason") %></p>

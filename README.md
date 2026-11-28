@@ -154,6 +154,8 @@ For employee records and advance birthday/work-anniversary reminder rules, see [
 
 For hiring email, private candidate forms, screening, the assignment library, approval and recovery, see [`docs/hiring-email.md`](docs/hiring-email.md) and the [ATS verification record](docs/qa/hiring-2463/README.md).
 
+For bank remittance uploads, retained corrections and invoice linkage, see the [consultant payroll guide](docs/product-guide/payroll/03-consultant-payroll.md#bank-remittance-documents) and [synthetic verification record](docs/qa/consultant-remittance-documents-2458/README.md).
+
 ## MCP + CLI (Agent And Automation Ready)
 
 Miru ships first-party MCP support (Ruby SDK based) and a CLI token flow for agent clients.

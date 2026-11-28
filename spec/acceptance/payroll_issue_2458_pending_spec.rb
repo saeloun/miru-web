@@ -97,10 +97,14 @@ RSpec.describe "Issue #2458 remaining payroll acceptance", issue: 2458 do
   end
 
   context "11. Remittance documentation" do
-    it "lets the consultant or authorized accounts attach private bank-issued FIRC, FIRA or inward-remittance advice to a payment and invoice"
-    it "tracks credited payment and received remittance documents independently"
-    it "flags missing remittance documents without treating a Mercury receipt as a bank-issued FIRC"
-    it "denies cross-company and unrelated-user remittance downloads and excludes document contents from logs"
+    # Executable contracts: services/payroll/remittance_documents_spec.rb covers
+    # private declared evidence, independent credit/missing state, later invoice
+    # linkage, retained corrections, real concurrent replay and SQL identity guards.
+    # requests/api/v1/remittance_documents_spec.rb covers scoped reads/writes,
+    # authenticated exact bytes, storage-bearer denials, retained history and CSRF.
+    # system/responsive/remittance_documents_spec.rb covers upload/correction,
+    # native downloads and invoice discovery at desktop/mobile (execution evidence
+    # must be reported separately; source presence is not browser acceptance).
   end
 
   context "12. Full payment lifecycle and audit" do

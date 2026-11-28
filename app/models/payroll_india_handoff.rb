@@ -20,6 +20,7 @@ class PayrollIndiaHandoff < ApplicationRecord
   validates :credited_minor, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validate :same_company, on: :create
   scope :active, -> { where(released_at: nil) }
+  after_update_commit :enqueue_consultant_invoice, if: -> { saved_change_to_fully_credited_at? && fully_credited_at_before_last_save.nil? && fully_credited_at.present? }
 
   def status
     return "voided" if released_at
@@ -40,6 +41,10 @@ class PayrollIndiaHandoff < ApplicationRecord
   end
 
   private
+
+    def enqueue_consultant_invoice
+      PayrollConsultantInvoiceIssueJob.enqueue_safely(payroll_run_id, employment_id)
+    end
 
     def same_company
       Payroll::Entitlement.require!(company_id)

@@ -122,12 +122,20 @@ const UserDetailsView = () => {
       {isCalledFromSettings &&
         companyRole !== "client" &&
         String(currentUserId) === String(user?.id) && (
-          <Link
-            className="my-4 inline-flex min-h-10 items-center text-primary underline"
-            to="/settings/billing-identity"
-          >
-            Billing identity
-          </Link>
+          <div className="my-4 flex flex-wrap gap-x-6 gap-y-2">
+            <Link
+              className="inline-flex min-h-10 items-center text-primary underline"
+              to="/settings/billing-identity"
+            >
+              Billing identity
+            </Link>
+            <Link
+              className="inline-flex min-h-10 items-center text-primary underline"
+              to="/settings/consultant-invoices"
+            >
+              My consultant invoices
+            </Link>
+          </div>
         )}
       {isLoading ? (
         <Loader className="min-h-70v" />

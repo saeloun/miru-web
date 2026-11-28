@@ -16,6 +16,7 @@ import {
 import { exactAmount } from "./amount";
 import MercuryPaymentsPanel from "./MercuryPayments";
 import IndiaHandoffsPanel from "./IndiaHandoffs";
+import PayrollInvoices from "./Invoices";
 import PreflightSummary from "./PreflightSummary";
 import { PtoSummary } from "./PtoPanel";
 import {
@@ -655,6 +656,11 @@ const Review = () => {
             companyId={companyId}
             runId={run.id}
             onRefresh={() => setRefresh(value => value + 1)}
+          />
+          <PayrollInvoices
+            key={`${companyId}:${run.id}`}
+            companyId={companyId}
+            runId={run.id}
           />
           {preflight && (
             <>

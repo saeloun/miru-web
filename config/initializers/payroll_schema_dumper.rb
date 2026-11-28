@@ -9,7 +9,7 @@ module PayrollSchemaDumper
 
       dump_pto_guards(stream)
 
-      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations consultant_billing_submissions consultant_billing_reviews].select { |table| @connection.table_exists?(table) }
+      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations consultant_billing_submissions consultant_billing_reviews payroll_remittance_documents].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
       stream.puts <<~RUBY.indent(2)
@@ -32,6 +32,12 @@ module PayrollSchemaDumper
       dump_service_fee_guard(stream)
       dump_invoice_authorization_guard(stream)
       dump_billing_identity_guards(stream)
+      dump_consultant_invoice_guards(stream)
+      if @connection.table_exists?("payroll_remittance_documents")
+        sql = @connection.select_value("SELECT pg_get_functiondef('validate_payroll_remittance_document()'::regprocedure)")
+        stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+        stream.puts "  execute <<~SQL\n    CREATE TRIGGER remittance_document_identity BEFORE INSERT ON payroll_remittance_documents FOR EACH ROW EXECUTE FUNCTION validate_payroll_remittance_document();\n  SQL"
+      end
       return unless @connection.table_exists?("payroll_india_handoffs")
 
       stream.puts <<~RUBY.indent(2)
@@ -139,6 +145,20 @@ module PayrollSchemaDumper
             FOR EACH ROW EXECUTE FUNCTION public.#{name}();
           SQL
         RUBY
+      end
+    end
+
+    def dump_consultant_invoice_guards(stream)
+      return unless @connection.table_exists?("payroll_consultant_invoices")
+
+      { "protect_consultant_invoice" => ["consultant_invoice_immutable", "payroll_consultant_invoices"],
+        "protect_invoice_preparation" => ["invoice_preparation_immutable", "payroll_invoice_preparations"],
+        "protect_consultant_invoice_delivery" => ["consultant_invoice_delivery_immutable", "payroll_consultant_invoice_deliveries"] }.each do |function, (trigger, table)|
+        sql = @connection.select_value("SELECT pg_get_functiondef(oid) FROM pg_proc WHERE pronamespace='public'::regnamespace AND proname=#{@connection.quote(function)} AND pronargs=0 AND prorettype='trigger'::regtype")
+        raise "Consultant invoice database guard is missing" unless sql
+
+        stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+        stream.puts "  execute <<~SQL\n    CREATE TRIGGER #{trigger} BEFORE UPDATE OR DELETE ON #{table} FOR EACH ROW EXECUTE FUNCTION public.#{function}();\n  SQL"
       end
     end
 end
