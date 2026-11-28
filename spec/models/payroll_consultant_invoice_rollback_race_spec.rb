@@ -49,15 +49,13 @@ RSpec.describe "Consultant invoice rollback versus committed evidence" do
 
   def race_down(kind, mode, sql, values)
     ready, commit, backend, outcome, committed = Queue.new, Queue.new, Queue.new, Queue.new, Queue.new
-    config = ActiveRecord::Base.connection_db_config.configuration_hash
     writer = Thread.new do
-      PG.connect(host: config[:host], port: config[:port], dbname: config[:database],
-        user: config[:username] || config[:user], password: config[:password]) do |pg|
-        pg.exec("BEGIN")
-        pg.exec_params(sql, values)
-        ready << true
-        commit.pop
-        pg.exec("COMMIT")
+      ActiveRecord::Base.connection_pool.with_connection do |writer_connection|
+        writer_connection.transaction do
+          writer_connection.raw_connection.exec_params(sql, values)
+          ready << true
+          commit.pop
+        end
         committed << true
       end
     rescue StandardError => error
