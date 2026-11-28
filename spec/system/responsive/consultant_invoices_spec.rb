@@ -32,6 +32,7 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
 
   def open_invoices(actor, width)
     sign_in actor
+    yield if block_given?
     @width = width
     page.current_window.resize_to(width, 1000)
     visit "/payroll/#{run.id}/consultant-invoices"
@@ -92,8 +93,14 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
   it "omits an inactive original PDF and reuses the same command after generation is unavailable" do
     revision
     commands = Queue.new
+    waiting, release = Queue.new, Queue.new
+    hold_save = true
     allow_any_instance_of(Payroll::ConsultantInvoicePreparation).to receive(:record!) do |_service, **input|
       commands << { original: input[:original_pdf].present?, key: input.fetch(:idempotency_key) }
+      if hold_save
+        waiting << true
+        Timeout.timeout(10) { release.pop }
+      end
       raise ActiveRecord::Encryption::Errors::Configuration, "Synthetic unavailable preparation"
     end
     open_invoices(accounts, 1440)
@@ -102,7 +109,18 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     fill_in "Reviewed issuer series", with: "SYN"
     fill_in "Reviewed invoice number within series", with: "1"
     press "Save unreviewed preparation"
+    Timeout.timeout(10) { waiting.pop }
+    expect(page).to have_button("Saving…", disabled: true)
+    expect(page).to have_field("Billed entity postal address", disabled: true)
+    expect(page).to have_field("Billed entity country code", disabled: true)
+    expect(page).to have_field("Reviewed invoice number within series", disabled: true)
+    expect(page).to have_field("Reviewed document treatment and timing reason", disabled: true)
+    capture("own-save-fields-disabled")
+    hold_save = false
+    release << true
     expect(page).to have_text("Encryption keys are not configured on this server")
+    expect(page).to have_field("Billed entity postal address", with: "1 Fictional Street, US", disabled: false)
+    expect(page).to have_field("Reviewed document treatment and timing reason", disabled: false)
     first = Timeout.timeout(10) { commands.pop }
     Dir.mktmpdir("inactive-invoice-original") do |directory|
       replacement = File.join(directory, "different-original.pdf")
@@ -118,6 +136,8 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
         expect(second.fetch(:original)).to be(false)
         expect(second.fetch(:key)).to eq(first.fetch(:key))
       end
+  ensure
+    release << true if release
     end
     expect(PayrollInvoicePreparation.count).to eq(0)
   end
@@ -151,7 +171,40 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       method.receiver.response_body = JSON.generate(body)
       result
     end
-    open_invoices(accounts, 1440)
+    open_invoices(accounts, 1440) do
+      page.driver.browser.page.command("Page.addScriptToEvaluateOnNewDocument", source: <<~JS)
+        window.__invoiceRefreshCommits = { saved: false, requested: false, states: [] };
+        const originalOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+          const path = new URL(url, location.href).pathname;
+          const probe = window.__invoiceRefreshCommits;
+          if (method === 'POST' && path.endsWith('/consultant_invoices/preparations')) {
+            this.addEventListener('loadend', () => { if (this.status === 201) probe.saved = true; });
+          }
+          if (method === 'GET' && probe.saved && path.includes('/payroll_runs/') && path.endsWith('/consultant_invoices')) probe.requested = true;
+          return originalOpen.call(this, method, url, ...rest);
+        };
+        // Observe real commits before passive effects, without delaying either.
+        window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+          supportsFiber: true, inject: () => 1,
+          onCommitFiberUnmount: () => {},
+          onCommitFiberRoot: () => {
+            const probe = window.__invoiceRefreshCommits;
+            if (!probe.saved || probe.requested) return;
+            const articles = Array.from(document.querySelectorAll('article'));
+            const first = articles.find(article => article.querySelector('h3')?.textContent.trim() === 'Synthetic Consultant');
+            const sibling = articles.find(article => article.querySelector('h3')?.textContent.trim() === 'Synthetic Draft Consultant');
+            if (!first || !sibling) return;
+            const button = (article, text) => Array.from(article.querySelectorAll('button')).find(item => item.textContent.trim() === text);
+            if (!button(first, 'Save unreviewed preparation')) return;
+            probe.states.push({
+              saveDisabled: button(sibling, 'Save unreviewed preparation')?.disabled,
+              reviewDisabled: button(sibling, 'Review preparation')?.disabled
+            });
+          }
+        };
+      JS
+    end
     within(find("article", text: "Synthetic Draft Consultant")) do
       complete_facts(existing: true)
       fill_in "Billed entity postal address", with: "2 Fictional Draft Street"
@@ -162,6 +215,9 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     hold_refresh = true
     within(find("article", text: "Synthetic Consultant")) { press "Save unreviewed preparation" }
     Timeout.timeout(10) { waiting.pop }
+    commits = page.evaluate_script("window.__invoiceRefreshCommits.states")
+    expect(commits).not_to be_empty
+    expect(commits).to all(include("saveDisabled" => true, "reviewDisabled" => true))
     within(find("article", text: "Synthetic Draft Consultant")) do
       expect(find_field("Billed entity postal address").value).to eq("2 Fictional Draft Street")
       expect(find_field("Reviewed document treatment and timing reason").value).to eq("Synthetic unsaved second review")
@@ -181,6 +237,7 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       expect(page).to have_button("Review preparation", disabled: true)
     end
     expect(page).to have_button("Refresh invoice status", disabled: false)
+    capture("sibling-draft-retained-after-503")
     fail_refresh = false
     press "Refresh invoice status"
     expect(page).to have_text("Unreviewed preparation")
@@ -219,6 +276,88 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     expect(page).to have_css("[role='alert']")
     expect(page).to have_no_field("Invoice choice", disabled: :all)
     expect(page).to have_no_text("Synthetic Draft Consultant")
+  ensure
+    release << true if release
+  end
+
+  it "retains a consultant's own draft through a same-scope read and clears changed bindings and refused access" do
+    revision
+    waiting, release = Queue.new, Queue.new
+    hold_read = false
+    fail_read = false
+    binding_changed = false
+    entity_changed = false
+    allow_any_instance_of(Api::V1::ConsultantInvoicesController).to receive(:index).and_wrap_original do |method|
+      if hold_read
+        waiting << true
+        Timeout.timeout(10) { release.pop }
+      end
+      result = method.call
+      if fail_read
+        method.receiver.response.status = 503
+        method.receiver.response_body = JSON.generate(errors: "Synthetic temporary own-history failure")
+      elsif binding_changed || entity_changed
+        body = JSON.parse(method.receiver.response.body)
+        option = body.fetch("available_runs").first
+        option["revision_digest"] = "synthetic-new-binding" if binding_changed
+        option["legal_entity_name"] = "Synthetic Replacement Entity" if entity_changed
+        method.receiver.response_body = JSON.generate(body)
+      end
+      result
+    end
+    sign_in worker
+    @width = 1440
+    page.current_window.resize_to(1440, 1000)
+    visit "/settings/consultant-invoices"
+    find("#existing-invoice-period option[value='#{run.id}:#{employment.id}']").select_option
+    fill_in "Billed entity postal address", with: "3 Fictional Own Street"
+    fill_in "Billed entity country code", with: "US"
+    fill_in "Tax identifier review / not-applicable reason", with: "Synthetic not applicable"
+    fill_in "Original invoice number, exactly as shown", with: "OWN-42"
+    fill_in "Original invoice date", with: "2026-11-30"
+    fill_in "Original invoice treatment / reconciliation notes", with: "Synthetic own draft"
+    attach_file "Existing original PDF (up to 5 MiB)", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
+    check "I checked whether an invoice already exists and selected the correct document choice."
+    hold_read = true
+    press "Refresh invoice history"
+    Timeout.timeout(10) { waiting.pop }
+    expect(page).to have_field("Billed entity postal address", with: "3 Fictional Own Street", disabled: false)
+    expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+    expect(page).to have_button("Submit original for review", disabled: true)
+    fill_in "Original invoice treatment / reconciliation notes", with: "Synthetic edited during read"
+    hold_read = false
+    fail_read = true
+    release << true
+    expect(page).to have_css("[role='alert']", text: "Synthetic temporary own-history failure")
+    expect(page).to have_field("Original invoice treatment / reconciliation notes", with: "Synthetic edited during read")
+    expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+    expect(page).to have_button("Submit original for review", disabled: true)
+    fail_read = false
+    capture("own-draft-retained-after-503")
+    press "Refresh invoice history"
+    expect(page).to have_no_css("[role='alert']", text: "Synthetic temporary own-history failure")
+    expect(page).to have_button("Submit original for review", disabled: false)
+    expect(page).to have_field("Billed entity postal address", with: "3 Fictional Own Street")
+    expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+    binding_changed = true
+    press "Refresh invoice history"
+    expect(page).to have_field("Billed entity postal address", with: "")
+    expect(find_field("Existing original PDF (up to 5 MiB)").value).to eq("")
+    fill_in "Billed entity postal address", with: "4 Fictional Prior Entity Street"
+    fill_in "Original invoice treatment / reconciliation notes", with: "Synthetic prior entity draft"
+    attach_file "Existing original PDF (up to 5 MiB)", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
+    entity_changed = true
+    press "Refresh invoice history"
+    expect(page).to have_text("Synthetic Replacement Entity")
+    expect(page).to have_field("Billed entity postal address", with: "")
+    expect(page).to have_field("Original invoice treatment / reconciliation notes", with: "")
+    expect(find_field("Existing original PDF (up to 5 MiB)").value).to eq("")
+    capture("own-entity-binding-reset")
+    allow_any_instance_of(PayrollConsultantInvoicePolicy).to receive(:index?).and_return(false)
+    press "Refresh invoice history"
+    expect(page).to have_css("[role='alert']")
+    expect(page).to have_no_field("Billed entity postal address", disabled: :all)
+    expect(PayrollInvoicePreparation.count).to eq(0)
   ensure
     release << true if release
   end
@@ -440,11 +579,21 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       expect(page).to have_button("Record confirmed non-delivery", disabled: true)
     end
     capture("uncertain-evidence-isolated")
+    within(second) do
+      fill_in "Delivery reconciliation evidence", with: "Synthetic second mailbox reference"
+      check "The previous worker is stopped and its delivery outcome has been checked."
+      expect(page).to have_button("Record confirmed non-delivery", disabled: false)
+    end
     second_attempt = "synthetic-replaced-attempt"
     press "Refresh invoice status"
     within(find("article", text: "SYN/SECOND", match: :first)) do
-      expect(find_field("Delivery reconciliation evidence").value).to eq("")
+      expect(page).to have_field("Delivery reconciliation evidence", with: "")
+      expect(page).to have_unchecked_field("The previous worker is stopped and its delivery outcome has been checked.")
       expect(page).to have_button("Record confirmed non-delivery", disabled: true)
+    end
+    within(find("article", text: "SYN/1", match: :first)) do
+      expect(page).to have_field("Delivery reconciliation evidence", with: "Synthetic checked mailbox reference")
+      expect(page).to have_checked_field("The previous worker is stopped and its delivery outcome has been checked.")
     end
     expect(attempt.reload.state).to eq("uncertain")
   end

@@ -42,12 +42,19 @@ function ScopedConsultantInvoices() {
   const [refresh, setRefresh] = useState(0);
   const [selected, setSelected] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [readFailed, setReadFailed] = useState(false);
   const abort = useRef<AbortController | undefined>(undefined);
   useLayoutEffect(() => () => abort.current?.abort(), []);
+  const requestRefresh = () => {
+    setLoading(true);
+    setRefresh(value => value + 1);
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     abort.current = controller;
-    setData(undefined);
+    setLoading(true);
     setError("");
     if (valid) {
       consultantInvoicesApi
@@ -55,13 +62,35 @@ function ScopedConsultantInvoices() {
         .then(response => {
           if (!controller.signal.aborted && scopeRef.current === scope) {
             setData(response.data);
+            setReadFailed(false);
           }
         })
         .catch(failure => {
-          if (!axios.isCancel(failure) && !controller.signal.aborted) {
+          if (
+            !axios.isCancel(failure) &&
+            !controller.signal.aborted &&
+            scopeRef.current === scope
+          ) {
+            const recoverable =
+              axios.isAxiosError(failure) &&
+              ((!failure.response && failure.request != null) ||
+                (failure.response != null &&
+                  failure.response.status >= 500 &&
+                  failure.response.status < 600));
+            if (!recoverable) setData(undefined);
+            setReadFailed(true);
             setError(invoiceError(failure));
           }
+        })
+        .finally(() => {
+          if (!controller.signal.aborted && scopeRef.current === scope) {
+            setLoading(false);
+          }
         });
+    } else {
+      setData(undefined);
+      setReadFailed(true);
+      setLoading(false);
     }
 
     return () => controller.abort();
@@ -111,7 +140,8 @@ function ScopedConsultantInvoices() {
         <Button
           type="button"
           variant="outline"
-          onClick={() => setRefresh(value => value + 1)}
+          onClick={requestRefresh}
+          disabled={loading}
         >
           Refresh invoice history
         </Button>
@@ -126,7 +156,9 @@ function ScopedConsultantInvoices() {
           {error}
         </p>
       )}
-      {!data && !error && <p role="status">Loading private invoice history…</p>}
+      {loading && !error && (
+        <p role="status">Loading private invoice history…</p>
+      )}
       {data?.invoices.length === 0 && (
         <p className="rounded-lg border p-4 text-sm">
           No paid consultant invoices are available yet.
@@ -145,16 +177,22 @@ function ScopedConsultantInvoices() {
           <Button
             type="button"
             variant="outline"
-            disabled={data.page === 1}
-            onClick={() => setPage(data.page - 1)}
+            disabled={loading || readFailed || data.page === 1}
+            onClick={() => {
+              setLoading(true);
+              setPage(data.page - 1);
+            }}
           >
             Previous
           </Button>
           <Button
             type="button"
             variant="outline"
-            disabled={!data.has_more}
-            onClick={() => setPage(data.page + 1)}
+            disabled={loading || readFailed || !data.has_more}
+            onClick={() => {
+              setLoading(true);
+              setPage(data.page + 1);
+            }}
           >
             Next
           </Button>
@@ -242,7 +280,11 @@ function ScopedConsultantInvoices() {
           </select>
           {run && (
             <InvoiceForm
-              key={`${scope}:${selected}:${run.preparation?.id || ""}`}
+              key={`${scope}:${selected}:${run.preparation?.id || ""}:${
+                run.revision_digest
+              }:${run.financial_year}:${data!.accounts_email}:${
+                run.legal_entity_name
+              }`}
               own
               companyId={companyId}
               runId={run.id}
@@ -252,9 +294,10 @@ function ScopedConsultantInvoices() {
               financialYear={run.financial_year}
               accountsEmail={data!.accounts_email}
               preparation={run.preparation}
+              disabled={loading || readFailed}
               onSaved={() => {
                 setSelected("");
-                setRefresh(value => value + 1);
+                requestRefresh();
               }}
             />
           )}
