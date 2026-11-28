@@ -41,9 +41,12 @@ class CreatePayrollRemittanceDocuments < ActiveRecord::Migration[8.1]
   end
 
   def down
-    raise ActiveRecord::IrreversibleMigration, "Retain bank remittance evidence" if select_value("SELECT EXISTS(SELECT 1 FROM payroll_remittance_documents)")
+    connection.transaction do
+      safety_assured { execute "LOCK TABLE payroll_remittance_documents IN ACCESS EXCLUSIVE MODE" }
+      raise ActiveRecord::IrreversibleMigration, "Retain bank remittance evidence" if select_value("SELECT EXISTS(SELECT 1 FROM payroll_remittance_documents)")
 
-    drop_table :payroll_remittance_documents
-    execute "DROP FUNCTION validate_payroll_remittance_document()"
+      drop_table :payroll_remittance_documents
+      execute "DROP FUNCTION validate_payroll_remittance_document()"
+    end
   end
 end
