@@ -109,7 +109,7 @@ RSpec.describe "Tax declarations", type: :request do
           "path" => "/custom?notes=SyntheticCustomQuery", "method" => "GET", "status" => 200,
           "url" => "https://example.test/custom?notes=SyntheticUrlQuery",
           "sql" => "SELECT 'SyntheticCustomSql'"
-        }))
+        }.freeze))
         ActiveRecord::Base.connection.select_value("SELECT 'SyntheticSqlLiteral'::text", "Privacy probe")
         Sentry.with_child_span(op: "db.sql.active_record", description: "SELECT 'SyntheticSqlSpan'::text") do |span|
           raw_sql_spans << span.to_hash
