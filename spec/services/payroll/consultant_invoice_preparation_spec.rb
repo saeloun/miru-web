@@ -337,31 +337,37 @@ RSpec.describe "Consultant invoice preparation" do
     file&.close
   end
 
-  it "preserves the original upload failure and addressable bytes when cleanup cannot enqueue" do
-    file = original
-    storage = ActiveStorage::Blob.service
-    key = nil
-    allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
-      key = blob_key
-      method.call(blob_key, io, **options)
-      raise IOError, "Synthetic partial upload failure"
-    end
-    allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
-    allow(Payroll::ConsultantInvoiceOriginalCleanupJob).to receive(:perform_later).and_raise(IOError, "Synthetic queue outage")
-    expect(Rails.logger).to receive(:warn).with("Consultant invoice original cleanup requires review")
+  [false, true].each do |logging_fails|
+    it "preserves the original upload failure and addressable bytes when cleanup cannot enqueue#{' or log' if logging_fails}" do
+      file = original
+      storage = ActiveStorage::Blob.service
+      key = nil
+      allow(storage).to receive(:upload).and_wrap_original do |method, blob_key, io, **options|
+        key = blob_key
+        method.call(blob_key, io, **options)
+        raise IOError, "Synthetic partial upload failure"
+      end
+      allow(storage).to receive(:delete).and_raise(IOError, "Synthetic cleanup outage")
+      allow(Payroll::ConsultantInvoiceOriginalCleanupJob).to receive(:perform_later).and_raise(IOError, "Synthetic queue outage")
+      if logging_fails
+        allow(Rails.logger).to receive(:warn).and_raise(IOError, "Synthetic logger outage")
+      else
+        expect(Rails.logger).to receive(:warn).with("Consultant invoice original cleanup requires review")
+      end
 
-    expect do
-      service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
-        expected_preparation_id: "", idempotency_key: "failed-cleanup-enqueue", original_pdf: file)
-    end.to raise_error(IOError, "Synthetic partial upload failure")
-    expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
-    expect(storage.exist?(key)).to be(true)
-    expect(enqueued_jobs.none? { |job| job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to be(true)
-    expect(PayrollInvoicePreparation.count).to eq(0)
-  ensure
-    allow(storage).to receive(:delete).and_call_original if storage
-    ActiveStorage::Blob.find_by(key:)&.purge if key
-    file&.close
+      expect do
+        service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
+          expected_preparation_id: "", idempotency_key: "failed-cleanup-enqueue", original_pdf: file)
+      end.to raise_error(IOError, "Synthetic partial upload failure")
+      expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
+      expect(storage.exist?(key)).to be(true)
+      expect(enqueued_jobs.none? { |job| job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to be(true)
+      expect(PayrollInvoicePreparation.count).to eq(0)
+    ensure
+      allow(storage).to receive(:delete).and_call_original if storage
+      ActiveStorage::Blob.find_by(key:)&.purge if key
+      file&.close
+    end
   end
 
   it "preserves the upload failure and addressable bytes when cleanup logging fails" do
@@ -380,9 +386,10 @@ RSpec.describe "Consultant invoice preparation" do
       service.record!(expected_revision_digest: revision.digest, employment_id: employment.id, facts: existing_facts,
         expected_preparation_id: "", idempotency_key: "failed-cleanup-logging", original_pdf: file)
     end.to raise_error(IOError, "Synthetic partial upload failure")
-    expect(ActiveStorage::Blob.find_by!(key:)).to be_persisted
+    blob = ActiveStorage::Blob.find_by!(key:)
+    expect(blob).to be_persisted
     expect(storage.exist?(key)).to be(true)
-    expect(enqueued_jobs.none? { |job| job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to be(true)
+    expect(enqueued_jobs.filter_map { |job| job[:args] if job[:job] == Payroll::ConsultantInvoiceOriginalCleanupJob }).to eq([[blob.id]])
   ensure
     allow(storage).to receive(:delete).and_call_original if storage
     ActiveStorage::Blob.find_by(key:)&.purge if key
