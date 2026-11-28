@@ -300,6 +300,7 @@ function PaymentDocuments({
             <select
               id={`${formId}-kind`}
               value={kind}
+              disabled={busy}
               onChange={event => setKind(event.target.value as DocumentKind)}
               className="w-full rounded-md border bg-background p-2 text-sm"
             >
@@ -319,6 +320,7 @@ function PaymentDocuments({
               type="file"
               accept="application/pdf,image/jpeg,image/png"
               required
+              disabled={busy}
               onChange={event => setFile(event.target.files?.[0])}
             />
           </div>
@@ -329,6 +331,7 @@ function PaymentDocuments({
             <Input
               id={`${formId}-reason`}
               value={reason}
+              disabled={busy}
               maxLength={1000}
               required
               onChange={event => setReason(event.target.value)}

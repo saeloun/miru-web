@@ -37,6 +37,47 @@ RSpec.describe "Private bank remittance documents", type: :system, js: true do
     expect(page).to have_text("Bank document received.")
   end
 
+  it "freezes an uploading draft and restores the same file and command after failure" do
+    waiting, release, commands = Queue.new, Queue.new, Queue.new
+    fail_upload = true
+    allow_any_instance_of(Payroll::RemittanceDocuments).to receive(:record!).and_wrap_original do |method, **input|
+      commands << input.fetch(:idempotency_key)
+      if fail_upload
+        waiting << true
+        Timeout.timeout(10) { release.pop }
+        raise Payroll::Workflow::Conflict, "Synthetic upload failure"
+      end
+      method.call(**input)
+    end
+    sign_in worker
+    page.current_window.resize_to(1440, 1000)
+    visit "/settings/consultant-invoices"
+    select "FIRC", from: "Bank document type"
+    attach_file "Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)", Rails.root.join("spec/support/fixtures/pdf-file.pdf")
+    fill_in "Document note / correction reason", with: "Synthetic retained upload note"
+    press "Save bank document"
+    Timeout.timeout(10) { waiting.pop }
+    expect(page).to have_button("Saving evidence…", disabled: true)
+    expect(page).to have_select("Bank document type", disabled: true)
+    expect(page).to have_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)", disabled: true)
+    expect(page).to have_field("Document note / correction reason", disabled: true)
+    fail_upload = false
+    release << true
+    expect(page).to have_css("[role='alert']", text: "Synthetic upload failure")
+    expect(page).to have_select("Bank document type", selected: "FIRC", disabled: false)
+    expect(page).to have_field("Document note / correction reason", with: "Synthetic retained upload note", disabled: false)
+    expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)").value).to end_with("pdf-file.pdf")
+    first = Timeout.timeout(10) { commands.pop }
+    press "Save bank document"
+    expect(page).to have_text("Bank document received.")
+    expect(Timeout.timeout(10) { commands.pop }).to eq(first)
+    expect(PayrollRemittanceDocument.count).to eq(1)
+    expect(page).to have_field("Document note / correction reason", with: "")
+    expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)").value).to eq("")
+  ensure
+    release << true if release
+  end
+
   [1440, 375].each do |width|
     it "uploads before invoice, retains a correction and downloads exact private bytes at #{width}px" do
       sign_in worker
@@ -157,8 +198,9 @@ RSpec.describe "Private bank remittance documents", type: :system, js: true do
         end
         Timeout.timeout(10) { index_waiting.pop }
         within(sibling_row) do
-          expect(find_field("Document note / correction reason").value).to eq("Synthetic sibling private draft")
-          expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)").value).to end_with("pdf-file.pdf")
+          expect(find_field("Document note / correction reason", disabled: pending).value).to eq("Synthetic sibling private draft")
+          expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)", disabled: pending).value).to end_with("pdf-file.pdf")
+          expect(page).to have_select("Bank document type", disabled: pending)
           expect(page).to have_button(pending ? "Saving evidence…" : "Save bank document", disabled: pending)
         end
         within(first_row) { expect(find_field("Document note / correction reason").value).to eq("") }
@@ -166,8 +208,8 @@ RSpec.describe "Private bank remittance documents", type: :system, js: true do
         index_release << true
         expect(page).to have_no_text("Loading private remittance history…")
         within(sibling_row) do
-          expect(find_field("Document note / correction reason").value).to eq("Synthetic sibling private draft")
-          expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)").value).to end_with("pdf-file.pdf")
+          expect(find_field("Document note / correction reason", disabled: pending).value).to eq("Synthetic sibling private draft")
+          expect(find_field("Bank-issued file (PDF, JPEG or PNG; up to 5 MiB)", disabled: pending).value).to end_with("pdf-file.pdf")
         end
         if pending
           hold_upload = false

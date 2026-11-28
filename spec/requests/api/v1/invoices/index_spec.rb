@@ -10,6 +10,9 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
   let(:book_keeper) { create(:user, current_workspace_id: company.id) }
   let(:admin) { create(:user, current_workspace_id: company.id) }
   let(:employee) { create(:user, current_workspace_id: company.id) }
+  let(:client_filter_invoices) do
+    create_list(:client, 2, :with_logo, company:).map { |client| create(:invoice, company:, client:) }
+  end
 
   before do
     create(:employment, company:, user: book_keeper)
@@ -140,19 +143,21 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
 
     describe "client_ids[] param" do
       it "returns invoices generated for clients specified by client_ids[]" do
-        client = [9, 15, 29]
+        excluded_invoice = company.invoices.first
+        expected_invoices = client_filter_invoices
+        client = expected_invoices.map(&:client_id)
         send_request :get, api_v1_invoices_path(client:), headers: auth_headers(book_keeper)
-        expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
           json_response["invoices"].pluck("id")
         ).to match_array(
           expected_invoices.pluck("id")
         )
+        expect(json_response["invoices"].pluck("id")).not_to include(excluded_invoice.id)
         expect(
-          json_response["invoices"].map { |invoice| invoice["client"]["logo"] }
+          json_response["invoices"].map { |invoice| [invoice["id"], invoice["client"]["logo"]] }
         ).to match_array(
-          expected_invoices.map { |invoice| invoice.client.logo }
+          expected_invoices.map { |invoice| [invoice.id, invoice.client.logo_url] }
         )
       end
     end
@@ -327,15 +332,17 @@ RSpec.describe "Api::V1::Invoices#index", type: :request do
 
     describe "client[] param" do
       it "returns invoices generated for clients specified by client_ids[]" do
-        client = [9, 15, 29]
+        excluded_invoice = company.invoices.first
+        expected_invoices = client_filter_invoices
+        client = expected_invoices.map(&:client_id)
         send_request :get, api_v1_invoices_path(client:), headers: auth_headers(admin)
-        expected_invoices = company.invoices.select { |inv| client.include?(inv.client_id) }
         expect(response).to have_http_status(:ok)
         expect(
           json_response["invoices"].pluck("id")
         ).to match_array(
           expected_invoices.pluck("id")
         )
+        expect(json_response["invoices"].pluck("id")).not_to include(excluded_invoice.id)
       end
     end
 

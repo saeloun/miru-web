@@ -268,7 +268,7 @@ export function InvoiceForm(props: FormProps) {
         </div>
       )}
       {mode && (
-        <>
+        <fieldset disabled={busy} className="min-w-0 space-y-4">
           <p className="text-sm text-muted-foreground">
             {mode === "generate"
               ? "This creates a reviewed consultancy invoice without calculating statutory taxes. Link an existing invoice when tax documents or earlier invoice timing are required."
@@ -501,7 +501,7 @@ export function InvoiceForm(props: FormProps) {
               </Button>
             )}
           </div>
-        </>
+        </fieldset>
       )}
     </form>
   );
@@ -690,6 +690,11 @@ function ScopedPayrollInvoices({
     []
   );
 
+  const requestRefresh = () => {
+    setLoading(true);
+    setRefresh(value => value + 1);
+  };
+
   useEffect(() => {
     const controller = new AbortController();
     abort.current = controller;
@@ -748,7 +753,7 @@ function ScopedPayrollInvoices({
     try {
       await operation(controller.signal);
       if (!controller.signal.aborted && scopeRef.current === scope) {
-        setRefresh(value => value + 1);
+        requestRefresh();
       }
     } catch (failure) {
       if (
@@ -804,7 +809,7 @@ function ScopedPayrollInvoices({
         <Button
           type="button"
           variant="outline"
-          onClick={() => setRefresh(value => value + 1)}
+          onClick={requestRefresh}
           disabled={busy || loading}
         >
           Refresh invoice status
@@ -1000,7 +1005,7 @@ function ScopedPayrollInvoices({
                     generationSupported={row.generation_supported}
                     supplementalBinding={row.supplemental_billing_binding}
                     disabled={busy || loading || readFailed}
-                    onSaved={() => setRefresh(value => value + 1)}
+                    onSaved={requestRefresh}
                   />
                 )}
               {row.can_review &&
