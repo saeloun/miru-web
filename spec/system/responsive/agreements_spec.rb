@@ -172,6 +172,7 @@ RSpec.describe "Agreement authoring", type: :system, js: true do
       expect(page).to have_content("SYNTHETIC TEST ONLY")
       click_button "Cancel import"
     end
+    expect(page).not_to have_css('[role="dialog"]', visible: :all)
     expect(page).to have_content("Original clause नमस्कार")
     attach_file "Import Word document", Rails.root.join("spec/fixtures/agreements/synthetic-short.docx")
     within('[role="dialog"]') { click_button "Replace body and fields" }
