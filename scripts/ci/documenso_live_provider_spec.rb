@@ -28,13 +28,13 @@ require "open3"
 
 module DocumensoLive
   HEAD = "4aa6ff5744267b1942bbf614fac322c8c1184bf7"
-  CONFIG_SHA = "6b1d4c45a24da11e2f1c66da8eb486832660e4565334689c91ef9353fe158f49"
-  ROOTFS_SHA = "69fbb4154339321f3932a9489db5c499f5efbac4bb58e350e676a9ef08d68e31"
-  SOURCE_RELEASE = "https://github.com/saeloun/miru-web/releases/tag/documenso-source-4aa6ff574"
+  CONFIG_SHA = "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e"
+  ROOTFS_SHA = "791f13335b742e80c0c6f10f7820a245d17fa9e1af9358be598a0935089d3087"
+  SOURCE_RELEASE = "https://github.com/saeloun/miru-web/releases/tag/documenso-source-security-9b2b3c48-20261128"
   SOURCE_ASSETS = {
-    "/source/source.tar.gz" => [58_498_058, "5b94ae4dc456b853964100cebc1263819bac762b7c9205cc8a8675f8ae916ee2"],
-    "/source/SHA256SUMS" => [200, "462ca3b2e8dca0ca4f429f19297482bf1c1d111a33746cd80158bd04685ddfb9"],
-    "/source/SOURCE-ADMISSION.md" => [3562, "ea7e75b37c2663c5dc3c3a841d29e7e8f67dd98240300a2c4a7d7db83cf76e9f"]
+    "/source/source.tar.gz" => [58_546_897, "99f3c724b93b9adfd036cc5872c15a45f6122032c2ed94c351bd45724b27abf6"],
+    "/source/SHA256SUMS" => [208, "20d75c844ce9832ff3af6ff26dd9d9bb7e7624dab4dadb7f9105804b4ce7553c"],
+    "/source/SOURCE-ADMISSION.md" => [1795, "176d7a07db40ed19cfc167c1fde033de8771dadb4459172a0f9693fc4b296855"]
   }.freeze
   TYPES = %w[Signature Initials Date Name Email Text Number Checkbox Dropdown].freeze
   NUMBER_VALUE = "730419"

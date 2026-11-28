@@ -33,27 +33,28 @@ import zlib
 
 HEAD = "4aa6ff5744267b1942bbf614fac322c8c1184bf7"
 TREE = "78ebb54286ecaa1bb7caa75162aafc52e34b41eb"
-CHECKOUT = "3e26e7ba9574b552b0c21dbb417e2135b01ec1a5"
+CHECKOUT = "9b2b3c48a5a129243ad2189776f6352ba522c1bc"
+PROVIDER_HEAD = CHECKOUT
 UPSTREAM = "8707e33c124e4b1a68dde92d5e05178c9aabd0be"
-ARTIFACT_ID, RUN_ID = 13822868908, 42946388869
-RELEASE_ID, IMAGE_ASSET_ID, MANIFEST_ASSET_ID = 446291311, 752024163, 752024161
-QA_TAG = "documenso-qa-4aa6ff574-20261116"
-IMAGE_ASSET_NAME = "documenso-8707e33-image-4aa6ff574-amd64.zip"
-TRANSPORT_MANIFEST = "IMAGE-TRANSPORT-ADMISSION-20261116.json"
-TRANSPORT_MANIFEST_SHA = "684d99385879277d674f35f3169829b9ffbbc5bc06dd4e2da186c84b8bd1cb7d"
-ZIP_SHA = "a3f905b026083cb8c4e8e261dae4e3642919a4f1376d44375e6b6b2ad5767590"
-ARCHIVE_SHA = "d7f3c0b767094cc9f1602397c86d2faa25e44872d86b71cbd039226513f5ff85"
-CONFIG_SHA = "6b1d4c45a24da11e2f1c66da8eb486832660e4565334689c91ef9353fe158f49"
-DIFF_IDS_SHA = "69fbb4154339321f3932a9489db5c499f5efbac4bb58e350e676a9ef08d68e31"
-DOCKER_SHA = "2d8ecf2fe6650ab8ba639d7d47752e8bdf9f890be3712f4e31cd4cf169998388"
+ARTIFACT_ID, RUN_ID = 15239354014, 46087161946
+RELEASE_ID, IMAGE_ASSET_ID, MANIFEST_ASSET_ID = 461198477, 802655682, 802655681
+QA_TAG = "documenso-qa-security-9b2b3c48-20261128"
+IMAGE_ASSET_NAME = "documenso-8707e33-image-security-9b2b3c48-amd64.zip"
+TRANSPORT_MANIFEST = "IMAGE-CANDIDATE-TRANSPORT-20261128.json"
+TRANSPORT_MANIFEST_SHA = "84a7252ad228a757f66c14c607bed7a95e8feb8513d0193b1dd00e9165c54d75"
+ZIP_SHA = "9cdf485dbca35d44b8bab9c6938556c8de82db595ccfcd0afb6d93222c6d175f"
+ARCHIVE_SHA = "7dd03c0cc9137131748639afffc375181542219203c138d124e8467d9293092e"
+CONFIG_SHA = "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e"
+DIFF_IDS_SHA = "791f13335b742e80c0c6f10f7820a245d17fa9e1af9358be598a0935089d3087"
+DOCKER_SHA = "7c13cd4914c8a04496051e916a2cd8e7f43ac0e9118e11a6e0ea9349505e0e9b"
 LICENSE_SHA = "8486a10c4393cee1c25392769ddd3b2d6c242d6ec7928e1414efff7dfb2f07ef"
-PATCHES = {"documenso-security-hardening.patch": "b7a6450dae468e76708a45479e1660e1d1a0c9e6bc6d6b45a6c97dddeae89d3f",
+PATCHES = {"documenso-security-hardening.patch": "543f5e72425bb8d491d776a0567015d8b35e7725378aeec3904abaf6423687bf",
            "documenso-signing-compatibility.patch": "3c1154411b0e0196e962932253f018700ad71fc3642e0bd4535f302def1cdd6f"}
-SOURCE_RELEASE = "https://github.com/saeloun/miru-web/releases/tag/documenso-source-4aa6ff574"
+SOURCE_RELEASE = "https://github.com/saeloun/miru-web/releases/tag/documenso-source-security-9b2b3c48-20261128"
 SOURCE_ASSETS = {
-    "documenso-8707e33-source-4aa6ff574-amd64.tar.gz": ("source.tar.gz", 58498058, "5b94ae4dc456b853964100cebc1263819bac762b7c9205cc8a8675f8ae916ee2"),
-    "SHA256SUMS": ("SHA256SUMS", 200, "462ca3b2e8dca0ca4f429f19297482bf1c1d111a33746cd80158bd04685ddfb9"),
-    "SOURCE-ADMISSION.md": ("SOURCE-ADMISSION.md", 3562, "ea7e75b37c2663c5dc3c3a841d29e7e8f67dd98240300a2c4a7d7db83cf76e9f"),
+    "documenso-8707e33-source-security-9b2b3c48-amd64.tar.gz": ("source.tar.gz", 58546897, "99f3c724b93b9adfd036cc5872c15a45f6122032c2ed94c351bd45724b27abf6"),
+    "SHA256SUMS": ("SHA256SUMS", 208, "20d75c844ce9832ff3af6ff26dd9d9bb7e7624dab4dadb7f9105804b4ce7553c"),
+    "SOURCE-ADMISSION.md": ("SOURCE-ADMISSION.md", 1795, "176d7a07db40ed19cfc167c1fde033de8771dadb4459172a0f9693fc4b296855"),
 }
 # Public Docker Hub index/AMD64 child/config readback, 2026-11-11 16:09 UTC; new QA inputs.
 IMAGES = {
@@ -382,47 +383,47 @@ def verify_transport(directory):
     release = read_json(directory / "release-metadata.json")
     tag = read_json(directory / "tag-metadata.json")
     run = read_json(directory / "run-metadata.json")
-    require(release.get("id") == RELEASE_ID and release.get("tag_name") == QA_TAG and release.get("target_commitish") == HEAD)
+    require(release.get("id") == RELEASE_ID and release.get("tag_name") == QA_TAG and release.get("target_commitish") == PROVIDER_HEAD)
     require(release.get("prerelease") is True and release.get("draft") is False)
-    require(tag.get("ref") == "refs/tags/" + QA_TAG and tag["object"].get("type") == "commit" and tag["object"].get("sha") == HEAD)
+    require(tag.get("ref") == "refs/tags/" + QA_TAG and tag["object"].get("type") == "commit" and tag["object"].get("sha") == PROVIDER_HEAD)
     assets = release.get("assets")
     require(isinstance(assets, list) and len(assets) == 2)
     for name, expected in (
-        ("image-asset-metadata.json", {"id": IMAGE_ASSET_ID, "name": IMAGE_ASSET_NAME, "size": 450162450, "digest": "sha256:" + ZIP_SHA, "state": "uploaded"}),
-        ("manifest-asset-metadata.json", {"id": MANIFEST_ASSET_ID, "name": TRANSPORT_MANIFEST, "size": 2688, "digest": "sha256:" + TRANSPORT_MANIFEST_SHA, "state": "uploaded"}),
+        ("image-asset-metadata.json", {"id": IMAGE_ASSET_ID, "name": IMAGE_ASSET_NAME, "size": 452898862, "digest": "sha256:" + ZIP_SHA, "state": "uploaded"}),
+        ("manifest-asset-metadata.json", {"id": MANIFEST_ASSET_ID, "name": TRANSPORT_MANIFEST, "size": 3005, "digest": "sha256:" + TRANSPORT_MANIFEST_SHA, "state": "uploaded"}),
     ):
         asset = read_json(directory / name)
         require(all(asset.get(key) == value for key, value in expected.items()))
         require(sum(all(entry.get(key) == value for key, value in expected.items()) for entry in assets) == 1)
-    raw = read_regular(directory / TRANSPORT_MANIFEST, 2688)
-    require(len(raw) == 2688 and hashlib.sha256(raw).hexdigest() == TRANSPORT_MANIFEST_SHA)
+    raw = read_regular(directory / TRANSPORT_MANIFEST, 3005)
+    require(len(raw) == 3005 and hashlib.sha256(raw).hexdigest() == TRANSPORT_MANIFEST_SHA)
     admission = json.loads(raw, object_pairs_hook=unique_object)
     require(admission.get("schema_version") == 1)
     original = admission["original_artifact"]
     require(original.get("id") == ARTIFACT_ID and original.get("historically_recorded_api_digest") == "sha256:" + ZIP_SHA and
-            original.get("historically_recorded_api_size") == 450162450)
-    source_name = "documenso-8707e33-source-4aa6ff574-amd64.tar.gz"
+            original.get("historically_recorded_api_size") == 452898862)
+    source_name = "documenso-8707e33-source-security-9b2b3c48-amd64.tar.gz"
     _, source_size, source_sha = SOURCE_ASSETS[source_name]
     required = {
-        "qa_release": {"tag": QA_TAG, "target_commit": HEAD, "prerelease": True, "latest": False},
-        "original_build": {"repository": "saeloun/miru-web", "run_id": RUN_ID, "attempt": 1, "head": HEAD, "checkout": CHECKOUT,
+        "qa_release": {"tag": QA_TAG, "target_commit": PROVIDER_HEAD, "prerelease": True, "latest": False},
+        "original_build": {"repository": "saeloun/miru-web", "run_id": RUN_ID, "attempt": 1, "head": PROVIDER_HEAD, "checkout": CHECKOUT,
                            "workflow": ".github/workflows/documenso-build.yml", "status": "completed", "conclusion": "success"},
-        "image_asset": {"name": IMAGE_ASSET_NAME, "bytes": 450162450, "sha256": ZIP_SHA},
-        "inner_archive": {"name": "image.tar.gz", "bytes": 449955956, "sha256": ARCHIVE_SHA},
+        "image_asset": {"name": IMAGE_ASSET_NAME, "bytes": 452898862, "sha256": ZIP_SHA},
+        "inner_archive": {"name": "image.tar.gz", "bytes": 452678839, "sha256": ARCHIVE_SHA},
         "image": {"platform": "linux/amd64", "upstream": UPSTREAM, "opaque_config_sha256": CONFIG_SHA, "layers": 23,
-                  "uncompressed_layer_bytes": 1525317632, "rootfs_diff_ids_sha256": DIFF_IDS_SHA},
+                  "uncompressed_layer_bytes": 1533161984, "rootfs_diff_ids_sha256": DIFF_IDS_SHA},
         "source_release": SOURCE_RELEASE.rsplit("/", 1)[1],
         "source_asset": {"name": source_name, "bytes": source_size, "sha256": source_sha},
     }
     require(all(admission.get(key) == value for key, value in required.items()))
-    require(run.get("id") == RUN_ID and run.get("run_attempt") == 1 and run.get("head_sha") == HEAD)
+    require(run.get("id") == RUN_ID and run.get("run_attempt") == 1 and run.get("head_sha") == PROVIDER_HEAD)
     require(run.get("status") == "completed" and run.get("conclusion") == "success")
     require(run.get("path") == ".github/workflows/documenso-build.yml" and run["repository"]["id"] == 433874407)
 
 
 def verify_artifact(path, destination):
     verify_transport(path.parent)
-    require(path.name == IMAGE_ASSET_NAME and path.is_file() and not path.is_symlink() and path.stat().st_size == 450162450 and digest(path) == ZIP_SHA)
+    require(path.name == IMAGE_ASSET_NAME and path.is_file() and not path.is_symlink() and path.stat().st_size == 452898862 and digest(path) == ZIP_SHA)
     expected = {"image.tar.gz", "provenance.json", "SHA256SUMS", "LICENSE", "SOURCE.md", "source/Dockerfile"} | {"source/" + name for name in PATCHES}
     with zipfile.ZipFile(path) as archive:
         entries = archive.infolist()
@@ -433,22 +434,22 @@ def verify_artifact(path, destination):
         require(archive.testzip() is None)
         provenance = json.loads(archive.read("provenance.json"), object_pairs_hook=unique_object)
         required = {"workflow_run_id": str(RUN_ID), "workflow_run_attempt": "1", "upstream_revision": UPSTREAM,
-                    "platform": "linux/amd64", "checkout_revision": CHECKOUT, "pull_request_head_revision": HEAD,
+                    "platform": "linux/amd64", "checkout_revision": CHECKOUT, "pull_request_head_revision": PROVIDER_HEAD,
                     "registry_published": False, "application_started": False, "patch_sha256": PATCHES,
                     "node_base": "node@sha256:13cf9d4c07e847a41b81b0f24461bea41ec8bcd0a5c00e2ab88e2ba1159b54d4",
                     "prepared_dockerfile_sha256": DOCKER_SHA, "license_sha256": LICENSE_SHA,
-                    "archive_sha256": ARCHIVE_SHA, "archive_bytes": 449955956,
+                    "archive_sha256": ARCHIVE_SHA, "archive_bytes": 452678839,
                     "archive_config_sha256": CONFIG_SHA, "docker_image_id": "sha256:" + CONFIG_SHA,
                     "image_reference": "documenso-amd64:" + CHECKOUT}
         require(all(provenance.get(key) == value for key, value in required.items()))
-        notice = f"Upstream: https://github.com/documenso/documenso/tree/{UPSTREAM}\nPatches (also included in source/): https://github.com/saeloun/miru-web/tree/{HEAD}/docs/qa/generic-document-signing-2462\nThe prepared Dockerfile is included in source/. See provenance.json for checkout, PR head, source, base and archive hashes.\n"
+        notice = f"Upstream: https://github.com/documenso/documenso/tree/{UPSTREAM}\nPatches (also included in source/): https://github.com/saeloun/miru-web/tree/{PROVIDER_HEAD}/docs/qa/generic-document-signing-2462\nThe prepared Dockerfile is included in source/. See provenance.json for checkout, PR head, source, base and archive hashes.\n"
         require(archive.read("SOURCE.md").decode() == notice and archive.read("SHA256SUMS").decode() == ARCHIVE_SHA + "  image.tar.gz\n")
         for name, sha in {"source/Dockerfile": DOCKER_SHA, "LICENSE": LICENSE_SHA, **{"source/" + name: sha for name, sha in PATCHES.items()}}.items():
             require(hashlib.sha256(archive.read(name)).hexdigest() == sha)
         image = destination / "image.tar.gz"
         with archive.open("image.tar.gz") as source, image.open("xb") as target:
             shutil.copyfileobj(source, target)
-    require(image.stat().st_size == 449955956 and digest(image) == ARCHIVE_SHA)
+    require(image.stat().st_size == 452678839 and digest(image) == ARCHIVE_SHA)
     with tarfile.open(image, "r:gz") as archive:
         safe_tar_members(archive)
         member = archive.getmember("manifest.json")
@@ -477,7 +478,7 @@ def verify_artifact(path, destination):
                 require(total <= 8 * 1024**3)
                 sha.update(chunk)
             require("sha256:" + sha.hexdigest() == diff_ids[index])
-        require(total == 1525317632)
+        require(total == 1533161984)
     return image, diff_ids
 
 
@@ -2706,28 +2707,93 @@ def self_check():
         transport.mkdir()
         admission = b'''{
   "schema_version": 1,
-  "purpose": "Durable transport of the same re-verified historical QA image; not a new build, functional acceptance or production deployment",
-  "original_artifact": {"id": 13822868908, "availability": "GitHub API returned 404 on 2026-11-16; original artifact is not used as a fresh download", "historically_recorded_api_digest": "sha256:a3f905b026083cb8c4e8e261dae4e3642919a4f1376d44375e6b6b2ad5767590", "historically_recorded_api_size": 450162450},
-  "qa_release": {"tag": "documenso-qa-4aa6ff574-20261116", "target_commit": "4aa6ff5744267b1942bbf614fac322c8c1184bf7", "prerelease": true, "latest": false},
-  "original_build": {"repository": "saeloun/miru-web", "run_id": 42946388869, "attempt": 1, "head": "4aa6ff5744267b1942bbf614fac322c8c1184bf7", "checkout": "3e26e7ba9574b552b0c21dbb417e2135b01ec1a5", "workflow": ".github/workflows/documenso-build.yml", "status": "completed", "conclusion": "success"},
-  "image_asset": {"name": "documenso-8707e33-image-4aa6ff574-amd64.zip", "bytes": 450162450, "sha256": "a3f905b026083cb8c4e8e261dae4e3642919a4f1376d44375e6b6b2ad5767590"},
-  "inner_archive": {"name": "image.tar.gz", "bytes": 449955956, "sha256": "d7f3c0b767094cc9f1602397c86d2faa25e44872d86b71cbd039226513f5ff85"},
-  "image": {"platform": "linux/amd64", "upstream": "8707e33c124e4b1a68dde92d5e05178c9aabd0be", "opaque_config_sha256": "6b1d4c45a24da11e2f1c66da8eb486832660e4565334689c91ef9353fe158f49", "layers": 23, "uncompressed_layer_bytes": 1525317632, "rootfs_diff_ids_sha256": "69fbb4154339321f3932a9489db5c499f5efbac4bb58e350e676a9ef08d68e31"},
-  "source_release": "documenso-source-4aa6ff574",
-  "build_context_review": {"source": "Pinned public upstream and two recorded public patches", "upstream_checkout_persist_credentials": false, "no_build_args_or_secret_mounts": true, "dockerfile_arguments": "Public development placeholders or empty values, not deployment keys", "environment_file_inventory": [".env.example"], "npm_config": "Public peer/dedupe/release-age settings only", "private_dotenv_ignored": true, "miru_checkout_git_config_outside_build_context": true},
-  "source_asset": {"name": "documenso-8707e33-source-4aa6ff574-amd64.tar.gz", "bytes": 58498058, "sha256": "5b94ae4dc456b853964100cebc1263819bac762b7c9205cc8a8675f8ae916ee2"},
-  "verification": {"zip_crc_and_exact_members": true, "zip_and_inner_archive_hashes": true, "original_build_provenance": true, "prepared_dockerfile_license_and_both_patches": true, "opaque_config_hash": true, "selected_public_platform_labels": true, "all_23_raw_rootfs_layer_hashes": true, "env_decoded": false, "docker_load": false, "application_started": false, "functional_qa_passed": false}
+  "purpose": "Fixed transport for an isolated security candidate; no functional acceptance, active alias replacement or production deployment",
+  "original_artifact": {
+    "id": 15239354014,
+    "availability": "Retained from successful exact-head build before one-day expiry",
+    "historically_recorded_api_digest": "sha256:9cdf485dbca35d44b8bab9c6938556c8de82db595ccfcd0afb6d93222c6d175f",
+    "historically_recorded_api_size": 452898862
+  },
+  "qa_release": {
+    "tag": "documenso-qa-security-9b2b3c48-20261128",
+    "target_commit": "9b2b3c48a5a129243ad2189776f6352ba522c1bc",
+    "prerelease": true,
+    "latest": false
+  },
+  "original_build": {
+    "repository": "saeloun/miru-web",
+    "run_id": 46087161946,
+    "attempt": 1,
+    "head": "9b2b3c48a5a129243ad2189776f6352ba522c1bc",
+    "checkout": "9b2b3c48a5a129243ad2189776f6352ba522c1bc",
+    "workflow": ".github/workflows/documenso-build.yml",
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "image_asset": {
+    "name": "documenso-8707e33-image-security-9b2b3c48-amd64.zip",
+    "bytes": 452898862,
+    "sha256": "9cdf485dbca35d44b8bab9c6938556c8de82db595ccfcd0afb6d93222c6d175f"
+  },
+  "inner_archive": {
+    "name": "image.tar.gz",
+    "bytes": 452678839,
+    "sha256": "7dd03c0cc9137131748639afffc375181542219203c138d124e8467d9293092e"
+  },
+  "image": {
+    "platform": "linux/amd64",
+    "upstream": "8707e33c124e4b1a68dde92d5e05178c9aabd0be",
+    "opaque_config_sha256": "42355ef1aea7b1570594029bd5197dd0cebdfc03194030d0a7b967146de8303e",
+    "layers": 23,
+    "uncompressed_layer_bytes": 1533161984,
+    "rootfs_diff_ids_sha256": "791f13335b742e80c0c6f10f7820a245d17fa9e1af9358be598a0935089d3087"
+  },
+  "source_release": "documenso-source-security-9b2b3c48-20261128",
+  "source_asset": {
+    "name": "documenso-8707e33-source-security-9b2b3c48-amd64.tar.gz",
+    "bytes": 58546897,
+    "sha256": "99f3c724b93b9adfd036cc5872c15a45f6122032c2ed94c351bd45724b27abf6"
+  },
+  "verification": {
+    "zip_crc_and_exact_members": true,
+    "zip_and_inner_archive_hashes": true,
+    "original_build_provenance": true,
+    "prepared_dockerfile_license_and_both_patches": true,
+    "opaque_config_hash": true,
+    "selected_public_platform_labels": true,
+    "all_23_raw_rootfs_layer_hashes": true,
+    "env_decoded": false,
+    "docker_load": false,
+    "application_started": false,
+    "functional_qa_passed": false
+  },
+  "source_reconstruction": {
+    "upstream_git_blobs": 3006,
+    "prepared_files": 3015,
+    "all_prepared_files_matched": true,
+    "deterministic_archive_writes_match": true,
+    "links_or_special_files": false
+  },
+  "fresh_scan": {
+    "database_repository": "ghcr.io/aquasecurity/trivy-db:2",
+    "db_updated_at": "2026-11-27T19:05:47.637500704Z",
+    "db_downloaded_at": "2026-11-28T00:48:00.845558Z",
+    "findings": 0,
+    "all_severities": true,
+    "suppressions": false
+  },
+  "miru_application_for_planned_qualification": "4aa6ff5744267b1942bbf614fac322c8c1184bf7"
 }
 '''
         (transport / TRANSPORT_MANIFEST).write_bytes(admission)
-        image_asset = {"id": IMAGE_ASSET_ID, "name": IMAGE_ASSET_NAME, "size": 450162450, "digest": "sha256:" + ZIP_SHA, "state": "uploaded"}
-        manifest_asset = {"id": MANIFEST_ASSET_ID, "name": TRANSPORT_MANIFEST, "size": 2688, "digest": "sha256:" + TRANSPORT_MANIFEST_SHA, "state": "uploaded"}
+        image_asset = {"id": IMAGE_ASSET_ID, "name": IMAGE_ASSET_NAME, "size": 452898862, "digest": "sha256:" + ZIP_SHA, "state": "uploaded"}
+        manifest_asset = {"id": MANIFEST_ASSET_ID, "name": TRANSPORT_MANIFEST, "size": 3005, "digest": "sha256:" + TRANSPORT_MANIFEST_SHA, "state": "uploaded"}
         metadata = {
-            "release-metadata.json": {"id": RELEASE_ID, "tag_name": QA_TAG, "target_commitish": HEAD, "prerelease": True, "draft": False, "assets": [image_asset, manifest_asset]},
+            "release-metadata.json": {"id": RELEASE_ID, "tag_name": QA_TAG, "target_commitish": PROVIDER_HEAD, "prerelease": True, "draft": False, "assets": [image_asset, manifest_asset]},
             "image-asset-metadata.json": image_asset,
             "manifest-asset-metadata.json": manifest_asset,
-            "tag-metadata.json": {"ref": "refs/tags/" + QA_TAG, "object": {"type": "commit", "sha": HEAD}},
-            "run-metadata.json": {"id": RUN_ID, "run_attempt": 1, "head_sha": HEAD, "status": "completed", "conclusion": "success", "path": ".github/workflows/documenso-build.yml", "repository": {"id": 433874407}},
+            "tag-metadata.json": {"ref": "refs/tags/" + QA_TAG, "object": {"type": "commit", "sha": PROVIDER_HEAD}},
+            "run-metadata.json": {"id": RUN_ID, "run_attempt": 1, "head_sha": PROVIDER_HEAD, "status": "completed", "conclusion": "success", "path": ".github/workflows/documenso-build.yml", "repository": {"id": 433874407}},
         }
         for name, value in metadata.items():
             (transport / name).write_text(json.dumps(value))

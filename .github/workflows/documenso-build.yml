@@ -313,15 +313,15 @@ jobs:
           set -euo pipefail
           umask 077
           mkdir -m 700 "$RUNNER_TEMP/documenso-inputs" "$RUNNER_TEMP/documenso-inputs/source" "$MIRU_QA_WORK"
-          timeout 30 gh api repos/saeloun/miru-web/releases/446291311 > "$RUNNER_TEMP/documenso-inputs/release-metadata.json"
-          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024163 > "$RUNNER_TEMP/documenso-inputs/image-asset-metadata.json"
-          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024161 > "$RUNNER_TEMP/documenso-inputs/manifest-asset-metadata.json"
-          timeout 30 gh api repos/saeloun/miru-web/git/ref/tags/documenso-qa-4aa6ff574-20261116 > "$RUNNER_TEMP/documenso-inputs/tag-metadata.json"
-          timeout 30 gh api repos/saeloun/miru-web/actions/runs/42946388869/attempts/1 > "$RUNNER_TEMP/documenso-inputs/run-metadata.json"
-          timeout 300 gh api repos/saeloun/miru-web/releases/assets/752024163 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip"
-          timeout 30 gh api repos/saeloun/miru-web/releases/assets/752024161 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/IMAGE-TRANSPORT-ADMISSION-20261116.json"
-          timeout 120 gh release download documenso-source-4aa6ff574 --repo saeloun/miru-web --dir "$RUNNER_TEMP/documenso-inputs/source" \
-            --pattern documenso-8707e33-source-4aa6ff574-amd64.tar.gz --pattern SHA256SUMS --pattern SOURCE-ADMISSION.md
+          timeout 30 gh api repos/saeloun/miru-web/releases/461198477 > "$RUNNER_TEMP/documenso-inputs/release-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/802655682 > "$RUNNER_TEMP/documenso-inputs/image-asset-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/802655681 > "$RUNNER_TEMP/documenso-inputs/manifest-asset-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/git/ref/tags/documenso-qa-security-9b2b3c48-20261128 > "$RUNNER_TEMP/documenso-inputs/tag-metadata.json"
+          timeout 30 gh api repos/saeloun/miru-web/actions/runs/46087161946/attempts/1 > "$RUNNER_TEMP/documenso-inputs/run-metadata.json"
+          timeout 300 gh api repos/saeloun/miru-web/releases/assets/802655682 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-security-9b2b3c48-amd64.zip"
+          timeout 30 gh api repos/saeloun/miru-web/releases/assets/802655681 -H 'Accept: application/octet-stream' > "$RUNNER_TEMP/documenso-inputs/IMAGE-CANDIDATE-TRANSPORT-20261128.json"
+          timeout 120 gh release download documenso-source-security-9b2b3c48-20261128 --repo saeloun/miru-web --dir "$RUNNER_TEMP/documenso-inputs/source" \
+            --pattern documenso-8707e33-source-security-9b2b3c48-amd64.tar.gz --pattern SHA256SUMS --pattern SOURCE-ADMISSION.md
 
       - name: Exercise the real signing lifecycle with local-only traffic
         timeout-minutes: 30
@@ -330,7 +330,7 @@ jobs:
           sudo --preserve-env=CI,GITHUB_ACTIONS,RUNNER_OS,RUNNER_ENVIRONMENT,RUNNER_TEMP,GITHUB_WORKSPACE,GITHUB_RUN_ID,GITHUB_RUN_ATTEMPT python3 -I qa-adapter/scripts/ci/documenso_functional_qa.py \
             --app "$GITHUB_WORKSPACE/qa-public-miru" \
             --work "$MIRU_QA_WORK" \
-            --artifact "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-4aa6ff574-amd64.zip" \
+            --artifact "$RUNNER_TEMP/documenso-inputs/documenso-8707e33-image-security-9b2b3c48-amd64.zip" \
             --source "$RUNNER_TEMP/documenso-inputs/source" \
             --ruby "$(command -v ruby)" --bundle "$(command -v bundle)" \
             --node "$(command -v node)" --pnpm "${{ steps.setup_pnpm.outputs.dest }}/node_modules/pnpm/bin/pnpm.cjs" \
