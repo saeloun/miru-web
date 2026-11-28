@@ -283,10 +283,15 @@ class Payroll::ConsultantInvoicePreparation
       self.class.cleanup_original_blob(blob.id)
     rescue StandardError
       begin
-        Rails.logger.warn("Consultant invoice original cleanup requires review")
         Payroll::ConsultantInvoiceOriginalCleanupJob.perform_later(blob.id)
       rescue StandardError
-        # Keep the row and storage key addressable when logging or the queue is unavailable too.
+        # Keep the row and storage key addressable when the queue is unavailable too.
+        nil
+      end
+      begin
+        Rails.logger.warn("Consultant invoice original cleanup requires review")
+      rescue StandardError
+        # Logging must not replace the original failure or prevent deferred cleanup.
         nil
       end
     end
