@@ -25,10 +25,11 @@ Sentry.init do |config|
       data = breadcrumb.data
       next unless data.is_a?(Hash)
 
-      data.except!(:params, "params", :sql, "sql")
+      data = data.except(:params, "params", :sql, "sql")
       [:path, "path", :url, "url", :location, "location"].each do |key|
         data[key] = data[key].split("?", 2).first if data[key].is_a?(String)
       end
+      breadcrumb.data = data
     end
     event
   end
