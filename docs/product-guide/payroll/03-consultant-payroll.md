@@ -413,6 +413,9 @@ verification of authenticity or official certificates issued by Miru. A Mercury
 receipt is not a bank-issued FIRC. Request missing evidence from the receiving
 bank; Miru does not retrieve it or send automated reminders.
 
+Developers can use the [remittance documents API reference](../../contributing-guide/remittance-documents-api.md)
+for request fields, pagination, authenticated downloads and retained corrections.
+
 ## Not available yet
 
 Government verification of tax identity,

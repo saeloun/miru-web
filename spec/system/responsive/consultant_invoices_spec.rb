@@ -122,10 +122,11 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
     expect(PayrollInvoicePreparation.count).to eq(0)
   end
 
-  it "retains another consultant's draft and file through a successful save but clears forms on a fresh refusal" do
+  it "retains another consultant's draft and file after a recoverable refresh failure but clears forms on a fresh refusal" do
     revision
     waiting, release = Queue.new, Queue.new
     hold_refresh = false
+    fail_refresh = false
     binding_changed = false
     destination_changed = false
     allow_any_instance_of(Api::V1::PayrollConsultantInvoicesController).to receive(:index).and_wrap_original do |method|
@@ -134,6 +135,11 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
         Timeout.timeout(10) { release.pop }
       end
       result = method.call
+      if fail_refresh
+        method.receiver.response.status = 503
+        method.receiver.response_body = JSON.generate(errors: "Synthetic temporary invoice refresh failure")
+        next result
+      end
       body = JSON.parse(method.receiver.response.body)
       body.fetch("consultant_invoices")["accounts_email"] = "synthetic-accounts@example.com" if destination_changed
       # This read-only row isolates client drafts, not another financial command.
@@ -150,6 +156,7 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       complete_facts(existing: true)
       fill_in "Billed entity postal address", with: "2 Fictional Draft Street"
       fill_in "Reviewed document treatment and timing reason", with: "Synthetic unsaved second review"
+      check "I reviewed and confirm this fixed accounts destination for this invoice."
     end
     within(find("article", text: "Synthetic Consultant")) { complete_facts }
     hold_refresh = true
@@ -162,13 +169,29 @@ RSpec.describe "Private consultant paid invoices", type: :system, js: true do
       expect(page).to have_button("Save unreviewed preparation", disabled: true)
     end
     hold_refresh = false
+    fail_refresh = true
     release << true
-    expect(page).to have_text("Unreviewed preparation")
+    expect(page).to have_css("[role='alert']", text: "Synthetic temporary invoice refresh failure", exact_text: true)
     expect(PayrollInvoicePreparation.sole.employment_id).to eq(employment.id)
     within(find("article", text: "Synthetic Draft Consultant")) do
       expect(find_field("Billed entity postal address").value).to eq("2 Fictional Draft Street")
       expect(find_field("Reviewed document treatment and timing reason").value).to eq("Synthetic unsaved second review")
       expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+      expect(page).to have_button("Save unreviewed preparation", disabled: true)
+      expect(page).to have_button("Review preparation", disabled: true)
+    end
+    expect(page).to have_button("Refresh invoice status", disabled: false)
+    fail_refresh = false
+    press "Refresh invoice status"
+    expect(page).to have_text("Unreviewed preparation")
+    expect(page).to have_no_css("[role='alert']", text: "Synthetic temporary invoice refresh failure")
+    expect(PayrollInvoicePreparation.sole.employment_id).to eq(employment.id)
+    within(find("article", text: "Synthetic Draft Consultant")) do
+      expect(find_field("Billed entity postal address").value).to eq("2 Fictional Draft Street")
+      expect(find_field("Reviewed document treatment and timing reason").value).to eq("Synthetic unsaved second review")
+      expect(find_field("Existing original PDF (up to 5 MiB)").value).to end_with("pdf-file.pdf")
+      expect(page).to have_button("Save unreviewed preparation", disabled: false)
+      expect(page).to have_button("Review preparation", disabled: false)
     end
     binding_changed = true
     press "Refresh invoice status"

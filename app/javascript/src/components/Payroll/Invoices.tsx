@@ -672,6 +672,7 @@ function ScopedPayrollInvoices({
 }) {
   const [data, setData] = useState<RunInvoices>();
   const [loading, setLoading] = useState(true);
+  const [readFailed, setReadFailed] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [refresh, setRefresh] = useState(0);
@@ -700,6 +701,7 @@ function ScopedPayrollInvoices({
       .then(response => {
         if (!controller.signal.aborted && scopeRef.current === scope) {
           setData(response.data.consultant_invoices);
+          setReadFailed(false);
         }
       })
       .catch(failure => {
@@ -708,7 +710,14 @@ function ScopedPayrollInvoices({
           !controller.signal.aborted &&
           scopeRef.current === scope
         ) {
-          setData(undefined);
+          const recoverable =
+            axios.isAxiosError(failure) &&
+            ((!failure.response && failure.request != null) ||
+              (failure.response != null &&
+                failure.response.status >= 500 &&
+                failure.response.status < 600));
+          if (!recoverable) setData(undefined);
+          setReadFailed(true);
           const message = invoiceError(failure);
           if (
             axios.isAxiosError(failure) &&
@@ -731,7 +740,7 @@ function ScopedPayrollInvoices({
   }, [scope, companyId, runId, refresh]);
 
   const act = async (operation: (signal: AbortSignal) => Promise<unknown>) => {
-    if (busy || loading || writeAbort.current) return;
+    if (busy || loading || readFailed || writeAbort.current) return;
     const controller = new AbortController();
     writeAbort.current = controller;
     setBusy(true);
@@ -837,7 +846,7 @@ function ScopedPayrollInvoices({
               {row.can_review && row.invoice.email?.state === "failed" && (
                 <Button
                   type="button"
-                  disabled={busy || loading}
+                  disabled={busy || loading || readFailed}
                   onClick={() =>
                     void act(signal =>
                       consultantInvoicesApi.delivery(
@@ -858,7 +867,7 @@ function ScopedPayrollInvoices({
                 <DeliveryReconciliation
                   key={`${row.invoice.id}:${row.invoice.email.id}`}
                   invoice={row.invoice}
-                  busy={busy || loading}
+                  busy={busy || loading || readFailed}
                   reconcile={(outcome, evidence) =>
                     act(signal =>
                       consultantInvoicesApi.delivery(
@@ -990,7 +999,7 @@ function ScopedPayrollInvoices({
                     canConfigure={row.can_configure}
                     generationSupported={row.generation_supported}
                     supplementalBinding={row.supplemental_billing_binding}
-                    disabled={busy || loading}
+                    disabled={busy || loading || readFailed}
                     onSaved={() => setRefresh(value => value + 1)}
                   />
                 )}
@@ -1000,7 +1009,7 @@ function ScopedPayrollInvoices({
                   <Button
                     type="button"
                     variant="outline"
-                    disabled={busy || loading}
+                    disabled={busy || loading || readFailed}
                     onClick={() =>
                       void act(signal =>
                         consultantInvoicesApi.retryGeneration(
