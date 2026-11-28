@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import RemittanceDocuments from "./RemittanceDocuments";
 
 import {
   MercuryConsultant,
@@ -578,6 +579,9 @@ const Leg = ({ leg, context }: { leg: MercuryLeg; context: Context }) => {
           {label(leg.display_state)}
         </Badge>
       </div>
+      {leg.submission_state === "accepted" && (
+        <RemittanceDocuments paymentId={leg.id} />
+      )}
       <Facts
         rows={[
           ["INR entitlement", exactAmount(leg.entitlement_minor, "INR")],

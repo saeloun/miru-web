@@ -391,10 +391,32 @@ are immutable. **My consultant invoices** in personal settings retains private,
 authenticated history/downloads for a kept identity after exit, authorization
 withdrawal or payroll disablement. A later credit review is shown separately.
 
+## Bank remittance documents
+
+For submitted Mercury transfers, consultants can open **My consultant invoices**
+in personal settings to upload bank-issued FIRC, FIRA or inward-remittance advice,
+including before a paid invoice exists. Current authorized accounts reviewers,
+owners and admins can use the transfer or its paid invoice to access the same
+evidence. Choose the document type, upload a private PDF, JPEG or PNG up to 5 MiB,
+and describe the document or correction. A correction retains earlier files;
+downloads remain authenticated and scoped to the consultant and workspace.
+
+**Missing bank document** requests follow-up only after credit is recorded and
+the transfer has not been returned, cancelled, blocked or failed. Payment status
+and document receipt appear separately; an uncredited transfer without a file
+shows **No bank document uploaded yet**. Receiving a file does not mark a transfer paid. A document received before
+invoice issuance appears with that invoice once issued, including separate
+evidence for each spouse-split transfer. Existing evidence remains readable by a
+kept authorized identity after service ends or payroll is disabled; new uploads
+require payroll to remain enabled. Files are declared bank evidence, not Miru's
+verification of authenticity or official certificates issued by Miru. A Mercury
+receipt is not a bank-issued FIRC. Request missing evidence from the receiving
+bank; Miru does not retrieve it or send automated reminders.
+
 ## Not available yet
 
-Government verification of tax identity, FIRC or FIRA
-attachments, replacing returned funds, consultant split requests and Mercury
+Government verification of tax identity,
+replacing returned funds, consultant split requests and Mercury
 webhooks remain follow-on work.
 A returned wire stays visible and can't be replaced from Miru. The India accounts
 handoff, consultant bank-detail editing and explicit PTO policy/decision workflows

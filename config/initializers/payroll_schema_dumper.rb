@@ -9,7 +9,7 @@ module PayrollSchemaDumper
 
       dump_pto_guards(stream)
 
-      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations consultant_billing_submissions consultant_billing_reviews].select { |table| @connection.table_exists?(table) }
+      tables = %w[payroll_runs payroll_revisions payroll_approvals payroll_mercury_recipient_links payroll_payment_events payroll_india_credits consultant_service_fee_reviews consultant_invoice_authorizations consultant_billing_submissions consultant_billing_reviews payroll_remittance_documents].select { |table| @connection.table_exists?(table) }
       return if tables.empty?
 
       stream.puts <<~RUBY.indent(2)
@@ -33,6 +33,11 @@ module PayrollSchemaDumper
       dump_invoice_authorization_guard(stream)
       dump_billing_identity_guards(stream)
       dump_consultant_invoice_guards(stream)
+      if @connection.table_exists?("payroll_remittance_documents")
+        sql = @connection.select_value("SELECT pg_get_functiondef('validate_payroll_remittance_document()'::regprocedure)")
+        stream.puts "  execute <<~SQL\n#{sql.indent(4)}  SQL"
+        stream.puts "  execute <<~SQL\n    CREATE TRIGGER remittance_document_identity BEFORE INSERT ON payroll_remittance_documents FOR EACH ROW EXECUTE FUNCTION validate_payroll_remittance_document();\n  SQL"
+      end
       return unless @connection.table_exists?("payroll_india_handoffs")
 
       stream.puts <<~RUBY.indent(2)

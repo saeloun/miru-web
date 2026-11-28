@@ -5,6 +5,7 @@
 ### Added
 
 - Prepare paid consultant invoices from reviewed settlement facts or preserve an existing original, with private history and tracked email delivery.
+- Retain private bank-issued remittance documents, correction history and payment/invoice links, with missing-document follow-up separate from confirmed credit.
 
 ### Fixed
 

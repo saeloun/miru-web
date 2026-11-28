@@ -85,19 +85,44 @@ class Payroll::BillingEvidence
     file = submission.evidence_manifest.fetch("files")[kind]
     raise ActiveRecord::RecordNotFound unless file
 
+    bytes, type = read_file!(submission.evidence_blob(kind), file)
+    [bytes, type, "#{kind}-evidence.#{TYPES.fetch(type)}"]
+  end
+
+  def self.file_descriptor(upload)
+    unless upload.is_a?(ActionDispatch::Http::UploadedFile) && upload.tempfile.size.between?(1, 5.megabytes)
+      raise Payroll::ConsultantReview::InvalidInput, "Provide a PDF, JPEG or PNG up to 5 MiB"
+    end
+    file = upload.tempfile
+    file.rewind
+    type = Marcel::MimeType.for(file)
+    raise Payroll::ConsultantReview::InvalidInput, "Provide a PDF, JPEG or PNG up to 5 MiB" unless TYPES.key?(type)
+
+    file.rewind
+    { "sha256" => Digest::SHA256.file(file.path).hexdigest, "content_type" => type, "byte_size" => file.size }
+  end
+
+  def self.read_file!(blob, file)
+    size = file["byte_size"]
+    unless blob && !blob.service.public? && TYPES.key?(file["content_type"]) &&
+        size.is_a?(Integer) && size.between?(1, 5.megabytes) && blob.byte_size == size &&
+        blob.content_type == file["content_type"] && blob.checksum == file["checksum"]
+      raise Payroll::Workflow::Conflict, "Private evidence changed or is unavailable"
+    end
+
     bytes = +"".b
     begin
-      submission.evidence_blob(kind).download do |chunk|
-        raise Payroll::Workflow::Conflict if bytes.bytesize + chunk.bytesize > file["byte_size"]
+      blob.download do |chunk|
+        raise Payroll::Workflow::Conflict if bytes.bytesize + chunk.bytesize > size
         bytes << chunk
       end
     rescue StandardError
-      raise Payroll::Workflow::Conflict, "Billing evidence changed or is unavailable", cause: nil
+      raise Payroll::Workflow::Conflict, "Private evidence changed or is unavailable", cause: nil
     end
-    unless bytes.bytesize == file["byte_size"] && Digest::SHA256.hexdigest(bytes) == file["sha256"]
-      raise Payroll::Workflow::Conflict, "Billing evidence changed or is unavailable"
+    unless bytes.bytesize == size && Digest::SHA256.hexdigest(bytes) == file["sha256"]
+      raise Payroll::Workflow::Conflict, "Private evidence changed or is unavailable"
     end
-    [bytes, file["content_type"], "#{kind}-evidence.#{TYPES.fetch(file['content_type'])}"]
+    [bytes, file["content_type"]]
   end
 
   def self.verify!(submission)
@@ -114,13 +139,7 @@ class Payroll::BillingEvidence
     end
 
     def descriptor(upload)
-      invalid! unless upload.is_a?(ActionDispatch::Http::UploadedFile) && upload.tempfile.size.between?(1, 5.megabytes)
-      file = upload.tempfile
-      file.rewind
-      type = Marcel::MimeType.for(file)
-      invalid! unless TYPES.key?(type)
-      file.rewind
-      { "sha256" => Digest::SHA256.file(file.path).hexdigest, "content_type" => type, "byte_size" => file.size }
+      self.class.file_descriptor(upload)
     end
 
     def upload_blob(kind, descriptor)

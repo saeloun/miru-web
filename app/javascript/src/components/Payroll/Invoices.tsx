@@ -6,6 +6,7 @@ import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 import { Textarea } from "components/ui/textarea";
+import RemittanceDocuments from "./RemittanceDocuments";
 import { exactAmount } from "./amount";
 import {
   consultantInvoicesApi,
@@ -510,10 +511,12 @@ export function InvoiceCard({
   invoice,
   download,
   children,
+  showRemittance = true,
 }: {
   invoice: ConsultantInvoice;
   download: (kind: "paid" | "original") => void;
   children?: React.ReactNode;
+  showRemittance?: boolean;
 }) {
   return (
     <article className="min-w-0 space-y-3 rounded-lg border border-border p-4">
@@ -574,6 +577,7 @@ export function InvoiceCard({
         )}
       </div>
       {children}
+      {showRemittance && <RemittanceDocuments invoiceId={invoice.id} />}
     </article>
   );
 }

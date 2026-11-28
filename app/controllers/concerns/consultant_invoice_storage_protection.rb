@@ -21,7 +21,7 @@ module ConsultantInvoiceStorageProtection
       end
       return unless blob
 
-      private_invoice = PayrollInvoicePreparation.exists?(original_blob_id: blob.id) ||
+      private_invoice = PayrollRemittanceDocument.exists?(blob_id: blob.id) || PayrollInvoicePreparation.exists?(original_blob_id: blob.id) ||
         PayrollConsultantInvoice.where(pdf_blob_id: blob.id).or(PayrollConsultantInvoice.where(original_blob_id: blob.id)).exists?
       return unless private_invoice
 
